@@ -1,32 +1,42 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
+declare global {
+  var mongoose: any; // This must be a `var` and not a `let / const`
+}
 
-mongoose
-  .connect("mongodb://127.0.0.1:27017/ielts", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log("Connected to MongoDB");
-  })
-  .catch((error: any) => {
-    console.error("Error connecting to MongoDB:", error);
-  });
+let cached = global.mongoose;
 
-const personSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  age: {
-    type: Number,
-    min: 18,
-  },
-});
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
 
-const Person = mongoose.model("Person", personSchema);
+async function dbConnect() {
+  const MONGODB_URI = process.env.MONGODB_URI!;
 
-const person1 = new Person({ name: "john", age: 19 });
+  if (!MONGODB_URI) {
+    throw new Error(
+      "Please define the MONGODB_URI environment variable inside .env.local"
+    );
+  }
 
-(async () => {
-  await person1.save();
-})();
+  if (cached.conn) {
+    return cached.conn;
+  }
+  if (!cached.promise) {
+    const opts = {
+      bufferCommands: false,
+    };
+    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+      return mongoose;
+    });
+  }
+  try {
+    cached.conn = await cached.promise;
+  } catch (e) {
+    cached.promise = null;
+    throw e;
+  }
+
+  return cached.conn;
+}
+
+export default dbConnect;
