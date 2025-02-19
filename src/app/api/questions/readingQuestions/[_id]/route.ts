@@ -13,27 +13,6 @@ interface ReadingTest {
   parts: Array<any>;
 }
 
-// export async function GET(
-//   request: Request,
-//   { params }: { params: { id: string } }
-// ) {
-//   // Extract the test ID from the URL params
-//   const { id } = params;
-
-//   // Find the test by id from the JSON data
-//   const test: ReadingTest | undefined = readingData.readingTests.find(
-//     (test: ReadingTest) => test.id === id
-//   );
-
-//   if (!test) {
-//     // Return a 404 response if no test is found
-//     return NextResponse.json({ error: "Test not found" }, { status: 404 });
-//   }
-
-//   // Return the found test data as JSON
-//   return NextResponse.json(test);
-// }
-
 export async function GET(
   request: Request,
   { params }: { params: { _id: string } }
@@ -42,6 +21,7 @@ export async function GET(
     await dbConnect();
     const { _id } = params;
     const test = await ReadingModel.findById(_id);
+    console.log(test);
     return NextResponse.json({ success: true, data: test });
   } catch (error) {
     console.error("GET Error:", error);

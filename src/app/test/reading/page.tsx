@@ -60,7 +60,7 @@ const page: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
                 {readingData?.map((data: any) => {
-                    const { _id, title } = data;
+                    const { _id, title, type } = data;
                     return (<div
                         key={_id}
                         className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300"
@@ -68,6 +68,7 @@ const page: React.FC = () => {
                         <div className="card-body">
                             <div className="flex items-center justify-between">
                                 <h2 className="card-title text-2xl">{title}</h2>
+                                <p>{type}</p>
                             </div>
                             <div className="card-actions justify-end mt-4">
                                 <Link href={`/test/reading/${_id}`} className="btn btn-primary btn-sm">

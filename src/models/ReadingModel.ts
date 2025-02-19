@@ -1,26 +1,27 @@
-import mongoose, { Model } from "mongoose";
+import mongoose, { Model, Schema } from "mongoose";
 
 interface PartsObject {
   title: string;
-  passage: string;
+  passage: Array<string> | Array<{ [key: string]: string }>; // More flexible interface
   image?: string;
-  questions: Object[];
-}
-
-interface PartsExactData {
-  [key: string]: PartsObject;
+  questions: Object;
 }
 
 export interface ReadingTest extends mongoose.Document {
-  title: string;
-  duration: number;
-  parts: PartsExactData;
+  title: String;
+  type: String;
+  duration: Number;
+  parts: PartsObject[];
 }
 
 const ReadingSchema = new mongoose.Schema<ReadingTest>({
   title: {
     type: String,
     required: [true, "Please provide a name for title."],
+  },
+  type: {
+    type: String,
+    required: [true, "Please provide the type of exam."],
   },
   duration: {
     type: Number,
@@ -29,9 +30,9 @@ const ReadingSchema = new mongoose.Schema<ReadingTest>({
   parts: [
     {
       title: String,
-      passage: String,
+      passage: [Schema.Types.Mixed], // Array of Mixed to allow both string and object elements within the array. Still flexible.
       image: String,
-      questions: [{}],
+      questions: {},
     },
   ],
 });
