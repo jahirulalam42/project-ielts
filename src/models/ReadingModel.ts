@@ -1,8 +1,16 @@
 import mongoose, { Model, Schema } from "mongoose";
 
 interface PartsObject {
+  // title: string;
+  // passage: Array<string> | Array<{ [key: string]: string }>; // More flexible interface
+  // image?: string;
+  // questions: Object;
+
   title: string;
-  passage: Array<string> | Array<{ [key: string]: string }>; // More flexible interface
+  instructions: string;
+  passage_title: string;
+  passage_subtitle: string;
+  passage: Array<string> | Array<{ [key: string]: string }>;
   image?: string;
   questions: Object;
 }
@@ -29,10 +37,17 @@ const ReadingSchema = new mongoose.Schema<ReadingTest>({
   },
   parts: [
     {
+      // title: String,
+      // passage: [Schema.Types.Mixed], // Array of Mixed to allow both string and object elements within the array. Still flexible.
+      // image: String,
+      // questions: {},
       title: String,
-      passage: [Schema.Types.Mixed], // Array of Mixed to allow both string and object elements within the array. Still flexible.
+      instructions: String,
+      passage_title: String,
+      passage_subtitle: String,
+      passage: [Schema.Types.Mixed],
       image: String,
-      questions: {},
+      questions: Object,
     },
   ],
 });
