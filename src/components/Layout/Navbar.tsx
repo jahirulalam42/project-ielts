@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import React from 'react'
+import LoginButton from '../Auth/LoginButton'
 
 const Navbar: React.FC = () => {
     return (
@@ -46,7 +47,9 @@ const Navbar: React.FC = () => {
                     </ul>
                 </div>
                 <div className="navbar-end">
-                    <a className="btn">Button</a>
+                    <div className='btn'>
+                        <LoginButton />
+                    </div>
                 </div>
             </div>
         </div>

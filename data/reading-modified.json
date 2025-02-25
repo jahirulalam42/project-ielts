@@ -6,7 +6,6 @@
       "duration": 60,
       "parts": [
         {
-          "partId": "part-1",
           "title": "READING PASSAGE 1",
           "instructions": "You should spend about 20 minutes on Questions 1-13, which are based on Reading Passage 1 below.",
           "passage_title": "How tennis rackets have changed",
@@ -149,7 +148,6 @@
           }
         },
         {
-          "partId": "part-2",
           "title": "READING PASSAGE 2",
           "instructions": "You should spend about 20 minutes on Questions 14-26, which are based on Reading Passage 2 below.",
           "passage_title": "The pirates of the ancient Mediterranean",
@@ -352,7 +350,6 @@
           }
         },
         {
-          "partId": "part-3",
           "title": "READING PASSAGE 3",
           "instructions": "You should spend about 20 minutes on Questions 27-40, which are based on Reading Passage 3 below.",
           "passage_title": "The persistence and peril of misinformation",
