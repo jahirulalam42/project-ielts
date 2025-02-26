@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-const AuthOptions = {
+export const AuthOptions = {
   providers: [
     CredentialsProvider({
       // The name to display on the sign in form (e.g. "Sign in with...")
@@ -12,6 +12,11 @@ const AuthOptions = {
       // You can pass any HTML attribute to the <input> tag through the object.
       credentials: {
         username: { label: "Username", type: "text", placeholder: "jsmith" },
+        email: {
+          label: "Email",
+          type: "email",
+          placeholder: "jsmith@gmail.com",
+        },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
@@ -30,9 +35,23 @@ const AuthOptions = {
       },
     }),
   ],
-};
 
-export default AuthOptions;
+  callbacks: {
+    async jwt({ token, account }: any) {
+      // Persist the OAuth access_token to the token right after signin
+      if (account) {
+        token.accessToken = account.access_token;
+      }
+      return token;
+    },
+    async session({ session, token, user }: any) {
+      // Send properties to the client, like an access_token from a provider.
+      session.accessToken = token.accessToken;
+
+      return session;
+    },
+  },
+};
 
 const handler = NextAuth(AuthOptions);
 
