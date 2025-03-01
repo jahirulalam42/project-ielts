@@ -1,4 +1,5 @@
 "use client"
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react'
 
@@ -13,6 +14,10 @@ const page: React.FC = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
+    const { data: session } = useSession()
+
+    console.log('This is userData', session)
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -20,7 +25,6 @@ const page: React.FC = () => {
 
                 if (!response.ok) throw new Error('Failed to fetch data');
                 const data = await response.json();
-                console.log(data)
                 setReadingData(data.data);
             } catch (err) {
                 console.error("Error loading data:", err);
