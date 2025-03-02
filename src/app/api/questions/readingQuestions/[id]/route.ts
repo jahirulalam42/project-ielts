@@ -4,6 +4,8 @@ import { NextResponse } from "next/server";
 import readingData from "../../../../../../data/reading.json";
 import dbConnect from "@/lib/dbConnect";
 import ReadingModel from "@/models/ReadingModel";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 interface ReadingTest {
   id: string;
@@ -15,12 +17,16 @@ interface ReadingTest {
 
 export async function GET(
   request: Request,
-  { params }: { params: { _id: string } }
+  { params }: { params: { id: string } }
 ) {
+  const session = await getServerSession(authOptions);
+
+  console.log("This is Dynamic session", session);
+
   try {
     await dbConnect();
-    const { _id } = params;
-    const test = await ReadingModel.findById(_id);
+    const { id } = params;
+    const test = await ReadingModel.findById(id);
     console.log(test);
     return NextResponse.json({ success: true, data: test });
   } catch (error) {

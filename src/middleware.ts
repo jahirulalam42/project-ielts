@@ -23,7 +23,5 @@ export const middleware = async (request: NextRequest) => {
   ) {
     return NextResponse.rewrite(new URL("/api/auth/signin", request.url));
   }
-
-  console.log("MiddleWare: ", token);
   return NextResponse.next();
 };
