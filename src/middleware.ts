@@ -3,6 +3,13 @@ import { NextResponse } from "next/server";
 
 import { NextRequest } from "next/server";
 
+const protectedPaths = [
+  "/test/listening/",
+  "/test/reading/",
+  "/test/writing/",
+  "/test/speaking/",
+];
+
 export const middleware = async (request: NextRequest) => {
   // Add middleware logic here
 
@@ -10,7 +17,10 @@ export const middleware = async (request: NextRequest) => {
 
   const token = await getToken({ req: request, secret });
 
-  if (request.nextUrl.pathname.startsWith("/test") && !token) {
+  if (
+    protectedPaths.some((path) => request.nextUrl.pathname.startsWith(path)) &&
+    !token
+  ) {
     return NextResponse.rewrite(new URL("/api/auth/signin", request.url));
   }
 
