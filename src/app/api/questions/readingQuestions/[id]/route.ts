@@ -19,10 +19,6 @@ export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const session = await getServerSession(authOptions);
-
-  console.log("This is Dynamic session", session);
-
   try {
     await dbConnect();
     const { id } = params;
