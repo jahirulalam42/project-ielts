@@ -292,6 +292,16 @@ const ReadingTest = ({ test }: any) => {
                       </div>
                     )}
                   </div>
+
+                  {/* <div className="space-y-6">
+                    {part.questions?.map((question: any, index: number) => (
+                      <div key={index}>
+                        {question?.true_false_not_given?.map(
+                          (q: any) => q.question
+                        )}
+                      </div>
+                    ))}
+                  </div> */}
                 </div>
               )}
             </div>
