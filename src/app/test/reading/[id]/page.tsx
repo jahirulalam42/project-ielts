@@ -1,6 +1,7 @@
 // app/readingQuestions/[_id]/page.tsx
 
-import ReadingTest from "@/components/test/readingTest/ReadingTest";
+
+import ReadingTest from "@/components/TestComponent/readingTest/ReadingTest";
 import Image from "next/image";
 
 export async function generateMetadata({
