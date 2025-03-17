@@ -165,22 +165,30 @@ const ReadingTest = ({ test }: any) => {
                               <h5 className="font-medium mb-2">
                                 Fill in the Blanks
                               </h5>
-                              {question.fill_in_the_blanks.map((q: any) => (
-                                <div
-                                  key={q.question_number}
-                                  className="p-4 border rounded-lg mb-2"
-                                >
-                                  <p>
-                                    <strong>{q.question_number}. </strong>
-                                    {q.question}
-                                  </p>
-                                  <input
-                                    type="text"
-                                    placeholder="Write answer here"
-                                    className="input input-bordered mt-2 w-full"
-                                  />
-                                </div>
-                              ))}
+                              {question.fill_in_the_blanks.map(
+                                (q: any, questionIndex: number) => (
+                                  <div
+                                    key={q.question_number}
+                                    className="p-4 border rounded-lg mb-2"
+                                  >
+                                    <p>
+                                      <strong>{q.question_number}. </strong>
+                                      {q.question}
+                                    </p>
+                                    <input
+                                      type="text"
+                                      placeholder="Write answer here"
+                                      className="input input-bordered mt-2 w-full"
+                                      onChange={(e) =>
+                                        handleAnswerChange(
+                                          `part${index}-q${questionIndex}-tf${q.question_number}`,
+                                          e.target.value
+                                        )
+                                      }
+                                    />
+                                  </div>
+                                )
+                              )}
                             </div>
                           )}
 
@@ -197,13 +205,21 @@ const ReadingTest = ({ test }: any) => {
                               Matching Headings
                             </h5>
                             {question.matching_headings.paragraphs.map(
-                              (p: any, i: number) => (
+                              (p: any, questionIndex: number) => (
                                 <div
-                                  key={i}
+                                  key={questionIndex}
                                   className="p-4 border rounded-lg mb-2"
                                 >
                                   <p>{p.text}</p>
-                                  <select className="select select-bordered mt-2 w-full">
+                                  <select
+                                    className="select select-bordered mt-2 w-full"
+                                    onChange={(e) =>
+                                      handleAnswerChange(
+                                        `part${index}-q${questionIndex}-tf${p.question_number}`,
+                                        e.target.value
+                                      )
+                                    }
+                                  >
                                     <option disabled selected>
                                       Select heading
                                     </option>
@@ -233,30 +249,40 @@ const ReadingTest = ({ test }: any) => {
                             <h5 className="font-medium mb-2">
                               Paragraph Matching
                             </h5>
-                            {question.paragraph_matching.map((q: any) => (
-                              <div
-                                key={q.question_number}
-                                className="p-4 border rounded-lg mb-2"
-                              >
-                                <p>
-                                  <strong>{q.question_number}. </strong>
-                                  {q.question}
-                                </p>
-                                <select className="select select-bordered mt-2 w-full">
-                                  <option disabled selected>
-                                    Select answer
-                                  </option>
-                                  {q.options.map((option: any) => (
-                                    <option
-                                      key={option.value}
-                                      value={option.value}
-                                    >
-                                      {option.label}
+                            {question.paragraph_matching.map(
+                              (q: any, questionIndex: number) => (
+                                <div
+                                  key={q.question_number}
+                                  className="p-4 border rounded-lg mb-2"
+                                >
+                                  <p>
+                                    <strong>{q.question_number}. </strong>
+                                    {q.question}
+                                  </p>
+                                  <select
+                                    className="select select-bordered mt-2 w-full"
+                                    onChange={(e) =>
+                                      handleAnswerChange(
+                                        `part${index}-q${questionIndex}-tf${q.question_number}`,
+                                        e.target.value
+                                      )
+                                    }
+                                  >
+                                    <option disabled selected>
+                                      Select answer
                                     </option>
-                                  ))}
-                                </select>
-                              </div>
-                            ))}
+                                    {q.options.map((option: any) => (
+                                      <option
+                                        key={option.value}
+                                        value={option.value}
+                                      >
+                                        {option.label}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+                              )
+                            )}
                           </div>
                         )}
 
@@ -278,23 +304,31 @@ const ReadingTest = ({ test }: any) => {
                                   {q.question}
                                 </p>
                                 <div className="mt-2 space-y-2">
-                                  {q.options.map((option: any) => (
-                                    <label
-                                      key={option.label}
-                                      className="flex items-center space-x-2"
-                                    >
-                                      <input
-                                        type={
-                                          q.input_type === "checkbox"
-                                            ? "checkbox"
-                                            : "radio"
-                                        }
-                                        name={`mcq-${idx}`}
-                                        className="checkbox checkbox-primary"
-                                      />
-                                      <span>{option.value}</span>
-                                    </label>
-                                  ))}
+                                  {q.options.map(
+                                    (option: any, questionIndex: number) => (
+                                      <label
+                                        key={option.label}
+                                        className="flex items-center space-x-2"
+                                      >
+                                        <input
+                                          type={
+                                            q.input_type === "checkbox"
+                                              ? "checkbox"
+                                              : "radio"
+                                          }
+                                          name={`mcq-${idx}`}
+                                          className="checkbox checkbox-primary"
+                                          onChange={(e) =>
+                                            handleAnswerChange(
+                                              `part${index}-q${questionIndex}-tf${q.question_number}`,
+                                              option.value
+                                            )
+                                          }
+                                        />
+                                        <span>{option.value}</span>
+                                      </label>
+                                    )
+                                  )}
                                 </div>
                               </div>
                             ))}
@@ -317,7 +351,7 @@ const ReadingTest = ({ test }: any) => {
                               <p>{question.text}</p>
                               <div className="mt-4 space-y-3">
                                 {question.passage_fill_in_the_blanks.blanks.map(
-                                  (blank: any) => (
+                                  (blank: any, questionIndex: number) => (
                                     <div
                                       key={blank.blank_number}
                                       className="flex items-center space-x-3"
@@ -329,6 +363,12 @@ const ReadingTest = ({ test }: any) => {
                                         type="text"
                                         placeholder="Write answer here"
                                         className="input input-bordered w-full"
+                                        onChange={(e) =>
+                                          handleAnswerChange(
+                                            `part${index}-q${questionIndex}-tf${blank.blank_number}`,
+                                            e.target.value
+                                          )
+                                        }
                                       />
                                     </div>
                                   )
@@ -361,18 +401,29 @@ const ReadingTest = ({ test }: any) => {
                                     {q.question}
                                   </p>
                                   <div className="mt-2 space-y-2">
-                                    {q.options.map((option: any) => (
-                                      <label
-                                        key={option.label}
-                                        className="flex items-center space-x-2"
-                                      >
-                                        <input
-                                          type="checkbox"
-                                          className="checkbox checkbox-primary"
-                                        />
-                                        <span>{option.value}</span>
-                                      </label>
-                                    ))}
+                                    {q.options.map(
+                                      (option: any, questionIndex: any) => (
+                                        <label
+                                          key={option.label}
+                                          className="flex items-center space-x-2"
+                                        >
+                                          <input
+                                            type="checkbox"
+                                            className="checkbox checkbox-primary"
+                                            onChange={(e) =>
+                                              handleAnswerChange(
+                                                `part${index}-q${questionIndex}-mmcq${q.question_number.join(
+                                                  "_"
+                                                )}`,
+                                                option.value,
+                                                true // isCheckbox
+                                              )
+                                            }
+                                          />
+                                          <span>{option.value}</span>
+                                        </label>
+                                      )
+                                    )}
                                   </div>
                                 </div>
                               )
@@ -465,22 +516,30 @@ const ReadingTest = ({ test }: any) => {
                                       </p>
                                     )
                                   )}
-                                  {section.questions?.map((q: any) => (
-                                    <div
-                                      key={q.question_number}
-                                      className="mb-3"
-                                    >
-                                      <p>
-                                        <strong>{q.question_number}. </strong>
-                                        {q.question}
-                                      </p>
-                                      <input
-                                        type="text"
-                                        placeholder="Write answer here"
-                                        className="input input-bordered w-full mt-1"
-                                      />
-                                    </div>
-                                  ))}
+                                  {section.questions?.map(
+                                    (q: any, questionIndex: number) => (
+                                      <div
+                                        key={q.question_number}
+                                        className="mb-3"
+                                      >
+                                        <p>
+                                          <strong>{q.question_number}. </strong>
+                                          {q.question}
+                                        </p>
+                                        <input
+                                          type="text"
+                                          placeholder="Write answer here"
+                                          className="input input-bordered w-full mt-1"
+                                          onChange={(e) =>
+                                            handleAnswerChange(
+                                              `part${index}-q${questionIndex}-tf${q.question_number}`,
+                                              e.target.value
+                                            )
+                                          }
+                                        />
+                                      </div>
+                                    )
+                                  )}
                                 </div>
                               )
                             )}
@@ -488,19 +547,16 @@ const ReadingTest = ({ test }: any) => {
                         )}
                       </div>
                     ))}
-
-                    <button
-                      onClick={handleSubmit}
-                      className="btn btn-primary mt-6"
-                    >
-                      Submit Answers
-                    </button>
                   </div>
                 </div>
               )}
             </div>
           </div>
         ))}
+
+      <button onClick={handleSubmit} className="btn btn-primary mt-6">
+        Submit Answers
+      </button>
     </div>
   );
 };
