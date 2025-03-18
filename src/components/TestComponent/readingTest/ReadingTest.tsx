@@ -10,9 +10,11 @@ import PassFillInTheBlanks from "../Common/PassFillInTheBlanks";
 import McqMultiple from "../Common/McqMultiple";
 import SumFillInTheBlanks from "../Common/SumFillInTheBlanks";
 import SubFillInTheBlanks from "../Common/SubFillInTheBlanks";
+import { useSession } from "next-auth/react";
 
 const ReadingTest = ({ test }: any) => {
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
+  const { data: session }: any = useSession();
 
   const handleAnswerChange = (
     key: string,
@@ -35,10 +37,19 @@ const ReadingTest = ({ test }: any) => {
     });
   };
 
+  const testData = {
+    userId: session?.user?.id,
+    testId: test._id,
+    answers: answers,
+  };
+
   const handleSubmit = () => {
-    console.log("Answers:", answers);
+    console.log("This is Test Data", testData);
     // Submit to API
   };
+
+  console.log("This is test Id", test._id);
+  console.log("This is session Data", session);
 
   return (
     <div className="max-w-3xl mx-auto p-6">
