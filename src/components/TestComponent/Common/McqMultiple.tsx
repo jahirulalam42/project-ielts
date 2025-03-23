@@ -1,6 +1,6 @@
 import React from "react";
 
-const McqMultiple = ({ question }: any) => {
+const McqMultiple = ({ question, handleAnswerChange }: any) => {
   return (
     <div>
       <h5 className="font-medium mb-2">Multiple Select Questions</h5>
@@ -13,7 +13,16 @@ const McqMultiple = ({ question }: any) => {
           <div className="mt-2 space-y-2">
             {q.options.map((option: any) => (
               <label key={option.label} className="flex items-center space-x-2">
-                <input type="checkbox" className="checkbox checkbox-primary" />
+                <input type="checkbox" className="checkbox checkbox-primary" onChange={(e) =>
+                  handleAnswerChange(
+                    `${q.question_number.join(
+                      "_"
+                    )}`,
+                    option.value,
+                    q.input_type,
+                    q.answer,
+                  )
+                } />
                 <span>{option.value}</span>
               </label>
             ))}

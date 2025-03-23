@@ -1,6 +1,6 @@
 import React from "react";
 
-const SumFillInTheBlanks = ({ question }: any) => {
+const SumFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
   return (
     <div>
       <h5 className="font-medium mb-2">Summary Completion</h5>

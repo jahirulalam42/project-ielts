@@ -1,6 +1,6 @@
 import React from "react";
 
-const SubFillInTheBlanks = ({ question }: any) => {
+const SubFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
   return (
     <div>
       <h5 className="font-medium mb-2">Section Completion</h5>
@@ -24,6 +24,14 @@ const SubFillInTheBlanks = ({ question }: any) => {
                 type="text"
                 placeholder="Write answer here"
                 className="input input-bordered w-full mt-1"
+                onChange={(e) =>
+                  handleAnswerChange(
+                    `${q.question_number}`,
+                    e.target.value,
+                    q.input_type,
+                    q.answer,
+                  )
+                }
               />
             </div>
           ))}

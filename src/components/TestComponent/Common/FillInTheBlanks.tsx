@@ -1,19 +1,7 @@
 import React from "react";
 
-// Define the shape of each question object
-interface Question {
-  question_number: number;
-  question: string;
-  answer: boolean;
-  input_type: string;
-}
 
-// Define the props for your component
-interface FillInTheBlanksProps {
-  question: Question[];
-}
-
-const FillInTheBlanks: React.FC<FillInTheBlanksProps> = ({ question }) => {
+const FillInTheBlanks: React.FC<any> = ({ question, handleAnswerChange }: any) => {
   return (
     <div>
       <h5 className="font-medium mb-2">Fill in the Blanks</h5>
@@ -27,6 +15,14 @@ const FillInTheBlanks: React.FC<FillInTheBlanksProps> = ({ question }) => {
             type="text"
             placeholder="Write answer here"
             className="input input-bordered mt-2 w-full"
+            onChange={(e) =>
+              handleAnswerChange(
+                `${q.question_number}`,
+                e.target.value,
+                q.input_type,
+                q.answer,
+              )
+            }
           />
         </div>
       ))}

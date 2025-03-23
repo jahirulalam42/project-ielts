@@ -1,6 +1,6 @@
 import React from "react";
 
-const McqSingle = ({ question }: any) => {
+const McqSingle = ({ question, handleAnswerChange }: any) => {
   return (
     <div>
       <h5 className="font-medium mb-2">Multiple Choice Questions</h5>
@@ -17,6 +17,14 @@ const McqSingle = ({ question }: any) => {
                   type={q.input_type === "checkbox" ? "checkbox" : "radio"}
                   name={`mcq-${idx}`}
                   className="checkbox checkbox-primary"
+                  onChange={(e) =>
+                    handleAnswerChange(
+                      `${q.question_number}`,
+                      option.value,
+                      q.input_type,
+                      q.answer,
+                    )
+                  }
                 />
                 <span>{option.value}</span>
               </label>

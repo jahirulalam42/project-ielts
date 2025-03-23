@@ -1,6 +1,6 @@
 import React from "react";
 
-const PassFillInTheBlanks = ({ question }: any) => {
+const PassFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
   return (
     <div>
       <h5 className="font-medium mb-2">Passage Fill in the Blanks</h5>
@@ -17,6 +17,14 @@ const PassFillInTheBlanks = ({ question }: any) => {
                 type="text"
                 placeholder="Write answer here"
                 className="input input-bordered w-full"
+                onChange={(e) =>
+                  handleAnswerChange(
+                    `${blank.blank_number}`,
+                    e.target.value,
+                    blank.input_type,
+                    blank.answer,
+                  )
+                }
               />
             </div>
           ))}
