@@ -27,46 +27,51 @@ const ReadingTest = ({ test }: any) => {
       const currentArray = Array.isArray(prev) ? prev : [];
 
       if (isCheckbox === "checkbox") {
-        const existingEntryIndex = currentArray.findIndex((obj) => obj.hasOwnProperty(questionId));
+        const existingEntryIndex = currentArray.findIndex(
+          (obj) => obj.questionId === questionId
+        );
 
         if (existingEntryIndex !== -1) {
           // Update existing entry
           return currentArray.map((obj, index) =>
             index === existingEntryIndex
               ? {
-                ...obj,
-                "answers": Array.isArray(obj[questionId])
-                  ? obj[questionId].includes(value)
-                    ? obj[questionId].filter((v: any) => v !== value) // Remove if exists
-                    : [...obj, questionId, value, answer] // Add new value
-                  : [questionId, value, answer], // Convert to array if not already
-              }
+                  questionId,
+                  answers: Array.isArray(obj.answers)
+                    ? obj.answers.includes(value)
+                      ? obj.answers.filter((v: any) => v !== value) // Remove if exists
+                      : [...obj.answers, value] // Add new value
+                    : [value], // Convert to array if not already
+                  answerText: answer,
+                }
               : obj
           );
         } else {
           // Add new entry if not found
-          return [...currentArray, { "answers": [questionId, value, answer] }];
+          return [
+            ...currentArray,
+            { questionId, answers: [value], answerText: answer },
+          ];
         }
       } else {
-        const existingEntryIndex = currentArray.findIndex((obj) => obj.hasOwnProperty(questionId));
+        const existingEntryIndex = currentArray.findIndex(
+          (obj) => obj.questionId === questionId
+        );
 
         if (existingEntryIndex !== -1) {
           // Update existing entry for text input
           return currentArray.map((obj, index) =>
             index === existingEntryIndex
-              ? { ...obj, "answers": { questionId, value, answer } } // Update the value
+              ? { ...obj, value, answerText: answer } // Update the value
               : obj
           );
         } else {
           // Add new entry if not found
-          return [...currentArray, { "answers": { questionId, value, answer } }];
+          return [...currentArray, { questionId, value, answerText: answer }];
         }
       }
     });
   };
-
-
-
 
   const testData = {
     userId: session?.user?.id,
@@ -81,6 +86,13 @@ const ReadingTest = ({ test }: any) => {
 
   console.log("This is test Id", test._id);
   console.log("This is session Data", session);
+
+  console.log(
+    "This is answers",
+    answers.map((ans: any) => {
+      return ans.questionId;
+    })
+  );
 
   return (
     <div className="max-w-3xl mx-auto p-6">
@@ -115,11 +127,13 @@ const ReadingTest = ({ test }: any) => {
                     {Array.isArray(part.passage) ? (
                       part.passage.map((p: any, i: number) => {
                         if (typeof p === "object" && p !== null) {
-                          return Object.entries(p).map(([questionId, value]) => (
-                            <p key={`${i}-${questionId}`}>
-                              {value as React.ReactNode}
-                            </p>
-                          ));
+                          return Object.entries(p).map(
+                            ([questionId, value]) => (
+                              <p key={`${i}-${questionId}`}>
+                                {value as React.ReactNode}
+                              </p>
+                            )
+                          );
                         }
                         return <p key={i}>{p}</p>;
                       })
@@ -153,9 +167,11 @@ const ReadingTest = ({ test }: any) => {
                       <div key={index}>
                         {/* True False Not Given */}
                         {question.true_false_not_given && (
-                          <TrueFalse question={question.true_false_not_given} handleAnswerChange={handleAnswerChange} />
+                          <TrueFalse
+                            question={question.true_false_not_given}
+                            handleAnswerChange={handleAnswerChange}
+                          />
                         )}
-
 
                         {/* Fill in the Blanks */}
                         {question.fill_in_the_blanks &&
@@ -183,7 +199,12 @@ const ReadingTest = ({ test }: any) => {
                         )}
 
                         {/* Multiple Choice (Single/Multi) */}
-                        {question.mcq && <McqSingle question={question.mcq} handleAnswerChange={handleAnswerChange} />}
+                        {question.mcq && (
+                          <McqSingle
+                            question={question.mcq}
+                            handleAnswerChange={handleAnswerChange}
+                          />
+                        )}
 
                         {/* Passage Fill in Blanks */}
                         {question.passage_fill_in_the_blanks && (
@@ -195,9 +216,11 @@ const ReadingTest = ({ test }: any) => {
 
                         {/* Multiple MCQ (Checkbox style) */}
                         {question.multiple_mcq && (
-                          <McqMultiple question={question.multiple_mcq} handleAnswerChange={handleAnswerChange} />
+                          <McqMultiple
+                            question={question.multiple_mcq}
+                            handleAnswerChange={handleAnswerChange}
+                          />
                         )}
-
 
                         {/* Summary Fill in Blanks */}
                         {question.summary_fill_in_the_blanks && (
