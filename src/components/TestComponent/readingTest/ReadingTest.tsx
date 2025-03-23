@@ -84,16 +84,6 @@ const ReadingTest = ({ test }: any) => {
     // Submit to API
   };
 
-  console.log("This is test Id", test._id);
-  console.log("This is session Data", session);
-
-  console.log(
-    "This is answers",
-    answers.map((ans: any) => {
-      return ans.questionId;
-    })
-  );
-
   return (
     <div className="max-w-3xl mx-auto p-6">
       {/* Exam Header */}

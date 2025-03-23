@@ -20,8 +20,11 @@ export default async function ReadingQuestionPage({
 }: {
   params: { id: string };
 }) {
+  const resolvedParams = await params;
+  const { id } = resolvedParams;
+
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/readingQuestions/${params.id}`,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/readingQuestions/${id}`,
     { cache: "no-store" }
   );
   const response = await res.json();

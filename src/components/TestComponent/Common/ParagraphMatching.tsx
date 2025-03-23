@@ -10,15 +10,19 @@ const ParagraphMatching = ({ question, handleAnswerChange }: any) => {
             <strong>{q.question_number}. </strong>
             {q.question}
           </p>
-          <select className="select select-bordered mt-2 w-full" onChange={(e) =>
-            handleAnswerChange(
-              `${q.question_number}`,
-              e.target.value,
-              q.input_type,
-              q.answer,
-            )
-          }>
-            <option disabled selected>
+          <select
+            className="select select-bordered mt-2 w-full"
+            onChange={(e) =>
+              handleAnswerChange(
+                `${q.question_number}`,
+                e.target.value,
+                q.input_type,
+                q.answer
+              )
+            }
+            defaultValue=""
+          >
+            <option value="" disabled>
               Select answer
             </option>
             {q.options.map((option: any) => (

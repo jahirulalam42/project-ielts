@@ -14,8 +14,9 @@ const SumFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
                   <select
                     key={j}
                     className="select select-bordered select-sm mx-1"
+                    defaultValue=""
                   >
-                    <option disabled selected>
+                    <option disabled value="">
                       Choose
                     </option>
                     {question.options.map((opt: any) => (

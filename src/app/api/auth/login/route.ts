@@ -12,10 +12,8 @@ export const POST = async (request: Request) => {
   try {
     await dbConnect();
     const body = await request.json();
-    console.log("this is body", body);
     // Validate input data here if needed
     const user: User[] = await UserModel.find({ email: body.email });
-    console.log("this is user", user);
     if (body.password === user[0].password) {
       return NextResponse.json({ success: true, data: user }, { status: 201 });
     }

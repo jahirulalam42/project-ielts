@@ -20,7 +20,6 @@ const page: React.FC = () => {
 
         if (!response.ok) throw new Error("Failed to fetch data");
         const data = await response.json();
-        console.log(data);
         setReadingData(data.data);
       } catch (err) {
         console.error("Error loading data:", err);

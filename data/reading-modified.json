@@ -1363,12 +1363,6 @@
                   "question": "Einstein was upset by the public's view of his life's work.",
                   "answer": "Not Given",
                   "input_type": "dropdown"
-                },
-                {
-                  "question_number": 40,
-                  "question": "Einstein put his success down to the speed at which he dealt with scientific questions.",
-                  "answer": "Not Given",
-                  "input_type": "dropdown"
                 }
               ]
             }

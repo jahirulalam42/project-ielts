@@ -21,9 +21,18 @@ export async function GET(
 ) {
   try {
     await dbConnect();
-    const { id } = params;
+    const resolvedParams = await params;
+    const { id } = resolvedParams;
+
+    // Validate the ID is a properly formatted MongoDB ObjectID
+    if (!id || id === "undefined" || !/^[0-9a-fA-F]{24}$/.test(id)) {
+      return NextResponse.json(
+        { success: false, error: "Invalid MongoDB ObjectID format" },
+        { status: 400 }
+      );
+    }
+
     const test = await ReadingModel.findById(id);
-    console.log(test);
     return NextResponse.json({ success: true, data: test });
   } catch (error) {
     console.error("GET Error:", error);
