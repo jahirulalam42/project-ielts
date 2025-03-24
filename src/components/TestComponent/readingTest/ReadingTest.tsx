@@ -37,14 +37,14 @@ const ReadingTest = ({ test }: any) => {
           return currentArray.map((obj, index) =>
             index === existingEntryIndex
               ? {
-                questionId,
-                answers: Array.isArray(obj.answers)
-                  ? obj.answers.includes(value)
-                    ? obj.answers.filter((v: any) => v !== value) // Remove if exists
-                    : [...obj.answers, value] // Add new value
-                  : [value], // Convert to array if not already
-                answerText: answer,
-              }
+                  questionId,
+                  answers: Array.isArray(obj.answers)
+                    ? obj.answers.includes(value)
+                      ? obj.answers.filter((v: any) => v !== value) // Remove if exists
+                      : [...obj.answers, value] // Add new value
+                    : [value], // Convert to array if not already
+                  answerText: answer,
+                }
               : obj
           );
         } else {
@@ -78,13 +78,13 @@ const ReadingTest = ({ test }: any) => {
 
   const handleNextPart = () => {
     if (currentPartIndex < test.parts.length - 1) {
-      setCurrentPartIndex(prev => prev + 1);
+      setCurrentPartIndex((prev) => prev + 1);
     }
   };
 
   const handlePrevPart = () => {
     if (currentPartIndex > 0) {
-      setCurrentPartIndex(prev => prev - 1);
+      setCurrentPartIndex((prev) => prev - 1);
     }
   };
 
@@ -120,7 +120,9 @@ const ReadingTest = ({ test }: any) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Passage Section (Left) */}
         <div className="lg:h-[80vh] lg:overflow-y-auto p-4 border-r-2">
-          <h2 className="text-2xl font-bold mb-4">{currentPart.passage_title}</h2>
+          <h2 className="text-2xl font-bold mb-4">
+            {currentPart.passage_title}
+          </h2>
           {currentPart.image && (
             <Image
               src={currentPart.image}
@@ -131,23 +133,29 @@ const ReadingTest = ({ test }: any) => {
             />
           )}
           <div className="prose max-w-none">
-            {currentPart.passage.map((p: any, i: number) => (
+            {currentPart.passage.map((p: any, i: number) =>
               typeof p === "object" ? (
                 Object.entries(p).map(([key, value]) => (
-                  <p key={`${i}-${key}`} className="mb-4">{value as string}</p>
+                  <p key={`${i}-${key}`} className="mb-4">
+                    {value as string}
+                  </p>
                 ))
               ) : (
-                <p key={i} className="mb-4">{p}</p>
+                <p key={i} className="mb-4">
+                  {p}
+                </p>
               )
-            ))}
+            )}
           </div>
         </div>
 
         {/* Questions Section (Right) */}
-        <div className="lg:h-[80vh] lg:overflow-y-auto p-4">
+        <div className="lg:h-[80vh] lg:overflow-y-auto p-4 border-l">
           <div className="space-y-6">
             <h3 className="text-xl font-bold mb-4">{currentPart.title}</h3>
-            <p className="italic text-gray-600 mb-6">{currentPart.instructions}</p>
+            <p className="italic text-gray-600 mb-6">
+              {currentPart.instructions}
+            </p>
 
             {currentPart.questions?.map((question: any, index: number) => (
               <div key={index}>
