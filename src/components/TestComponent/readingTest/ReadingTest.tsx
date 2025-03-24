@@ -11,6 +11,8 @@ import McqMultiple from "../Common/McqMultiple";
 import SumFillInTheBlanks from "../Common/SumFillInTheBlanks";
 import SubFillInTheBlanks from "../Common/SubFillInTheBlanks";
 import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
+import { ToastContainer, toast } from "react-toastify";
 
 const ReadingTest = ({ test }: any) => {
   const [answers, setAnswers] = useState<any>({});
@@ -95,6 +97,11 @@ const ReadingTest = ({ test }: any) => {
       answers: answers,
     };
     console.log("This is Test Data", testData);
+    if (Object.keys(answers).length === 0) {
+      toast.error("Please Select Answer");
+    } else {
+      redirect("/");
+    }
     // Submit to API
   };
 
@@ -254,6 +261,9 @@ const ReadingTest = ({ test }: any) => {
                 Submit Test
               </button>
             )}
+          </div>
+          <div>
+            <ToastContainer />
           </div>
         </div>
       </div>
