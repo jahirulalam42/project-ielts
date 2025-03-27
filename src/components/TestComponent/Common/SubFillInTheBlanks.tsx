@@ -4,39 +4,57 @@ const SubFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
   return (
     <div>
       <h5 className="font-medium mb-2">Section Completion</h5>
-      {question.map((section: any, idx: number) => (
-        <div key={idx} className="p-4 border rounded-lg mb-2">
-          {section.subtitle && (
-            <h6 className="font-medium mb-2">{section.subtitle}</h6>
-          )}
-          {section.extra?.map((text: string, i: number) => (
-            <p key={i} className="text-sm italic mb-2">
-              {text}
-            </p>
-          ))}
-          {section.questions?.map((q: any) => (
-            <div key={q.question_number} className="mb-3">
-              <p>
-                <strong>{q.question_number}. </strong>
-                {q.question}
-              </p>
-              <input
-                type="text"
-                placeholder="Write answer here"
-                className="input input-bordered w-full mt-1"
-                onChange={(e) =>
-                  handleAnswerChange(
-                    `${q.question_number}`,
-                    e.target.value,
-                    q.input_type,
-                    q.answer,
-                  )
-                }
-              />
-            </div>
-          ))}
-        </div>
-      ))}
+      {question.map((section: any, idx: number) => {
+        let questionIndex = 0; // Track the correct question mapping
+        
+        return (
+          <div key={idx} className="p-4 border rounded-lg mb-2">
+            {section.subtitle && (
+              <h6 className="font-medium mb-2">{section.subtitle}</h6>
+            )}
+            {section.extra?.map((text: string, i: number) => {
+              return (
+                <p key={i} className="text-sm mb-2">
+                  {/* Add bullet point before each sentence */}
+                  <span className="mr-2">•</span>
+                  {text.split("__________").map((part, j, arr) => {
+                    const currentQuestion = section.questions?.[questionIndex];
+
+                    return (
+                      <React.Fragment key={j}>
+                        {part}
+                        {j < arr.length - 1 && currentQuestion && (
+                          <>
+                            <strong>{currentQuestion.question_number}.</strong>
+                            <input
+                              type="text"
+                              placeholder=""
+                              className="border-b-2 border-gray-400 mx-1 w-24 text-center"
+                              onChange={(e) =>
+                                handleAnswerChange(
+                                  currentQuestion.question_number.toString(),
+                                  e.target.value,
+                                  currentQuestion.input_type,
+                                  currentQuestion.answer
+                                )
+                              }
+                            />
+                            {/* Increment AFTER rendering the input field */}
+                            {(() => {
+                              questionIndex++;
+                              return null; // Prevents unwanted rendering
+                            })()}
+                          </>
+                        )}
+                      </React.Fragment>
+                    );
+                  })}
+                </p>
+              );
+            })}
+          </div>
+        );
+      })}
     </div>
   );
 };

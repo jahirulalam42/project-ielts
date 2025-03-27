@@ -104,7 +104,7 @@ const ReadingTest = ({ test }: any) => {
     }
     // Submit to API
   };
-
+  console.log("This is current part:", currentPart)
   return (
     <div className="container mx-auto p-4 min-h-screen">
       {/* Exam Header */}
@@ -127,34 +127,33 @@ const ReadingTest = ({ test }: any) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Passage Section (Left) */}
         <div className="lg:h-[80vh] lg:overflow-y-auto p-4 border-r-2">
-          <h2 className="text-2xl font-bold mb-4">
-            {currentPart.passage_title}
-          </h2>
+          <h2 className="text-2xl font-bold mb-4">{currentPart.passage_title}</h2>
+
           {currentPart.image && (
             <Image
               src={currentPart.image}
-              alt={currentPart.title}
+              alt={currentPart.passage_title}
               width={600}
               height={400}
               className="rounded-lg mb-4"
             />
           )}
-          <div className="prose max-w-none">
+
+          <div className="prose max-w-none space-y-4">
             {currentPart.passage.map((p: any, i: number) =>
               typeof p === "object" ? (
                 Object.entries(p).map(([key, value]) => (
-                  <p key={`${i}-${key}`} className="mb-4">
-                    {value as string}
+                  <p key={`${i}-${key}`}>
+                    <span className="font-bold">{key}.</span> {value as string}
                   </p>
                 ))
               ) : (
-                <p key={i} className="mb-4">
-                  {p}
-                </p>
+                <p key={i}>{p}</p>
               )
             )}
           </div>
         </div>
+
 
         {/* Questions Section (Right) */}
         <div className="lg:h-[80vh] lg:overflow-y-auto p-4 border-l">

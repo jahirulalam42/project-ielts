@@ -449,7 +449,7 @@
                 "passage_fill_in_the_blanks": {
                   "question_number": [24, 25, 26],
                   "instruction": "Complete the summary below. Choose ONE WORD ONLY from the passage for each answer.",
-                  "text": "Piracy was an issue ancient Rome had to deal with, but it also brought some benefits for Rome. For example, pirates supplied slaves that were important for Rome's industries. However, attacks on vessels transporting __24__ to Rome resulted in calls for __25__ for the pirates responsible. Nevertheless, piracy continued, with some pirates demanding a __26__ for the return of the Roman officials they captured.",
+                  "text": "Piracy was an issue ancient Rome had to deal with, but it also brought some benefits for Rome. For example, pirates supplied slaves that were important for Rome's industries. However, attacks on vessels transporting {blank_number: 24} to Rome resulted in calls for {blank_number: 25} for the pirates responsible. Nevertheless, piracy continued, with some pirates demanding a {blank_number: 26} for the return of the Roman officials they captured.",
                   "blanks": [
                     {
                       "blank_number": 24,
@@ -612,46 +612,16 @@
                     "36": "C"
                   },
                   "options": [
-                    {
-                      "label": "A",
-                      "value": "constant conflict"
-                    },
-                    {
-                      "label": "B",
-                      "value": "additional evidence"
-                    },
-                    {
-                      "label": "C",
-                      "value": "different locations"
-                    },
-                    {
-                      "label": "D",
-                      "value": "experimental subjects"
-                    },
-                    {
-                      "label": "E",
-                      "value": "short period"
-                    },
-                    {
-                      "label": "F",
-                      "value": "extreme distrust"
-                    },
-                    {
-                      "label": "G",
-                      "value": "frequent exposure"
-                    },
-                    {
-                      "label": "H",
-                      "value": "mental operation"
-                    },
-                    {
-                      "label": "I",
-                      "value": "dubious reason"
-                    },
-                    {
-                      "label": "J",
-                      "value": "different ideas"
-                    }
+                    { "label": "A", "value": "constant conflict" },
+                    { "label": "B", "value": "additional evidence" },
+                    { "label": "C", "value": "different locations" },
+                    { "label": "D", "value": "experimental subjects" },
+                    { "label": "E", "value": "short period" },
+                    { "label": "F", "value": "extreme distrust" },
+                    { "label": "G", "value": "frequent exposure" },
+                    { "label": "H", "value": "mental operation" },
+                    { "label": "I", "value": "dubious reason" },
+                    { "label": "J", "value": "different ideas" }
                   ],
                   "input_type": "drag_and_drop"
                 }
@@ -717,18 +687,18 @@
                     "title": "",
                     "subtitle": "Steam power",
                     "extra": [
-                      "Newcomen’s steam engine was used in mines to remove water."
+                      "Newcomen’s steam engine was used in mines to remove water.",
+                      "In Watt and Boulton’s steam engine, the movement of the __________ was linked to a gear system.",
+                      "A greater supply of __________ was required to power steam engines."
                     ],
                     "questions": [
                       {
                         "question_number": 1,
-                        "question": "In Watt and Boulton’s steam engine, the movement of the __________ was linked to a gear system.",
                         "answer": "piston",
                         "input_type": "text"
                       },
                       {
                         "question_number": 2,
-                        "question": "A greater supply of __________ was required to power steam engines.",
                         "answer": "coal",
                         "input_type": "text"
                       }
@@ -736,33 +706,32 @@
                   },
                   {
                     "subtitle": "Textile industry",
+                    "extra": [
+                      "Before the Industrial Revolution, spinners and weavers worked at home and in __________.",
+                      "Not as much was needed to produce cloth once the spinning jenny and power loom were invented."
+                    ],
                     "questions": [
                       {
                         "question_number": 3,
-                        "question": "Before the Industrial Revolution, spinners and weavers worked at home and in __________.",
                         "answer": "workshops",
-                        "input_type": "text"
-                      },
-                      {
-                        "question_number": 4,
-                        "question": "Not as much __________ was needed to produce cloth once the spinning jenny and power loom were invented.",
-                        "answer": "labour",
                         "input_type": "text"
                       }
                     ]
                   },
                   {
                     "subtitle": "Iron industry",
+                    "extra": [
+                      "Smelting of iron ore with coke resulted in material that was better __________.",
+                      "Demand for iron increased with the growth of the __________."
+                    ],
                     "questions": [
                       {
                         "question_number": 5,
-                        "question": "Smelting of iron ore with coke resulted in material that was better __________.",
                         "answer": "quality",
                         "input_type": "text"
                       },
                       {
                         "question_number": 6,
-                        "question": "Demand for iron increased with the growth of the __________.",
                         "answer": "railways",
                         "input_type": "text"
                       }
@@ -777,11 +746,13 @@
                   },
                   {
                     "subtitle": "Urbanisation",
-                    "extra": ["Small towns turned into cities very quickly."],
+                    "extra": [
+                      "Small towns turned into cities very quickly.",
+                      "The new cities were dirty, crowded and lacked sufficient __________."
+                    ],
                     "questions": [
                       {
                         "question_number": 7,
-                        "question": "The new cities were dirty, crowded and lacked sufficient __________.",
                         "answer": "sanitation",
                         "input_type": "text"
                       }
@@ -1280,7 +1251,7 @@
               {
                 "summary_fill_in_the_blanks": {
                   "question_numbers": [31, 32, 33, 34, 35, 36],
-                  "passage": "Maryam Mirzakhani is regarded as 27 ...........ccccon iN the field of mathematics because she was the only female holder of the prestigious Fields Medal — a record that she retained at the time of her death. However, maths held little 28 ............... fOr her as a child and in fact her performance was below average until she was 29 ...............cccn. bY @ difficult puzzle that one of her siblings showed her. Later, as a professional mathematician, she had an inquiring mind and proved herself to be 30 ............... when things did not go smoothly. She said she got the greatest 31 ............... from making ground-breaking discoveries and in fact she was responsible for some extremely 32 ............... mathematical studies.",
+                  "passage": "Maryam Mirzakhani is regarded as [31] in the field of mathematics because she was the only female holder of the prestigious Fields Medal — a record that she retained at the time of her death. However, maths held little [32] for her as a child and in fact her performance was below average until she was [33] by a difficult puzzle that one of her siblings showed her. Later, as a professional mathematician, she had an inquiring mind and proved herself to be [34] when things did not go smoothly. She said she got the greatest [35] from making ground-breaking discoveries and in fact she was responsible for some extremely [36] mathematical studies.",
                   "answers": {
                     "31": "G",
                     "32": "J",
@@ -1296,7 +1267,7 @@
                     },
                     {
                       "label": "B",
-                      "value": "determined "
+                      "value": "determined"
                     },
                     {
                       "label": "C",
