@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TrueFalse from "../Common/TrueFalse";
 import FillInTheBlanks from "../Common/FillInTheBlanks";
 import MatchingHeadings from "../Common/MatchingHeadings";
@@ -17,6 +17,8 @@ import { ToastContainer, toast } from "react-toastify";
 const ReadingTest = ({ test }: any) => {
   const [answers, setAnswers] = useState<any>({});
   const [currentPartIndex, setCurrentPartIndex] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(60); // 60 minutes in seconds
+  const [isTimeUp, setIsTimeUp] = useState(false);
   const { data: session }: any = useSession();
 
   const handleAnswerChange = (
@@ -26,7 +28,6 @@ const ReadingTest = ({ test }: any) => {
     answer: string
   ) => {
     setAnswers((prev: any) => {
-      // Ensure prev is always an array
       const currentArray = Array.isArray(prev) ? prev : [];
 
       if (isCheckbox === "checkbox") {
@@ -35,22 +36,20 @@ const ReadingTest = ({ test }: any) => {
         );
 
         if (existingEntryIndex !== -1) {
-          // Update existing entry
           return currentArray.map((obj, index) =>
             index === existingEntryIndex
               ? {
                   questionId,
                   answers: Array.isArray(obj.answers)
                     ? obj.answers.includes(value)
-                      ? obj.answers.filter((v: any) => v !== value) // Remove if exists
-                      : [...obj.answers, value] // Add new value
-                    : [value], // Convert to array if not already
+                      ? obj.answers.filter((v: any) => v !== value)
+                      : [...obj.answers, value]
+                    : [value],
                   answerText: answer,
                 }
               : obj
           );
         } else {
-          // Add new entry if not found
           return [
             ...currentArray,
             { questionId, answers: [value], answerText: answer },
@@ -62,14 +61,12 @@ const ReadingTest = ({ test }: any) => {
         );
 
         if (existingEntryIndex !== -1) {
-          // Update existing entry for text input
           return currentArray.map((obj, index) =>
             index === existingEntryIndex
-              ? { ...obj, value, answerText: answer } // Update the value
+              ? { ...obj, value, answerText: answer }
               : obj
           );
         } else {
-          // Add new entry if not found
           return [...currentArray, { questionId, value, answerText: answer }];
         }
       }
@@ -102,9 +99,28 @@ const ReadingTest = ({ test }: any) => {
     } else {
       redirect("/");
     }
-    // Submit to API
   };
-  console.log("This is current part:", currentPart)
+
+  useEffect(() => {
+    if (timeLeft === 0) {
+      setIsTimeUp(true);
+      handleSubmit();  // Automatically submit the test when time runs out
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => prevTime - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft]);
+
+  const formatTime = (timeInSeconds: number) => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = timeInSeconds % 60;
+    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  };
+
   return (
     <div className="container mx-auto p-4 min-h-screen">
       {/* Exam Header */}
@@ -119,6 +135,10 @@ const ReadingTest = ({ test }: any) => {
             <div className="badge badge-primary">
               Part {currentPartIndex + 1} of {test.parts.length}
             </div>
+          </div>
+          <div className="flex justify-between items-center mt-4">
+            <div className="text-lg font-bold">Time Left: {formatTime(timeLeft)}</div>
+            {isTimeUp && <div className="text-lg text-red-500 font-bold">Time's up!</div>}
           </div>
         </div>
       </div>
@@ -154,14 +174,11 @@ const ReadingTest = ({ test }: any) => {
           </div>
         </div>
 
-
         {/* Questions Section (Right) */}
         <div className="lg:h-[80vh] lg:overflow-y-auto p-4 border-l">
           <div className="space-y-6">
             <h3 className="text-xl font-bold mb-4">{currentPart.title}</h3>
-            <p className="italic text-gray-600 mb-6">
-              {currentPart.instructions}
-            </p>
+            <p className="italic text-gray-600 mb-6">{currentPart.instructions}</p>
 
             {currentPart.questions?.map((question: any, index: number) => (
               <div key={index}>
@@ -241,31 +258,33 @@ const ReadingTest = ({ test }: any) => {
             ))}
           </div>
 
-          {/* Navigation Controls */}
-          <div className="flex justify-between mt-8">
+          {/* Navigation */}
+          <div className="flex justify-between mt-6">
             <button
               onClick={handlePrevPart}
-              className="btn"
               disabled={currentPartIndex === 0}
+              className="btn btn-secondary"
             >
               Previous
             </button>
+            <button
+              onClick={handleNextPart}
+              disabled={currentPartIndex === test.parts.length - 1}
+              className="btn btn-primary"
+            >
+              Next
+            </button>
+          </div>
 
-            {currentPartIndex < test.parts.length - 1 ? (
-              <button onClick={handleNextPart} className="btn btn-primary">
-                Next Passage
-              </button>
-            ) : (
-              <button onClick={handleSubmit} className="btn btn-success">
-                Submit Test
-              </button>
-            )}
-          </div>
-          <div>
-            <ToastContainer />
-          </div>
+          {/* Submit Button */}
+          <button onClick={handleSubmit} className="btn btn-success mt-6 w-full">
+            Submit Test
+          </button>
         </div>
       </div>
+
+      {/* Toast Notifications */}
+      <ToastContainer />
     </div>
   );
 };
