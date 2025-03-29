@@ -384,64 +384,40 @@
               {
                 "multiple_mcq": [
                   {
-                    "question_number": [20, 21],
+                    "question_numbers": [20, 21],
                     "question": "Which TWO of the following statements does the writer make about inhabitants of the Mediterranean region in the ancient world?",
-                    "answer": ["B", "C"],
                     "options": [
-                      {
-                        "label": "A",
-                        "value": "They often used stolen vessels to carry out pirate attacks."
-                      },
-                      {
-                        "label": "B",
-                        "value": "They managed to escape capture by the authorities because they knew the area so well."
-                      },
-                      {
-                        "label": "C",
-                        "value": "They paid for information about the routes merchant ships would take."
-                      },
-                      {
-                        "label": "D",
-                        "value": "They depended more on the sea for their livelihood than on farming."
-                      },
-                      {
-                        "label": "E",
-                        "value": "They stored many of the goods taken in pirate attacks in coves along the coastline."
-                      }
+                      { "label": "A", "value": "They often used stolen vessels to carry out pirate attacks." },
+                      { "label": "B", "value": "They managed to escape capture by the authorities because they knew the area so well." },
+                      { "label": "C", "value": "They paid for information about the routes merchant ships would take." },
+                      { "label": "D", "value": "They depended more on the sea for their livelihood than on farming." },
+                      { "label": "E", "value": "They stored many of the goods taken in pirate attacks in coves along the coastline." }
                     ],
                     "input_type": "checkbox",
                     "min_selection": 2,
-                    "max_selection": 2
+                    "max_selection": 2,
+                    "correct_mapping": {
+                      "20": "B",
+                      "21": "C"
+                    }
                   },
                   {
-                    "question_number": [22, 23],
+                    "question_numbers": [22, 23],
                     "question": "Which TWO of the following statements does the writer make about piracy and ancient Greece?",
-                    "answer": ["B", "C"],
                     "options": [
-                      {
-                        "label": "A",
-                        "value": "The state estimated that very few people were involved in piracy."
-                      },
-                      {
-                        "label": "B",
-                        "value": "Attitudes towards piracy changed shortly after the lliad and the Odyssey were written."
-                      },
-                      {
-                        "label": "C",
-                        "value": "Important officials were known to occasionally take part in piracy."
-                      },
-                      {
-                        "label": "D",
-                        "value": "Every citizen regarded pirate attacks on cities as unacceptable."
-                      },
-                      {
-                        "label": "E",
-                        "value": "Afavourable view of piracy is evident in certain ancient Greek texts."
-                      }
+                      { "label": "A", "value": "The state estimated that very few people were involved in piracy." },
+                      { "label": "B", "value": "Attitudes towards piracy changed shortly after the Iliad and the Odyssey were written." },
+                      { "label": "C", "value": "Important officials were known to occasionally take part in piracy." },
+                      { "label": "D", "value": "Every citizen regarded pirate attacks on cities as unacceptable." },
+                      { "label": "E", "value": "A favourable view of piracy is evident in certain ancient Greek texts." }
                     ],
                     "input_type": "checkbox",
                     "min_selection": 2,
-                    "max_selection": 2
+                    "max_selection": 2,
+                    "correct_mapping": {
+                      "22": "B",
+                      "23": "C"
+                    }
                   }
                 ]
               },
@@ -1058,67 +1034,43 @@
               {
                 "multiple_mcq": [
                   {
-                    "question_number": [23, 24],
+                    "question_numbers": [23, 24],
                     "question": "Which TWO facts about Emma Raducanu’s withdrawal from the Wimbledon tournament are mentioned in the text?",
-                    "answer": ["B", "C"],
                     "options": [
-                      {
-                        "label": "A",
-                        "value": "the stage at which she dropped out of the tournament"
-                      },
-                      {
-                        "label": "B",
-                        "value": "symptoms of her performance stress at the tournament"
-                      },
-                      {
-                        "label": "C",
-                        "value": "measures which she had taken to manage her stress levels"
-                      },
-                      {
-                        "label": "D",
-                        "value": "aspects of the Wimbledon tournament which increased her stress levels"
-                      },
-                      {
-                        "label": "E",
-                        "value": "reactions to her social media posts about her experience at Wimbledon"
-                      }
+                      { "label": "A", "value": "the stage at which she dropped out of the tournament" },
+                      { "label": "B", "value": "symptoms of her performance stress at the tournament" },
+                      { "label": "C", "value": "measures which she had taken to manage her stress levels" },
+                      { "label": "D", "value": "aspects of the Wimbledon tournament which increased her stress levels" },
+                      { "label": "E", "value": "reactions to her social media posts about her experience at Wimbledon" }
                     ],
                     "input_type": "checkbox",
                     "min_selection": 2,
-                    "max_selection": 2
+                    "max_selection": 2,
+                    "correct_mapping": {
+                      "23": "B",
+                      "24": "C"
+                    }
                   },
                   {
-                    "question_number": [25, 26],
+                    "question_numbers": [25, 26],
                     "question": "Which TWO facts about anxiety are mentioned in Paragraph E of the text?",
-                    "answer": ["B", "C"],
                     "options": [
-                      {
-                        "label": "A",
-                        "value": "the factors which determine how severe it may be"
-                      },
-                      {
-                        "label": "B",
-                        "value": "how long it takes for its effects to become apparent"
-                      },
-                      {
-                        "label": "C",
-                        "value": "which of its symptoms is most frequently encountered"
-                      },
-                      {
-                        "label": "D",
-                        "value": "the types of athletes who are most likely to suffer from it"
-                      },
-                      {
-                        "label": "E",
-                        "value": "the harm that can result if athletes experience it too often"
-                      }
+                      { "label": "A", "value": "the factors which determine how severe it may be" },
+                      { "label": "B", "value": "how long it takes for its effects to become apparent" },
+                      { "label": "C", "value": "which of its symptoms is most frequently encountered" },
+                      { "label": "D", "value": "the types of athletes who are most likely to suffer from it" },
+                      { "label": "E", "value": "the harm that can result if athletes experience it too often" }
                     ],
                     "input_type": "checkbox",
                     "min_selection": 2,
-                    "max_selection": 2
+                    "max_selection": 2,
+                    "correct_mapping": {
+                      "25": "B",
+                      "26": "C"
+                    }
                   }
                 ]
-              }
+              }              
             ]
           },
           {

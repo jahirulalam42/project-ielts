@@ -7,9 +7,14 @@ const SumFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (over) {
-      const blankNumber = String(over.id);
-      setSelectedAnswers((prev) => ({ ...prev, [blankNumber]: active.id }));
-      handleAnswerChange(blankNumber, active.id); // Notify parent
+      const blankNumber = parseInt(String(over.id));
+      const selectedLabel = String(active.id);
+      const correctAnswer = question.answers[blankNumber.toString()];
+
+      setSelectedAnswers((prev) => ({ ...prev, [blankNumber]: selectedLabel }));
+
+      // Send value, input_type and answerText to parent
+      handleAnswerChange(blankNumber, selectedLabel, question.input_type, correctAnswer);
     }
   };
 
@@ -19,11 +24,16 @@ const SumFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
       <DndContext onDragEnd={handleDragEnd}>
         <div className="p-4 border rounded-lg mb-2">
           <p className="italic mb-2">{question.instruction}</p>
-          <div className="whitespace-pre-wrap">
+          <div className="whitespace-pre-wrap leading-7">
             {question.passage.split(/\[(\d+)\]/).map((part: string, index: number) => {
               const blankNumber = parseInt(part);
               if (!isNaN(blankNumber)) {
-                return <DropZone key={index} blankNumber={blankNumber} answer={selectedAnswers[blankNumber]} />;
+                return (
+                  <span key={index} className="inline-flex items-center space-x-1">
+                    <span className="font-semibold">{blankNumber}.</span>
+                    <DropZone blankNumber={blankNumber} answer={selectedAnswers[blankNumber]} />
+                  </span>
+                );
               }
               return <span key={index}>{part} </span>;
             })}
