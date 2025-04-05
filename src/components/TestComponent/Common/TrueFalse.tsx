@@ -12,28 +12,29 @@ const TrueFalse = ({ question, handleAnswerChange }: any) => {
           {/* Question Number */}
           <strong className="min-w-[30px]">{q.question_number}.</strong>
 
-          {/* Dropdown */}
-          <select
-            className="border border-gray-400 px-2 py-1 rounded-md text-sm"
-            onChange={(e) =>
-              handleAnswerChange(
-                `${q.question_number}`,
-                e.target.value,
-                q.input_type,
-                q.answer
-              )
-            }
-            defaultValue=""
-          >
-            <option disabled value="">
-            </option>
-            <option value="True">True</option>
-            <option value="False">False</option>
-            <option value="Not Given">Not Given</option>
-          </select>
-
-          {/* Question Text (Takes Remaining Space) */}
-          <p className="flex-1">{q.question}</p>
+          <div>
+            {/* Dropdown */}
+            <select
+              className="border border-gray-400 px-2 py-1 rounded-md text-sm"
+              id={q.question_number}
+              onChange={(e) =>
+                handleAnswerChange(
+                  `${q.question_number}`,
+                  e.target.value,
+                  q.input_type,
+                  q.answer
+                )
+              }
+              defaultValue=""
+            >
+              <option disabled value="">
+              </option>
+              <option value="True">True</option>
+              <option value="False">False</option>
+              <option value="Not Given">Not Given</option>
+            </select>
+            <label htmlFor={q.question_number} className="px-2">{q.question}</label>
+          </div>
         </div>
       ))}
     </div>
