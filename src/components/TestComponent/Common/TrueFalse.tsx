@@ -26,7 +26,6 @@ const TrueFalse = ({ question, handleAnswerChange }: any) => {
             defaultValue=""
           >
             <option disabled value="">
-              Select
             </option>
             <option value="True">True</option>
             <option value="False">False</option>

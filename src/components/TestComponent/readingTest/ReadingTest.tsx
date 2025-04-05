@@ -17,7 +17,7 @@ import { ToastContainer, toast } from "react-toastify";
 const ReadingTest = ({ test }: any) => {
   const [answers, setAnswers] = useState<any>({});
   const [currentPartIndex, setCurrentPartIndex] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(60); // 60 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(60 * 60); // 60 minutes in seconds
   const [isTimeUp, setIsTimeUp] = useState(false);
   const { data: session }: any = useSession();
 

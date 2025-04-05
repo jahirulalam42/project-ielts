@@ -112,34 +112,200 @@
                 ]
               },
               {
-                "matching_headings": {
-                  "paragraphs": [
-                    {
-                      "question_number": [],
-                      "text": "Andy Murray's rise to world number one",
-                      "answer": "The Rise of Andy Murray",
-                      "input_type": "drag_and_drop"
-                    },
-                    {
-                      "question_number": [],
-                      "text": "The role of racket modifications in professional tennis",
-                      "answer": "The Evolution of Tennis Equipment",
-                      "input_type": "drag_and_drop"
-                    },
-                    {
-                      "question_number": [],
-                      "text": "The banning of an innovative tennis racket in the 1970s",
-                      "answer": "Controversial Equipment Changes in Tennis",
-                      "input_type": "drag_and_drop"
-                    }
-                  ],
-                  "headings": [
-                    "The Rise of Andy Murray",
-                    "The Evolution of Tennis Equipment",
-                    "Controversial Equipment Changes in Tennis",
-                    "The Role of Coaches in Player Success"
-                  ]
-                }
+                "matching_headings": [
+                  {
+                    "question_number": 14,
+                    "question": "reference to two chemical compounds which impact on performance",
+                    "answer": "C",
+                    "options": [
+                      {
+                        "label": "A",
+                        "value": "A"
+                      },
+                      {
+                        "label": "B",
+                        "value": "B"
+                      },
+                      {
+                        "label": "C",
+                        "value": "C"
+                      },
+                      {
+                        "label": "D",
+                        "value": "D"
+                      },
+                      {
+                        "label": "E",
+                        "value": "E"
+                      },
+                      {
+                        "label": "F",
+                        "value": "F"
+                      }
+                    ],
+                    "input_type": "dropdown"
+                  },
+                  {
+                    "question_number": 15,
+                    "question": "examples of strategies for minimising the effects of stress",
+                    "answer": "D",
+                    "options": [
+                      {
+                        "label": "A",
+                        "value": "A"
+                      },
+                      {
+                        "label": "B",
+                        "value": "B"
+                      },
+                      {
+                        "label": "C",
+                        "value": "C"
+                      },
+                      {
+                        "label": "D",
+                        "value": "D"
+                      },
+                      {
+                        "label": "E",
+                        "value": "E"
+                      },
+                      {
+                        "label": "F",
+                        "value": "F"
+                      }
+                    ],
+                    "input_type": "dropdown"
+                  },
+                  {
+                    "question_number": 16,
+                    "question": "how a sportsperson accounted for their own experience of stress",
+                    "answer": "A",
+                    "options": [
+                      {
+                        "label": "A",
+                        "value": "A"
+                      },
+                      {
+                        "label": "B",
+                        "value": "B"
+                      },
+                      {
+                        "label": "C",
+                        "value": "C"
+                      },
+                      {
+                        "label": "D",
+                        "value": "D"
+                      },
+                      {
+                        "label": "E",
+                        "value": "E"
+                      },
+                      {
+                        "label": "F",
+                        "value": "F"
+                      }
+                    ],
+                    "input_type": "dropdown"
+                  },
+                  {
+                    "question_number": 17,
+                    "question": "study results indicating links between stress responses and performance",
+                    "answer": "G",
+                    "options": [
+                      {
+                        "label": "A",
+                        "value": "A"
+                      },
+                      {
+                        "label": "B",
+                        "value": "B"
+                      },
+                      {
+                        "label": "C",
+                        "value": "C"
+                      },
+                      {
+                        "label": "D",
+                        "value": "D"
+                      },
+                      {
+                        "label": "E",
+                        "value": "E"
+                      },
+                      {
+                        "label": "F",
+                        "value": "F"
+                      }
+                    ],
+                    "input_type": "dropdown"
+                  },
+                  {
+                    "question_number": 18,
+                    "question": "mention of people who can influence how athletes perceive their stress responses",
+                    "answer": "E",
+                    "options": [
+                      {
+                        "label": "A",
+                        "value": "A"
+                      },
+                      {
+                        "label": "B",
+                        "value": "B"
+                      },
+                      {
+                        "label": "C",
+                        "value": "C"
+                      },
+                      {
+                        "label": "D",
+                        "value": "D"
+                      },
+                      {
+                        "label": "E",
+                        "value": "E"
+                      },
+                      {
+                        "label": "F",
+                        "value": "F"
+                      }
+                    ],
+                    "input_type": "dropdown"
+                  },
+                  {
+                    "question_number": 19,
+                    "question": "A mention of the need for many sailing vessels to stay relatively close to land",
+                    "answer": "C",
+                    "options": [
+                      {
+                        "label": "A",
+                        "value": "A"
+                      },
+                      {
+                        "label": "B",
+                        "value": "B"
+                      },
+                      {
+                        "label": "C",
+                        "value": "C"
+                      },
+                      {
+                        "label": "D",
+                        "value": "D"
+                      },
+                      {
+                        "label": "E",
+                        "value": "E"
+                      },
+                      {
+                        "label": "F",
+                        "value": "F"
+                      }
+                    ],
+                    "input_type": "dropdown"
+                  }
+                ]
               }
             ]
           },

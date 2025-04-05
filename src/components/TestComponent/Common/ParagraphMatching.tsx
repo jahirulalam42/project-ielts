@@ -26,7 +26,6 @@ const ParagraphMatching = ({ question, handleAnswerChange }: any) => {
             defaultValue=""
           >
             <option value="" disabled>
-              Select
             </option>
             {q.options.map((option: any) => (
               <option key={option.value} value={option.value}>
