@@ -3,6 +3,7 @@ import { DndContext, useDraggable, useDroppable, DragEndEvent } from "@dnd-kit/c
 
 const SumFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
   const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: string }>({});
+  const [usedOptions, setUsedOptions] = useState<string[]>([]);
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -12,6 +13,9 @@ const SumFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
       const correctAnswer = question.answers[blankNumber.toString()];
 
       setSelectedAnswers((prev) => ({ ...prev, [blankNumber]: selectedLabel }));
+
+      // Mark this option as used so it disappears from options list
+      setUsedOptions((prev) => [...prev, selectedLabel]);
 
       // Send value, input_type and answerText to parent
       handleAnswerChange(blankNumber, selectedLabel, question.input_type, correctAnswer);
@@ -43,9 +47,11 @@ const SumFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
         <div className="mt-4 p-4 border rounded-lg">
           <h6 className="font-medium mb-2">Drag the correct answers:</h6>
           <div className="flex gap-2 flex-wrap">
-            {question.options.map((opt: any) => (
-              <DraggableOption key={opt.label} id={opt.label} label={opt.label} value={opt.value} />
-            ))}
+            {question.options
+              .filter((opt: any) => !usedOptions.includes(opt.label))
+              .map((opt: any) => (
+                <DraggableOption key={opt.label} id={opt.label} label={opt.label} value={opt.value} />
+              ))}
           </div>
         </div>
       </DndContext>
