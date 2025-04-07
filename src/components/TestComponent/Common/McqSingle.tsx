@@ -19,10 +19,10 @@ const McqSingle = ({ question, handleAnswerChange }: any) => {
                   className="checkbox checkbox-primary"
                   onChange={(e) =>
                     handleAnswerChange(
-                      `${q.question_number}`,
+                      q.question_number,
                       option.value,
                       q.input_type,
-                      q.answer,
+                      q.answer
                     )
                   }
                 />

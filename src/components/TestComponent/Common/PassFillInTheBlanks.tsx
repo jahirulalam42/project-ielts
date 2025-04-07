@@ -15,7 +15,11 @@ const PassFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
 
       // Add the part of text before the blank
       if (lastIndex < match.index) {
-        parts.push(<span key={`text-${lastIndex}`}>{question.text.slice(lastIndex, match.index)}</span>);
+        parts.push(
+          <span key={`text-${lastIndex}`}>
+            {question.text.slice(lastIndex, match.index)}
+          </span>
+        );
       }
 
       // Add the number before the input box
@@ -26,7 +30,9 @@ const PassFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
       );
 
       // Find the corresponding blank object
-      const blank = question.blanks.find((b: any) => b.blank_number === blankNumber);
+      const blank = question.blanks.find(
+        (b: any) => b.blank_number === blankNumber
+      );
       if (blank) {
         parts.push(
           <input
@@ -34,11 +40,18 @@ const PassFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
             type="text"
             placeholder=""
             className="input input-bordered inline w-20 text-center"
-            style={{ height: "30px", // Shortened height
+            style={{
+              height: "30px", // Shortened height
               padding: "5px 10px", // Adjusted padding
-              fontSize: "14px", }} // Adjusting height
+              fontSize: "14px",
+            }} // Adjusting height
             onChange={(e) =>
-              handleAnswerChange(blankNumber.toString(), e.target.value, blank.input_type, blank.answer)
+              handleAnswerChange(
+                blankNumber,
+                e.target.value,
+                blank.input_type,
+                blank.answer
+              )
             }
           />
         );
@@ -49,7 +62,9 @@ const PassFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
 
     // Add any remaining text after the last blank
     if (lastIndex < question.text.length) {
-      parts.push(<span key={`text-last`}>{question.text.slice(lastIndex)}</span>);
+      parts.push(
+        <span key={`text-last`}>{question.text.slice(lastIndex)}</span>
+      );
     }
 
     return parts;

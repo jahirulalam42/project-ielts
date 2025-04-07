@@ -17,7 +17,7 @@ const ParagraphMatching = ({ question, handleAnswerChange }: any) => {
             className="border border-gray-400 px-2 py-1 rounded-md text-sm w-32"
             onChange={(e) =>
               handleAnswerChange(
-                `${q.question_number}`,
+                q.question_number,
                 e.target.value,
                 q.input_type,
                 q.answer
@@ -25,8 +25,7 @@ const ParagraphMatching = ({ question, handleAnswerChange }: any) => {
             }
             defaultValue=""
           >
-            <option value="" disabled>
-            </option>
+            <option value="" disabled></option>
             {q.options.map((option: any) => (
               <option key={option.value} value={option.value}>
                 {option.label}

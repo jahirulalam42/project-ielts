@@ -6,7 +6,7 @@ const SubFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
       <h5 className="font-medium mb-2">Section Completion</h5>
       {question.map((section: any, idx: number) => {
         let questionIndex = 0; // Track the correct question mapping
-        
+
         return (
           <div key={idx} className="p-4 border rounded-lg mb-2">
             {section.subtitle && (
@@ -32,7 +32,7 @@ const SubFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
                               className="border-b-2 border-gray-400 mx-1 w-24 text-center"
                               onChange={(e) =>
                                 handleAnswerChange(
-                                  currentQuestion.question_number.toString(),
+                                  currentQuestion.question_number,
                                   e.target.value,
                                   currentQuestion.input_type,
                                   currentQuestion.answer

@@ -22,7 +22,7 @@ const ReadingTest = ({ test }: any) => {
   const { data: session }: any = useSession();
 
   const handleAnswerChange = (
-    questionId: string,
+    questionId: number,
     value: string,
     isCheckbox: string,
     answer: string
@@ -104,7 +104,7 @@ const ReadingTest = ({ test }: any) => {
   useEffect(() => {
     if (timeLeft === 0) {
       setIsTimeUp(true);
-      handleSubmit();  // Automatically submit the test when time runs out
+      handleSubmit(); // Automatically submit the test when time runs out
       return;
     }
 
@@ -118,7 +118,10 @@ const ReadingTest = ({ test }: any) => {
   const formatTime = (timeInSeconds: number) => {
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = timeInSeconds % 60;
-    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(
+      2,
+      "0"
+    )}`;
   };
 
   return (
@@ -137,8 +140,12 @@ const ReadingTest = ({ test }: any) => {
             </div>
           </div>
           <div className="flex justify-between items-center mt-4">
-            <div className="text-lg font-bold">Time Left: {formatTime(timeLeft)}</div>
-            {isTimeUp && <div className="text-lg text-red-500 font-bold">Time's up!</div>}
+            <div className="text-lg font-bold">
+              Time Left: {formatTime(timeLeft)}
+            </div>
+            {isTimeUp && (
+              <div className="text-lg text-red-500 font-bold">Time's up!</div>
+            )}
           </div>
         </div>
       </div>
@@ -147,7 +154,9 @@ const ReadingTest = ({ test }: any) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Passage Section (Left) */}
         <div className="lg:h-[80vh] lg:overflow-y-auto p-4 border-r-2">
-          <h2 className="text-2xl font-bold mb-4">{currentPart.passage_title}</h2>
+          <h2 className="text-2xl font-bold mb-4">
+            {currentPart.passage_title}
+          </h2>
 
           {currentPart.image && (
             <Image
@@ -178,7 +187,9 @@ const ReadingTest = ({ test }: any) => {
         <div className="lg:h-[80vh] lg:overflow-y-auto p-4 border-l">
           <div className="space-y-6">
             <h3 className="text-xl font-bold mb-4">{currentPart.title}</h3>
-            <p className="italic text-gray-600 mb-6">{currentPart.instructions}</p>
+            <p className="italic text-gray-600 mb-6">
+              {currentPart.instructions}
+            </p>
 
             {currentPart.questions?.map((question: any, index: number) => (
               <div key={index}>
@@ -277,7 +288,10 @@ const ReadingTest = ({ test }: any) => {
           </div>
 
           {/* Submit Button */}
-          <button onClick={handleSubmit} className="btn btn-success mt-6 w-full">
+          <button
+            onClick={handleSubmit}
+            className="btn btn-success mt-6 w-full"
+          >
             Submit Test
           </button>
         </div>

@@ -1,6 +1,9 @@
 import React from "react";
 
-const FillInTheBlanks: React.FC<any> = ({ question, handleAnswerChange }: any) => {
+const FillInTheBlanks: React.FC<any> = ({
+  question,
+  handleAnswerChange,
+}: any) => {
   return (
     <div>
       <h5 className="font-medium mb-2">Fill in the Blanks</h5>
@@ -21,7 +24,7 @@ const FillInTheBlanks: React.FC<any> = ({ question, handleAnswerChange }: any) =
               }}
               onChange={(e) =>
                 handleAnswerChange(
-                  `${q.question_number}`,
+                  q.question_number,
                   e.target.value,
                   q.input_type,
                   q.answer

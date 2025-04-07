@@ -19,7 +19,7 @@ const TrueFalse = ({ question, handleAnswerChange }: any) => {
               id={q.question_number}
               onChange={(e) =>
                 handleAnswerChange(
-                  `${q.question_number}`,
+                  q.question_number,
                   e.target.value,
                   q.input_type,
                   q.answer
@@ -27,13 +27,14 @@ const TrueFalse = ({ question, handleAnswerChange }: any) => {
               }
               defaultValue=""
             >
-              <option disabled value="">
-              </option>
+              <option disabled value=""></option>
               <option value="True">True</option>
               <option value="False">False</option>
               <option value="Not Given">Not Given</option>
             </select>
-            <label htmlFor={q.question_number} className="px-2">{q.question}</label>
+            <label htmlFor={q.question_number} className="px-2">
+              {q.question}
+            </label>
           </div>
         </div>
       ))}
