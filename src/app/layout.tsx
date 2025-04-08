@@ -33,9 +33,7 @@ export default function RootLayout({
           <div>
             <Navbar />
           </div>
-          <div>
-            {children}
-          </div>
+          <div>{children}</div>
         </body>
       </SessionWrapper>
     </html>

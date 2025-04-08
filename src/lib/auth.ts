@@ -31,10 +31,13 @@ export const authOptions: NextAuthOptions = {
 
           const userData = response.data[0];
 
+          console.log("UserData", userData);
+
           return {
             id: userData._id, // Map _id to id
             name: userData.username, // Map username to name
             email: userData.email,
+            role: userData.role,
             // Add any other required fields
           };
         } catch (error) {
@@ -50,6 +53,7 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.name = user.name;
         token.email = user.email;
+        token.role = user.role;
       }
       return token;
     },
@@ -61,6 +65,7 @@ export const authOptions: NextAuthOptions = {
           id: token.id,
           name: token.name,
           email: token.email,
+          role: token.role,
         },
       };
     },
