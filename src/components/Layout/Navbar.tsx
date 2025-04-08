@@ -4,13 +4,26 @@ import React from "react";
 import LoginButton from "../Auth/LoginButton";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { Session } from "next-auth";
+
+// Extenthe Sd ession type to include the role property
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      name: string;
+      email: string;
+      role?: string; // Add the role property
+    };
+  }
+}
 
 const Navbar: React.FC = () => {
   const pathName = usePathname();
 
   const { data } = useSession();
 
-  console.log("Session Data", data?.user.role);
+  console.log("Session Data", data?.user?.role);
 
   return (
     <div>

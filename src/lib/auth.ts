@@ -1,4 +1,19 @@
-import NextAuth, { type NextAuthOptions } from "next-auth";
+import NextAuth, { type NextAuthOptions, type User } from "next-auth";
+
+// Extend the User type to include the role property
+declare module "next-auth" {
+  interface User {
+    role?: string;
+  }
+  interface Session {
+    user: {
+      id: string;
+      name: string;
+      email: string;
+      role?: string;
+    };
+  }
+}
 import { getToken } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
 
@@ -38,7 +53,7 @@ export const authOptions: NextAuthOptions = {
             name: userData.username, // Map username to name
             email: userData.email,
             role: userData.role,
-            // Add any other required fields
+            // Removed erroneous line as it is misplaced and unnecessary
           };
         } catch (error) {
           console.error("Authorization error:", error);
@@ -53,7 +68,7 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.name = user.name;
         token.email = user.email;
-        token.role = user.role;
+        token.role = user?.role;
       }
       return token;
     },
