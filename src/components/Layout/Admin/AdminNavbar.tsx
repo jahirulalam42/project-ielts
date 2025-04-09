@@ -69,17 +69,57 @@ const AdminNavbar = () => {
             </div>
             <div className="navbar-center hidden lg:flex">
                 <ul className="menu menu-horizontal px-1">
-                    <li><a>Item 1</a></li>
+                    <li><a>Dashboard</a></li>
                     <li>
                         <details>
-                            <summary>Parent</summary>
+                            <summary>Reading</summary>
                             <ul className="p-2">
-                                <li><a>Submenu 1</a></li>
-                                <li><a>Submenu 2</a></li>
+                                <li><a>Manage Passages</a></li>
+                                <li><a>Manage Questions</a></li>
                             </ul>
                         </details>
                     </li>
-                    <li><a>Item 3</a></li>
+                    <li>
+                        <details>
+                            <summary>Listening</summary>
+                            <ul className="p-2">
+                                <li><a>Upload Audio</a></li>
+                                <li><a>Manage Questions</a></li>
+                            </ul>
+                        </details>
+                    </li>
+                    <li>
+                        <details>
+                            <summary>Writing</summary>
+                            <ul className="p-2">
+                                <li><a>Add Prompts</a></li>
+                                <li><a>Manage Prompts</a></li>
+                            </ul>
+                        </details>
+                    </li>
+                    <li>
+                        <details>
+                            <summary>Speaking</summary>
+                            <ul className="p-2">
+                                <li><a>Add Topics</a></li>
+                                <li><a>Manage Topics</a></li>
+                            </ul>
+                        </details>
+                    </li>
+                    <li>
+                        <details>
+                            <summary>User Management</summary>
+                            <ul className="p-2">
+                                <li><a>View Users</a></li>
+                                <li><a>Add Admins</a></li>
+                                <li><a>Manage Roles</a></li>
+                            </ul>
+                        </details>
+                    </li>
+                    <li>
+                        <a>Settings</a>
+                    </li>
+                    
                 </ul>
             </div>
             <div className="navbar-end flex gap-2">
