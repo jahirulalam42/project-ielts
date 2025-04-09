@@ -24,6 +24,11 @@ export const middleware = async (request: NextRequest) => {
     !token
   ) {
     return NextResponse.rewrite(new URL("/api/auth/signin", request.url));
+  } else if (
+    request.nextUrl.pathname.startsWith("/admin") &&
+    token?.role !== "admin"
+  ) {
+    return NextResponse.rewrite(new URL("/api/auth/signin", request.url));
   }
   return NextResponse.next();
 };
