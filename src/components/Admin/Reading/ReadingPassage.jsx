@@ -1,4 +1,5 @@
 import React from 'react'
+import ReadingMain from './ReadingMain'
 
 const ReadingPassage = () => {
   return (
