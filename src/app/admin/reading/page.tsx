@@ -1,10 +1,10 @@
 import React from 'react'
-import ReadingMain from '@/components/Admin/Reading/ReadingMain'
+import TestCreationPage from '@/components/Admin/Reading/TestCreationPage'
 
 const page = () => {
   return (
     <div>
-      <ReadingMain></ReadingMain>
+      <TestCreationPage />
     </div>
   )
 }
