@@ -216,7 +216,7 @@
 "passage_fill_in_the_blanks": {
     "question_number": [24, 25, 26],
     "instruction": "Complete the summary below. Choose ONE WORD ONLY from the passage for each answer.",
-    "text": "Piracy was an issue ancient Rome had to deal with, but it also brought some benefits for Rome. For example, pirates supplied slaves that were important for Rome's industries. However, attacks on vessels transporting {blank_number: 24} to Rome resulted in calls for {blank_number: 25} for the pirates responsible. Nevertheless, piracy continued, with some pirates demanding a {blank_number: 26} for the return of the Roman officials they captured.",
+    "text": "Piracy was an issue ancient Rome had to deal with, but it also brought some benefits for Rome. For example, pirates supplied slaves that were important for Rome's industries. However, attacks on vessels transporting __________ to Rome resulted in calls for __________ for the pirates responsible. Nevertheless, piracy continued, with some pirates demanding a __________ for the return of the Roman officials they captured.",
     "blanks": [
     {
         "blank_number": 24,

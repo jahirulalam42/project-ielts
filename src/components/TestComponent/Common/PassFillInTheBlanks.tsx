@@ -6,13 +6,13 @@ const PassFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
     const parts = [];
     let lastIndex = 0;
 
-    // Regex to find placeholders like {blank_number: 24}
-    const regex = /\{blank_number:\s*(\d+)\}/g;
+    // Regex to find placeholders like "__________"
+    const regex = /__________/g;
     let match;
 
-    while ((match = regex.exec(question.text)) !== null) {
-      const blankNumber = parseInt(match[1]);
+    let blankNumber = 24;  // Start numbering from 24, or any other starting number
 
+    while ((match = regex.exec(question.text)) !== null) {
       // Add the part of text before the blank
       if (lastIndex < match.index) {
         parts.push(
@@ -29,33 +29,30 @@ const PassFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
         </span>
       );
 
-      // Find the corresponding blank object
-      const blank = question.blanks.find(
-        (b: any) => b.blank_number === blankNumber
+      // Add the input field for the blank
+      parts.push(
+        <input
+          key={`input-${blankNumber}`}
+          type="text"
+          placeholder=""
+          className="input input-bordered inline w-20 text-center"
+          style={{
+            height: "30px", // Shortened height
+            padding: "5px 10px", // Adjusted padding
+            fontSize: "14px",
+          }} // Adjusting height
+          onChange={(e) =>
+            handleAnswerChange(
+              blankNumber,
+              e.target.value,
+              "text", // As the input_type is 'text' for this case
+              "" // The correct answer will be checked later
+            )
+          }
+        />
       );
-      if (blank) {
-        parts.push(
-          <input
-            key={`input-${blankNumber}`}
-            type="text"
-            placeholder=""
-            className="input input-bordered inline w-20 text-center"
-            style={{
-              height: "30px", // Shortened height
-              padding: "5px 10px", // Adjusted padding
-              fontSize: "14px",
-            }} // Adjusting height
-            onChange={(e) =>
-              handleAnswerChange(
-                blankNumber,
-                e.target.value,
-                blank.input_type,
-                blank.answer
-              )
-            }
-          />
-        );
-      }
+
+      blankNumber++; // Increment blank number for the next blank
 
       lastIndex = regex.lastIndex;
     }
