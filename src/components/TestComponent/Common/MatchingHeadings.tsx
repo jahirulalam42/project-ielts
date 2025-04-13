@@ -20,7 +20,8 @@ const MatchingHeadings = ({ question, handleAnswerChange }: any) => {
                 q.question_number,
                 e.target.value,
                 q.input_type,
-                q.answer
+                q.answer,
+                e.target.value === q.answer ? true : false
               )
             }
             defaultValue=""

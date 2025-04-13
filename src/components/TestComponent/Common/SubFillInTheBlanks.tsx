@@ -35,7 +35,10 @@ const SubFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
                                   currentQuestion.question_number,
                                   e.target.value,
                                   currentQuestion.input_type,
-                                  currentQuestion.answer
+                                  currentQuestion.answer,
+                                  e.target.value === currentQuestion.answer
+                                    ? true
+                                    : false
                                 )
                               }
                             />

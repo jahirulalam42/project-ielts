@@ -22,7 +22,8 @@ const McqSingle = ({ question, handleAnswerChange }: any) => {
                       q.question_number,
                       option.value,
                       q.input_type,
-                      q.answer
+                      q.answer,
+                      option.value === q.answer ? true : false
                     )
                   }
                 />

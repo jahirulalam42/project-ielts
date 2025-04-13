@@ -32,11 +32,17 @@ const McqMultiple = ({ question, handleAnswerChange }: any) => {
       if (currentSelections.length < q.max_selection) {
         const newSelections = [...currentSelections, optionLabel];
         setSelectedOptions({ ...selectedOptions, [groupKey]: newSelections });
+        console.log("New Selections", newSelections);
+
         handleAnswerChange(
           groupKey,
           newSelections,
           q.input_type,
-          q.correct_mapping
+          q.correct_mapping,
+          JSON.stringify(newSelections.sort()) ===
+            JSON.stringify(q.correct_mapping.sort())
+            ? true
+            : false
         );
       } else {
         alert(

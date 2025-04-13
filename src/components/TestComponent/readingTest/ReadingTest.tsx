@@ -25,7 +25,8 @@ const ReadingTest = ({ test }: any) => {
     questionId: number,
     value: string,
     isCheckbox: string,
-    answer: string
+    answer: string,
+    isCorrect?: boolean
   ) => {
     setAnswers((prev: any) => {
       const currentArray = Array.isArray(prev) ? prev : [];
@@ -46,13 +47,19 @@ const ReadingTest = ({ test }: any) => {
                       : [...obj.answers, value]
                     : [value],
                   answerText: answer,
+                  isCorrect: isCorrect,
                 }
               : obj
           );
         } else {
           return [
             ...currentArray,
-            { questionId, answers: [value], answerText: answer },
+            {
+              questionId,
+              answers: [value],
+              answerText: answer,
+              isCorrect: isCorrect,
+            },
           ];
         }
       } else {
@@ -63,11 +70,14 @@ const ReadingTest = ({ test }: any) => {
         if (existingEntryIndex !== -1) {
           return currentArray.map((obj, index) =>
             index === existingEntryIndex
-              ? { ...obj, value, answerText: answer }
+              ? { ...obj, value, answerText: answer, isCorrect: isCorrect }
               : obj
           );
         } else {
-          return [...currentArray, { questionId, value, answerText: answer }];
+          return [
+            ...currentArray,
+            { questionId, value, answerText: answer, isCorrect: isCorrect },
+          ];
         }
       }
     });

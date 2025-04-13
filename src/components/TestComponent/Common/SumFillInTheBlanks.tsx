@@ -1,8 +1,15 @@
 import React, { useState } from "react";
-import { DndContext, useDraggable, useDroppable, DragEndEvent } from "@dnd-kit/core";
+import {
+  DndContext,
+  useDraggable,
+  useDroppable,
+  DragEndEvent,
+} from "@dnd-kit/core";
 
 const SumFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
-  const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: string }>({});
+  const [selectedAnswers, setSelectedAnswers] = useState<{
+    [key: number]: string;
+  }>({});
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -13,8 +20,17 @@ const SumFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
 
       setSelectedAnswers((prev) => ({ ...prev, [blankNumber]: selectedLabel }));
 
+      console.log("Select Label", selectedLabel);
+      console.log("Correct Answer", correctAnswer);
+
       // Send value, input_type and answerText to parent
-      handleAnswerChange(blankNumber, selectedLabel, question.input_type, correctAnswer);
+      handleAnswerChange(
+        blankNumber,
+        selectedLabel,
+        question.input_type,
+        correctAnswer,
+        selectedLabel === correctAnswer ? true : false
+      );
     }
   };
 
@@ -25,18 +41,26 @@ const SumFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
         <div className="p-4 border rounded-lg mb-2">
           <p className="italic mb-2">{question.instruction}</p>
           <div className="whitespace-pre-wrap leading-7">
-            {question.passage.split(/\[(\d+)\]/).map((part: string, index: number) => {
-              const blankNumber = parseInt(part);
-              if (!isNaN(blankNumber)) {
-                return (
-                  <span key={index} className="inline-flex items-center space-x-1">
-                    <span className="font-semibold">{blankNumber}.</span>
-                    <DropZone blankNumber={blankNumber} answer={selectedAnswers[blankNumber]} />
-                  </span>
-                );
-              }
-              return <span key={index}>{part} </span>;
-            })}
+            {question.passage
+              .split(/\[(\d+)\]/)
+              .map((part: string, index: number) => {
+                const blankNumber = parseInt(part);
+                if (!isNaN(blankNumber)) {
+                  return (
+                    <span
+                      key={index}
+                      className="inline-flex items-center space-x-1"
+                    >
+                      <span className="font-semibold">{blankNumber}.</span>
+                      <DropZone
+                        blankNumber={blankNumber}
+                        answer={selectedAnswers[blankNumber]}
+                      />
+                    </span>
+                  );
+                }
+                return <span key={index}>{part} </span>;
+              })}
           </div>
         </div>
 
@@ -44,7 +68,12 @@ const SumFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
           <h6 className="font-medium mb-2">Drag the correct answers:</h6>
           <div className="flex gap-2 flex-wrap">
             {question.options.map((opt: any) => (
-              <DraggableOption key={opt.label} id={opt.label} label={opt.label} value={opt.value} />
+              <DraggableOption
+                key={opt.label}
+                id={opt.label}
+                label={opt.label}
+                value={opt.value}
+              />
             ))}
           </div>
         </div>
@@ -53,7 +82,15 @@ const SumFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
   );
 };
 
-const DraggableOption = ({ id, label, value }: { id: string; label: string; value: string }) => {
+const DraggableOption = ({
+  id,
+  label,
+  value,
+}: {
+  id: string;
+  label: string;
+  value: string;
+}) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({ id });
 
   return (
@@ -62,14 +99,24 @@ const DraggableOption = ({ id, label, value }: { id: string; label: string; valu
       {...attributes}
       {...listeners}
       className="px-3 py-1 border rounded cursor-grab"
-      style={{ transform: transform ? `translate(${transform.x}px, ${transform.y}px)` : undefined }}
+      style={{
+        transform: transform
+          ? `translate(${transform.x}px, ${transform.y}px)`
+          : undefined,
+      }}
     >
       <strong>{label}.</strong> {value}
     </div>
   );
 };
 
-const DropZone = ({ blankNumber, answer }: { blankNumber: number; answer?: string }) => {
+const DropZone = ({
+  blankNumber,
+  answer,
+}: {
+  blankNumber: number;
+  answer?: string;
+}) => {
   const { setNodeRef } = useDroppable({ id: blankNumber.toString() });
 
   return (
