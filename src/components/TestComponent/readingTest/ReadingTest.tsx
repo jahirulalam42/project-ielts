@@ -15,7 +15,7 @@ import { redirect } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
 
 const ReadingTest = ({ test }: any) => {
-  const [answers, setAnswers] = useState<any>({});
+  const [answers, setAnswers] = useState<any>([]);
   const [currentPartIndex, setCurrentPartIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(60 * 60); // 60 minutes in seconds
   const [isTimeUp, setIsTimeUp] = useState(false);
@@ -40,15 +40,15 @@ const ReadingTest = ({ test }: any) => {
           return currentArray.map((obj, index) =>
             index === existingEntryIndex
               ? {
-                  questionId,
-                  answers: Array.isArray(obj.answers)
-                    ? obj.answers.includes(value)
-                      ? obj.answers.filter((v: any) => v !== value)
-                      : [...obj.answers, value]
-                    : [value],
-                  answerText: answer,
-                  isCorrect: isCorrect,
-                }
+                questionId,
+                answers: Array.isArray(obj.answers)
+                  ? obj.answers.includes(value)
+                    ? obj.answers.filter((v: any) => v !== value)
+                    : [...obj.answers, value]
+                  : [value],
+                answerText: answer,
+                isCorrect: isCorrect,
+              }
               : obj
           );
         } else {
@@ -97,11 +97,15 @@ const ReadingTest = ({ test }: any) => {
     }
   };
 
+  // useEffect(()=>{},[answers])
+
   const handleSubmit = () => {
+    const totalPoint = answers?.filter((answer: any) => answer.isCorrect === true).length || 0;
     const testData = {
       userId: session?.user?.id,
       testId: test._id,
       answers: answers,
+      totalScore: totalPoint
     };
     console.log("This is Test Data", testData);
     if (Object.keys(answers).length === 0) {

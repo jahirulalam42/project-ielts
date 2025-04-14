@@ -40,7 +40,9 @@ const McqMultiple = ({ question, handleAnswerChange }: any) => {
           q.input_type,
           q.correct_mapping,
           JSON.stringify(newSelections.sort()) ===
-            JSON.stringify(q.correct_mapping.sort())
+            JSON.stringify(
+              Array.isArray(q?.correct_mapping) ? q.correct_mapping.sort() : []
+            )
             ? true
             : false
         );
