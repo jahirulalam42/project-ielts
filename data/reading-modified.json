@@ -768,15 +768,8 @@
             {
               "summary_fill_in_the_blanks": {
                 "question_numbers": [31, 32, 33, 34, 35, 36],
-                "passage": "Although people have [31] about misinformation, there is debate about precisely how and when we label something as true or untrue. The philosophers Descartes and Spinoza had [32] about how people engage with information. While Descartes believed that people accept or reject information after considering whether it is true or not, Spinoza argued that people accepted all information they encountered (and by default misinformation) and did not verify or reject it until afterwards. Moreover, Spinoza believed that a distinct [33] is involved in these stages. Recent research has provided [34] for Spinoza's theory and it would appear that people accept all encountered information as if it were true, even if this is for an extremely [35], and do not label the information as true or false until later. This is consistent with the fact that the resources for scepticism and the resources for perceiving and encoding are in [36] in the brain.",
-                "answers": {
-                  "31": "G",
-                  "32": "J",
-                  "33": "H",
-                  "34": "B",
-                  "35": "E",
-                  "36": "C"
-                },
+                "passage": "Although people have __________ about misinformation, there is debate about precisely how and when we label something as true or untrue. The philosophers Descartes and Spinoza had __________ about how people engage with information. While Descartes believed that people accept or reject information after considering whether it is true or not, Spinoza argued that people accepted all information they encountered (and by default misinformation) and did not verify or reject it until afterwards. Moreover, Spinoza believed that a distinct __________ is involved in these stages. Recent research has provided __________ for Spinoza's theory and it would appear that people accept all encountered information as if it were true, even if this is for an extremely __________, and do not label the information as true or false until later. This is consistent with the fact that the resources for scepticism and the resources for perceiving and encoding are in __________ in the brain.",
+                "answers": ["G", "J", "H", "B", "E", "C"],
                 "options": [
                   { "label": "A", "value": "constant conflict" },
                   { "label": "B", "value": "additional evidence" },
@@ -1417,15 +1410,8 @@
             {
               "summary_fill_in_the_blanks": {
                 "question_numbers": [31, 32, 33, 34, 35, 36],
-                "passage": "Maryam Mirzakhani is regarded as [31] in the field of mathematics because she was the only female holder of the prestigious Fields Medal — a record that she retained at the time of her death. However, maths held little [32] for her as a child and in fact her performance was below average until she was [33] by a difficult puzzle that one of her siblings showed her. Later, as a professional mathematician, she had an inquiring mind and proved herself to be [34] when things did not go smoothly. She said she got the greatest [35] from making ground-breaking discoveries and in fact she was responsible for some extremely [36] mathematical studies.",
-                "answers": {
-                  "31": "G",
-                  "32": "J",
-                  "33": "H",
-                  "34": "B",
-                  "35": "E",
-                  "36": "C"
-                },
+                "passage": "Maryam Mirzakhani is regarded as __________ in the field of mathematics because she was the only female holder of the prestigious Fields Medal — a record that she retained at the time of her death. However, maths held little __________ for her as a child and in fact her performance was below average until she was __________ by a difficult puzzle that one of her siblings showed her. Later, as a professional mathematician, she had an inquiring mind and proved herself to be __________ when things did not go smoothly. She said she got the greatest __________ from making ground-breaking discoveries and in fact she was responsible for some extremely __________ mathematical studies.",
+                "answers": ["G", "J", "H", "B", "E", "C"],
                 "options": [
                   {
                     "label": "A",

@@ -22,12 +22,20 @@ interface Question {
     input_type: string;
     min_selection?: number;
     max_selection?: number;
-    correct_mapping?: Record<string, string>;
+    correct_mapping?: string[];
     instruction?: string;
     text?: string;
     blanks?: Blank[];
     passage?: string;
-    answers?: Record<string, string>;
+    answers?: string[];
+}
+
+// Define a new structure for fill_in_the_blanks_with_subtitle
+interface FillInTheBlanksWithSubtitle {
+    title: string;
+    subtitle: string;
+    extra: string[];
+    questions: Question[];
 }
 
 interface Passage {
@@ -70,6 +78,18 @@ const TestCreationPage: React.FC = () => {
     const [currentPassageIndex, setCurrentPassageIndex] = useState<number | null>(null);
     const [currentQuestionType, setCurrentQuestionType] = useState<string>('');
     const [questionCount, setQuestionCount] = useState<number>(1);
+    const [summaryPassage, setSummaryPassage] = useState<string>('');  // Passage input
+    const [blanks, setBlanks] = useState<number[]>([]);  // Track the blanks in the passage
+    const [options, setOptions] = useState<{ label: string, value: string }[]>([]);  // Dynamic options
+    const [answers, setAnswers] = useState<string[]>([]);  // Answers as an array
+    // State for fill_in_the_blanks_with_subtitle inputs
+    const [title, setTitle] = useState<string>('');
+    const [subtitle, setSubtitle] = useState<string>('');
+    const [extra, setExtra] = useState<string[]>([]);
+    const [questions, setQuestions] = useState<Question[]>([]);
+
+    
+
 
     const addPassage = () => {
         setTest({
@@ -102,6 +122,32 @@ const TestCreationPage: React.FC = () => {
             answer: '',  // Empty answer initially, to be filled by admin
         }));
     };
+
+    const getBlanksFromTextForSummary = (text: string) => {
+        const regex = /__________/g;  // Match all occurrences of "__________"
+        const matches = [...text.matchAll(regex)];
+        return matches.map((match, index) => index + 1);  // Return blank numbers (e.g., 1, 2, 3...)
+      };
+
+      const addOption = () => {
+        const label = String.fromCharCode(65 + options.length);  // Auto-increment label (A, B, C, ...)
+        const newOption = { label, value: "" };  // Initially empty value for the new option
+        setOptions([...options, newOption]);
+    };
+    
+    const handleOptionChange = (index: number, field: "label" | "value", value: string) => {
+        const updatedOptions = [...options];
+        updatedOptions[index] = { ...updatedOptions[index], [field]: value };
+        setOptions(updatedOptions);
+    };
+    
+    const handleAnswerChange = (index: number, value: string) => {
+        const updatedAnswers = [...answers];
+        updatedAnswers[index] = value;  // Set the answer for the current blank
+        setAnswers(updatedAnswers);
+    };    
+            
+      
 
     // Handle passage type change
     const updatePassageType = (passageIndex: number, passageType: 'type1' | 'type2') => {
@@ -170,23 +216,38 @@ const TestCreationPage: React.FC = () => {
         const updatedParts = [...test.parts];
         const newQuestions: Question[] = [];
 
+        // Determine the last question number used across all parts
+        let lastQuestionNumber = 0;
+        updatedParts.forEach(passage => {
+        passage.questions.forEach(questionGroup => {
+            Object.values(questionGroup).forEach(questions => {
+            questions.forEach(q => {
+                if (q.question_numbers) {
+                lastQuestionNumber = Math.max(lastQuestionNumber, ...q.question_numbers);
+                }
+            });
+            });
+        });
+        });
+
+        // The next question number starts from 1 if no questions exist yet
+        let nextQuestionNumber = lastQuestionNumber + 1;
+
+
         // Handle different question types
         switch (currentQuestionType) {
             case 'fill_in_the_blanks_with_subtitle':
                 newQuestions.push({
-                    title: '',
-                    subtitle: 'Steam power',
-                    extra: [
-                        "Newcomen’s steam engine was used in mines to remove water.",
-                        "In Watt and Boulton’s steam engine, the movement of the __________ was linked to a gear system.",
-                        "A greater supply of __________ was required to power steam engines.",
-                    ],
-                    questions: Array(questionCount).fill(null).map((_, i) => ({
-                        question_number: i + 1,
-                        answer: '',
-                        input_type: 'text',
+                    title: title,
+                    subtitle: subtitle,
+                    extra: extra,
+                    questions: questions.map((question, idx) => ({
+                        question_number: question.question_number,
+                        answer: question.answer,
+                        input_type: question.input_type,
                     })),
                 });
+
                 break;
 
             case 'true_false_not_given':
@@ -276,88 +337,68 @@ const TestCreationPage: React.FC = () => {
                 
 
             case 'summary_fill_in_the_blanks':
+                // Auto-generate question numbers
+                const questionNumbers = Array.from({ length: questionCount }, (_, idx) => idx + 1);
+    
+                // Create the summary fill-in-the-blanks question with passage, options, and correct answers
                 newQuestions.push({
-                    question_numbers: Array(questionCount).fill(null).map((_, i) => i + 1),
-                    passage: '',
-                    answers: {},
-                    options: [],
-                    input_type: 'drag_and_drop',
-                    question: '',
+                    question_numbers: questionNumbers,  // Auto-generated question numbers
+                    passage: summaryPassage,  // Passage entered by the admin
+                    answers: answers,  // Correct answers selected by the admin
+                    options: options,  // Options entered by the admin
+                    input_type: 'drag_and_drop',  // Drag-and-drop input type
+                    question: '',  // Placeholder for the question text (admin will input this)
                 });
                 break;
+        
+        
+                
+                
+                
 
             case 'multiple_mcq':
-                const newQuestionsForMCQ: Question[] = [];
-                
-                // Safely calculate the next available question numbers
-                const lastQuestionNumber = test.parts.flatMap(p => p.questions)
-                    .flatMap(q => q['multiple_mcq'] || [])
-                    .reduce((max, q) => Math.max(max, ...(q.question_numbers || [])), 0);  // Safely handle undefined question_numbers
-                
-                const startQuestionNumber = lastQuestionNumber + 1;  // Start from the next number
-            
-                for (let i = 0; i < questionCount; i++) {
-                    const questionNumbers = [startQuestionNumber + (i * 2), startQuestionNumber + (i * 2) + 1];  // Increment by 2
-            
-                    const options = [
-                        { label: "A", value: "" },
-                        { label: "B", value: "" },
-                        { label: "C", value: "" },
-                        { label: "D", value: "" },
-                        { label: "E", value: "" }
-                    ];
-            
-                    newQuestionsForMCQ.push({
-                        question_numbers: questionNumbers, // Always an array
-                        question: '',  // Admin will input the question
-                        options: options,  // Dynamically created options
-                        input_type: 'checkbox',
-                        min_selection: 2,  // Admin can select 2 options
-                        max_selection: 2,  // Admin can select 2 options
-                        correct_mapping: {
-                            [questionNumbers[0]]: '',  // Initially empty for first question
-                            [questionNumbers[1]]: ''   // Initially empty for second question
-                        }
+                for (let i= 0; i < questionCount; i++) {
+                    // Each question gets two consecutive numbers
+                    const questionNumbers = [nextQuestionNumber + 2 * i, nextQuestionNumber + 2 * i + 1];
+                    newQuestions.push({
+                    question_numbers: questionNumbers,
+                    question: '',
+                    options: [
+                        { label: 'A', value: '' },
+                        { label: 'B', value: '' },
+                        { label: 'C', value: '' },
+                        { label: 'D', value: '' },
+                        { label: 'E', value: '' },
+                    ],
+                    input_type: 'checkbox',
+                    min_selection: 2,
+                    max_selection: 2,
+                    correct_mapping: [], // Admin can fill correct options
                     });
                 }
-            
-                // Safely push the new questions into the correct passage index
-                const updatedParts = [...test.parts];
-                
-                // Assuming you are adding this to a specific section of the passage:
-                if (!updatedParts[passageIndex].questions) {
-                    updatedParts[passageIndex].questions = []; // Ensure `questions` is initialized
-                }
-            
-                // Add to the correct key ('multiple_mcq')
-                updatedParts[passageIndex].questions.push({ 'multiple_mcq': newQuestionsForMCQ });
-            
-                setTest({ ...test, parts: updatedParts });
-                setCurrentQuestionType('');
-                setQuestionCount(1);
                 break;
                 
-                case 'passage_fill_in_the_blanks':
-                    // Create new questions for passage_fill_in_the_blanks
-                    for (let i = 0; i < questionCount; i++) {
-                        const passageText = ''; // Placeholder for passage text (admin input)
-                        const blanks = getBlanksFromText(passageText); // Extract blanks from the passage text
-                        
-                        // Ensure that the created question object includes all required fields
-                        newQuestions.push({
-                            question_number: i + 1,  // Start from question number 1 (for each question)
-                            question: '',  // Placeholder for the actual question text (admin will fill this)
-                            input_type: 'text',  // Input type for fill-in-the-blank questions
-                            instruction: 'Complete the summary below. Choose ONE WORD ONLY from the passage for each answer.',
-                            text: passageText,  // The passage text will be entered by the admin
-                            blanks: blanks.map(blank => ({
-                                blank_number: blank.blank_number,  // Blank number (e.g., 1, 2, 3...)
-                                input_type: 'text',  // Input type for fill-in-the-blank question
-                                answer: '',  // Initially empty answer, to be filled by the admin
-                            })),
-                        });
-                    }
-                    break;
+            case 'passage_fill_in_the_blanks':
+                // Create new questions for passage_fill_in_the_blanks
+                for (let i = 0; i < questionCount; i++) {
+                    const passageText = ''; // Placeholder for passage text (admin input)
+                    const blanks = getBlanksFromText(passageText); // Extract blanks from the passage text
+                    
+                    // Ensure that the created question object includes all required fields
+                    newQuestions.push({
+                        question_number: i + 1,  // Start from question number 1 (for each question)
+                        question: '',  // Placeholder for the actual question text (admin will fill this)
+                        input_type: 'text',  // Input type for fill-in-the-blank questions
+                        instruction: 'Complete the summary below. Choose ONE WORD ONLY from the passage for each answer.',
+                        text: passageText,  // The passage text will be entered by the admin
+                        blanks: blanks.map(blank => ({
+                            blank_number: blank.blank_number,  // Blank number (e.g., 1, 2, 3...)
+                            input_type: 'text',  // Input type for fill-in-the-blank question
+                            answer: '',  // Initially empty answer, to be filled by the admin
+                        })),
+                    });
+                }
+                break;
 
 
             default:
@@ -475,63 +516,52 @@ const TestCreationPage: React.FC = () => {
             // For 'multiple_mcq' rendering
             case 'multiple_mcq':
                 return questions.map((q, idx) => (
-                    <div key={idx} className="mb-2">
-                        {/* Question input */}
+                <div key={idx} className="mb-2">
+                    <input
+                    type="text"
+                    placeholder="Question"
+                    value={q.question}
+                    onChange={(e) => updateQuestion('question', e.target.value, idx)}
+                    className="border p-2 mb-2 w-full"
+                    />
+                    {q.options?.map((opt, optIdx) => (
+                    <div key={opt.label} className="mb-2">
                         <input
-                            type="text"
-                            placeholder="Question"
-                            value={q.question}
-                            onChange={(e) => updateQuestion('question', e.target.value, idx)}
-                            className="border p-2 mb-2 w-full"
+                        type="text"
+                        placeholder={`Option ${opt.label}`}
+                        value={opt.value}
+                        onChange={(e) => {
+                            const updatedOptions = [...q.options!];
+                            updatedOptions[optIdx].value = e.target.value;
+                            updateQuestion('options', updatedOptions, idx);
+                        }}
+                        className="border p-2 mb-2 w-full"
                         />
-                        {/* Input fields for options */}
-                        {q.options?.map((option, optionIdx) => (
-                            <div key={option.label} className="mb-2">
-                                <input
-                                    type="text"
-                                    placeholder={`Option ${option.label} (e.g., Misinformation is a relatively recent phenomenon.)`}
-                                    value={option.value}
-                                    onChange={(e) => {
-                                        const updatedOptions = [...q.options!];
-                                        updatedOptions[optionIdx].value = e.target.value;
-                                        updateQuestion('options', updatedOptions, idx);
-                                    }}
-                                    className="border p-2 mb-2 w-full"
-                                />
-                            </div>
-                        ))}
-                        {/* Checkboxes to select the correct answer(s) */}
-                        <div>
-                            {q.options?.map((opt, optionIdx) => (
-                                <div key={opt.label} className="mb-2">
-                                    <label>
-                                        <input
-                                            type="checkbox"
-                                            value={opt.label}
-                                            checked={q.correct_mapping?.[q.question_numbers![0]] === opt.label || false}
-                                            onChange={(e) => {
-                                                const newCorrectMapping: Record<string, string> = { ...q.correct_mapping };
-
-                                                const questionNumber = q.question_numbers ? q.question_numbers[0] : undefined;
-
-                                                // If the checkbox is checked, update the correct answer
-                                                if (e.target.checked) {
-                                                    newCorrectMapping[questionNumber!] = opt.label; // Set only the first selected option as the answer
-                                                } else {
-                                                    // If unchecked, clear the correct answer for this question
-                                                    delete newCorrectMapping[questionNumber!];
-                                                }
-
-                                                // Update correct_mapping with the selected answer (single string, not array)
-                                                updateQuestion('correct_mapping', newCorrectMapping, idx);
-                                            }}
-                                        />
-                                        {opt.label}: {opt.value}
-                                    </label>
-                                </div>
-                            ))}
-                        </div>
                     </div>
+                    ))}
+                    <div className="mb-2">
+                    <label>Select correct answers:</label>
+                    {q.options?.map((opt, optIdx) => (
+                        <div key={opt.label}>
+                        <input
+                            type="checkbox"
+                            checked={q.correct_mapping?.includes(opt.label) || false}
+                            onChange={(e) => {
+                            const updatedCorrectMapping = q.correct_mapping ? [...q.correct_mapping] : [];
+                            if (e.target.checked) {
+                                updatedCorrectMapping.push(opt.label);
+                            } else {
+                                const index = updatedCorrectMapping.indexOf(opt.label);
+                                if (index !== -1) updatedCorrectMapping.splice(index, 1);
+                            }
+                            updateQuestion('correct_mapping', updatedCorrectMapping, idx);
+                            }}
+                        />
+                        {opt.label}: {opt.value}
+                        </div>
+                    ))}
+                    </div>
+                </div>
                 ));
 
             case 'mcq':
@@ -628,6 +658,76 @@ const TestCreationPage: React.FC = () => {
                         ))}
                     </div>
                 ));
+
+            case 'summary_fill_in_the_blanks':
+                return questions.map((q, idx) => (
+                    <div key={idx}>
+                        {/* Passage input */}
+                        <div className="mb-2">
+                            <textarea
+                                placeholder="Enter Passage for summary fill-in-the-blanks"
+                                value={summaryPassage}
+                                onChange={(e) => {
+                                    const newPassage = e.target.value;
+                                    setSummaryPassage(newPassage);
+                                    const extractedBlanks = getBlanksFromTextForSummary(newPassage);
+                                    setBlanks(extractedBlanks);  // Update blanks dynamically
+                                }}
+                                className="border p-2 mb-2 w-full"
+                            />
+                        </div>
+                    
+                        {/* Dynamically render dropdowns for each blank */}
+                        <div className="mb-2">
+                            {blanks.map((blank, blankIdx) => (
+                                <div key={blank}>
+                                    <label>{`Select answer for blank ${blank}:`}</label>
+                                    <select
+                                        value={answers[blankIdx] || ""}
+                                        onChange={(e) => handleAnswerChange(blankIdx, e.target.value)}  // Update answer for this blank
+                                        className="border p-2 mb-2"
+                                    >
+                                        <option value="">Select an option</option>
+                                        {options.map((option) => (
+                                            <option key={option.label} value={option.label}>
+                                                {option.label}: {option.value}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            ))}
+                        </div>
+                    
+                        {/* Add Option Button */}
+                        <button
+                            onClick={addOption}
+                            className="bg-green-500 text-white p-2 rounded"
+                        >
+                            Add Option
+                        </button>
+                    
+                        {/* Render Inputs for New Options */}
+                        {options.map((option, optIdx) => (
+                            <div key={optIdx} className="mb-2">
+                                {/* Label is auto-generated (A, B, C, ...) */}
+                                <input
+                                    type="text"
+                                    placeholder={`Option Value ${String.fromCharCode(65 + optIdx)}`}
+                                    value={option.value}
+                                    onChange={(e) => handleOptionChange(optIdx, "value", e.target.value)}
+                                    className="border p-2 mb-2 w-full"
+                                />
+                            </div>
+                        ))}
+                    </div>
+                ));
+                
+                  
+                  
+                
+                  
+                
+                               
     
                  
             default:
