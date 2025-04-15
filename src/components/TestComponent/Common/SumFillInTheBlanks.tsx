@@ -1,15 +1,20 @@
-import React, { useState } from "react";
+'use client'
+import React, { useEffect, useState } from "react";
 import {
   DndContext,
   useDraggable,
   useDroppable,
   DragEndEvent,
 } from "@dnd-kit/core";
+import useInitializeAnswers from "@/hooks/useInitializeAnswers";
 
-const SumFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
+const SumFillInTheBlanks = ({ question, answers, setAnswers, handleAnswerChange }: any) => {
   const [selectedAnswers, setSelectedAnswers] = useState<{
     [key: number]: string;
   }>({});
+
+  useInitializeAnswers({ question: question.option, setAnswers });
+
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -67,14 +72,16 @@ const SumFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
         <div className="mt-4 p-4 border rounded-lg">
           <h6 className="font-medium mb-2">Drag the correct answers:</h6>
           <div className="flex gap-2 flex-wrap">
-            {question.options.map((opt: any) => (
-              <DraggableOption
-                key={opt.label}
-                id={opt.label}
-                label={opt.label}
-                value={opt.value}
-              />
-            ))}
+            {question.options.map((opt: any) => {
+              return (
+                <DraggableOption
+                  key={opt.label}
+                  id={opt.label}
+                  label={opt.label}
+                  value={opt.text}
+                />
+              );
+            })}
           </div>
         </div>
       </DndContext>

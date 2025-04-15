@@ -1,10 +1,15 @@
+'use client'
+import useInitializeAnswers from "@/hooks/useInitializeAnswers";
 import React from "react";
 
-const SubFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
+const SubFillInTheBlanks = ({ question, answers, setAnswers, handleAnswerChange }: any) => {
+  useInitializeAnswers({ question, setAnswers });
   return (
     <div>
       <h5 className="font-medium mb-2">Section Completion</h5>
       {question.map((section: any, idx: number) => {
+        const answerObj = answers?.find((a: any) => a.questionId === section.question_number);
+        const currentValue = answerObj ? answerObj.value : '';
         let questionIndex = 0; // Track the correct question mapping
 
         return (
@@ -41,6 +46,7 @@ const SubFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
                                     : false
                                 )
                               }
+                              value={currentValue}
                             />
                             {/* Increment AFTER rendering the input field */}
                             {(() => {

@@ -21,6 +21,8 @@ const ReadingTest = ({ test }: any) => {
   const [isTimeUp, setIsTimeUp] = useState(false);
   const { data: session }: any = useSession();
 
+  const currentPart = test.parts[currentPartIndex];
+
   const handleAnswerChange = (
     questionId: number,
     value: string,
@@ -83,7 +85,7 @@ const ReadingTest = ({ test }: any) => {
     });
   };
 
-  const currentPart = test.parts[currentPartIndex];
+
 
   const handleNextPart = () => {
     if (currentPartIndex < test.parts.length - 1) {
@@ -211,6 +213,8 @@ const ReadingTest = ({ test }: any) => {
                 {question.true_false_not_given && (
                   <TrueFalse
                     question={question.true_false_not_given}
+                    answers={answers}
+                    setAnswers={setAnswers}
                     handleAnswerChange={handleAnswerChange}
                   />
                 )}
@@ -220,6 +224,8 @@ const ReadingTest = ({ test }: any) => {
                   Array.isArray(question.fill_in_the_blanks) && (
                     <FillInTheBlanks
                       question={question.fill_in_the_blanks}
+                      answers={answers}
+                      setAnswers={setAnswers}
                       handleAnswerChange={handleAnswerChange}
                     />
                   )}
@@ -228,6 +234,8 @@ const ReadingTest = ({ test }: any) => {
                 {question.matching_headings && (
                   <MatchingHeadings
                     question={question.matching_headings}
+                    answers={answers}
+                    setAnswers={setAnswers}
                     handleAnswerChange={handleAnswerChange}
                   />
                 )}
@@ -236,6 +244,8 @@ const ReadingTest = ({ test }: any) => {
                 {question.paragraph_matching && (
                   <ParagraphMatching
                     question={question.paragraph_matching}
+                    answers={answers}
+                    setAnswers={setAnswers}
                     handleAnswerChange={handleAnswerChange}
                   />
                 )}
@@ -244,6 +254,8 @@ const ReadingTest = ({ test }: any) => {
                 {question.mcq && (
                   <McqSingle
                     question={question.mcq}
+                    answers={answers}
+                    setAnswers={setAnswers}
                     handleAnswerChange={handleAnswerChange}
                   />
                 )}
@@ -252,6 +264,8 @@ const ReadingTest = ({ test }: any) => {
                 {question.passage_fill_in_the_blanks && (
                   <PassFillInTheBlanks
                     question={question.passage_fill_in_the_blanks}
+                    answers={answers}
+                    setAnswers={setAnswers}
                     handleAnswerChange={handleAnswerChange}
                   />
                 )}
@@ -260,6 +274,8 @@ const ReadingTest = ({ test }: any) => {
                 {question.multiple_mcq && (
                   <McqMultiple
                     question={question.multiple_mcq}
+                    answers={answers}
+                    setAnswers={setAnswers}
                     handleAnswerChange={handleAnswerChange}
                   />
                 )}
@@ -268,6 +284,8 @@ const ReadingTest = ({ test }: any) => {
                 {question.summary_fill_in_the_blanks && (
                   <SumFillInTheBlanks
                     question={question.summary_fill_in_the_blanks}
+                    answers={answers}
+                    setAnswers={setAnswers}
                     handleAnswerChange={handleAnswerChange}
                   />
                 )}
@@ -276,6 +294,8 @@ const ReadingTest = ({ test }: any) => {
                 {question.fill_in_the_blanks_with_subtitle && (
                   <SubFillInTheBlanks
                     question={question.fill_in_the_blanks_with_subtitle}
+                    answers={answers}
+                    setAnswers={setAnswers}
                     handleAnswerChange={handleAnswerChange}
                   />
                 )}
