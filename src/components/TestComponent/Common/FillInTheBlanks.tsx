@@ -1,4 +1,3 @@
-import useInitializeAnswers from "@/hooks/useInitializeAnswers";
 import React from "react";
 
 const FillInTheBlanks: React.FC<any> = ({
@@ -7,13 +6,10 @@ const FillInTheBlanks: React.FC<any> = ({
   setAnswers,
   handleAnswerChange,
 }: any) => {
-  useInitializeAnswers({ question, setAnswers });
   return (
     <div>
       <h5 className="font-medium mb-2">Fill in the Blanks</h5>
       {question.map((q: any) => {
-        const answerObj = answers?.find((a: any) => a.questionId === q.question_number);
-        const currentValue = answerObj ? answerObj.value : '';
         return (
           <div key={q.question_number} className="p-4 border rounded-lg mb-2">
             <p>
@@ -38,12 +34,11 @@ const FillInTheBlanks: React.FC<any> = ({
                     e.target.value === q.answer ? true : false
                   )
                 }
-                value={currentValue}
               />
               {q.question.split("__________")[1]}
             </p>
           </div>
-        )
+        );
       })}
     </div>
   );

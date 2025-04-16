@@ -1,17 +1,19 @@
-'use client'
-import useInitializeAnswers from "@/hooks/useInitializeAnswers";
 import React from "react";
 
-const TrueFalse = ({ question, answers, handleAnswerChange, setAnswers }: any) => {
-
-  useInitializeAnswers({ question, setAnswers });
-
+const TrueFalse = ({
+  question,
+  answers,
+  handleAnswerChange,
+  setAnswers,
+}: any) => {
   return (
     <div>
       <h5 className="font-medium mb-2">True/False/Not Given</h5>
       {question.map((q: any) => {
-        const answerObj = answers?.find((a: any) => a.questionId === q.question_number);
-        const currentValue = answerObj ? answerObj.value : '';
+        const answerObj = answers?.find(
+          (a: any) => a.questionId === q.question_number
+        );
+        const currentValue = answerObj ? answerObj.value : "";
         return (
           <div
             key={q.question_number}
@@ -34,7 +36,8 @@ const TrueFalse = ({ question, answers, handleAnswerChange, setAnswers }: any) =
                     e.target.value === q.answer ? true : false
                   )
                 }
-                value={currentValue}
+                // value={currentValue}
+                defaultValue={""}
               >
                 <option disabled value=""></option>
                 <option value="True">True</option>
@@ -46,7 +49,7 @@ const TrueFalse = ({ question, answers, handleAnswerChange, setAnswers }: any) =
               </label>
             </div>
           </div>
-        )
+        );
       })}
     </div>
   );

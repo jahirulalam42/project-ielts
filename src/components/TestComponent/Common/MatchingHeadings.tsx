@@ -1,15 +1,15 @@
-'use client'
-import useInitializeAnswers from "@/hooks/useInitializeAnswers";
 import React from "react";
 
-const MatchingHeadings = ({ question, answers, setAnswers, handleAnswerChange }: any) => {
-  useInitializeAnswers({ question, setAnswers });
+const MatchingHeadings = ({
+  question,
+  answers,
+  setAnswers,
+  handleAnswerChange,
+}: any) => {
   return (
     <div>
       <h5 className="font-medium mb-2">Heading Matching</h5>
       {question.map((q: any) => {
-        const answerObj = answers?.find((a: any) => a.questionId === q.question_number);
-        const currentValue = answerObj ? answerObj.value : '';
         return (
           <div
             key={q.question_number}
@@ -30,7 +30,7 @@ const MatchingHeadings = ({ question, answers, setAnswers, handleAnswerChange }:
                   e.target.value === q.answer ? true : false
                 )
               }
-              value={currentValue}
+              defaultValue={""}
             >
               <option value="" disabled></option>
               {q.options.map((option: any) => (
@@ -43,7 +43,7 @@ const MatchingHeadings = ({ question, answers, setAnswers, handleAnswerChange }:
             {/* Question Text (Takes Remaining Space) */}
             <span className="flex-1">{q.question}</span>
           </div>
-        )
+        );
       })}
     </div>
   );

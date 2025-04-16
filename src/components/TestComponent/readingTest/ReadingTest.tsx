@@ -15,13 +15,54 @@ import { redirect } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
 
 const ReadingTest = ({ test }: any) => {
-  const [answers, setAnswers] = useState<any>([]);
+  const [answers, setAnswers] = useState<any>({});
   const [currentPartIndex, setCurrentPartIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(60 * 60); // 60 minutes in seconds
   const [isTimeUp, setIsTimeUp] = useState(false);
   const { data: session }: any = useSession();
 
   const currentPart = test.parts[currentPartIndex];
+
+  useEffect(() => {
+    // Flatten all questions from all parts
+    const flattenQuestions = (parts: any[]) => {
+      return parts.flatMap(
+        (part) =>
+          part.questions?.flatMap((questionGroup: any) =>
+            Object.values(questionGroup).flatMap((questions) =>
+              Array.isArray(questions)
+                ? questions.map((q: any) => ({
+                    ...q,
+                    input_type: q.input_type || "text", // Default to text if undefined
+                    question_number: q.question_number,
+                  }))
+                : []
+            )
+          ) || []
+      );
+    };
+
+    const allQuestions = flattenQuestions(test.parts);
+
+    const initialAnswers = allQuestions.map((q) => {
+      console.log("initial answers", q);
+      return q.input_type === "checkbox"
+        ? {
+            questionId: q.question_number,
+            answers: [],
+            answerText: Array.isArray(q.answer) ? q.answer : [q.answer],
+            isCorrect: false,
+          }
+        : {
+            questionId: q.question_number,
+            value: "",
+            answerText: q.answer,
+            isCorrect: false,
+          };
+    });
+
+    setAnswers(initialAnswers);
+  }, [test.parts]);
 
   const handleAnswerChange = (
     questionId: number,
@@ -42,15 +83,15 @@ const ReadingTest = ({ test }: any) => {
           return currentArray.map((obj, index) =>
             index === existingEntryIndex
               ? {
-                questionId,
-                answers: Array.isArray(obj.answers)
-                  ? obj.answers.includes(value)
-                    ? obj.answers.filter((v: any) => v !== value)
-                    : [...obj.answers, value]
-                  : [value],
-                answerText: answer,
-                isCorrect: isCorrect,
-              }
+                  questionId,
+                  answers: Array.isArray(obj.answers)
+                    ? obj.answers.includes(value)
+                      ? obj.answers.filter((v: any) => v !== value)
+                      : [...obj.answers, value]
+                    : [value],
+                  answerText: answer,
+                  isCorrect: isCorrect,
+                }
               : obj
           );
         } else {
@@ -85,8 +126,6 @@ const ReadingTest = ({ test }: any) => {
     });
   };
 
-
-
   const handleNextPart = () => {
     if (currentPartIndex < test.parts.length - 1) {
       setCurrentPartIndex((prev) => prev + 1);
@@ -99,15 +138,14 @@ const ReadingTest = ({ test }: any) => {
     }
   };
 
-  // useEffect(()=>{},[answers])
-
   const handleSubmit = () => {
-    const totalPoint = answers?.filter((answer: any) => answer.isCorrect === true).length || 0;
+    const totalPoint =
+      answers?.filter((answer: any) => answer.isCorrect === true).length || 0;
     const testData = {
       userId: session?.user?.id,
       testId: test._id,
       answers: answers,
-      totalScore: totalPoint
+      totalScore: totalPoint,
     };
     console.log("This is Test Data", testData);
     if (Object.keys(answers).length === 0) {
@@ -213,8 +251,6 @@ const ReadingTest = ({ test }: any) => {
                 {question.true_false_not_given && (
                   <TrueFalse
                     question={question.true_false_not_given}
-                    answers={answers}
-                    setAnswers={setAnswers}
                     handleAnswerChange={handleAnswerChange}
                   />
                 )}
@@ -224,8 +260,6 @@ const ReadingTest = ({ test }: any) => {
                   Array.isArray(question.fill_in_the_blanks) && (
                     <FillInTheBlanks
                       question={question.fill_in_the_blanks}
-                      answers={answers}
-                      setAnswers={setAnswers}
                       handleAnswerChange={handleAnswerChange}
                     />
                   )}
@@ -234,8 +268,6 @@ const ReadingTest = ({ test }: any) => {
                 {question.matching_headings && (
                   <MatchingHeadings
                     question={question.matching_headings}
-                    answers={answers}
-                    setAnswers={setAnswers}
                     handleAnswerChange={handleAnswerChange}
                   />
                 )}
@@ -244,8 +276,6 @@ const ReadingTest = ({ test }: any) => {
                 {question.paragraph_matching && (
                   <ParagraphMatching
                     question={question.paragraph_matching}
-                    answers={answers}
-                    setAnswers={setAnswers}
                     handleAnswerChange={handleAnswerChange}
                   />
                 )}
@@ -254,8 +284,6 @@ const ReadingTest = ({ test }: any) => {
                 {question.mcq && (
                   <McqSingle
                     question={question.mcq}
-                    answers={answers}
-                    setAnswers={setAnswers}
                     handleAnswerChange={handleAnswerChange}
                   />
                 )}
@@ -264,8 +292,6 @@ const ReadingTest = ({ test }: any) => {
                 {question.passage_fill_in_the_blanks && (
                   <PassFillInTheBlanks
                     question={question.passage_fill_in_the_blanks}
-                    answers={answers}
-                    setAnswers={setAnswers}
                     handleAnswerChange={handleAnswerChange}
                   />
                 )}
@@ -274,8 +300,6 @@ const ReadingTest = ({ test }: any) => {
                 {question.multiple_mcq && (
                   <McqMultiple
                     question={question.multiple_mcq}
-                    answers={answers}
-                    setAnswers={setAnswers}
                     handleAnswerChange={handleAnswerChange}
                   />
                 )}
@@ -284,8 +308,6 @@ const ReadingTest = ({ test }: any) => {
                 {question.summary_fill_in_the_blanks && (
                   <SumFillInTheBlanks
                     question={question.summary_fill_in_the_blanks}
-                    answers={answers}
-                    setAnswers={setAnswers}
                     handleAnswerChange={handleAnswerChange}
                   />
                 )}
@@ -294,8 +316,6 @@ const ReadingTest = ({ test }: any) => {
                 {question.fill_in_the_blanks_with_subtitle && (
                   <SubFillInTheBlanks
                     question={question.fill_in_the_blanks_with_subtitle}
-                    answers={answers}
-                    setAnswers={setAnswers}
                     handleAnswerChange={handleAnswerChange}
                   />
                 )}

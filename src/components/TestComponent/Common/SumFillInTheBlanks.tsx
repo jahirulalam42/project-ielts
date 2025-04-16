@@ -1,4 +1,3 @@
-'use client'
 import React, { useEffect, useState } from "react";
 import {
   DndContext,
@@ -6,15 +5,16 @@ import {
   useDroppable,
   DragEndEvent,
 } from "@dnd-kit/core";
-import useInitializeAnswers from "@/hooks/useInitializeAnswers";
 
-const SumFillInTheBlanks = ({ question, answers, setAnswers, handleAnswerChange }: any) => {
+const SumFillInTheBlanks = ({
+  question,
+  answers,
+  setAnswers,
+  handleAnswerChange,
+}: any) => {
   const [selectedAnswers, setSelectedAnswers] = useState<{
     [key: number]: string;
   }>({});
-
-  useInitializeAnswers({ question: question.option, setAnswers });
-
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
