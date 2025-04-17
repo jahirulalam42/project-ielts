@@ -21,11 +21,55 @@ const ReadingTest = ({ test }: any) => {
   const [isTimeUp, setIsTimeUp] = useState(false);
   const { data: session }: any = useSession();
 
+  const currentPart = test.parts[currentPartIndex];
+
+  useEffect(() => {
+    // Flatten all questions from all parts
+    const flattenQuestions = (parts: any[]) => {
+      return parts.flatMap(
+        (part) =>
+          part.questions?.flatMap((questionGroup: any) =>
+            Object.values(questionGroup).flatMap((questions) =>
+              Array.isArray(questions)
+                ? questions.map((q: any) => ({
+                    ...q,
+                    input_type: q.input_type || "text", // Default to text if undefined
+                    question_number: q.question_number,
+                  }))
+                : []
+            )
+          ) || []
+      );
+    };
+
+    const allQuestions = flattenQuestions(test.parts);
+
+    const initialAnswers = allQuestions.map((q) => {
+      console.log("initial answers", q);
+      return q.input_type === "checkbox"
+        ? {
+            questionId: q.question_number,
+            answers: [],
+            answerText: Array.isArray(q.answer) ? q.answer : [q.answer],
+            isCorrect: false,
+          }
+        : {
+            questionId: q.question_number,
+            value: "",
+            answerText: q.answer,
+            isCorrect: false,
+          };
+    });
+
+    setAnswers(initialAnswers);
+  }, [test.parts]);
+
   const handleAnswerChange = (
     questionId: number,
     value: string,
     isCheckbox: string,
-    answer: string
+    answer: string,
+    isCorrect?: boolean
   ) => {
     setAnswers((prev: any) => {
       const currentArray = Array.isArray(prev) ? prev : [];
@@ -46,13 +90,19 @@ const ReadingTest = ({ test }: any) => {
                       : [...obj.answers, value]
                     : [value],
                   answerText: answer,
+                  isCorrect: isCorrect,
                 }
               : obj
           );
         } else {
           return [
             ...currentArray,
-            { questionId, answers: [value], answerText: answer },
+            {
+              questionId,
+              answers: [value],
+              answerText: answer,
+              isCorrect: isCorrect,
+            },
           ];
         }
       } else {
@@ -63,17 +113,18 @@ const ReadingTest = ({ test }: any) => {
         if (existingEntryIndex !== -1) {
           return currentArray.map((obj, index) =>
             index === existingEntryIndex
-              ? { ...obj, value, answerText: answer }
+              ? { ...obj, value, answerText: answer, isCorrect: isCorrect }
               : obj
           );
         } else {
-          return [...currentArray, { questionId, value, answerText: answer }];
+          return [
+            ...currentArray,
+            { questionId, value, answerText: answer, isCorrect: isCorrect },
+          ];
         }
       }
     });
   };
-
-  const currentPart = test.parts[currentPartIndex];
 
   const handleNextPart = () => {
     if (currentPartIndex < test.parts.length - 1) {
@@ -88,10 +139,13 @@ const ReadingTest = ({ test }: any) => {
   };
 
   const handleSubmit = () => {
+    const totalPoint =
+      answers?.filter((answer: any) => answer.isCorrect === true).length || 0;
     const testData = {
       userId: session?.user?.id,
       testId: test._id,
       answers: answers,
+      totalScore: totalPoint,
     };
     console.log("This is Test Data", testData);
     if (Object.keys(answers).length === 0) {

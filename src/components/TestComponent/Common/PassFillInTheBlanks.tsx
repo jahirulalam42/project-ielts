@@ -10,7 +10,7 @@ const PassFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
     const regex = /__________/g;
     let match;
 
-    let blankNumber = 24;  // Start numbering from 24, or any other starting number
+    let blankNumber = 24; // Start numbering from 24, or any other starting number
 
     while ((match = regex.exec(question.text)) !== null) {
       // Add the part of text before the blank
@@ -46,7 +46,8 @@ const PassFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
               blankNumber,
               e.target.value,
               "text", // As the input_type is 'text' for this case
-              "" // The correct answer will be checked later
+              "", // The correct answer will be checked later,
+              e.target.value === question.answer ? true : false
             )
           }
         />

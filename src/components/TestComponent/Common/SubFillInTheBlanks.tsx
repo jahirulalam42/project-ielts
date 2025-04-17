@@ -1,6 +1,11 @@
 import React from "react";
 
-const SubFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
+const SubFillInTheBlanks = ({
+  question,
+  answers,
+  setAnswers,
+  handleAnswerChange,
+}: any) => {
   return (
     <div>
       <h5 className="font-medium mb-2">Section Completion</h5>
@@ -26,6 +31,7 @@ const SubFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
                         {j < arr.length - 1 && currentQuestion && (
                           <>
                             <strong>{currentQuestion.question_number}.</strong>
+                            {currentQuestion.input_type}
                             <input
                               type="text"
                               placeholder=""
@@ -35,7 +41,10 @@ const SubFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
                                   currentQuestion.question_number,
                                   e.target.value,
                                   currentQuestion.input_type,
-                                  currentQuestion.answer
+                                  currentQuestion.answer,
+                                  e.target.value === currentQuestion.answer
+                                    ? true
+                                    : false
                                 )
                               }
                             />
