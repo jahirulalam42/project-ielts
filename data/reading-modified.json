@@ -662,7 +662,7 @@
                 {
                   "question_number": 27,
                   "question": "What point does the writer make about misinformation in the first paragraph?",
-                  "answer": ["D"],
+                  "answer": "D",
                   "options": [
                     {
                       "label": "A",
@@ -688,7 +688,7 @@
                 {
                   "question_number": 28,
                   "question": "What does the writer say about the role of technology?",
-                  "answer": ["A"],
+                  "answer": "A",
                   "options": [
                     {
                       "label": "A",
@@ -714,7 +714,7 @@
                 {
                   "question_number": 29,
                   "question": "What is the writer doing in the fourth paragraph?",
-                  "answer": ["C"],
+                  "answer": "C",
                   "options": [
                     {
                       "label": "A",
@@ -740,7 +740,7 @@
                 {
                   "question_number": 30,
                   "question": "What point does the writer make about regulation in the USA?",
-                  "answer": ["D"],
+                  "answer": "D",
                   "options": [
                     {
                       "label": "A",
@@ -894,13 +894,6 @@
                       "answer": "railways",
                       "input_type": "text"
                     }
-                  ]
-                },
-                {
-                  "subtitle": "Communications",
-                  "extra": [
-                    "Cooke and Wheatstone patented the first telegraphy system.",
-                    "The telegraphy system was used to prevent locomotives colliding."
                   ]
                 },
                 {
@@ -1304,7 +1297,7 @@
                 {
                   "question_number": 27,
                   "question": "What point does the writer make about misinformation in the first paragraph?",
-                  "answer": ["D"],
+                  "answer": "D",
                   "options": [
                     {
                       "label": "A",
@@ -1330,7 +1323,7 @@
                 {
                   "question_number": 28,
                   "question": "What does the writer say about the role of technology?",
-                  "answer": ["A"],
+                  "answer": "A",
                   "options": [
                     {
                       "label": "A",
@@ -1356,7 +1349,7 @@
                 {
                   "question_number": 29,
                   "question": "What is the writer doing in the fourth paragraph?",
-                  "answer": ["C"],
+                  "answer": "C",
                   "options": [
                     {
                       "label": "A",
@@ -1382,7 +1375,7 @@
                 {
                   "question_number": 30,
                   "question": "What point does the writer make about regulation in the USA?",
-                  "answer": ["D"],
+                  "answer": "D",
                   "options": [
                     {
                       "label": "A",

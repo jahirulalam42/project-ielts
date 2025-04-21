@@ -21,12 +21,18 @@ const SumFillInTheBlanks = ({
     if (over) {
       const blankIndex = parseInt(String(over.id)); // Use the index to identify the blank
       const selectedLabel = String(active.id); // Get the selected answer label
-      const correctAnswer = question.answers[blankIndex]; // Get the correct answer for this blank
+      const submittedAnswer = question.answers[blankIndex]; // Get the correct answer for this blank
 
       setSelectedAnswers((prev) => ({ ...prev, [blankIndex]: selectedLabel }));
 
       // Send value, input_type, and correct answer to the parent
-      handleAnswerChange(blankIndex, selectedLabel, question.input_type, correctAnswer);
+      handleAnswerChange(
+        question.question_numbers[blankIndex],
+        selectedLabel,
+        question.input_type,
+        submittedAnswer,
+        selectedLabel === submittedAnswer ? true : false
+      );
     }
   };
 
@@ -38,19 +44,27 @@ const SumFillInTheBlanks = ({
           <p className="italic mb-2">{question.instruction}</p>
           <div className="whitespace-pre-wrap leading-7">
             {/* Render passage text with numbered blanks */}
-            {question.passage.split("__________").map((part: string, index: number) => {
-              if (index < question.answers.length) {
-                return (
-                  <span key={index} className="inline">
-                    {part}
-                    <span className="font-semibold">{question.question_numbers[index]}.</span> {/* Display the question number */}
-                    <DropZone blankIndex={index} answer={selectedAnswers[index]} />
-                    {/* Show the blank as a drop zone */}
-                  </span>
-                );
-              }
-              return <span key={index}>{part} </span>;
-            })}
+            {question.passage
+              .split("__________")
+              .map((part: string, index: number) => {
+                if (index < question.answers.length) {
+                  return (
+                    <span key={index} className="inline">
+                      {part}
+                      <span className="font-semibold">
+                        {question.question_numbers[index]}.
+                      </span>{" "}
+                      {/* Display the question number */}
+                      <DropZone
+                        blankIndex={index}
+                        answer={selectedAnswers[index]}
+                      />
+                      {/* Show the blank as a drop zone */}
+                    </span>
+                  );
+                }
+                return <span key={index}>{part} </span>;
+              })}
           </div>
         </div>
 
@@ -59,7 +73,12 @@ const SumFillInTheBlanks = ({
           <div className="flex gap-2 flex-wrap">
             {/* Render draggable options */}
             {question.options.map((opt: any) => (
-              <DraggableOption key={opt.label} id={opt.label} label={opt.label} value={opt.value} />
+              <DraggableOption
+                key={opt.label}
+                id={opt.label}
+                label={opt.label}
+                value={opt.value}
+              />
             ))}
           </div>
         </div>
@@ -96,7 +115,13 @@ const DraggableOption = ({
   );
 };
 
-const DropZone = ({ blankIndex, answer }: { blankIndex: number; answer?: string }) => {
+const DropZone = ({
+  blankIndex,
+  answer,
+}: {
+  blankIndex: number;
+  answer?: string;
+}) => {
   const { setNodeRef } = useDroppable({ id: blankIndex.toString() });
 
   return (

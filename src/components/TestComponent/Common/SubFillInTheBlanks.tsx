@@ -31,7 +31,6 @@ const SubFillInTheBlanks = ({
                         {j < arr.length - 1 && currentQuestion && (
                           <>
                             <strong>{currentQuestion.question_number}.</strong>
-                            {currentQuestion.input_type}
                             <input
                               type="text"
                               placeholder=""

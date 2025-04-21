@@ -33,10 +33,10 @@ const McqSingle = ({
                     onChange={(e) =>
                       handleAnswerChange(
                         q.question_number,
-                        option.value,
+                        option.label,
                         q.input_type,
                         q.answer,
-                        option.value === q.answer ? true : false
+                        option.label === q.answer ? true : false
                       )
                     }
                     value={currentValue}

@@ -32,10 +32,10 @@ const ReadingTest = ({ test }: any) => {
             Object.values(questionGroup).flatMap((questions) =>
               Array.isArray(questions)
                 ? questions.map((q: any) => ({
-                  ...q,
-                  input_type: q.input_type || "text", // Default to text if undefined
-                  question_number: q.question_number,
-                }))
+                    ...q,
+                    input_type: q.input_type || "text", // Default to text if undefined
+                    question_number: q.question_number,
+                  }))
                 : []
             )
           ) || []
@@ -48,22 +48,30 @@ const ReadingTest = ({ test }: any) => {
       console.log("initial answers", q);
       return q.input_type === "checkbox"
         ? {
-          questionId: q.question_number,
-          answers: [],
-          answerText: Array.isArray(q.answer) ? q.answer : [q.answer],
-          isCorrect: false,
-        }
-        : q.input_type === "text" ? {
-          questionId: q.questions,
-          value: "",
-          answerText: q.questions,
-          isCorrect: false,
-        } : {
-          questionId: q.question_number,
-          value: "",
-          answerText: q.answer,
-          isCorrect: false,
-        };
+            questionId: q.question_number
+              ? q.question_number
+              : q.question_numbers,
+            answers: [],
+            answerText: Array.isArray(q.answer)
+              ? q.answer
+              : q.correct_mapping
+              ? q.correct_mapping
+              : [q.answer],
+            isCorrect: false,
+          }
+        : q.input_type === "text"
+        ? {
+            questionId: q.question_number ? q.question_number : q.questions,
+            value: "",
+            answerText: q.answer ? q.answer : q.questions,
+            isCorrect: false,
+          }
+        : {
+            questionId: q.question_number,
+            value: "",
+            answerText: q.answer,
+            isCorrect: false,
+          };
     });
 
     setAnswers(initialAnswers);
@@ -88,15 +96,15 @@ const ReadingTest = ({ test }: any) => {
           return currentArray.map((obj, index) =>
             index === existingEntryIndex
               ? {
-                questionId,
-                answers: Array.isArray(obj.answers)
-                  ? obj.answers.includes(value)
-                    ? obj.answers.filter((v: any) => v !== value)
-                    : [...obj.answers, value]
-                  : [value],
-                answerText: answer,
-                isCorrect: isCorrect,
-              }
+                  questionId,
+                  answers: Array.isArray(obj.answers)
+                    ? obj.answers.includes(value)
+                      ? obj.answers.filter((v: any) => v !== value)
+                      : [...obj.answers, value]
+                    : [value],
+                  answerText: answer,
+                  isCorrect: isCorrect,
+                }
               : obj
           );
         } else {
