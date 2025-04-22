@@ -59,9 +59,7 @@ const McqMultiple = ({ question, handleAnswerChange }: any) => {
       <h5 className="font-medium mb-2">Multiple Select Questions</h5>
       {question.map((q: any, idx: number) => {
         // Create a group key based on the question numbers
-        const groupKey = Number(
-          `${q.question_numbers[0]}${q.question_numbers[1]}${100}`
-        );
+        const groupKey = q.question_numbers
         const currentSelections = selectedOptions[groupKey] || [];
 
         return (

@@ -330,7 +330,7 @@
             {
               "paragraph_matching": [
                 {
-                  "question_number": 14,
+                  "question_number": 20,
                   "question": "A reference to a denial of involvement in piracy",
                   "answer": "C",
                   "options": [
@@ -366,7 +366,7 @@
                   "input_type": "dropdown"
                 },
                 {
-                  "question_number": 15,
+                  "question_number": 21,
                   "question": "Details of how a campaign to eradicate piracy was carried out",
                   "answer": "D",
                   "options": [
@@ -402,7 +402,7 @@
                   "input_type": "dropdown"
                 },
                 {
-                  "question_number": 16,
+                  "question_number": 22,
                   "question": "A mention of the circumstances in which states in the ancient world would make use of pirates",
                   "answer": "A",
                   "options": [
@@ -438,7 +438,7 @@
                   "input_type": "dropdown"
                 },
                 {
-                  "question_number": 17,
+                  "question_number": 23,
                   "question": "A reference to how people today commonly view pirates",
                   "answer": "G",
                   "options": [
@@ -474,7 +474,7 @@
                   "input_type": "dropdown"
                 },
                 {
-                  "question_number": 18,
+                  "question_number": 24,
                   "question": "An explanation of how some people were encouraged not to return to piracy",
                   "answer": "E",
                   "options": [
@@ -510,7 +510,7 @@
                   "input_type": "dropdown"
                 },
                 {
-                  "question_number": 19,
+                  "question_number": 25,
                   "question": "A mention of the need for many sailing vessels to stay relatively close to land",
                   "answer": "C",
                   "options": [
@@ -550,7 +550,7 @@
             {
               "multiple_mcq": [
                 {
-                  "question_numbers": [20, 21],
+                  "question_numbers": [26, 27],
                   "question": "Which TWO of the following statements does the writer make about inhabitants of the Mediterranean region in the ancient world?",
                   "options": [
                     {
@@ -580,7 +580,7 @@
                   "correct_mapping": ["B", "C"]
                 },
                 {
-                  "question_numbers": [22, 23],
+                  "question_numbers": [28, 29],
                   "question": "Which TWO of the following statements does the writer make about piracy and ancient Greece?",
                   "options": [
                     {
@@ -613,22 +613,22 @@
             },
             {
               "passage_fill_in_the_blanks": {
-                "question_number": [24, 25, 26],
+                "question_number": [30, 32, 33],
                 "instruction": "Complete the summary below. Choose ONE WORD ONLY from the passage for each answer.",
                 "text": "Piracy was an issue ancient Rome had to deal with, but it also brought some benefits for Rome. For example, pirates supplied slaves that were important for Rome's industries. However, attacks on vessels transporting __________ to Rome resulted in calls for __________ for the pirates responsible. Nevertheless, piracy continued, with some pirates demanding a __________ for the return of the Roman officials they captured.",
                 "blanks": [
                   {
-                    "blank_number": 24,
+                    "blank_number": 30,
                     "input_type": "text",
                     "answer": "corn"
                   },
                   {
-                    "blank_number": 25,
+                    "blank_number": 31,
                     "input_type": "text",
                     "answer": "punishment"
                   },
                   {
-                    "blank_number": 26,
+                    "blank_number": 32,
                     "input_type": "text",
                     "answer": "ransom"
                   }
@@ -660,7 +660,7 @@
             {
               "mcq": [
                 {
-                  "question_number": 27,
+                  "question_number": 34,
                   "question": "What point does the writer make about misinformation in the first paragraph?",
                   "answer": "D",
                   "options": [
@@ -686,7 +686,7 @@
                   "max_selection": 1
                 },
                 {
-                  "question_number": 28,
+                  "question_number": 35,
                   "question": "What does the writer say about the role of technology?",
                   "answer": "A",
                   "options": [
@@ -712,7 +712,7 @@
                   "max_selection": 1
                 },
                 {
-                  "question_number": 29,
+                  "question_number": 36,
                   "question": "What is the writer doing in the fourth paragraph?",
                   "answer": "C",
                   "options": [
@@ -738,7 +738,7 @@
                   "max_selection": 1
                 },
                 {
-                  "question_number": 30,
+                  "question_number": 37,
                   "question": "What point does the writer make about regulation in the USA?",
                   "answer": "D",
                   "options": [
@@ -767,7 +767,7 @@
             },
             {
               "summary_fill_in_the_blanks": {
-                "question_numbers": [31, 32, 33, 34, 35, 36],
+                "question_numbers": [38, 39, 40, 41, 42, 43],
                 "passage": "Although people have __________ about misinformation, there is debate about precisely how and when we label something as true or untrue. The philosophers Descartes and Spinoza had __________ about how people engage with information. While Descartes believed that people accept or reject information after considering whether it is true or not, Spinoza argued that people accepted all information they encountered (and by default misinformation) and did not verify or reject it until afterwards. Moreover, Spinoza believed that a distinct __________ is involved in these stages. Recent research has provided __________ for Spinoza's theory and it would appear that people accept all encountered information as if it were true, even if this is for an extremely __________, and do not label the information as true or false until later. This is consistent with the fact that the resources for scepticism and the resources for perceiving and encoding are in __________ in the brain.",
                 "answers": ["G", "J", "H", "B", "E", "C"],
                 "options": [
@@ -788,25 +788,25 @@
             {
               "true_false_not_given": [
                 {
-                  "question_number": 37,
+                  "question_number": 44,
                   "question": "Campaigns designed to correct misinformation will fail to achieve their purpose if people are unable to understand them.",
                   "answer": "True",
                   "input_type": "dropdown"
                 },
                 {
-                  "question_number": 38,
+                  "question_number": 45,
                   "question": "Attempts to teach elementary school students about misinformation have been opposed.",
                   "answer": "False",
                   "input_type": "dropdown"
                 },
                 {
-                  "question_number": 39,
+                  "question_number": 46,
                   "question": "It may be possible to overcome the problem of misinformation in a relatively short period.",
                   "answer": "Not Given",
                   "input_type": "dropdown"
                 },
                 {
-                  "question_number": 40,
+                  "question_number": 47,
                   "question": "The need to keep up with new information is hugely exaggerated in today's world.",
                   "answer": "Not Given",
                   "input_type": "dropdown"
