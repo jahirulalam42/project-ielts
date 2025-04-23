@@ -32,10 +32,10 @@ const ReadingTest = ({ test }: any) => {
             Object.values(questionGroup).flatMap((questions) =>
               Array.isArray(questions)
                 ? questions.map((q: any) => ({
-                    ...q,
-                    input_type: q.input_type || "text", // Default to text if undefined
-                    question_number: q.question_number,
-                  }))
+                  ...q,
+                  input_type: q.input_type || "text", // Default to text if undefined
+                  question_number: q.question_number,
+                }))
                 : []
             )
           ) || []
@@ -48,25 +48,25 @@ const ReadingTest = ({ test }: any) => {
       console.log("initial answers", q);
       return q.input_type === "checkbox"
         ? {
-            questionId: q.question_number
-              ? q.question_number
-              : q.question_numbers,
-            answers: [],
-            answerText: Array.isArray(q.answer)
-              ? q.answer
-              : q.correct_mapping
+          questionId: q.question_number
+            ? q.question_number
+            : q.question_numbers,
+          answers: [],
+          answerText: Array.isArray(q.answer)
+            ? q.answer
+            : q.correct_mapping
               ? q.correct_mapping
               : [q.answer],
-            isCorrect: false,
-          }
+          isCorrect: false,
+        }
         : q.input_type === "text"
-        ? {
+          ? {
             questionId: q.question_number ? q.question_number : q.questions,
             value: "",
             answerText: q.answer ? q.answer : q.questions,
             isCorrect: false,
           }
-        : {
+          : {
             questionId: q.question_number,
             value: "",
             answerText: q.answer,
@@ -96,15 +96,15 @@ const ReadingTest = ({ test }: any) => {
           return currentArray.map((obj, index) =>
             index === existingEntryIndex
               ? {
-                  questionId,
-                  answers: Array.isArray(obj.answers)
-                    ? obj.answers.includes(value)
-                      ? obj.answers.filter((v: any) => v !== value)
-                      : [...obj.answers, value]
-                    : [value],
-                  answerText: answer,
-                  isCorrect: isCorrect,
-                }
+                questionId,
+                answers: Array.isArray(obj.answers)
+                  ? obj.answers.includes(value)
+                    ? obj.answers.filter((v: any) => v !== value)
+                    : [...obj.answers, value]
+                  : [value],
+                answerText: answer,
+                isCorrect: isCorrect,
+              }
               : obj
           );
         } else {
@@ -151,7 +151,8 @@ const ReadingTest = ({ test }: any) => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault(); // Prevent default form submission behavior
     const submissionTime = new Date();
 
     const totalPoint =
@@ -169,12 +170,37 @@ const ReadingTest = ({ test }: any) => {
     } else {
       redirect("/");
     }
+
+    // 3. Send POST to App Router route
+    try {
+      const res = await fetch("/api/submitAnswers/submitReadingAnswers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(testData),
+      });                                        // use async fetch in App Router :contentReference[oaicite:1]{index=1}
+
+      // 4. Handle non-OK statuses
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || res.statusText);
+      }
+
+      // 5. On success, optionally show a toast and redirect
+      toast.success("Submission successful!");
+      redirect("/");                          // client-side navigation after success
+    } catch (error: any) {
+      toast.error(`Submission failed: ${error.message}`);
+    }
+
+
   };
+
+
 
   useEffect(() => {
     if (timeLeft === 0) {
       setIsTimeUp(true);
-      handleSubmit(); // Automatically submit the test when time runs out
+      // handleSubmit(); // Automatically submit the test when time runs out
       return;
     }
 
@@ -192,184 +218,189 @@ const ReadingTest = ({ test }: any) => {
       2,
       "0"
     )}`;
+
   };
 
+
   return (
-    <div className="container mx-auto p-4 min-h-screen">
-      {/* Exam Header */}
-      <div className="card bg-base-100 shadow-xl mb-6">
-        <div className="card-body">
-          <h1 className="card-title text-3xl">{test.title}</h1>
-          <div className="flex justify-between items-center">
-            <div>
-              <p className="text-lg">Type: {test.type}</p>
-              <p className="text-lg">Duration: {test.duration} minutes</p>
+    <form onSubmit={handleSubmit}>
+      <div className="container mx-auto p-4 min-h-screen">
+        {/* Exam Header */}
+        <div className="card bg-base-100 shadow-xl mb-6">
+          <div className="card-body">
+            <h1 className="card-title text-3xl">{test.title}</h1>
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="text-lg">Type: {test.type}</p>
+                <p className="text-lg">Duration: {test.duration} minutes</p>
+              </div>
+              <div className="badge badge-primary">
+                Part {currentPartIndex + 1} of {test.parts.length}
+              </div>
             </div>
-            <div className="badge badge-primary">
-              Part {currentPartIndex + 1} of {test.parts.length}
+            <div className="flex justify-between items-center mt-4">
+              <div className="text-lg font-bold">
+                Time Left: {formatTime(timeLeft)}
+              </div>
+              {isTimeUp && (
+                <div className="text-lg text-red-500 font-bold">Time's up!</div>
+              )}
             </div>
-          </div>
-          <div className="flex justify-between items-center mt-4">
-            <div className="text-lg font-bold">
-              Time Left: {formatTime(timeLeft)}
-            </div>
-            {isTimeUp && (
-              <div className="text-lg text-red-500 font-bold">Time's up!</div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Split Screen Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Passage Section (Left) */}
-        <div className="lg:h-[80vh] lg:overflow-y-auto p-4 border-r-2">
-          <h2 className="text-2xl font-bold mb-4">
-            {currentPart.passage_title}
-          </h2>
-
-          {currentPart.image && (
-            <Image
-              src={currentPart.image}
-              alt={currentPart.passage_title}
-              width={600}
-              height={400}
-              className="rounded-lg mb-4"
-            />
-          )}
-
-          <div className="prose max-w-none space-y-4">
-            {currentPart.passage.map((p: any, i: number) =>
-              typeof p === "object" ? (
-                Object.entries(p).map(([key, value]) => (
-                  <p key={`${i}-${key}`}>
-                    <span className="font-bold">{key}.</span> {value as string}
-                  </p>
-                ))
-              ) : (
-                <p key={i}>{p}</p>
-              )
-            )}
           </div>
         </div>
 
-        {/* Questions Section (Right) */}
-        <div className="lg:h-[80vh] lg:overflow-y-auto p-4 border-l">
-          <div className="space-y-6">
-            <h3 className="text-xl font-bold mb-4">{currentPart.title}</h3>
-            <p className="italic text-gray-600 mb-6">
-              {currentPart.instructions}
-            </p>
+        {/* Split Screen Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Passage Section (Left) */}
+          <div className="lg:h-[80vh] lg:overflow-y-auto p-4 border-r-2">
+            <h2 className="text-2xl font-bold mb-4">
+              {currentPart.passage_title}
+            </h2>
 
-            {currentPart.questions?.map((question: any, index: number) => (
-              <div key={index}>
-                {/* Existing question type components */}
-                {question.true_false_not_given && (
-                  <TrueFalse
-                    question={question.true_false_not_given}
-                    handleAnswerChange={handleAnswerChange}
-                  />
-                )}
+            {currentPart.image && (
+              <Image
+                src={currentPart.image}
+                alt={currentPart.passage_title}
+                width={600}
+                height={400}
+                className="rounded-lg mb-4"
+              />
+            )}
 
-                {/* Fill in the Blanks */}
-                {question.fill_in_the_blanks &&
-                  Array.isArray(question.fill_in_the_blanks) && (
-                    <FillInTheBlanks
-                      question={question.fill_in_the_blanks}
+            <div className="prose max-w-none space-y-4">
+              {currentPart.passage.map((p: any, i: number) =>
+                typeof p === "object" ? (
+                  Object.entries(p).map(([key, value]) => (
+                    <p key={`${i}-${key}`}>
+                      <span className="font-bold">{key}.</span> {value as string}
+                    </p>
+                  ))
+                ) : (
+                  <p key={i}>{p}</p>
+                )
+              )}
+            </div>
+          </div>
+
+          {/* Questions Section (Right) */}
+          <div className="lg:h-[80vh] lg:overflow-y-auto p-4 border-l">
+            <div className="space-y-6">
+              <h3 className="text-xl font-bold mb-4">{currentPart.title}</h3>
+              <p className="italic text-gray-600 mb-6">
+                {currentPart.instructions}
+              </p>
+
+              {currentPart.questions?.map((question: any, index: number) => (
+                <div key={index}>
+                  {/* Existing question type components */}
+                  {question.true_false_not_given && (
+                    <TrueFalse
+                      question={question.true_false_not_given}
                       handleAnswerChange={handleAnswerChange}
                     />
                   )}
 
-                {/* Matching Headings */}
-                {question.matching_headings && (
-                  <MatchingHeadings
-                    question={question.matching_headings}
-                    handleAnswerChange={handleAnswerChange}
-                  />
-                )}
+                  {/* Fill in the Blanks */}
+                  {question.fill_in_the_blanks &&
+                    Array.isArray(question.fill_in_the_blanks) && (
+                      <FillInTheBlanks
+                        question={question.fill_in_the_blanks}
+                        handleAnswerChange={handleAnswerChange}
+                      />
+                    )}
 
-                {/* Paragraph Matching */}
-                {question.paragraph_matching && (
-                  <ParagraphMatching
-                    question={question.paragraph_matching}
-                    handleAnswerChange={handleAnswerChange}
-                  />
-                )}
+                  {/* Matching Headings */}
+                  {question.matching_headings && (
+                    <MatchingHeadings
+                      question={question.matching_headings}
+                      handleAnswerChange={handleAnswerChange}
+                    />
+                  )}
 
-                {/* Multiple Choice (Single/Multi) */}
-                {question.mcq && (
-                  <McqSingle
-                    question={question.mcq}
-                    handleAnswerChange={handleAnswerChange}
-                  />
-                )}
+                  {/* Paragraph Matching */}
+                  {question.paragraph_matching && (
+                    <ParagraphMatching
+                      question={question.paragraph_matching}
+                      handleAnswerChange={handleAnswerChange}
+                    />
+                  )}
 
-                {/* Passage Fill in Blanks */}
-                {question.passage_fill_in_the_blanks && (
-                  <PassFillInTheBlanks
-                    question={question.passage_fill_in_the_blanks}
-                    handleAnswerChange={handleAnswerChange}
-                  />
-                )}
+                  {/* Multiple Choice (Single/Multi) */}
+                  {question.mcq && (
+                    <McqSingle
+                      question={question.mcq}
+                      handleAnswerChange={handleAnswerChange}
+                    />
+                  )}
 
-                {/* Multiple MCQ (Checkbox style) */}
-                {question.multiple_mcq && (
-                  <McqMultiple
-                    question={question.multiple_mcq}
-                    handleAnswerChange={handleAnswerChange}
-                  />
-                )}
+                  {/* Passage Fill in Blanks */}
+                  {question.passage_fill_in_the_blanks && (
+                    <PassFillInTheBlanks
+                      question={question.passage_fill_in_the_blanks}
+                      handleAnswerChange={handleAnswerChange}
+                    />
+                  )}
 
-                {/* Summary Fill in Blanks */}
-                {question.summary_fill_in_the_blanks && (
-                  <SumFillInTheBlanks
-                    question={question.summary_fill_in_the_blanks}
-                    handleAnswerChange={handleAnswerChange}
-                  />
-                )}
+                  {/* Multiple MCQ (Checkbox style) */}
+                  {question.multiple_mcq && (
+                    <McqMultiple
+                      question={question.multiple_mcq}
+                      handleAnswerChange={handleAnswerChange}
+                    />
+                  )}
 
-                {/* Fill in Blanks with Subtitles */}
-                {question.fill_in_the_blanks_with_subtitle && (
-                  <SubFillInTheBlanks
-                    question={question.fill_in_the_blanks_with_subtitle}
-                    handleAnswerChange={handleAnswerChange}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
+                  {/* Summary Fill in Blanks */}
+                  {question.summary_fill_in_the_blanks && (
+                    <SumFillInTheBlanks
+                      question={question.summary_fill_in_the_blanks}
+                      handleAnswerChange={handleAnswerChange}
+                    />
+                  )}
 
-          {/* Navigation */}
-          <div className="flex justify-between mt-6">
+                  {/* Fill in Blanks with Subtitles */}
+                  {question.fill_in_the_blanks_with_subtitle && (
+                    <SubFillInTheBlanks
+                      question={question.fill_in_the_blanks_with_subtitle}
+                      handleAnswerChange={handleAnswerChange}
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Navigation */}
+            <div className="flex justify-between mt-6">
+              <button
+                onClick={handlePrevPart}
+                disabled={currentPartIndex === 0}
+                className="btn btn-secondary"
+              >
+                Previous
+              </button>
+              <button
+                onClick={handleNextPart}
+                disabled={currentPartIndex === test.parts.length - 1}
+                className="btn btn-primary"
+              >
+                Next
+              </button>
+            </div>
+
+            {/* Submit Button */}
             <button
-              onClick={handlePrevPart}
-              disabled={currentPartIndex === 0}
-              className="btn btn-secondary"
+              onClick={handleSubmit}
+              type="submit"
+              className="btn btn-success mt-6 w-full"
             >
-              Previous
-            </button>
-            <button
-              onClick={handleNextPart}
-              disabled={currentPartIndex === test.parts.length - 1}
-              className="btn btn-primary"
-            >
-              Next
+              Submit Test
             </button>
           </div>
-
-          {/* Submit Button */}
-          <button
-            onClick={handleSubmit}
-            className="btn btn-success mt-6 w-full"
-          >
-            Submit Test
-          </button>
         </div>
-      </div>
 
-      {/* Toast Notifications */}
-      <ToastContainer />
-    </div>
+        {/* Toast Notifications */}
+        <ToastContainer />
+      </div>
+    </form>
   );
 };
 
