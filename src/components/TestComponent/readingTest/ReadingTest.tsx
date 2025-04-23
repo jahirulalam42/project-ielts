@@ -152,6 +152,8 @@ const ReadingTest = ({ test }: any) => {
   };
 
   const handleSubmit = () => {
+    const submissionTime = new Date();
+
     const totalPoint =
       answers?.filter((answer: any) => answer.isCorrect === true).length || 0;
     const testData = {
@@ -159,6 +161,7 @@ const ReadingTest = ({ test }: any) => {
       testId: test._id,
       answers: answers,
       totalScore: totalPoint,
+      submittedAt: submissionTime.toLocaleString(),
     };
     console.log("This is Test Data", testData);
     if (Object.keys(answers).length === 0) {
