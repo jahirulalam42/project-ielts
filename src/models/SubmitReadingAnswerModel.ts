@@ -3,7 +3,7 @@ import mongoose, { Model, Schema } from "mongoose";
 export interface SubmitReadingAnswers extends mongoose.Document {
   userId: String;
   testId: String;
-  answer: String;
+  answers: String;
   totalScore: Number;
   submittedAt: string;
 }
@@ -17,7 +17,7 @@ const SubmitReadingAnswerSchema = new mongoose.Schema<SubmitReadingAnswers>({
     type: String,
     required: [true, "Please provide a unique testId"],
   },
-  answer: {
+  answers: {
     type: Array,
     required: [true, "Please provide answers"],
   },
@@ -31,7 +31,8 @@ const SubmitReadingAnswerSchema = new mongoose.Schema<SubmitReadingAnswers>({
   },
 });
 
-export default (mongoose.models.SubmitAnswers as Model<SubmitReadingAnswers>) ||
+export default (mongoose.models
+  .SubmitReadingAnswer as Model<SubmitReadingAnswers>) ||
   mongoose.model<SubmitReadingAnswers>(
     "SubmitReadingAnswer",
     SubmitReadingAnswerSchema

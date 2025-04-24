@@ -164,12 +164,8 @@ const ReadingTest = ({ test }: any) => {
       totalScore: totalPoint,
       submittedAt: submissionTime.toLocaleString(),
     };
-    console.log("This is Test Data", testData);
-    if (Object.keys(answers).length === 0) {
-      toast.error("Please Select Answer");
-    } else {
-      redirect("/");
-    }
+
+
 
     // 3. Send POST to App Router route
     try {
@@ -178,6 +174,8 @@ const ReadingTest = ({ test }: any) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(testData),
       });                                        // use async fetch in App Router :contentReference[oaicite:1]{index=1}
+
+      console.log("This is Test Data", testData);
 
       // 4. Handle non-OK statuses
       if (!res.ok) {
@@ -190,6 +188,12 @@ const ReadingTest = ({ test }: any) => {
       redirect("/");                          // client-side navigation after success
     } catch (error: any) {
       toast.error(`Submission failed: ${error.message}`);
+    }
+
+    if (Object.keys(answers).length === 0) {
+      toast.error("Please Select Answer");
+    } else {
+      redirect("/");
     }
 
 
