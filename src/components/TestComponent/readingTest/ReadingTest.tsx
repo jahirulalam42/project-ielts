@@ -185,7 +185,7 @@ const ReadingTest = ({ test }: any) => {
 
       // 5. On success, optionally show a toast and redirect
       toast.success("Submission successful!");
-      redirect("/");                          // client-side navigation after success
+      redirect(`getSubmittedAnswers/${testData.testId}`);                          // client-side navigation after success
     } catch (error: any) {
       toast.error(`Submission failed: ${error.message}`);
     }
@@ -193,7 +193,7 @@ const ReadingTest = ({ test }: any) => {
     if (Object.keys(answers).length === 0) {
       toast.error("Please Select Answer");
     } else {
-      redirect("/");
+      redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/getSubmittedAnswers/${testData.testId}`);
     }
 
 
@@ -378,6 +378,7 @@ const ReadingTest = ({ test }: any) => {
                 onClick={handlePrevPart}
                 disabled={currentPartIndex === 0}
                 className="btn btn-secondary"
+                type="button"
               >
                 Previous
               </button>
@@ -385,6 +386,7 @@ const ReadingTest = ({ test }: any) => {
                 onClick={handleNextPart}
                 disabled={currentPartIndex === test.parts.length - 1}
                 className="btn btn-primary"
+                type="button"
               >
                 Next
               </button>
