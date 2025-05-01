@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { getReadingTest } from "@/services/data.ts";
 
 interface ReadingTest {
   id: string;
@@ -16,10 +17,7 @@ const page: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/api/questions/readingQuestions/");
-
-        if (!response.ok) throw new Error("Failed to fetch data");
-        const data = await response.json();
+        const data = await getReadingTest();
         setReadingData(data.data);
       } catch (err) {
         console.error("Error loading data:", err);

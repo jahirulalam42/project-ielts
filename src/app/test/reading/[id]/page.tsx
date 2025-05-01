@@ -1,16 +1,14 @@
 // app/readingQuestions/[_id]/page.tsx
 
 import ReadingTest from "@/components/TestComponent/readingTest/ReadingTest";
+import { getSingleReadingTest } from "@/services/data.ts";
 
 export async function generateMetadata({
   params,
 }: {
   params: { _id: string };
 }) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/readingQuestions/${params._id}`
-  );
-  const response = await res.json();
+  const response = await getSingleReadingTest(params._id);
   const pageTitle = response?.data?.title || "IELTS Reading Test";
   return { title: pageTitle };
 }
