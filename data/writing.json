@@ -1,0 +1,97 @@
+[
+  {
+    "title": "Sample Writing Test",
+    "type": "Academic",
+    "duration": 60,
+    "parts": [
+      {
+        "title": "Part 1: Essay",
+        "instructions": "Write an essay on the given topic.",
+        "passage_title": "Climate Change",
+        "passage_subtitle": "An Overview",
+        "passage": [
+          "Climate change refers to long‑term shifts in temperatures and weather patterns.",
+          "Human activities, especially the burning of fossil fuels, have been the main driver of climate change.",
+          "The consequences include rising sea levels, more extreme weather events, and loss of biodiversity."
+        ]
+      },
+      {
+        "title": "Part 2: Diagram Description",
+        "instructions": "Describe the diagram shown below.",
+        "passage_title": "The Water Cycle",
+        "passage_subtitle": "",
+        "passage": [
+          {
+            "label": "Evaporation",
+            "detail": "Water from oceans and lakes turns into vapor and rises into the atmosphere."
+          },
+          {
+            "label": "Condensation",
+            "detail": "Water vapor cools and forms clouds."
+          },
+          {
+            "label": "Precipitation",
+            "detail": "Droplets in clouds fall back to earth as rain, snow, or hail."
+          }
+        ],
+        "image": "https://example.com/images/water-cycle.png"
+      }
+    ]
+  },
+
+  {
+    "title": "Advanced Writing Proficiency Test",
+    "type": "General Training",
+    "duration": 45,
+    "parts": [
+      {
+        "title": "Part A: Letter Writing",
+        "instructions": "Write a formal letter to your local council about a community issue.",
+        "passage_title": "Community Garden Proposal",
+        "passage_subtitle": "Green Space Initiative",
+        "passage": [
+          "You have been asked to write to the council because your neighborhood lacks green communal areas.",
+          "Describe the benefits of having a community garden, including social, environmental, and health aspects.",
+          "Suggest three possible locations and explain why each would be suitable.",
+          "Invite council members to a site visit and community open day."
+        ]
+      },
+      {
+        "title": "Part B: Report Writing",
+        "instructions": "Analyze the data provided and write a concise report.",
+        "passage_title": "Monthly Public Transport Usage",
+        "passage_subtitle": "",
+        "passage": [
+          {
+            "month": "January",
+            "ridership": "150,000",
+            "change": "+5%"
+          },
+          {
+            "month": "February",
+            "ridership": "145,000",
+            "change": "-3.3%"
+          },
+          {
+            "month": "March",
+            "ridership": "160,000",
+            "change": "+10.3%"
+          }
+        ]
+      },
+      {
+        "title": "Part C: Creative Writing",
+        "instructions": "Craft a short story based on the prompt below.",
+        "passage_title": "The Midnight Library",
+        "passage_subtitle": "",
+        "passage": [
+          "Imagine a library that only opens at midnight.",
+          "Describe the first visitor and the book they choose.",
+          "Explore how the book’s story begins to blur lines with reality.",
+          "Conclude with the visitor’s decision: to stay lost in the pages or return to the world outside."
+        ],
+        "image": "https://example.com/assets/midnight-library.jpg"
+      }
+    ]
+  }
+]

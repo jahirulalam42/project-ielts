@@ -1,10 +1,6 @@
-// app/api/questions/reading/[id]/route.ts
 import { NextResponse } from "next/server";
-// Adjust the path based on your project structure
 import dbConnect from "@/lib/dbConnect";
-import ReadingModel from "@/models/ReadingModel";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import WritingModel from "@/models/WritingModel";
 
 interface ReadingTest {
   id: string;
@@ -31,7 +27,7 @@ export async function GET(
       );
     }
 
-    const test = await ReadingModel.findById(id);
+    const test = await WritingModel.findById(id);
     return NextResponse.json({ success: true, data: test });
   } catch (error) {
     console.error("GET Error:", error);
