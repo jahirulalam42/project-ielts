@@ -13,6 +13,7 @@ import SubFillInTheBlanks from "../Common/SubFillInTheBlanks";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
+import { postSubmitReadingTest } from "@/services/data";
 
 const ReadingTest = ({ test }: any) => {
   const [answers, setAnswers] = useState<any>({});
@@ -169,11 +170,7 @@ const ReadingTest = ({ test }: any) => {
 
     // 3. Send POST to App Router route
     try {
-      const res = await fetch("/api/submitAnswers/submitReadingAnswers", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(testData),
-      });                                        // use async fetch in App Router :contentReference[oaicite:1]{index=1}
+      const res = await postSubmitReadingTest(testData);
 
       console.log("This is Test Data", testData);
 
@@ -261,7 +258,7 @@ const ReadingTest = ({ test }: any) => {
               {currentPart.passage_title}
             </h2>
 
-            {currentPart.image && (
+            {currentPart?.image && (
               <Image
                 src={currentPart.image}
                 alt={currentPart.passage_title}

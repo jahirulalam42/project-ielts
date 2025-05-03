@@ -1,7 +1,7 @@
 // app/readingQuestions/[_id]/page.tsx
 
 import ReadingTest from "@/components/TestComponent/readingTest/ReadingTest";
-import { getSingleReadingTest } from "@/services/data.ts";
+import { getSingleReadingTest } from "@/services/data";
 
 export async function generateMetadata({
   params,

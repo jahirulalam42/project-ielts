@@ -13,7 +13,7 @@ export async function getReadingTest() {
   }
 }
 
-export async function getSingleReadingTest(paramsId) {
+export async function getSingleReadingTest(paramsId: any) {
   try {
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/readingQuestions/${paramsId}`
@@ -24,9 +24,27 @@ export async function getSingleReadingTest(paramsId) {
   }
 }
 
-// Reading Submitting Answers
+// Reading Submit Answers
 
-export async function getSubmitReadingTest(testId) {
+export async function postSubmitReadingTest(formData: any) {
+  try {
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/submitAnswers/submitReadingAnswers`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error; // ← re‑throw or handle as needed
+  }
+}
+
+export async function getSubmitReadingTest(testId: any) {
   try {
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/submitAnswers/submitReadingAnswers/${testId}`

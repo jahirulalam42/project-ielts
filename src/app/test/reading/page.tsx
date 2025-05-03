@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { getReadingTest } from "@/services/data.ts";
+import { getReadingTest } from "@/services/data";
 
 interface ReadingTest {
   id: string;
