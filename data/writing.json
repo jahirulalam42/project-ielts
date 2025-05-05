@@ -1,96 +1,59 @@
 [
   {
-    "title": "Sample Writing Test",
+    "title": "Writing Test 1",
     "type": "Academic",
     "duration": 60,
     "parts": [
       {
-        "title": "Part 1: Essay",
-        "instructions": "Write an essay on the given topic.",
-        "passage_title": "Climate Change",
-        "passage_subtitle": "An Overview",
-        "passage": [
-          "Climate change refers to long‑term shifts in temperatures and weather patterns.",
-          "Human activities, especially the burning of fossil fuels, have been the main driver of climate change.",
-          "The consequences include rising sea levels, more extreme weather events, and loss of biodiversity."
-        ]
+        "title": "Writing Task 1",
+        "subtitle": "You should spend about 20 minutes on this task.",
+        "Question": [
+          "The graph below gives information on the numbers of participants for different activities at one social centre in Melbourne, Australia for the period 2000 to 2020.",
+          "Summarize the information by selecting and reporting the main features, and make a comparisons where relavant."
+        ],
+        "instruction":["Write at least 150 words."],
+        "image": "https://example.com/images/activities-participants.png"
       },
       {
-        "title": "Part 2: Diagram Description",
-        "instructions": "Describe the diagram shown below.",
-        "passage_title": "The Water Cycle",
-        "passage_subtitle": "",
-        "passage": [
-          {
-            "label": "Evaporation",
-            "detail": "Water from oceans and lakes turns into vapor and rises into the atmosphere."
-          },
-          {
-            "label": "Condensation",
-            "detail": "Water vapor cools and forms clouds."
-          },
-          {
-            "label": "Precipitation",
-            "detail": "Droplets in clouds fall back to earth as rain, snow, or hail."
-          }
+        "title": "Writing Task 2",
+        "subtitle": "You should spend about 40 minutes on this task.",
+        "Question": [
+          "Some people think that competition at work, at school and in daily life is a good thing. Others belive that we should try to cooperate more, rather than competing against each other.",
+          "Discuss both these views and give your own opinion."
         ],
-        "image": "https://example.com/images/water-cycle.png"
+        "instruction":[
+          "Give reasons for your answer and include any relevant examples from your own knowledge or experience.",
+          "Write at least 250 words."],
+        "image": "https://example.com/images/activities-participants.png"
       }
     ]
   },
-
   {
-    "title": "Advanced Writing Proficiency Test",
-    "type": "General Training",
-    "duration": 45,
+    "title": "Writing Test 2",
+    "type": "Academic",
+    "duration": 60,
     "parts": [
       {
-        "title": "Part A: Letter Writing",
-        "instructions": "Write a formal letter to your local council about a community issue.",
-        "passage_title": "Community Garden Proposal",
-        "passage_subtitle": "Green Space Initiative",
-        "passage": [
-          "You have been asked to write to the council because your neighborhood lacks green communal areas.",
-          "Describe the benefits of having a community garden, including social, environmental, and health aspects.",
-          "Suggest three possible locations and explain why each would be suitable.",
-          "Invite council members to a site visit and community open day."
-        ]
-      },
-      {
-        "title": "Part B: Report Writing",
-        "instructions": "Analyze the data provided and write a concise report.",
-        "passage_title": "Monthly Public Transport Usage",
-        "passage_subtitle": "",
-        "passage": [
-          {
-            "month": "January",
-            "ridership": "150,000",
-            "change": "+5%"
-          },
-          {
-            "month": "February",
-            "ridership": "145,000",
-            "change": "-3.3%"
-          },
-          {
-            "month": "March",
-            "ridership": "160,000",
-            "change": "+10.3%"
-          }
-        ]
-      },
-      {
-        "title": "Part C: Creative Writing",
-        "instructions": "Craft a short story based on the prompt below.",
-        "passage_title": "The Midnight Library",
-        "passage_subtitle": "",
-        "passage": [
-          "Imagine a library that only opens at midnight.",
-          "Describe the first visitor and the book they choose.",
-          "Explore how the book’s story begins to blur lines with reality.",
-          "Conclude with the visitor’s decision: to stay lost in the pages or return to the world outside."
+        "title": "Writing Task 1",
+        "subtitle": "You should spend about 20 minutes on this task.",
+        "Question": [
+          "The graph below gives information on the numbers of participants for different activities at one social centre in Melbourne, Australia for the period 2000 to 2020.",
+          "Summarize the information by selecting and reporting the main features, and make a comparisons where relavant."
         ],
-        "image": "https://example.com/assets/midnight-library.jpg"
+        "instruction":["Write at least 150 words."],
+        "image": "https://example.com/images/activities-participants.png"
+      },
+      {
+        "title": "Writing Task 2",
+        "subtitle": "You should spend about 40 minutes on this task.",
+        "Question": [
+          "Some people think that competition at work, at school and in daily life is a good thing. Others belive that we should try to cooperate more, rather than competing against each other.",
+          "Discuss both these views and give your own opinion."
+        ],
+        "instruction":[
+          "Give reasons for your answer and include any relevant examples from your own knowledge or experience.",
+          "Write at least 250 words."],
+        "image": "https://example.com/images/activities-participants.png"
       }
     ]
   }
