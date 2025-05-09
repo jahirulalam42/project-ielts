@@ -1,7 +1,7 @@
 "use client";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { getSubmitReadingTest } from "@/services/data.ts";
+import { getSubmitReadingTest } from "@/services/data";
 
 // Define TypeScript interfaces for the data structure
 interface Submission {

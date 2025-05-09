@@ -1,0 +1,92 @@
+{
+  "listeningTests": [
+    {
+      "id": "listening-test-1",
+      "title": "Practice Test 1 - Section 1",
+      "description": "Conversation between a student and accommodation officer",
+      "audioUrl": "https://dummy-s3-bucket.com/listening-tests/test1-section1.mp3",
+      "duration": 30,
+      "questions": [
+        {
+          "id": "q1",
+          "type": "form-completion",
+          "question": "Complete the accommodation form below:",
+          "fields": [
+            {
+              "label": "Name of residence:",
+              "correctAnswer": "Greenwood Hall"
+            },
+            {
+              "label": "Address:",
+              "correctAnswer": "27 North Road"
+            }
+          ]
+        },
+        {
+          "id": "q2",
+          "type": "multiple-choice",
+          "question": "What two facilities does the student request?",
+          "options": ["Gym", "Swimming pool", "Study room", "Laundry"],
+          "correctAnswers": ["Study room", "Laundry"]
+        },
+        {
+          "id": "q3",
+          "type": "note-completion",
+          "question": "Complete the notes below:",
+          "content": ["Rent includes:", "- Electricity", "- ▁", "- Internet"],
+          "correctAnswer": "Water"
+        },
+        {
+          "id": "q4",
+          "type": "sentence-completion",
+          "question": "The security deposit must be paid within _________ days.",
+          "correctAnswer": "5"
+        }
+      ]
+    },
+    {
+      "id": "listening-test-2",
+      "title": "Practice Test 2 - Section 2",
+      "description": "Museum tour guide explanation",
+      "audioUrl": "https://dummy-s3-bucket.com/listening-tests/test2-section2.mp3",
+      "duration": 25,
+      "questions": [
+        {
+          "id": "q1",
+          "type": "matching",
+          "question": "Match the museum sections to their themes:",
+          "pairs": [
+            {
+              "left": "Section A",
+              "right": "Ancient Civilizations"
+            },
+            {
+              "left": "Section B",
+              "right": "Modern Art"
+            }
+          ],
+          "correctMatches": {
+            "Section A": "Ancient Civilizations",
+            "Section B": "Modern Art"
+          }
+        },
+        {
+          "id": "q2",
+          "type": "diagram-labeling",
+          "question": "Label the museum map:",
+          "diagramUrl": "/images/museum-map.png",
+          "labels": [
+            {
+              "position": { "x": 15, "y": 30 },
+              "correctAnswer": "Entrance"
+            },
+            {
+              "position": { "x": 60, "y": 45 },
+              "correctAnswer": "Cafeteria"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
