@@ -28,7 +28,7 @@ const page: React.FC = () => {
 
                             <div className="card-actions justify-end">
                                 <Link
-                                    href={`/listening/${test.id}`}
+                                    href={`/test/listening/${test.id}`}
                                     className="btn btn-primary w-full"
                                 >
                                     Start Test

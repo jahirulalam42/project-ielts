@@ -78,7 +78,7 @@ export default function ListeningTestPage() {
                                 <input
                                     type="text"
                                     className="input input-bordered"
-                                    value={(answers[question.id] as string[])[index] || ''}
+                                    value={(answers[question.id] as string[])?.[index] || ''}
                                     onChange={(e) => {
                                         const newAnswers = [...(answers[question.id] as string[])];
                                         newAnswers[index] = e.target.value;
@@ -101,7 +101,7 @@ export default function ListeningTestPage() {
                                     className="checkbox checkbox-primary"
                                     name={question.id}
                                     value={option}
-                                    checked={(answers[question.id] as string[]).includes(option)}
+                                    checked={(answers[question.id] as string[])?.includes(option)}
                                     onChange={(e) => {
                                         const selected = [...(answers[question.id] as string[])];
                                         if (e.target.checked) {
@@ -168,7 +168,7 @@ export default function ListeningTestPage() {
                                     <span className="font-medium">{pair.left}</span>
                                     <select
                                         className="select select-bordered flex-1"
-                                        value={(answers[question.id] as Record<string, string>)[pair.left] || ''}
+                                        value={(answers[question.id] as Record<string, string>)?.[pair.left] || ''}
                                         onChange={(e) => {
                                             const newMatches = { ...(answers[question.id] as Record<string, string>) };
                                             newMatches[pair.left] = e.target.value;
