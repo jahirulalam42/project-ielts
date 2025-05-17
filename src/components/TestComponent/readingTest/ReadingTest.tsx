@@ -33,10 +33,10 @@ const ReadingTest = ({ test }: any) => {
             Object.values(questionGroup).flatMap((questions) =>
               Array.isArray(questions)
                 ? questions.map((q: any) => ({
-                  ...q,
-                  input_type: q.input_type || "text", // Default to text if undefined
-                  question_number: q.question_number,
-                }))
+                    ...q,
+                    input_type: q.input_type || "text", // Default to text if undefined
+                    question_number: q.question_number,
+                  }))
                 : []
             )
           ) || []
@@ -45,34 +45,34 @@ const ReadingTest = ({ test }: any) => {
 
     const allQuestions = flattenQuestions(test.parts);
 
-    const initialAnswers = allQuestions.map((q) => {
-      console.log("initial answers", q);
-      return q.input_type === "checkbox"
-        ? {
-          questionId: q.question_number
-            ? q.question_number
-            : q.question_numbers,
+    const initialAnswers = allQuestions.flatMap((q) => {
+      console.log("Initial Answers", q);
+      if (q.input_type === "checkbox") {
+        return {
+          questionId: q.question_number || q.question_numbers,
           answers: [],
           answerText: Array.isArray(q.answer)
             ? q.answer
             : q.correct_mapping
-              ? q.correct_mapping
-              : [q.answer],
+            ? q.correct_mapping
+            : [q.answer],
           isCorrect: false,
-        }
-        : q.input_type === "text"
-          ? {
-            questionId: q.question_number ? q.question_number : q.questions,
-            value: "",
-            answerText: q.answer ? q.answer : q.questions,
-            isCorrect: false,
-          }
-          : {
-            questionId: q.question_number,
-            value: "",
-            answerText: q.answer,
-            isCorrect: false,
-          };
+        };
+      } else if (q.input_type === "text" && Array.isArray(q.questions)) {
+        return q.questions.map((que: any) => ({
+          questionId: que.question_number,
+          value: "",
+          answerText: que.answer,
+          isCorrect: false,
+        }));
+      } else {
+        return {
+          questionId: q.question_number,
+          value: "",
+          answerText: q.answer,
+          isCorrect: false,
+        };
+      }
     });
 
     setAnswers(initialAnswers);
@@ -97,15 +97,15 @@ const ReadingTest = ({ test }: any) => {
           return currentArray.map((obj, index) =>
             index === existingEntryIndex
               ? {
-                questionId,
-                answers: Array.isArray(obj.answers)
-                  ? obj.answers.includes(value)
-                    ? obj.answers.filter((v: any) => v !== value)
-                    : [...obj.answers, value]
-                  : [value],
-                answerText: answer,
-                isCorrect: isCorrect,
-              }
+                  questionId,
+                  answers: Array.isArray(obj.answers)
+                    ? obj.answers.includes(value)
+                      ? obj.answers.filter((v: any) => v !== value)
+                      : [...obj.answers, value]
+                    : [value],
+                  answerText: answer,
+                  isCorrect: isCorrect,
+                }
               : obj
           );
         } else {
@@ -166,8 +166,6 @@ const ReadingTest = ({ test }: any) => {
       submittedAt: submissionTime.toLocaleString(),
     };
 
-
-
     // 3. Send POST to App Router route
     try {
       const res = await postSubmitReadingTest(testData);
@@ -182,7 +180,7 @@ const ReadingTest = ({ test }: any) => {
 
       // 5. On success, optionally show a toast and redirect
       toast.success("Submission successful!");
-      redirect(`getSubmittedAnswers/${testData.testId}`);                          // client-side navigation after success
+      redirect(`getSubmittedAnswers/${testData.testId}`); // client-side navigation after success
     } catch (error: any) {
       toast.error(`Submission failed: ${error.message}`);
     }
@@ -190,13 +188,11 @@ const ReadingTest = ({ test }: any) => {
     if (Object.keys(answers).length === 0) {
       toast.error("Please Select Answer");
     } else {
-      redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/getSubmittedAnswers/${testData.testId}`);
+      redirect(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/getSubmittedAnswers/${testData.testId}`
+      );
     }
-
-
   };
-
-
 
   useEffect(() => {
     if (timeLeft === 0) {
@@ -219,9 +215,7 @@ const ReadingTest = ({ test }: any) => {
       2,
       "0"
     )}`;
-
   };
-
 
   return (
     <form onSubmit={handleSubmit}>
@@ -273,7 +267,8 @@ const ReadingTest = ({ test }: any) => {
                 typeof p === "object" ? (
                   Object.entries(p).map(([key, value]) => (
                     <p key={`${i}-${key}`}>
-                      <span className="font-bold">{key}.</span> {value as string}
+                      <span className="font-bold">{key}.</span>{" "}
+                      {value as string}
                     </p>
                   ))
                 ) : (
