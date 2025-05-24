@@ -30,20 +30,33 @@ const ReadingTest = ({ test }: any) => {
       return parts.flatMap(
         (part) =>
           part.questions?.flatMap((questionGroup: any) =>
-            Object.values(questionGroup).flatMap((questions) =>
-              Array.isArray(questions)
-                ? questions.map((q: any) => ({
-                    ...q,
-                    input_type: q.input_type || "text", // Default to text if undefined
-                    question_number: q.question_number,
-                  }))
-                : []
-            )
+            Object.entries(questionGroup).flatMap(([key, value]: any) => {
+              if (Array.isArray(value)) {
+                return value.map((q: any) => ({
+                  ...q,
+                  input_type: q.input_type || "text",
+                  question_number: q.question_number || q.question_numbers,
+                }));
+              } else if (typeof value === "object") {
+                // Handle single object like summary_fill_in_the_blanks
+                return [
+                  {
+                    ...value,
+                    input_type: value?.input_type || "text",
+                    question_number:
+                      value?.question_number || value?.question_numbers,
+                  },
+                ];
+              }
+              return [];
+            })
           ) || []
       );
     };
 
     const allQuestions = flattenQuestions(test.parts);
+
+    console.log("All Questions", allQuestions);
 
     const initialAnswers = allQuestions.flatMap((q) => {
       console.log("Initial Answers", q);
