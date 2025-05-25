@@ -78,6 +78,16 @@ const ReadingTest = ({ test }: any) => {
           answerText: que.answer,
           isCorrect: false,
         }));
+      } else if (
+        q.input_type === "drag_and_drop" &&
+        Array.isArray(q.question_numbers)
+      ) {
+        return q.question_numbers.map((que: any, index: number) => ({
+          questionId: q.question_numbers[index],
+          value: "",
+          answerText: q.answers[index],
+          isCorrect: false,
+        }));
       } else {
         return {
           questionId: q.question_number,
