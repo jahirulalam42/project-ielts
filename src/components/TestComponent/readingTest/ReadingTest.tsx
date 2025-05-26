@@ -35,7 +35,7 @@ const ReadingTest = ({ test }: any) => {
                 return value.map((q: any) => ({
                   ...q,
                   input_type: q.input_type || "text",
-                  question_number: q.question_number || q.question_numbers,
+                  question_number: q.question_number,
                 }));
               } else if (typeof value === "object") {
                 // Handle single object like summary_fill_in_the_blanks
@@ -60,17 +60,23 @@ const ReadingTest = ({ test }: any) => {
 
     const initialAnswers = allQuestions.flatMap((q) => {
       console.log("Initial Answers", q);
-      if (q.input_type === "checkbox") {
+      if (q.input_type === "checkbox" && !Array.isArray(q.question_numbers)) {
         return {
-          questionId: q.question_number || q.question_numbers,
+          questionId: q.question_number,
           answers: [],
-          answerText: Array.isArray(q.answer)
-            ? q.answer
-            : q.correct_mapping
-            ? q.correct_mapping
-            : [q.answer],
+          answerText: Array.isArray(q.answer) ? q.answer : [q.answer],
           isCorrect: false,
         };
+      } else if (
+        q.input_type === "checkbox" &&
+        Array.isArray(q.question_numbers)
+      ) {
+        return q.question_numbers.map((que: any, index: number) => ({
+          questionId: q.question_numbers[index],
+          value: "",
+          answerText: q.correct_mapping[index],
+          isCorrect: false,
+        }));
       } else if (q.input_type === "text" && Array.isArray(q.questions)) {
         return q.questions.map((que: any) => ({
           questionId: que.question_number,

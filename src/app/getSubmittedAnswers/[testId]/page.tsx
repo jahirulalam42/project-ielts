@@ -2,6 +2,7 @@
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { getSubmitReadingTest } from "@/services/data";
+import { useSession } from "next-auth/react";
 
 // Define TypeScript interfaces for the data structure
 interface Submission {
@@ -28,29 +29,26 @@ const SubmissionPage = () => {
   const [submission, setSubmission] = useState<Submission | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { data: session }: any = useSession();
+
+  console.log("user id", session?.user?.id);
 
   console.log(testId, "submissionId");
 
-  // Fetch submission data when submissionId changes
   useEffect(() => {
     const fetchSubmission = async () => {
       try {
-        // const res = await fetch(
-        //     `${process.env.NEXT_PUBLIC_BASE_URL}/api/submitAnswers/submitReadingAnswers/${testId}`,
-        //     {
-        //         method: "GET",
-        //         headers: { "Content-Type": "application/json" },
-        //     }
-        // )
-        // const response = await res.json()
-        const response = await getSubmitReadingTest(testId);
+        const response = await getSubmitReadingTest(testId, session?.user?.id);
         console.log("Response", response);
+
         if (response.success) {
-          // Assuming the API returns an array, take the first submission
-          // Adjust if the endpoint returns a single object
-          setSubmission(
-            Array.isArray(response.data) ? response.data[0] : response.data
-          );
+          // Handle array response or single object
+          const data = Array.isArray(response.data)
+            ? response.data[0] // Take first element if array
+            : response.data;
+
+          setSubmission(data || null); // Handle empty data
+          setError(null); // Clear previous errors
         } else {
           setError("Failed to fetch submission data");
         }
@@ -60,11 +58,12 @@ const SubmissionPage = () => {
         setLoading(false);
       }
     };
-
-    if (testId) {
+    if (testId && session?.user?.id) {
       fetchSubmission();
+    } else {
+      setLoading(false);
     }
-  }, [testId]);
+  }, [testId, session?.user?.id, status]);
 
   // Handle loading and error states
   if (loading) return <div className="text-center p-4">Loading...</div>;

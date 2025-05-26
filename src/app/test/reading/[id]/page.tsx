@@ -1,14 +1,12 @@
 // app/readingQuestions/[_id]/page.tsx
 
 import ReadingTest from "@/components/TestComponent/readingTest/ReadingTest";
-import { getSingleReadingTest } from "@/services/data";
+import { getReadingQuestions, getSingleReadingTest } from "@/services/data";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { _id: string };
-}) {
-  const response = await getSingleReadingTest(params._id);
+export async function generateMetadata({ params }: { params: { id: string } }) {
+  const resolvedParams = await params;
+  const { id } = resolvedParams;
+  const response = await getSingleReadingTest(id);
   const pageTitle = response?.data?.title || "IELTS Reading Test";
   return { title: pageTitle };
 }
@@ -21,11 +19,14 @@ export default async function ReadingQuestionPage({
   const resolvedParams = await params;
   const { id } = resolvedParams;
 
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/readingQuestions/${id}`,
-    { cache: "no-store" }
-  );
-  const response = await res.json();
+  // const res = await fetch(
+  //   `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/readingQuestions/${id}`,
+  //   { cache: "no-store" }
+  // );
+
+  const response = await getReadingQuestions(id);
+
+  // const response = await res.json();
 
   if (!response.success || !response.data) {
     return <div className="text-center p-4">No reading test found.</div>;
