@@ -2,6 +2,17 @@ import axios from "axios";
 
 // Reading Questions
 
+export async function getReadingQuestions(paramsId: any) {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/readingQuestions/${paramsId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export async function getReadingTest() {
   try {
     const response = await axios.get(
@@ -68,10 +79,10 @@ export async function postSubmitReadingTest(formData: any) {
   }
 }
 
-export async function getSubmitReadingTest(testId: any) {
+export async function getSubmitReadingTest(testId: any, userId: any) {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/submitAnswers/submitReadingAnswers/${testId}`
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/submitAnswers/submitReadingAnswers/${testId}/${userId}`
     );
     return response.data;
   } catch (error) {
