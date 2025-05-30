@@ -1,5 +1,7 @@
 "use client";
+import { submitReadingQuestions } from "@/services/data";
 import React, { useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
 
 // Define types for the test structure
 interface Option {
@@ -262,7 +264,36 @@ const TestCreationPage: React.FC = () => {
     });
 
     // The next question number starts from 1 if no questions exist yet
-    let nextQuestionNumber = lastQuestionNumber + 1;
+    // let nextQuestionNumber = lastQuestionNumber + 1;
+
+    const getMaxQuestionNumberInPart = (part: any) => {
+      if (!part || !part.questions) return 0;
+
+      let max = 0;
+
+      part.questions.forEach((questions: any) => {
+        const questionType = Object.keys(questions)[0];
+        const questionsArray = questions[questionType];
+
+        questionsArray.forEach(q => {
+          // Check singular question_number
+          if (q.question_number !== undefined && q.question_number > max) {
+            max = q.question_number;
+          }
+
+          // Check plural question_numbers
+          if (q.question_numbers !== undefined) {
+            const currentMax = Math.max(...q.question_numbers);
+            if (currentMax > max) max = currentMax;
+          }
+        });
+      });
+
+      return max;
+    };
+
+    const maxQuestionNumber = getMaxQuestionNumberInPart(updatedParts[passageIndex]);
+    const nextQuestionNumber = maxQuestionNumber + 1;
 
     // Handle different question types
     switch (currentQuestionType) {
@@ -272,7 +303,7 @@ const TestCreationPage: React.FC = () => {
           subtitle: subtitle,
           extra: extra,
           questions: questions.map((question, idx) => ({
-            question_number: question.question_number,
+            question_number: nextQuestionNumber + idx,
             answer: question.answer,
             input_type: question.input_type,
           })),
@@ -283,7 +314,7 @@ const TestCreationPage: React.FC = () => {
       case "true_false_not_given":
         for (let i = 0; i < questionCount; i++) {
           newQuestions.push({
-            question_number: i + 1,
+            question_number: nextQuestionNumber + i,
             question: "",
             answer: "True",
             input_type: "dropdown",
@@ -294,7 +325,7 @@ const TestCreationPage: React.FC = () => {
       case "fill_in_the_blanks":
         for (let i = 0; i < questionCount; i++) {
           newQuestions.push({
-            question_number: i + 1,
+            question_number: nextQuestionNumber + i,
             question: "",
             answer: "",
             input_type: "text",
@@ -314,7 +345,7 @@ const TestCreationPage: React.FC = () => {
         // Create matching_headings questions
         for (let i = 0; i < questionCount; i++) {
           newQuestions.push({
-            question_number: i + 1,
+            question_number: nextQuestionNumber + i,
             question: "", // Admin will enter the question (heading reference)
             answer: "", // Admin will select the correct answer (A, B, C...)
             options: headingOptions, // Use headingOptions for matching_headings
@@ -335,7 +366,7 @@ const TestCreationPage: React.FC = () => {
         // Create paragraph_matching questions
         for (let i = 0; i < questionCount; i++) {
           newQuestions.push({
-            question_number: i + 1,
+            question_number: nextQuestionNumber + i,
             question: "", // Question reference input by admin
             answer: "", // Admin will select the correct answer (A, B, C...)
             options: paragraphOptions, // Use paragraphOptions for paragraph_matching
@@ -356,7 +387,7 @@ const TestCreationPage: React.FC = () => {
           }
 
           newQuestions.push({
-            question_number: i + 1,
+            question_number: nextQuestionNumber + i,
             question: "", // Admin will input the question
             answer: [], // Admin will select the correct answer(s) (e.g., ["D"])
             options: options, // Dynamically generated options for this question
@@ -369,14 +400,18 @@ const TestCreationPage: React.FC = () => {
 
       case "summary_fill_in_the_blanks":
         // Auto-generate question numbers
-        const questionNumbers = Array.from(
+        // const questionNumbers = Array.from(
+        //   { length: questionCount },
+        //   (_, idx) => idx + 1
+        // );
+        const summaryQuestionNumbers = Array.from(
           { length: questionCount },
-          (_, idx) => idx + 1
+          (_, idx) => nextQuestionNumber + idx
         );
 
         // Create the summary fill-in-the-blanks question with passage, options, and correct answers
         newQuestions.push({
-          question_numbers: questionNumbers, // Auto-generated question numbers
+          question_numbers: summaryQuestionNumbers, // Auto-generated question numbers
           passage: summaryPassage, // Passage entered by the admin
           answers: answers, // Correct answers selected by the admin
           options: options, // Options entered by the admin
@@ -418,7 +453,7 @@ const TestCreationPage: React.FC = () => {
 
           // Ensure that the created question object includes all required fields
           newQuestions.push({
-            question_number: i + 1, // Start from question number 1 (for each question)
+            question_number: nextQuestionNumber + i, // Start from question number 1 (for each question)
             question: "", // Placeholder for the actual question text (admin will fill this)
             input_type: "text", // Input type for fill-in-the-blank questions
             instruction:
@@ -702,9 +737,8 @@ const TestCreationPage: React.FC = () => {
               {section.extra?.map((text: any, textIdx: any) => (
                 <div key={textIdx} className="mb-2">
                   <textarea
-                    placeholder={`Text line ${
-                      textIdx + 1
-                    } (use __________ for blanks)`}
+                    placeholder={`Text line ${textIdx + 1
+                      } (use __________ for blanks)`}
                     value={text || ""}
                     onChange={(e) => {
                       const updatedParts = [...test.parts];
@@ -807,8 +841,8 @@ const TestCreationPage: React.FC = () => {
                   const nextQuestionNumber =
                     currentQuestions.length > 0
                       ? Math.max(
-                          ...currentQuestions.map((q: any) => q.question_number)
-                        ) + 1
+                        ...currentQuestions.map((q: any) => q.question_number)
+                      ) + 1
                       : 1;
 
                   if (
@@ -914,6 +948,22 @@ const TestCreationPage: React.FC = () => {
     }
   };
 
+  const handleReadingTestSubmit = async (formData: any) => {
+    try {
+      const data = await submitReadingQuestions(formData);
+      console.log(data.success)
+      if (data.success) {
+        toast.success("Test created successfully!");
+        // Optionally, redirect or reset the form
+      } else {
+        toast.error("Failed to create test. Please try again.");
+      }
+    }
+    catch (error) {
+      toast.error("An error occurred while creating the test.");
+    }
+  }
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Create IELTS Test</h1>
@@ -1015,33 +1065,33 @@ const TestCreationPage: React.FC = () => {
           <div className="mb-2">
             {Array.isArray(passage.passage)
               ? passage.passage.map((para, paraIndex) => (
-                  <textarea
-                    key={paraIndex}
-                    placeholder={`Paragraph ${String.fromCharCode(
-                      65 + paraIndex
-                    )}`}
-                    value={para}
-                    onChange={(e) =>
-                      updateParagraph(passageIndex, paraIndex, e.target.value)
-                    }
-                    className="border p-2 mb-2 w-full"
-                  />
-                ))
+                <textarea
+                  key={paraIndex}
+                  placeholder={`Paragraph ${String.fromCharCode(
+                    65 + paraIndex
+                  )}`}
+                  value={para}
+                  onChange={(e) =>
+                    updateParagraph(passageIndex, paraIndex, e.target.value)
+                  }
+                  className="border p-2 mb-2 w-full"
+                />
+              ))
               : Object.keys(passage.passage).map((key) => (
-                  <textarea
-                    key={key}
-                    placeholder={`Paragraph ${key}`}
-                    value={passage.passage[key]}
-                    onChange={(e) =>
-                      updateParagraph(
-                        passageIndex,
-                        parseInt(key, 36) - 10,
-                        e.target.value
-                      )
-                    }
-                    className="border p-2 mb-2 w-full"
-                  />
-                ))}
+                <textarea
+                  key={key}
+                  placeholder={`Paragraph ${key}`}
+                  value={passage.passage[key]}
+                  onChange={(e) =>
+                    updateParagraph(
+                      passageIndex,
+                      parseInt(key, 36) - 10,
+                      e.target.value
+                    )
+                  }
+                  className="border p-2 mb-2 w-full"
+                />
+              ))}
             <button
               onClick={() => addParagraph(passageIndex)}
               className="bg-green-500 text-white p-2 rounded"
@@ -1099,11 +1149,17 @@ const TestCreationPage: React.FC = () => {
         </div>
       ))}
       <button
-        onClick={() => console.log(JSON.stringify(test, null, 2))}
-        className="bg-purple-500 text-white p-2 rounded mx-2"
+        // onClick={() => console.log(JSON.stringify(test, null, 2))}
+        onClick={(e) => {
+          e.preventDefault();
+          console.log(JSON.stringify(test, null, 2))
+          handleReadingTestSubmit(JSON.stringify(test))
+        }}
+        className=" btn btn-success btn-md text-white "
       >
         Submit
       </button>
+      <ToastContainer position="top-right" />
     </div>
   );
 };

@@ -35,6 +35,27 @@ export async function getSingleReadingTest(paramsId: any) {
   }
 }
 
+export async function submitReadingQuestions(formData: any) {
+  try {
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/readingQuestions`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    // return response.data;
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.error(error);
+    throw error; // ← re‑throw or handle as needed
+  }
+}
+
 // Writing Questions
 
 export async function getWritingTest() {
