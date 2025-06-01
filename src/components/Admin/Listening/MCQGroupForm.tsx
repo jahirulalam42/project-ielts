@@ -1,82 +1,80 @@
 import { useState } from 'react';
-import { MCQGroup, MCQItem } from './listeningTest';
+import { MCQItem } from './listeningTest';
 
-const MCQGroupForm = ({
-    group,
-    updateGroup
-}: {
-    group: MCQGroup;
-    updateGroup: (group: MCQGroup) => void;
-}) => {
-    const [localGroup, setLocalGroup] = useState<MCQGroup>(group);
+interface MCQGroupFormProps {
+    questions?: MCQItem[];
+    onUpdate: (questions: MCQItem[]) => void;
+}
+
+const MCQGroupForm = ({ questions = [], onUpdate }: MCQGroupFormProps) => {
+    const [localQuestions, setLocalQuestions] = useState<MCQItem[]>(questions);
 
     const addQuestion = () => {
         const newQuestion: MCQItem = {
-            question_number: localGroup.content.length + 1,
+            question_number: localQuestions.length + 1,
             question: '',
             answer: '',
-            options: [{ label: 'A', value: '' }],
+            options: [
+                { label: 'A', value: '' },
+                { label: 'B', value: '' },
+                { label: 'C', value: '' }
+            ],
             input_type: 'radio',
             min_selection: 1,
             max_selection: 1
         };
 
-        setLocalGroup(prev => ({
-            ...prev,
-            content: [...prev.content, newQuestion]
-        }));
+        setLocalQuestions(prev => [...prev, newQuestion]);
     };
 
     const updateQuestion = (index: number, field: keyof MCQItem, value: any) => {
-        const updatedContent = [...localGroup.content];
-        updatedContent[index] = { ...updatedContent[index], [field]: value };
-        setLocalGroup({ ...localGroup, content: updatedContent });
+        const updatedQuestions = [...localQuestions];
+        updatedQuestions[index] = { ...updatedQuestions[index], [field]: value };
+        setLocalQuestions(updatedQuestions);
+        onUpdate(updatedQuestions);
     };
 
     const updateOption = (qIndex: number, optIndex: number, value: string) => {
-        const updatedContent = [...localGroup.content];
-        const updatedOptions = [...updatedContent[qIndex].options];
+        const updatedQuestions = [...localQuestions];
+        const updatedOptions = [...updatedQuestions[qIndex].options];
         updatedOptions[optIndex] = { ...updatedOptions[optIndex], value };
-        updatedContent[qIndex].options = updatedOptions;
-        setLocalGroup({ ...localGroup, content: updatedContent });
+        updatedQuestions[qIndex].options = updatedOptions;
+        setLocalQuestions(updatedQuestions);
+        onUpdate(updatedQuestions);
     };
 
     const addOption = (qIndex: number) => {
-        const updatedContent = [...localGroup.content];
-        const options = updatedContent[qIndex].options;
+        const updatedQuestions = [...localQuestions];
+        const options = updatedQuestions[qIndex].options;
         const newLabel = String.fromCharCode(65 + options.length); // A, B, C, ...
 
-        updatedContent[qIndex].options = [
+        updatedQuestions[qIndex].options = [
             ...options,
             { label: newLabel, value: '' }
         ];
 
-        setLocalGroup({ ...localGroup, content: updatedContent });
+        setLocalQuestions(updatedQuestions);
+        onUpdate(updatedQuestions);
     };
 
     const removeOption = (qIndex: number, optIndex: number) => {
-        const updatedContent = [...localGroup.content];
-        updatedContent[qIndex].options = updatedContent[qIndex].options.filter(
+        const updatedQuestions = [...localQuestions];
+        updatedQuestions[qIndex].options = updatedQuestions[qIndex].options.filter(
             (_, i) => i !== optIndex
         );
-        setLocalGroup({ ...localGroup, content: updatedContent });
+        setLocalQuestions(updatedQuestions);
+        onUpdate(updatedQuestions);
     };
 
     const removeQuestion = (index: number) => {
-        setLocalGroup(prev => ({
-            ...prev,
-            content: prev.content.filter((_, i) => i !== index)
-        }));
-    };
-
-    // Save changes when leaving
-    const handleBlur = () => {
-        updateGroup(localGroup);
+        const updatedQuestions = localQuestions.filter((_, i) => i !== index);
+        setLocalQuestions(updatedQuestions);
+        onUpdate(updatedQuestions);
     };
 
     return (
-        <div className="space-y-6" onBlur={handleBlur}>
-            {localGroup.content.map((question, qIndex) => (
+        <div className="space-y-6">
+            {localQuestions.map((question, qIndex) => (
                 <div key={qIndex} className="bg-base-100 p-4 rounded-lg">
                     <div className="flex justify-between items-center mb-3">
                         <h4 className="font-medium">Question {question.question_number}</h4>

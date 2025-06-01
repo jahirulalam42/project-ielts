@@ -1,92 +1,159 @@
-import { useState } from 'react';
-import { MapGroup, MapItem } from './listeningTest';
+import { useState, useEffect } from 'react';
+import { MapGroup } from './listeningTest';
 
-const MapGroupForm = ({
-    group,
-    updateGroup
-}: {
+interface MapGroupFormProps {
     group: MapGroup;
     updateGroup: (group: MapGroup) => void;
-}) => {
+}
+
+const MapGroupForm = ({ group, updateGroup }: MapGroupFormProps) => {
     const [localGroup, setLocalGroup] = useState<MapGroup>(group);
 
-    const addMap = () => {
-        const newMap: MapItem = {
-            title: '',
-            image: '',
-            labels: ['A', 'B', 'C'],
-            questions: []
-        };
+    useEffect(() => {
+        setLocalGroup(group);
+    }, [group]);
 
-        setLocalGroup(prev => ({
-            ...prev,
-            content: [...prev.content, newMap]
-        }));
-    };
-
-    const updateMap = (index: number, field: keyof MapItem, value: any) => {
-        const updatedContent = [...localGroup.content];
-        updatedContent[index] = { ...updatedContent[index], [field]: value };
-        setLocalGroup({ ...localGroup, content: updatedContent });
-    };
-
-    const addQuestion = (mapIndex: number) => {
-        const updatedContent = [...localGroup.content];
-        const questions = updatedContent[mapIndex].questions;
-
-        const newQuestion = {
-            question_number: questions.length + 1,
-            question: '',
-            answer: '',
-            input_type: 'radio',
-            min_selection: 1,
-            max_selection: 1
-        };
-
-        updatedContent[mapIndex].questions = [...questions, newQuestion];
-        setLocalGroup({ ...localGroup, content: updatedContent });
-    };
-
-    const updateQuestion = (mapIndex: number, qIndex: number, field: string, value: any) => {
-        const updatedContent = [...localGroup.content];
-        const updatedQuestions = [...updatedContent[mapIndex].questions];
-        updatedQuestions[qIndex] = { ...updatedQuestions[qIndex], [field]: value };
-        updatedContent[mapIndex].questions = updatedQuestions;
-        setLocalGroup({ ...localGroup, content: updatedContent });
-    };
-
-    const removeQuestion = (mapIndex: number, qIndex: number) => {
-        const updatedContent = [...localGroup.content];
-        updatedContent[mapIndex].questions = updatedContent[mapIndex].questions.filter(
-            (_, i) => i !== qIndex
-        );
-        setLocalGroup({ ...localGroup, content: updatedContent });
-    };
-
-    const removeMap = (index: number) => {
-        setLocalGroup(prev => ({
-            ...prev,
-            content: prev.content.filter((_, i) => i !== index)
-        }));
-    };
-
-    // Save changes when leaving
     const handleBlur = () => {
         updateGroup(localGroup);
     };
 
+    const handleMapItemChange = (mapIndex: number, field: string, value: string) => {
+        setLocalGroup(prev => {
+            const updatedMap = [...prev.map];
+            updatedMap[mapIndex] = {
+                ...updatedMap[mapIndex],
+                [field]: value
+            };
+            return { ...prev, map: updatedMap };
+        });
+    };
+
+    const handleLabelsChange = (mapIndex: number, labels: string[]) => {
+        setLocalGroup(prev => {
+            const updatedMap = [...prev.map];
+            updatedMap[mapIndex] = {
+                ...updatedMap[mapIndex],
+                labels
+            };
+            return { ...prev, map: updatedMap };
+        });
+    };
+
+    const addLabel = (mapIndex: number) => {
+        setLocalGroup(prev => {
+            const updatedMap = [...prev.map];
+            const currentLabels = updatedMap[mapIndex].labels;
+            const lastLabel = currentLabels[currentLabels.length - 1];
+            const nextLabel = String.fromCharCode(lastLabel.charCodeAt(0) + 1);
+            
+            updatedMap[mapIndex] = {
+                ...updatedMap[mapIndex],
+                labels: [...currentLabels, nextLabel]
+            };
+            return { ...prev, map: updatedMap };
+        });
+    };
+
+    const removeLabel = (mapIndex: number, labelIndex: number) => {
+        setLocalGroup(prev => {
+            const updatedMap = [...prev.map];
+            const updatedLabels = updatedMap[mapIndex].labels.filter((_, index) => index !== labelIndex);
+            
+            // Update any questions that were using the removed label
+            const updatedQuestions = updatedMap[mapIndex].questions.map(q => ({
+                ...q,
+                answer: q.answer === updatedMap[mapIndex].labels[labelIndex] ? '' : q.answer
+            }));
+
+            updatedMap[mapIndex] = {
+                ...updatedMap[mapIndex],
+                labels: updatedLabels,
+                questions: updatedQuestions
+            };
+            return { ...prev, map: updatedMap };
+        });
+    };
+
+    const handleQuestionChange = (mapIndex: number, questionIndex: number, field: string, value: string) => {
+        setLocalGroup(prev => {
+            const updatedMap = [...prev.map];
+            const updatedQuestions = [...updatedMap[mapIndex].questions];
+            updatedQuestions[questionIndex] = {
+                ...updatedQuestions[questionIndex],
+                [field]: value
+            };
+            updatedMap[mapIndex] = {
+                ...updatedMap[mapIndex],
+                questions: updatedQuestions
+            };
+            return { ...prev, map: updatedMap };
+        });
+    };
+
+    const addMapItem = () => {
+        setLocalGroup(prev => ({
+            ...prev,
+            map: [...prev.map, {
+                title: '',
+                image: '',
+                labels: ['A', 'B', 'C'],
+                questions: []
+            }]
+        }));
+    };
+
+    const removeMapItem = (mapIndex: number) => {
+        setLocalGroup(prev => ({
+            ...prev,
+            map: prev.map.filter((_, index) => index !== mapIndex)
+        }));
+    };
+
+    const addQuestion = (mapIndex: number) => {
+        setLocalGroup(prev => {
+            const updatedMap = [...prev.map];
+            const currentQuestions = updatedMap[mapIndex].questions;
+            const newQuestionNumber = currentQuestions.length + 1;
+            
+            updatedMap[mapIndex] = {
+                ...updatedMap[mapIndex],
+                questions: [...currentQuestions, {
+                    question_number: newQuestionNumber,
+                    question: '',
+                    answer: '',
+                    input_type: 'radio',
+                    min_selection: 1,
+                    max_selection: 1
+                }]
+            };
+            return { ...prev, map: updatedMap };
+        });
+    };
+
+    const removeQuestion = (mapIndex: number, questionIndex: number) => {
+        setLocalGroup(prev => {
+            const updatedMap = [...prev.map];
+            const updatedQuestions = updatedMap[mapIndex].questions.filter((_, index) => index !== questionIndex);
+            updatedMap[mapIndex] = {
+                ...updatedMap[mapIndex],
+                questions: updatedQuestions
+            };
+            return { ...prev, map: updatedMap };
+        });
+    };
+
     return (
         <div className="space-y-6" onBlur={handleBlur}>
-            {localGroup.content.map((mapItem, mapIndex) => (
+            {localGroup.map.map((mapItem, mapIndex) => (
                 <div key={mapIndex} className="bg-base-100 p-4 rounded-lg">
                     <div className="flex justify-between items-center mb-3">
                         <h4 className="font-medium">Map Section {mapIndex + 1}</h4>
                         <button
                             type="button"
-                            onClick={() => removeMap(mapIndex)}
-                            className="btn btn-error btn-xs"
+                            onClick={() => removeMapItem(mapIndex)}
+                            className="btn btn-error btn-sm"
                         >
-                            Remove
+                            Remove Map
                         </button>
                     </div>
 
@@ -99,8 +166,7 @@ const MapGroupForm = ({
                                 type="text"
                                 className="input input-bordered"
                                 value={mapItem.title}
-                                onChange={e => updateMap(mapIndex, 'title', e.target.value)}
-                                required
+                                onChange={e => handleMapItemChange(mapIndex, 'title', e.target.value)}
                             />
                         </div>
 
@@ -112,95 +178,106 @@ const MapGroupForm = ({
                                 type="text"
                                 className="input input-bordered"
                                 value={mapItem.image}
-                                onChange={e => updateMap(mapIndex, 'image', e.target.value)}
-                                required
+                                onChange={e => handleMapItemChange(mapIndex, 'image', e.target.value)}
                             />
                         </div>
                     </div>
 
                     <div className="form-control mb-4">
-                        <label className="label">
-                            <span className="label-text">Labels (comma separated)</span>
-                        </label>
-                        <input
-                            type="text"
-                            className="input input-bordered"
-                            value={mapItem.labels.join(', ')}
-                            onChange={e => updateMap(mapIndex, 'labels', e.target.value.split(',').map(l => l.trim()))}
-                            required
-                        />
-                    </div>
-
-                    <div className="form-control">
-                        <label className="label">
-                            <span className="label-text">Questions</span>
-                        </label>
-                        <div className="space-y-3">
-                            {mapItem.questions.map((q, qIndex) => (
-                                <div key={qIndex} className="bg-base-200 p-3 rounded">
-                                    <div className="flex justify-between items-center mb-2">
-                                        <span className="font-medium">Q{q.question_number}</span>
-                                        <button
-                                            type="button"
-                                            onClick={() => removeQuestion(mapIndex, qIndex)}
-                                            className="btn btn-error btn-xs"
-                                        >
-                                            Remove
-                                        </button>
-                                    </div>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                        <div className="form-control">
-                                            <label className="label">
-                                                <span className="label-text">Question Text</span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="input input-bordered"
-                                                value={q.question}
-                                                onChange={e => updateQuestion(mapIndex, qIndex, 'question', e.target.value)}
-                                                required
-                                            />
-                                        </div>
-
-                                        <div className="form-control">
-                                            <label className="label">
-                                                <span className="label-text">Correct Answer</span>
-                                            </label>
-                                            <select
-                                                className="select select-bordered"
-                                                value={q.answer}
-                                                onChange={e => updateQuestion(mapIndex, qIndex, 'answer', e.target.value)}
-                                                required
-                                            >
-                                                <option value="">Select correct label</option>
-                                                {mapItem.labels.map((label, labelIndex) => (
-                                                    <option key={labelIndex} value={label}>
-                                                        {label}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                    </div>
+                        <div className="flex justify-between items-center mb-2">
+                            <label className="label">
+                                <span className="label-text">Labels</span>
+                            </label>
+                            <button
+                                type="button"
+                                onClick={() => addLabel(mapIndex)}
+                                className="btn btn-primary btn-sm"
+                            >
+                                Add Label
+                            </button>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                            {mapItem.labels.map((label, labelIndex) => (
+                                <div key={label} className="flex items-center gap-2 bg-base-200 px-3 py-1 rounded">
+                                    <span>{label}</span>
+                                    <button
+                                        type="button"
+                                        onClick={() => removeLabel(mapIndex, labelIndex)}
+                                        className="btn btn-ghost btn-xs"
+                                    >
+                                        ×
+                                    </button>
                                 </div>
                             ))}
+                        </div>
+                    </div>
 
+                    <div className="space-y-4">
+                        <div className="flex justify-between items-center">
+                            <h5 className="font-medium">Questions</h5>
                             <button
                                 type="button"
                                 onClick={() => addQuestion(mapIndex)}
-                                className="btn btn-xs mt-2"
+                                className="btn btn-primary btn-sm"
                             >
                                 Add Question
                             </button>
                         </div>
+
+                        {mapItem.questions.map((question, questionIndex) => (
+                            <div key={questionIndex} className="bg-base-200 p-4 rounded-lg">
+                                <div className="flex justify-between items-center mb-3">
+                                    <h6 className="font-medium">Question {question.question_number}</h6>
+                                    <button
+                                        type="button"
+                                        onClick={() => removeQuestion(mapIndex, questionIndex)}
+                                        className="btn btn-error btn-sm"
+                                    >
+                                        Remove
+                                    </button>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="form-control">
+                                        <label className="label">
+                                            <span className="label-text">Question</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            className="input input-bordered"
+                                            value={question.question}
+                                            onChange={e => handleQuestionChange(mapIndex, questionIndex, 'question', e.target.value)}
+                                        />
+                                    </div>
+
+                                    <div className="form-control">
+                                        <label className="label">
+                                            <span className="label-text">Answer</span>
+                                        </label>
+                                        <select
+                                            className="select select-bordered"
+                                            value={question.answer}
+                                            onChange={e => handleQuestionChange(mapIndex, questionIndex, 'answer', e.target.value)}
+                                        >
+                                            <option value="">Select Answer</option>
+                                            {mapItem.labels.map(label => (
+                                                <option key={label} value={label}>
+                                                    {label}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             ))}
 
             <button
                 type="button"
-                onClick={addMap}
-                className="btn btn-sm"
+                onClick={addMapItem}
+                className="btn btn-primary"
             >
                 Add Map Section
             </button>
