@@ -1,11 +1,12 @@
-import React from 'react'
+import WritingCreationPage from "@/components/Admin/Writing/WritingCreationPage";
+import React from "react";
 
 const page = () => {
   return (
     <div>
-      Writing
+      <WritingCreationPage />
     </div>
-  )
-}
+  );
+};
 
-export default page
+export default page;
