@@ -1,79 +1,150 @@
+import { useState, useEffect } from 'react';
 import { FillBlanksGroup } from './listeningTest';
-import { useState } from 'react';
 
-const FillBlanksGroupForm = ({
-    group,
-    updateGroup
-}: {
+interface FillBlanksGroupFormProps {
     group: FillBlanksGroup;
     updateGroup: (group: FillBlanksGroup) => void;
-}) => {
+}
+
+const FillBlanksGroupForm = ({ group, updateGroup }: FillBlanksGroupFormProps) => {
     const [localGroup, setLocalGroup] = useState<FillBlanksGroup>(group);
 
-    const addSection = () => {
-        setLocalGroup(prev => ({
-            ...prev,
-            content: [
-                ...prev.content,
-                { title: '', subtitle: '', extra: [''], questions: [] }
-            ]
-        }));
-    };
+    useEffect(() => {
+        setLocalGroup(group);
+    }, [group]);
 
-    const updateSection = (index: number, field: keyof typeof localGroup.content[0], value: string) => {
-        const updatedContent = [...localGroup.content];
-        updatedContent[index] = { ...updatedContent[index], [field]: value };
-        setLocalGroup({ ...localGroup, content: updatedContent });
-    };
-
-    const updateExtraLine = (sectionIndex: number, lineIndex: number, value: string) => {
-        const updatedContent = [...localGroup.content];
-        const updatedExtra = [...updatedContent[sectionIndex].extra];
-        updatedExtra[lineIndex] = value;
-        updatedContent[sectionIndex] = {
-            ...updatedContent[sectionIndex],
-            extra: updatedExtra
-        };
-        setLocalGroup({ ...localGroup, content: updatedContent });
-    };
-
-    const addExtraLine = (sectionIndex: number) => {
-        const updatedContent = [...localGroup.content];
-        updatedContent[sectionIndex].extra.push('');
-        setLocalGroup({ ...localGroup, content: updatedContent });
-    };
-
-    const addQuestion = (sectionIndex: number) => {
-        const updatedContent = [...localGroup.content];
-        const questions = updatedContent[sectionIndex].questions;
-        const newQuestion = {
-            question_number: questions.length + 1,
-            answer: '',
-            input_type: 'text'
-        };
-        updatedContent[sectionIndex].questions.push(newQuestion);
-        setLocalGroup({ ...localGroup, content: updatedContent });
-    };
-
-    const updateQuestion = (sectionIndex: number, qIndex: number, field: string, value: string) => {
-        const updatedContent = [...localGroup.content];
-        const updatedQuestions = [...updatedContent[sectionIndex].questions];
-        updatedQuestions[qIndex] = { ...updatedQuestions[qIndex], [field]: value };
-        updatedContent[sectionIndex].questions = updatedQuestions;
-        setLocalGroup({ ...localGroup, content: updatedContent });
-    };
-
-    // Save changes when leaving
     const handleBlur = () => {
         updateGroup(localGroup);
     };
 
+    const handleSectionChange = (sectionIndex: number, field: string, value: string) => {
+        setLocalGroup(prev => {
+            const updatedSections = [...prev.fill_in_the_blanks_with_subtitle];
+            updatedSections[sectionIndex] = {
+                ...updatedSections[sectionIndex],
+                [field]: value
+            };
+            return { ...prev, fill_in_the_blanks_with_subtitle: updatedSections };
+        });
+    };
+
+    const handleExtraChange = (sectionIndex: number, extraIndex: number, value: string) => {
+        setLocalGroup(prev => {
+            const updatedSections = [...prev.fill_in_the_blanks_with_subtitle];
+            const updatedExtra = [...updatedSections[sectionIndex].extra];
+            updatedExtra[extraIndex] = value;
+            updatedSections[sectionIndex] = {
+                ...updatedSections[sectionIndex],
+                extra: updatedExtra
+            };
+            return { ...prev, fill_in_the_blanks_with_subtitle: updatedSections };
+        });
+    };
+
+    const handleQuestionChange = (sectionIndex: number, questionIndex: number, field: string, value: string) => {
+        setLocalGroup(prev => {
+            const updatedSections = [...prev.fill_in_the_blanks_with_subtitle];
+            const updatedQuestions = [...updatedSections[sectionIndex].questions];
+            updatedQuestions[questionIndex] = {
+                ...updatedQuestions[questionIndex],
+                [field]: value
+            };
+            updatedSections[sectionIndex] = {
+                ...updatedSections[sectionIndex],
+                questions: updatedQuestions
+            };
+            return { ...prev, fill_in_the_blanks_with_subtitle: updatedSections };
+        });
+    };
+
+    const addSection = () => {
+        setLocalGroup(prev => ({
+            ...prev,
+            fill_in_the_blanks_with_subtitle: [...prev.fill_in_the_blanks_with_subtitle, {
+                subtitle: '',
+                extra: [],
+                questions: []
+            }]
+        }));
+    };
+
+    const removeSection = (sectionIndex: number) => {
+        setLocalGroup(prev => ({
+            ...prev,
+            fill_in_the_blanks_with_subtitle: prev.fill_in_the_blanks_with_subtitle.filter((_, index) => index !== sectionIndex)
+        }));
+    };
+
+    const addExtra = (sectionIndex: number) => {
+        setLocalGroup(prev => {
+            const updatedSections = [...prev.fill_in_the_blanks_with_subtitle];
+            updatedSections[sectionIndex] = {
+                ...updatedSections[sectionIndex],
+                extra: [...updatedSections[sectionIndex].extra, '']
+            };
+            return { ...prev, fill_in_the_blanks_with_subtitle: updatedSections };
+        });
+    };
+
+    const removeExtra = (sectionIndex: number, extraIndex: number) => {
+        setLocalGroup(prev => {
+            const updatedSections = [...prev.fill_in_the_blanks_with_subtitle];
+            const updatedExtra = updatedSections[sectionIndex].extra.filter((_, index) => index !== extraIndex);
+            updatedSections[sectionIndex] = {
+                ...updatedSections[sectionIndex],
+                extra: updatedExtra
+            };
+            return { ...prev, fill_in_the_blanks_with_subtitle: updatedSections };
+        });
+    };
+
+    const addQuestion = (sectionIndex: number) => {
+        setLocalGroup(prev => {
+            const updatedSections = [...prev.fill_in_the_blanks_with_subtitle];
+            const currentQuestions = updatedSections[sectionIndex].questions;
+            const newQuestionNumber = currentQuestions.length + 1;
+            
+            updatedSections[sectionIndex] = {
+                ...updatedSections[sectionIndex],
+                questions: [...currentQuestions, {
+                    question_number: newQuestionNumber,
+                    answer: '',
+                    input_type: 'text'
+                }]
+            };
+            return { ...prev, fill_in_the_blanks_with_subtitle: updatedSections };
+        });
+    };
+
+    const removeQuestion = (sectionIndex: number, questionIndex: number) => {
+        setLocalGroup(prev => {
+            const updatedSections = [...prev.fill_in_the_blanks_with_subtitle];
+            const updatedQuestions = updatedSections[sectionIndex].questions.filter((_, index) => index !== questionIndex);
+            updatedSections[sectionIndex] = {
+                ...updatedSections[sectionIndex],
+                questions: updatedQuestions
+            };
+            return { ...prev, fill_in_the_blanks_with_subtitle: updatedSections };
+        });
+    };
+
     return (
-        <div className="border rounded-lg p-4 bg-base-200" onBlur={handleBlur}>
-            <div className="space-y-6">
-                {localGroup.content.map((section, sectionIndex) => (
-                    <div key={sectionIndex} className="bg-base-100 p-4 rounded-lg">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div className="space-y-6" onBlur={handleBlur}>
+            {localGroup.fill_in_the_blanks_with_subtitle.map((section, sectionIndex) => (
+                <div key={sectionIndex} className="bg-base-100 p-4 rounded-lg">
+                    <div className="flex justify-between items-center mb-3">
+                        <h4 className="font-medium">Section {sectionIndex + 1}</h4>
+                        <button
+                            type="button"
+                            onClick={() => removeSection(sectionIndex)}
+                            className="btn btn-error btn-sm"
+                        >
+                            Remove Section
+                        </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        {sectionIndex === 0 && (
                             <div className="form-control">
                                 <label className="label">
                                     <span className="label-text">Title</span>
@@ -82,83 +153,103 @@ const FillBlanksGroupForm = ({
                                     type="text"
                                     className="input input-bordered"
                                     value={section.title || ''}
-                                    onChange={e => updateSection(sectionIndex, 'title', e.target.value)}
+                                    onChange={e => handleSectionChange(sectionIndex, 'title', e.target.value)}
                                 />
                             </div>
-
-                            <div className="form-control">
-                                <label className="label">
-                                    <span className="label-text">Subtitle</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    className="input input-bordered"
-                                    value={section.subtitle || ''}
-                                    onChange={e => updateSection(sectionIndex, 'subtitle', e.target.value)}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="form-control mb-4">
-                            <label className="label">
-                                <span className="label-text">Content Lines</span>
-                            </label>
-                            <div className="space-y-2">
-                                {section.extra.map((line, lineIndex) => (
-                                    <input
-                                        key={lineIndex}
-                                        type="text"
-                                        className="input input-bordered input-sm"
-                                        value={line}
-                                        onChange={e => updateExtraLine(sectionIndex, lineIndex, e.target.value)}
-                                    />
-                                ))}
-                                <button
-                                    type="button"
-                                    onClick={() => addExtraLine(sectionIndex)}
-                                    className="btn btn-xs mt-2"
-                                >
-                                    Add Line
-                                </button>
-                            </div>
-                        </div>
-
+                        )}
                         <div className="form-control">
                             <label className="label">
-                                <span className="label-text">Questions</span>
+                                <span className="label-text">Subtitle</span>
                             </label>
-                            <div className="space-y-3">
-                                {section.questions.map((q, qIndex) => (
-                                    <div key={qIndex} className="flex items-center gap-2">
-                                        <span className="font-medium">Q{q.question_number}:</span>
-                                        <input
-                                            type="text"
-                                            className="input input-bordered input-sm flex-1"
-                                            placeholder="Answer"
-                                            value={q.answer}
-                                            onChange={e => updateQuestion(sectionIndex, qIndex, 'answer', e.target.value)}
-                                        />
-                                    </div>
-                                ))}
-                                <button
-                                    type="button"
-                                    onClick={() => addQuestion(sectionIndex)}
-                                    className="btn btn-xs mt-2"
-                                >
-                                    Add Question
-                                </button>
-                            </div>
+                            <input
+                                type="text"
+                                className="input input-bordered"
+                                value={section.subtitle || ''}
+                                onChange={e => handleSectionChange(sectionIndex, 'subtitle', e.target.value)}
+                            />
                         </div>
                     </div>
-                ))}
-            </div>
+
+                    <div className="space-y-4 mb-4">
+                        <div className="flex justify-between items-center">
+                            <h5 className="font-medium">Extra Information</h5>
+                            <button
+                                type="button"
+                                onClick={() => addExtra(sectionIndex)}
+                                className="btn btn-primary btn-sm"
+                            >
+                                Add Extra
+                            </button>
+                        </div>
+
+                        {section.extra.map((extra, extraIndex) => (
+                            <div key={extraIndex} className="flex gap-2">
+                                <input
+                                    type="text"
+                                    className="input input-bordered flex-1"
+                                    value={extra}
+                                    onChange={e => handleExtraChange(sectionIndex, extraIndex, e.target.value)}
+                                    placeholder="Enter extra information"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => removeExtra(sectionIndex, extraIndex)}
+                                    className="btn btn-ghost btn-sm"
+                                >
+                                    ×
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="space-y-4">
+                        <div className="flex justify-between items-center">
+                            <h5 className="font-medium">Questions</h5>
+                            <button
+                                type="button"
+                                onClick={() => addQuestion(sectionIndex)}
+                                className="btn btn-primary btn-sm"
+                            >
+                                Add Question
+                            </button>
+                        </div>
+
+                        {section.questions.map((question, questionIndex) => (
+                            <div key={questionIndex} className="bg-base-200 p-4 rounded-lg">
+                                <div className="flex justify-between items-center mb-3">
+                                    <h6 className="font-medium">Question {question.question_number}</h6>
+                                    <button
+                                        type="button"
+                                        onClick={() => removeQuestion(sectionIndex, questionIndex)}
+                                        className="btn btn-error btn-sm"
+                                    >
+                                        Remove
+                                    </button>
+                                </div>
+
+                                <div className="form-control">
+                                    <label className="label">
+                                        <span className="label-text">Answer</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className="input input-bordered"
+                                        value={question.answer}
+                                        onChange={e => handleQuestionChange(sectionIndex, questionIndex, 'answer', e.target.value)}
+                                    />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ))}
 
             <button
                 type="button"
                 onClick={addSection}
-                className="btn btn-sm mt-4"
+                className="btn btn-primary"
             >
-                Add New Section
+                Add Section
             </button>
         </div>
     );
