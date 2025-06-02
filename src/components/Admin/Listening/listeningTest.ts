@@ -3,7 +3,7 @@ export type QuestionGroup = FillBlanksGroup | MCQGroup | MapGroup;
 export interface ListeningTest {
   id: string;
   title: string;
-  type: string;
+  type: 'academic' | 'general';
   duration: number;
   audioUrl: string;
   parts: TestPart[];
@@ -16,12 +16,15 @@ export interface TestPart {
 
 // Fill in the Blanks Type
 export interface FillBlanksGroup {
-  type: "fill_in_the_blanks_with_subtitle";
-  content: {
+  fill_in_the_blanks_with_subtitle: {
     title?: string;
     subtitle?: string;
     extra: string[];
-    questions: FillQuestion[];
+    questions: {
+      question_number: number;
+      answer: string;
+      input_type: string;
+    }[];
   }[];
 }
 
@@ -33,36 +36,39 @@ export interface FillQuestion {
 
 // MCQ Type
 export interface MCQGroup {
-  type: "mcq";
-  content: MCQItem[];
+  mcq: MCQItem[];
 }
 
 export interface MCQItem {
   question_number: number;
   question: string;
   answer: string;
-  options: Option[];
+  options: {
+    label: string;
+    value: string;
+  }[];
   input_type: string;
   min_selection: number;
   max_selection: number;
 }
 
-export interface Option {
-  label: string;
-  value: string;
-}
-
 // Map Type
 export interface MapGroup {
-  type: "map";
-  content: MapItem[];
+  map: MapItem[];
 }
 
 export interface MapItem {
   title: string;
   image: string;
   labels: string[];
-  questions: MapQuestion[];
+  questions: {
+    question_number: number;
+    question: string;
+    answer: string;
+    input_type: string;
+    min_selection: number;
+    max_selection: number;
+  }[];
 }
 
 export interface MapQuestion {
@@ -72,4 +78,16 @@ export interface MapQuestion {
   input_type: string;
   min_selection: number;
   max_selection: number;
+}
+
+// Fill in the Blanks Type
+export interface FillBlanksItem {
+  title?: string;
+  subtitle?: string;
+  extra: string[];
+  questions: {
+    question_number: number;
+    answer: string;
+    input_type: string;
+  }[];
 }

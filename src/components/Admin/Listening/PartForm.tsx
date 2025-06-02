@@ -15,13 +15,12 @@ const PartForm = ({ part, partIndex, updatePart, removePart, isLast }: PartFormP
     };
 
     const addQuestionGroup = (type: 'fill' | 'mcq' | 'map') => {
-        let newGroup: QuestionGroup;
+        let newGroup;
 
         switch (type) {
             case 'fill':
                 newGroup = {
-                    type: 'fill_in_the_blanks_with_subtitle',
-                    content: [{
+                    fill_in_the_blanks_with_subtitle: [{
                         title: '',
                         subtitle: '',
                         extra: [],
@@ -31,12 +30,15 @@ const PartForm = ({ part, partIndex, updatePart, removePart, isLast }: PartFormP
                 break;
             case 'mcq':
                 newGroup = {
-                    type: 'mcq',
-                    content: [{
-                        question_number: part.questions.length + 1,
+                    mcq: [{
+                        question_number: 1,
                         question: '',
                         answer: '',
-                        options: [{ label: 'A', value: '' }],
+                        options: [
+                            { label: 'A', value: '' },
+                            { label: 'B', value: '' },
+                            { label: 'C', value: '' }
+                        ],
                         input_type: 'radio',
                         min_selection: 1,
                         max_selection: 1
@@ -45,8 +47,7 @@ const PartForm = ({ part, partIndex, updatePart, removePart, isLast }: PartFormP
                 break;
             case 'map':
                 newGroup = {
-                    type: 'map',
-                    content: [{
+                    map: [{
                         title: '',
                         image: '',
                         labels: ['A', 'B', 'C'],

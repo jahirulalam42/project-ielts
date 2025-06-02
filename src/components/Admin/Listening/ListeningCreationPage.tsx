@@ -41,7 +41,10 @@ const ListeningCreationPage = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Test Data:', test);
+        const formattedTest = {
+            listeningTests: [test]
+        };
+        console.log('Submitting test:', JSON.stringify(formattedTest, null, 2));
         // Submit to API here
     };
 
