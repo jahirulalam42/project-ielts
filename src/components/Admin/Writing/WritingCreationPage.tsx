@@ -21,7 +21,20 @@ const WritingCreationPage: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Test Data:", testData);
+    // Format the JSON output to match writing.json format
+    const formattedTest = {
+      title: testData.title,
+      type: testData.type,
+      duration: testData.duration,
+      parts: testData.parts.map(part => ({
+        title: part.title,
+        subtitle: part.subtitle,
+        Question: part.Question,
+        instruction: part.instruction,
+        ...(part.image && { image: part.image }) // Only include image if it exists
+      }))
+    };
+    console.log('Writing Test JSON:', JSON.stringify(formattedTest, null, 2));
   };
 
   const handleTestChange = (field: keyof WritingTest, value: any) => {

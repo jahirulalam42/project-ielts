@@ -3,7 +3,7 @@ export type WritingPart = {
   subtitle: string;
   Question: string[];
   instruction: string[];
-  image: string;
+  image?: string;
 };
 
 export type WritingTest = {
