@@ -1,12 +1,11 @@
 {
   "listeningTests": [
     {
-      "id": "listening-test-1",
       "title": "Academic Listening Test 1",
       "type": "academic",
       "duration": 30,
       "audioUrl": "https://dummy-s3-bucket.com/listening-tests/test1-section1.mp3",
-      "parts":[
+      "parts": [
         {
           "title": "Part 1",
           "questions": [
@@ -285,10 +284,9 @@
                       "max_selection": 1
                     }
                   ]
-                }  
+                }
               ]
             }
-            
           ]
         },
         {
