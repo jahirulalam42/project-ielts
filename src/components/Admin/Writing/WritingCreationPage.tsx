@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import WritingPartForm from "./WritingPartForm";
 import { WritingTest, WritingPart } from "./WritingTest";
+import { ToastContainer, toast } from "react-toastify";
+import { submitWritingQuestions } from "@/services/data";
 
 const WritingCreationPage: React.FC = () => {
   const [testData, setTestData] = useState<WritingTest>({
@@ -19,22 +21,35 @@ const WritingCreationPage: React.FC = () => {
     ],
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Format the JSON output to match writing.json format
     const formattedTest = {
       title: testData.title,
       type: testData.type,
       duration: testData.duration,
-      parts: testData.parts.map(part => ({
+      parts: testData.parts.map((part) => ({
         title: part.title,
         subtitle: part.subtitle,
         Question: part.Question,
         instruction: part.instruction,
-        ...(part.image && { image: part.image }) // Only include image if it exists
-      }))
+        ...(part.image && { image: part.image }), // Only include image if it exists
+      })),
     };
-    console.log('Writing Test JSON:', JSON.stringify(formattedTest, null, 2));
+    console.log("Writing Test JSON:", JSON.stringify(formattedTest, null, 2));
+
+    try {
+      const data = await submitWritingQuestions(formattedTest);
+      console.log(data.success);
+      if (data.success) {
+        toast.success("Test created successfully!");
+        // Optionally, redirect or reset the form
+      } else {
+        toast.error("Failed to create test. Please try again.");
+      }
+    } catch (error) {
+      toast.error("An error occurred while creating the test.");
+    }
   };
 
   const handleTestChange = (field: keyof WritingTest, value: any) => {
@@ -152,6 +167,8 @@ const WritingCreationPage: React.FC = () => {
             </button>
           </div>
         </form>
+
+        <ToastContainer position="top-right" />
       </div>
     </div>
   );

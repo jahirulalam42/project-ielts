@@ -275,7 +275,7 @@ const TestCreationPage: React.FC = () => {
         const questionType = Object.keys(questions)[0];
         const questionsArray = questions[questionType];
 
-        questionsArray.forEach(q => {
+        questionsArray.forEach((q) => {
           // Check singular question_number
           if (q.question_number !== undefined && q.question_number > max) {
             max = q.question_number;
@@ -292,7 +292,9 @@ const TestCreationPage: React.FC = () => {
       return max;
     };
 
-    const maxQuestionNumber = getMaxQuestionNumberInPart(updatedParts[passageIndex]);
+    const maxQuestionNumber = getMaxQuestionNumberInPart(
+      updatedParts[passageIndex]
+    );
     const nextQuestionNumber = maxQuestionNumber + 1;
 
     // Handle different question types
@@ -737,8 +739,9 @@ const TestCreationPage: React.FC = () => {
               {section.extra?.map((text: any, textIdx: any) => (
                 <div key={textIdx} className="mb-2">
                   <textarea
-                    placeholder={`Text line ${textIdx + 1
-                      } (use __________ for blanks)`}
+                    placeholder={`Text line ${
+                      textIdx + 1
+                    } (use __________ for blanks)`}
                     value={text || ""}
                     onChange={(e) => {
                       const updatedParts = [...test.parts];
@@ -841,8 +844,8 @@ const TestCreationPage: React.FC = () => {
                   const nextQuestionNumber =
                     currentQuestions.length > 0
                       ? Math.max(
-                        ...currentQuestions.map((q: any) => q.question_number)
-                      ) + 1
+                          ...currentQuestions.map((q: any) => q.question_number)
+                        ) + 1
                       : 1;
 
                   if (
@@ -951,18 +954,17 @@ const TestCreationPage: React.FC = () => {
   const handleReadingTestSubmit = async (formData: any) => {
     try {
       const data = await submitReadingQuestions(formData);
-      console.log(data.success)
+      console.log(data.success);
       if (data.success) {
         toast.success("Test created successfully!");
         // Optionally, redirect or reset the form
       } else {
         toast.error("Failed to create test. Please try again.");
       }
-    }
-    catch (error) {
+    } catch (error) {
       toast.error("An error occurred while creating the test.");
     }
-  }
+  };
 
   return (
     <div className="container mx-auto p-4">
@@ -1065,33 +1067,33 @@ const TestCreationPage: React.FC = () => {
           <div className="mb-2">
             {Array.isArray(passage.passage)
               ? passage.passage.map((para, paraIndex) => (
-                <textarea
-                  key={paraIndex}
-                  placeholder={`Paragraph ${String.fromCharCode(
-                    65 + paraIndex
-                  )}`}
-                  value={para}
-                  onChange={(e) =>
-                    updateParagraph(passageIndex, paraIndex, e.target.value)
-                  }
-                  className="border p-2 mb-2 w-full"
-                />
-              ))
+                  <textarea
+                    key={paraIndex}
+                    placeholder={`Paragraph ${String.fromCharCode(
+                      65 + paraIndex
+                    )}`}
+                    value={para}
+                    onChange={(e) =>
+                      updateParagraph(passageIndex, paraIndex, e.target.value)
+                    }
+                    className="border p-2 mb-2 w-full"
+                  />
+                ))
               : Object.keys(passage.passage).map((key) => (
-                <textarea
-                  key={key}
-                  placeholder={`Paragraph ${key}`}
-                  value={passage.passage[key]}
-                  onChange={(e) =>
-                    updateParagraph(
-                      passageIndex,
-                      parseInt(key, 36) - 10,
-                      e.target.value
-                    )
-                  }
-                  className="border p-2 mb-2 w-full"
-                />
-              ))}
+                  <textarea
+                    key={key}
+                    placeholder={`Paragraph ${key}`}
+                    value={passage.passage[key]}
+                    onChange={(e) =>
+                      updateParagraph(
+                        passageIndex,
+                        parseInt(key, 36) - 10,
+                        e.target.value
+                      )
+                    }
+                    className="border p-2 mb-2 w-full"
+                  />
+                ))}
             <button
               onClick={() => addParagraph(passageIndex)}
               className="bg-green-500 text-white p-2 rounded"
@@ -1152,8 +1154,8 @@ const TestCreationPage: React.FC = () => {
         // onClick={() => console.log(JSON.stringify(test, null, 2))}
         onClick={(e) => {
           e.preventDefault();
-          console.log(JSON.stringify(test, null, 2))
-          handleReadingTestSubmit(JSON.stringify(test))
+          console.log(JSON.stringify(test, null, 2));
+          handleReadingTestSubmit(JSON.stringify(test));
         }}
         className=" btn btn-success btn-md text-white "
       >
