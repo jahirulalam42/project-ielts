@@ -30,11 +30,11 @@ interface MapProps {
 const Map: React.FC<MapProps> = ({ question, handleAnswerChange, answers = {} }) => {
     return (
         <div className="space-y-4 mb-6">
-            <h3 className="text-xl font-semibold mb-2">{question.title}</h3>
+            <h3 className="text-xl font-semibold mb-2">{question?.title}</h3>
             <div className="w-full flex justify-center mb-4">
                 <Image
-                    src={question.image}
-                    alt={question.title}
+                    src={question?.image}
+                    alt={question?.title}
                     width={600}
                     height={400}
                     className="rounded-lg mx-auto"
@@ -45,30 +45,30 @@ const Map: React.FC<MapProps> = ({ question, handleAnswerChange, answers = {} })
                     <thead>
                         <tr>
                             <th className="bg-black text-white px-2 py-1 text-left font-normal"></th>
-                            {question.labels.map((label) => (
+                            {question?.labels.map((label) => (
                                 <th key={label} className="bg-black text-white px-4 py-1 font-bold text-center">{label}</th>
                             ))}
                         </tr>
                     </thead>
                     <tbody>
-                        {question.questions.map((q) => (
-                            <tr key={q.question_number} className="border-b border-white">
+                        {question?.questions.map((q) => (
+                            <tr key={q?.question_number} className="border-b border-white">
                                 <td className="pr-2 py-2 text-white whitespace-nowrap font-medium">
-                                    {q.question_number}. {q.question}
+                                    {q?.question_number}. {q.question}
                                 </td>
-                                {question.labels.map((label) => (
+                                {question?.labels.map((label) => (
                                     <td key={label} className="text-center">
                                         <input
                                             type="radio"
-                                            name={`map_${q.question_number}`}
+                                            name={`map_${q?.question_number}`}
                                             value={label}
-                                            checked={answers && answers[`map_${q.question_number}`]?.value === label}
+                                            checked={answers && answers[`map_${q?.question_number}`]?.value === label}
                                             onChange={() => handleAnswerChange(
-                                                q.question_number,
+                                                q?.question_number,
                                                 label,
                                                 'map',
-                                                q.answer,
-                                                label === q.answer
+                                                q?.answer,
+                                                label === q?.answer
                                             )}
                                             className="form-radio h-5 w-5 text-primary bg-black border-white focus:ring-2 focus:ring-primary"
                                         />

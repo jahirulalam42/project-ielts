@@ -1,7 +1,11 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import { getSingleWritingTest } from '@/services/data';
+import { redirect, useParams } from 'next/navigation';
+import { getSingleWritingTest, postSubmitWritingTest } from '@/services/data';
+import { useSession } from 'next-auth/react';
+import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
+
 
 interface TestPart {
   title: string;
@@ -14,6 +18,7 @@ interface TestPart {
 
 interface WritingTest {
   title: string;
+  _id: string;
   type: string;
   duration: number;
   parts: TestPart[];
@@ -24,6 +29,10 @@ export default function WritingTestPage() {
   const [test, setTest] = useState<WritingTest | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [responses, setResponses] = useState<Record<string, string>>({});
+  const { data: session } = useSession(); // Added session hook
+
+  const router = useRouter(); // Add this line
 
   useEffect(() => {
     const fetchTest = async () => {
@@ -41,6 +50,53 @@ export default function WritingTestPage() {
 
     fetchTest();
   }, [params.id]);
+
+  const handleResponseChange = (partId: string, value: string) => {
+    setResponses(prev => ({
+      ...prev,
+      [partId]: value
+    }));
+  };
+
+  // Submit handler with requested data structure
+  const handleSubmit = async () => {
+    if (!test) return;
+
+    const submissionTime = new Date();
+
+    // Create answers array in the requested format
+    const answers = test.parts.map(part => ({
+      partId: part._id,
+      question: part.Question.join(' '), // Combine question array
+      response: responses[part._id] || '',
+      instructions: part.instruction
+    }));
+
+    // Create test data object exactly as requested
+    const testData = {
+      userId: session?.user?.id,
+      testId: test._id,
+      answers: answers,
+      submittedAt: submissionTime.toLocaleString(),
+    };
+
+    console.log("Test Submission Data:", testData);
+
+    try {
+      const data = await postSubmitWritingTest(testData);
+      console.log(data.success);
+      if (data.success) {
+        toast.success("Test Submitted successfully!");
+        router.push(`/getSubmittedWritingAnswers/${testData.testId}`);
+        // Optionally, redirect or reset the form
+      } else {
+        toast.error("Failed to submit test. Please try again.");
+      }
+    } catch (error) {
+      toast.error("An error occurred while creating the test.");
+    }
+  };
+
 
   if (loading) {
     return (
@@ -150,6 +206,8 @@ export default function WritingTestPage() {
                   <textarea
                     className="textarea textarea-bordered w-full h-64"
                     placeholder="Write your response here..."
+                    value={responses[part._id] || ''}
+                    onChange={(e) => handleResponseChange(part._id, e.target.value)}
                   ></textarea>
                 </div>
               </div>
@@ -157,7 +215,7 @@ export default function WritingTestPage() {
           ))}
 
           <div className="mt-8 flex justify-end gap-4">
-            <button className="btn btn-primary">
+            <button className="btn btn-primary" onClick={() => handleSubmit()}>
               Submit Test
               <svg
                 xmlns="http://www.w3.org/2000/svg"

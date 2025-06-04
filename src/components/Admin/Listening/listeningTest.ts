@@ -1,9 +1,8 @@
 export type QuestionGroup = FillBlanksGroup | MCQGroup | MapGroup;
 
 export interface ListeningTest {
-  id: string;
   title: string;
-  type: 'academic' | 'general';
+  type: "academic" | "general";
   duration: number;
   audioUrl: string;
   parts: TestPart[];

@@ -25,7 +25,7 @@ interface ListeningTestProps {
     };
 }
 
-const ListeningTest: React.FC<ListeningTestProps> = ({ test }) => {
+const ListeningTest: React.FC<any> = ({ test }) => {
     const [answers, setAnswers] = useState<any>({});
     const [currentPartIndex, setCurrentPartIndex] = useState(0);
     const [timeLeft, setTimeLeft] = useState(test.duration * 60); // Convert minutes to seconds
@@ -123,7 +123,7 @@ const ListeningTest: React.FC<ListeningTestProps> = ({ test }) => {
         try {
             // TODO: Implement your submission API call here
             // const res = await postSubmitListeningTest(testData);
-            
+
             toast.success("Submission successful!");
             redirect(`/getSubmittedAnswers/${testData.testId}`);
         } catch (error: any) {

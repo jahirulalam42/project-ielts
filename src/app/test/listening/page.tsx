@@ -1,8 +1,34 @@
-import React from 'react'
+'use client'
+import React, { useEffect, useState } from 'react'
 import listeningTests from '../../../../data/listening.json';
 import Link from 'next/link';
+import { getListeningTests } from '@/services/data';
 
 const page: React.FC = () => {
+
+    const [listeningData, setListeningData] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const data = await getListeningTests();
+                setListeningData(data.data);
+            } catch (err) {
+                console.error("Error loading data:", err);
+                setError(err instanceof Error ? err.message : "Failed to load data");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    console.log('Listening data', listeningData)
+
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-4xl font-bold text-center mb-8 text-primary">
@@ -10,9 +36,9 @@ const page: React.FC = () => {
             </h1>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {listeningTests.listeningTests.map((test) => (
+                {listeningData.map((test) => (
                     <div
-                        key={test.id}
+                        key={test._id}
                         className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-200"
                     >
                         <div className="card-body">
@@ -28,7 +54,7 @@ const page: React.FC = () => {
 
                             <div className="card-actions justify-end">
                                 <Link
-                                    href={`/test/listening/${test.id}`}
+                                    href={`/test/listening/${test._id}`}
                                     className="btn btn-primary w-full"
                                 >
                                     Start Test
@@ -42,7 +68,7 @@ const page: React.FC = () => {
                 ))}
             </div>
 
-            {listeningTests.listeningTests.length === 0 && (
+            {listeningData.length === 0 && (
                 <div className="text-center py-12">
                     <div className="text-2xl text-gray-500 mb-4">
                         No listening tests available

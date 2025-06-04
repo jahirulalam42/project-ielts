@@ -131,3 +131,78 @@ export async function getSubmitReadingTest(testId: any, userId: any) {
     console.log(error);
   }
 }
+
+// Writing Submit Answers
+
+export async function postSubmitWritingTest(formData: any) {
+  try {
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/submitAnswers/submitWritingAnswers`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error; // ← re‑throw or handle as needed
+  }
+}
+
+export async function getSubmitWritingTest(testId: any, userId: any) {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/submitAnswers/submitWritingAnswers/${testId}/${userId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+// Listening Questions
+export async function getListeningTests() {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/listeningQuestions`
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getListeningTestById(id: string) {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/listeningQuestions/${id}`
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function submitListeningQuestions(formData: any) {
+  try {
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/listeningQuestions`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    // return response.data;
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.error(error);
+    throw error; // ← re‑throw or handle as needed
+  }
+}

@@ -5,15 +5,40 @@ import { useParams } from 'next/navigation';
 import listeningTests from '../../../../../data/listening.json';
 import ListeningTest from '@/components/TestComponent/listeningTest/ListeningTest';
 import Link from 'next/link';
+import { getListeningTestById } from '@/services/data';
+import { useEffect, useState } from 'react';
 
 export default function ListeningTestPage() {
     const params = useParams();
     const testId = params.id as string;
 
-    // Find the selected test
-    const test = listeningTests.listeningTests.find(t => t.id === testId);
+    const [listeningData, setListeningData] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-    if (!test) {
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const data = await getListeningTestById(testId);
+                setListeningData(data.data);
+            } catch (err) {
+                console.error("Error loading data:", err);
+                setError(err instanceof Error ? err.message : "Failed to load data");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    console.log('testId', testId)
+    console.log("Listening", listeningData)
+
+    // Find the selected test
+    // const test = listeningData.find(t => t._id === testId);
+
+    if (!listeningData || listeningData.length === 0) {
         return (
             <div className="text-center py-20">
                 <h1 className="text-2xl text-error">Test not found</h1>
@@ -24,5 +49,5 @@ export default function ListeningTestPage() {
         );
     }
 
-    return <ListeningTest test={test} />;
+    return <ListeningTest test={listeningData} />;
 }

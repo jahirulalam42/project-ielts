@@ -2,10 +2,11 @@
 import { useState } from 'react';
 import { ListeningTest, TestPart } from './listeningTest';
 import PartForm from './PartForm';
+import { submitListeningQuestions } from '@/services/data';
+import { toast, ToastContainer } from 'react-toastify';
 
 const ListeningCreationPage = () => {
     const [test, setTest] = useState<ListeningTest>({
-        id: '',
         title: '',
         type: 'academic',
         duration: 30,
@@ -39,12 +40,23 @@ const ListeningCreationPage = () => {
         }));
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const formattedTest = {
-            listeningTests: [test]
-        };
-        console.log('Submitting test:', JSON.stringify(formattedTest, null, 2));
+        console.log('Submitting test:', JSON.stringify(test, null, 2));
+
+        try {
+            const data = await submitListeningQuestions(JSON.stringify(test));
+            console.log(data.success);
+            if (data.success) {
+                toast.success("Test created successfully!");
+                // Optionally, redirect or reset the form
+            } else {
+                toast.error("Failed to create test. Please try again.");
+            }
+        } catch (error) {
+            toast.error("An error occurred while creating the test.");
+        }
+
         // Submit to API here
     };
 
@@ -54,7 +66,7 @@ const ListeningCreationPage = () => {
 
             <form onSubmit={handleSubmit} className="space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="form-control">
+                    {/* <div className="form-control">
                         <label className="label">
                             <span className="label-text">Test ID</span>
                         </label>
@@ -65,7 +77,7 @@ const ListeningCreationPage = () => {
                             onChange={e => handleTestChange('id', e.target.value)}
                             required
                         />
-                    </div>
+                    </div> */}
 
                     <div className="form-control">
                         <label className="label">
@@ -150,6 +162,7 @@ const ListeningCreationPage = () => {
                     </button>
                 </div>
             </form>
+            <ToastContainer position="top-right" />
         </div>
     );
 };
