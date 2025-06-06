@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { redirect, useParams } from 'next/navigation';
 import { getSingleWritingTest, postSubmitWritingTest } from '@/services/data';
 import { useSession } from 'next-auth/react';
@@ -30,9 +30,64 @@ export default function WritingTestPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [responses, setResponses] = useState<Record<string, string>>({});
-  const { data: session } = useSession(); // Added session hook
+  const [wordCounts, setWordCounts] = useState<Record<string, number>>({});
+  const [activeTab, setActiveTab] = useState(0);
+  const [panelWidths, setPanelWidths] = useState<Record<number, number>>({
+    0: 50,
+    1: 50
+  });
+  const [isDragging, setIsDragging] = useState(false);
+  const [currentTaskIndex, setCurrentTaskIndex] = useState<number | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { data: session } = useSession();
 
-  const router = useRouter(); // Add this line
+  const router = useRouter();
+
+  // Function to count words
+  const countWords = (text: string): number => {
+    return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+  };
+
+  const handleMouseDown = (e: React.MouseEvent, taskIndex: number) => {
+    setIsDragging(true);
+    setCurrentTaskIndex(taskIndex);
+    e.preventDefault();
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!isDragging || currentTaskIndex === null) return;
+
+    const containers = document.querySelectorAll('.split-container');
+    const container = containers[currentTaskIndex];
+    if (!container) return;
+
+    const containerRect = container.getBoundingClientRect();
+    const newLeftWidth = ((e.clientX - containerRect.left) / containerRect.width) * 100;
+    
+    // Limit the width between 20% and 80%
+    if (newLeftWidth >= 20 && newLeftWidth <= 80) {
+      setPanelWidths(prev => ({
+        ...prev,
+        [currentTaskIndex]: newLeftWidth
+      }));
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    setCurrentTaskIndex(null);
+  };
+
+  useEffect(() => {
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging, currentTaskIndex]);
 
   useEffect(() => {
     const fetchTest = async () => {
@@ -55,6 +110,11 @@ export default function WritingTestPage() {
     setResponses(prev => ({
       ...prev,
       [partId]: value
+    }));
+    // Update word count
+    setWordCounts(prev => ({
+      ...prev,
+      [partId]: countWords(value)
     }));
   };
 
@@ -164,47 +224,76 @@ export default function WritingTestPage() {
             </div>
           </div>
 
-          {test.parts.map((part: TestPart) => (
-            <div key={part._id} className="mb-8">
+          {/* Tab Content */}
+          {test.parts.map((part: TestPart, index: number) => (
+            <div 
+              key={part._id} 
+              className={`mb-8 ${activeTab === index ? 'block' : 'hidden'}`}
+            >
               <div className="divider"></div>
               <h2 className="text-2xl font-semibold mb-4">{part.title}</h2>
-              <div className="bg-base-200 p-6 rounded-lg">
-                <h3 className="text-lg font-medium mb-2">{part.subtitle}</h3>
+              
+              <div className="split-container flex relative">
+                {/* Left Side - Question and Instructions */}
+                <div 
+                  className="bg-base-200 p-6 rounded-lg overflow-auto"
+                  style={{ width: `${panelWidths[index]}%` }}
+                >
+                  <h3 className="text-lg font-medium mb-2">{part.subtitle}</h3>
 
-                <div className="prose max-w-none mb-4">
-                  {Array.isArray(part.Question) && part.Question.length > 0 ? (
-                    part.Question.map((question, index) => (
-                      <p key={index} className="mb-2">{question}</p>
-                    ))
-                  ) : (
-                    <p>No questions available.</p>
-                  )}
-                </div>
-
-                {part.image && (
-                  <div className="my-4">
-                    <img
-                      src={part.image}
-                      alt={part.title}
-                      className="rounded-lg max-w-full h-auto mx-auto"
-                    />
+                  <div className="prose max-w-none mb-4">
+                    {Array.isArray(part.Question) && part.Question.length > 0 ? (
+                      part.Question.map((question, index) => (
+                        <p key={index} className="mb-2">{question}</p>
+                      ))
+                    ) : (
+                      <p>No questions available.</p>
+                    )}
                   </div>
-                )}
 
-                <div className="mt-6 bg-neutral text-neutral-content p-4 rounded-lg">
-                  <h4 className="font-bold mb-2">Instructions:</h4>
-                  {Array.isArray(part.instruction) && part.instruction.length > 0 ? (
-                    part.instruction.map((instruction, index) => (
-                      <p key={index}>{instruction}</p>
-                    ))
-                  ) : (
-                    <p>No instructions available.</p>
+                  {part.image && (
+                    <div className="my-4">
+                      <img
+                        src={part.image}
+                        alt={part.title}
+                        className="rounded-lg max-w-full h-auto mx-auto"
+                      />
+                    </div>
                   )}
+
+                  <div className="mt-6 bg-neutral text-neutral-content p-4 rounded-lg">
+                    <h4 className="font-bold mb-2">Instructions:</h4>
+                    {Array.isArray(part.instruction) && part.instruction.length > 0 ? (
+                      part.instruction.map((instruction, index) => (
+                        <p key={index}>{instruction}</p>
+                      ))
+                    ) : (
+                      <p>No instructions available.</p>
+                    )}
+                  </div>
                 </div>
 
-                <div className="mt-6">
+                {/* Resizer */}
+                <div
+                  className={`w-1 bg-base-300 hover:bg-primary cursor-col-resize transition-colors ${
+                    isDragging && currentTaskIndex === index ? 'bg-primary' : ''
+                  }`}
+                  onMouseDown={(e) => handleMouseDown(e, index)}
+                />
+
+                {/* Right Side - Input Area */}
+                <div 
+                  className="bg-base-200 p-6 rounded-lg overflow-auto"
+                  style={{ width: `${100 - panelWidths[index]}%` }}
+                >
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="text-sm font-medium">Your Response:</label>
+                    <div className="text-sm">
+                      Word count: {wordCounts[part._id] || 0}
+                    </div>
+                  </div>
                   <textarea
-                    className="textarea textarea-bordered w-full h-64"
+                    className="textarea textarea-bordered w-full h-[calc(100vh-300px)]"
                     placeholder="Write your response here..."
                     value={responses[part._id] || ''}
                     onChange={(e) => handleResponseChange(part._id, e.target.value)}
@@ -231,6 +320,34 @@ export default function WritingTestPage() {
                   d="M5 13l4 4L19 7"
                 />
               </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Sticky Bottom Tabs */}
+      <div className="fixed bottom-0 left-0 right-0 bg-base-100 shadow-lg border-t">
+        <div className="container mx-auto">
+          <div className="flex w-full">
+            <button 
+              className={`flex-1 py-2 text-center font-medium transition-colors ${
+                activeTab === 0 
+                  ? 'bg-primary text-primary-content' 
+                  : 'bg-base-200 hover:bg-base-300'
+              }`}
+              onClick={() => setActiveTab(0)}
+            >
+              Task 1
+            </button>
+            <button 
+              className={`flex-1 py-2 text-center font-medium transition-colors ${
+                activeTab === 1 
+                  ? 'bg-primary text-primary-content' 
+                  : 'bg-base-200 hover:bg-base-300'
+              }`}
+              onClick={() => setActiveTab(1)}
+            >
+              Task 2
             </button>
           </div>
         </div>
