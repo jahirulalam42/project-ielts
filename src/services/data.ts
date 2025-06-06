@@ -154,12 +154,36 @@ export async function postSubmitWritingTest(formData: any) {
 
 export async function getSubmitWritingTest(testId: any, userId: any) {
   try {
+    console.log("Fetching writing test submission:", { testId, userId });
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/submitAnswers/submitWritingAnswers/${testId}/${userId}`
     );
+    console.log("Writing test submission response:", response.data);
     return response.data;
   } catch (error) {
-    console.log(error);
+    console.error("Error fetching writing test submission:", error);
+    throw error;
+  }
+}
+
+export async function updateWritingEvaluation(
+  testId: string,
+  userId: string,
+  partId: string,
+  evaluation: any
+) {
+  try {
+    const response = await axios.patch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/submitAnswers/submitWritingAnswers/${testId}/${userId}`,
+      {
+        partId,
+        evaluation
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating writing evaluation:", error);
+    throw error;
   }
 }
 

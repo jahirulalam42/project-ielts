@@ -1,8 +1,9 @@
 "use client";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { getSubmitWritingTest } from "@/services/data";
+import { getSubmitWritingTest, updateWritingEvaluation } from "@/services/data";
 import { useSession } from "next-auth/react";
+import { evaluateWritingAnswer } from "@/services/ai";
 
 // Define TypeScript interfaces
 interface Answer {
@@ -10,6 +11,7 @@ interface Answer {
     question: string;
     response: string;
     instructions: string[];
+    evaluation?: Evaluation;
 }
 
 interface Submission {
@@ -21,34 +23,93 @@ interface Submission {
     __v: number;
 }
 
+interface Evaluation {
+    score: number;
+    feedback: {
+        taskAchievement: string;
+        coherenceAndCohesion: string;
+        lexicalResource: string;
+        grammaticalRangeAndAccuracy: string;
+    };
+    overallFeedback: string;
+}
+
 const SubmissionPage = () => {
     const params = useParams();
     const { testId } = params;
     const [submission, setSubmission] = useState<Submission | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [evaluations, setEvaluations] = useState<Record<string, Evaluation>>({});
+    const [evaluating, setEvaluating] = useState<Record<string, boolean>>({});
     const { data: session } = useSession();
 
     useEffect(() => {
         const fetchSubmission = async () => {
             try {
-                if (!testId || !session?.user?.id) return;
+                // Ensure testId is a string
+                const testIdStr = Array.isArray(testId) ? testId[0] : testId;
+                
+                if (!testIdStr || !session?.user?.id) {
+                    console.log("Missing testId or userId:", { testId: testIdStr, userId: session?.user?.id });
+                    return;
+                }
 
-                const response = await getSubmitWritingTest(testId, session.user.id);
-                console.log("API Response", response);
+                console.log("Fetching submission for:", { testId: testIdStr, userId: session.user.id });
+                const response = await getSubmitWritingTest(testIdStr, session.user.id);
+                console.log("Raw API Response:", response);
 
-                if (response.success) {
-                    // Handle array response or single object
-                    const data = Array.isArray(response.data)
-                        ? response.data[0] // Take first element if array
-                        : response.data;
+                if (response && response.success) {
+                    const submissionData = response.data;
+                    console.log("Processed Submission Data:", submissionData);
 
-                    setSubmission(data || null);
+                    if (!submissionData) {
+                        console.error("No data in response");
+                        setError("No submission data found");
+                        return;
+                    }
+
+                    setSubmission(submissionData);
                     setError(null);
+
+                    // Check if answers need evaluation
+                    if (submissionData.answers && Array.isArray(submissionData.answers)) {
+                        console.log("Starting evaluation of answers:", submissionData.answers.length);
+                        for (const answer of submissionData.answers) {
+                            // Only evaluate if there's no existing evaluation
+                            if (!answer.evaluation) {
+                                try {
+                                    setEvaluating(prev => ({ ...prev, [answer.partId]: true }));
+                                    const evaluation = await evaluateWritingAnswer(
+                                        answer.question,
+                                        answer.response,
+                                        answer.instructions
+                                    );
+                                    console.log("Evaluation result for", answer.partId, ":", evaluation);
+                                    
+                                    // Store evaluation in state
+                                    setEvaluations(prev => ({ ...prev, [answer.partId]: evaluation }));
+                                    
+                                    // Update evaluation in database
+                                    await updateWritingEvaluation(testIdStr, session.user.id, answer.partId, evaluation);
+                                } catch (error) {
+                                    console.error("Evaluation error for", answer.partId, ":", error);
+                                    setError("Failed to evaluate some answers");
+                                } finally {
+                                    setEvaluating(prev => ({ ...prev, [answer.partId]: false }));
+                                }
+                            } else {
+                                // If evaluation exists, set it in state
+                                setEvaluations(prev => ({ ...prev, [answer.partId]: answer.evaluation }));
+                            }
+                        }
+                    }
                 } else {
-                    setError("Failed to fetch submission data");
+                    console.error("Empty or unsuccessful response from server");
+                    setError("No data received from server");
                 }
             } catch (err) {
+                console.error("Error fetching submission:", err);
                 setError("An error occurred while fetching data");
             } finally {
                 setLoading(false);
@@ -120,14 +181,14 @@ const SubmissionPage = () => {
 
                     <div className="flex flex-wrap gap-4 mb-6">
                         <div className="badge badge-info">
-                            Submitted: {submission.submittedAt}
+                            Submitted: {submission?.submittedAt}
                         </div>
                         <div className="badge badge-primary">
-                            Test ID: {submission.testId}
+                            Test ID: {submission?.testId}
                         </div>
                     </div>
 
-                    {submission.answers.map((answer, index) => (
+                    {submission?.answers?.map((answer, index) => (
                         <div key={answer.partId} className="mb-8">
                             <div className="divider"></div>
                             <h2 className="text-2xl font-semibold mb-4">
@@ -160,32 +221,39 @@ const SubmissionPage = () => {
                                         Word Count: {answer.response.trim().split(/\s+/).length}
                                     </div>
                                 </div>
+
+                                <div className="mt-6">
+                                    {evaluating[answer.partId] ? (
+                                        <div className="flex items-center gap-2">
+                                            <span className="loading loading-spinner loading-sm"></span>
+                                            Evaluating your answer...
+                                        </div>
+                                    ) : evaluations[answer.partId] ? (
+                                        <div className="mt-4 p-4 bg-base-100 rounded-lg shadow">
+                                            <h4 className="text-lg font-semibold mb-2">Evaluation Results</h4>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <p><b>Task Achievement:</b> {evaluations[answer.partId].feedback.taskAchievement}</p><br/>
+                                                    <p><b>Coherence & Cohesion:</b> {evaluations[answer.partId].feedback.coherenceAndCohesion}</p><br/>
+                                                    <p><b>Lexical Resource:</b> {evaluations[answer.partId].feedback.lexicalResource}</p><br/>
+                                                    <p><b>Grammatical Range:</b> {evaluations[answer.partId].feedback.grammaticalRangeAndAccuracy}</p><br/>
+                                                </div>
+                                                <div>
+                                                    <p className="text-xl font-bold">
+                                                        Final Band Score: {evaluations[answer.partId].score}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className="mt-4">
+                                                <h5 className="font-semibold">Overall Feedback:</h5>
+                                                <p className="mt-2">{evaluations[answer.partId].overallFeedback}</p>
+                                            </div>
+                                        </div>
+                                    ) : null}
+                                </div>
                             </div>
                         </div>
                     ))}
-
-                    <div className="mt-8 flex justify-center">
-                        <button
-                            className="btn btn-primary"
-                            onClick={() => window.print()}
-                        >
-                            Print Submission
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5 ml-2"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
-                                />
-                            </svg>
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
