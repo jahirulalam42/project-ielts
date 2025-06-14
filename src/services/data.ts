@@ -177,7 +177,7 @@ export async function updateWritingEvaluation(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/submitAnswers/submitWritingAnswers/${testId}/${userId}`,
       {
         partId,
-        evaluation
+        evaluation,
       }
     );
     return response.data;
@@ -228,5 +228,36 @@ export async function submitListeningQuestions(formData: any) {
   } catch (error) {
     console.error(error);
     throw error; // ← re‑throw or handle as needed
+  }
+}
+
+// Listening Submit Answers
+
+export async function postSubmitListeningTest(formData: any) {
+  try {
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/submitAnswers/submitListeningAnswers`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error; // ← re‑throw or handle as needed
+  }
+}
+
+export async function getSubmitListeningTest(testId: any, userId: any) {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/submitAnswers/submitListeningAnswers/${testId}/${userId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
   }
 }
