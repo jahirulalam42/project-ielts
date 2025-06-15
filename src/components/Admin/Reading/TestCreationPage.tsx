@@ -848,9 +848,8 @@ const TestCreationPage: React.FC = () => {
               {section.extra?.map((text: any, textIdx: any) => (
                 <div key={textIdx} className="mb-2">
                   <textarea
-                    placeholder={`Text line ${
-                      textIdx + 1
-                    } (use __________ for blanks)`}
+                    placeholder={`Text line ${textIdx + 1
+                      } (use __________ for blanks)`}
                     value={text || ""}
                     onChange={(e) => {
                       const updatedParts = [...test.parts];
@@ -953,8 +952,8 @@ const TestCreationPage: React.FC = () => {
                   const nextQuestionNumber =
                     currentQuestions.length > 0
                       ? Math.max(
-                          ...currentQuestions.map((q: any) => q.question_number)
-                        ) + 1
+                        ...currentQuestions.map((q: any) => q.question_number)
+                      ) + 1
                       : 1;
 
                   if (
@@ -1174,33 +1173,33 @@ const TestCreationPage: React.FC = () => {
           <div className="mb-2">
             {Array.isArray(passage.passage)
               ? passage.passage.map((para, paraIndex) => (
-                  <textarea
-                    key={paraIndex}
-                    placeholder={`Paragraph ${String.fromCharCode(
-                      65 + paraIndex
-                    )}`}
-                    value={para}
-                    onChange={(e) =>
-                      updateParagraph(passageIndex, paraIndex, e.target.value)
-                    }
-                    className="border p-2 mb-2 w-full"
-                  />
-                ))
+                <textarea
+                  key={paraIndex}
+                  placeholder={`Paragraph ${String.fromCharCode(
+                    65 + paraIndex
+                  )}`}
+                  value={para}
+                  onChange={(e) =>
+                    updateParagraph(passageIndex, paraIndex, e.target.value)
+                  }
+                  className="border p-2 mb-2 w-full"
+                />
+              ))
               : Object.keys(passage.passage).map((key) => (
-                  <textarea
-                    key={key}
-                    placeholder={`Paragraph ${key}`}
-                    value={passage.passage[key]}
-                    onChange={(e) =>
-                      updateParagraph(
-                        passageIndex,
-                        parseInt(key, 36) - 10,
-                        e.target.value
-                      )
-                    }
-                    className="border p-2 mb-2 w-full"
-                  />
-                ))}
+                <textarea
+                  key={key}
+                  placeholder={`Paragraph ${key}`}
+                  value={passage.passage[key]}
+                  onChange={(e) =>
+                    updateParagraph(
+                      passageIndex,
+                      parseInt(key, 36) - 10,
+                      e.target.value
+                    )
+                  }
+                  className="border p-2 mb-2 w-full"
+                />
+              ))}
             <button
               onClick={() => addParagraph(passageIndex)}
               className="bg-green-500 text-white p-2 rounded"
