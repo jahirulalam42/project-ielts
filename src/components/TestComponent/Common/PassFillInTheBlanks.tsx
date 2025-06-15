@@ -59,7 +59,7 @@ const PassFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
     }
 
     // Add any remaining text after the last blank
-    if (lastIndex < question.text.length) {
+    if (lastIndex < question.text?.length) {
       parts.push(
         <span key={`text-last`}>{question.text.slice(lastIndex)}</span>
       );
@@ -67,6 +67,8 @@ const PassFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
 
     return parts;
   };
+
+  console.log("Text", question);
 
   return (
     <div>
