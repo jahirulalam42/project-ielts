@@ -447,27 +447,23 @@ const TestCreationPage: React.FC = () => {
         }
         break;
 
-      case "passage_fill_in_the_blanks":
-        // Create new questions for passage_fill_in_the_blanks
-        for (let i = 0; i < questionCount; i++) {
-          const passageText = ""; // Placeholder for passage text (admin input)
-          const blanks = getBlanksFromText(passageText); // Extract blanks from the passage text
+      // Replace the "passage_fill_in_the_blanks" case in your addQuestionGroup function with this:
 
-          // Ensure that the created question object includes all required fields
-          newQuestions.push({
-            question_number: nextQuestionNumber + i, // Start from question number 1 (for each question)
-            question: "", // Placeholder for the actual question text (admin will fill this)
-            input_type: "text", // Input type for fill-in-the-blank questions
-            instruction:
-              "Complete the summary below. Choose ONE WORD ONLY from the passage for each answer.",
-            text: passageText, // The passage text will be entered by the admin
-            blanks: blanks.map((blank) => ({
-              blank_number: blank.blank_number, // Blank number (e.g., 1, 2, 3...)
-              input_type: "text", // Input type for fill-in-the-blank question
-              answer: "", // Initially empty answer, to be filled by the admin
-            })),
-          });
-        }
+      case "passage_fill_in_the_blanks":
+        // Generate consecutive question numbers based on the number of questions requested
+        const passageQuestionNumbers = Array.from(
+          { length: questionCount },
+          (_, idx) => nextQuestionNumber + idx
+        );
+
+        // Create a single passage_fill_in_the_blanks question structure
+        newQuestions.push({
+          question_number: passageQuestionNumbers, // Array of question numbers
+          instruction:
+            "Complete the summary below. Choose ONE WORD ONLY from the passage for each answer.",
+          text: "", // This will be filled by the admin
+          blanks: [], // This will be populated when admin enters text with blanks
+        });
         break;
 
       default:
@@ -694,6 +690,119 @@ const TestCreationPage: React.FC = () => {
           </div>
         ));
 
+      // Replace the "passage_fill_in_the_blanks" case in your renderQuestionInput function with this:
+
+      case "passage_fill_in_the_blanks":
+        return questions.map((q, idx) => (
+          <div key={idx} className="mb-4 border p-4">
+            {/* Display question numbers */}
+            <div className="mb-2">
+              <span className="font-medium">Question Numbers: </span>
+              <span className="text-blue-600">
+                {q.question_number ? q.question_number.join(", ") : "N/A"}
+              </span>
+            </div>
+
+            {/* Instruction input */}
+            <div className="mb-2">
+              <label className="block mb-1 font-medium">Instruction:</label>
+              <input
+                type="text"
+                placeholder="Instruction"
+                value={
+                  q.instruction ||
+                  "Complete the summary below. Choose ONE WORD ONLY from the passage for each answer."
+                }
+                onChange={(e) =>
+                  updateQuestion("instruction", e.target.value, idx)
+                }
+                className="border p-2 mb-2 w-full"
+              />
+            </div>
+
+            {/* Passage text with blanks */}
+            <div className="mb-2">
+              <label className="block mb-1 font-medium">
+                Passage text (use __________ for blanks):
+              </label>
+              <textarea
+                placeholder="Enter the passage text with __________ where blanks should be"
+                value={q.text || ""}
+                onChange={(e) => {
+                  const newText = e.target.value;
+                  const extractedBlanks = getBlanksFromText(newText);
+
+                  // Map the blanks to use the question numbers from question_numbers array
+                  const blanksWithQuestionNumbers = extractedBlanks.map(
+                    (blank, blankIdx) => ({
+                      blank_number: q.question_number
+                        ? q.question_number[blankIdx]
+                        : blankIdx + 1,
+                      input_type: "text",
+                      answer: blank.answer || "",
+                    })
+                  );
+
+                  // Update both the text and the blanks
+                  updateQuestion("text", newText, idx);
+                  updateQuestion("blanks", blanksWithQuestionNumbers, idx);
+                }}
+                className="border p-2 w-full"
+                rows="6"
+              />
+            </div>
+
+            {/* Render blanks for answers */}
+            {q.blanks && q.blanks.length > 0 && (
+              <div className="mb-2">
+                <label className="block mb-1 font-medium">
+                  Answers for blanks:
+                </label>
+                {q.blanks.map((blank, blankIdx) => (
+                  <div
+                    key={blank.blank_number}
+                    className="mb-2 flex items-center"
+                  >
+                    <span className="mr-2 font-medium">
+                      Question {blank.blank_number}:
+                    </span>
+                    <input
+                      type="text"
+                      placeholder="Answer"
+                      value={blank.answer}
+                      onChange={(e) => {
+                        const updatedBlanks = [...q.blanks!];
+                        updatedBlanks[blankIdx].answer = e.target.value;
+                        updateQuestion("blanks", updatedBlanks, idx);
+                      }}
+                      className="border p-2 flex-1"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Show message if no blanks detected */}
+            {(!q.blanks || q.blanks.length === 0) && q.text && (
+              <div className="text-red-500 text-sm">
+                No blanks detected. Use __________ (10 underscores) to create
+                blanks in your text.
+              </div>
+            )}
+
+            {/* Warning if blanks exceed question numbers */}
+            {q.blanks &&
+              q.question_number &&
+              q.blanks.length > q.question_number.length && (
+                <div className="text-orange-500 text-sm">
+                  Warning: You have {q.blanks.length} blanks but only{" "}
+                  {q.question_number.length} question numbers allocated. Some
+                  blanks may not have proper question numbers.
+                </div>
+              )}
+          </div>
+        ));
+
       case "fill_in_the_blanks_with_subtitle":
         return questions.map((section, sectionIdx) => (
           <div key={sectionIdx} className="mb-4 border p-4">
@@ -739,9 +848,8 @@ const TestCreationPage: React.FC = () => {
               {section.extra?.map((text: any, textIdx: any) => (
                 <div key={textIdx} className="mb-2">
                   <textarea
-                    placeholder={`Text line ${
-                      textIdx + 1
-                    } (use __________ for blanks)`}
+                    placeholder={`Text line ${textIdx + 1
+                      } (use __________ for blanks)`}
                     value={text || ""}
                     onChange={(e) => {
                       const updatedParts = [...test.parts];
@@ -844,8 +952,8 @@ const TestCreationPage: React.FC = () => {
                   const nextQuestionNumber =
                     currentQuestions.length > 0
                       ? Math.max(
-                          ...currentQuestions.map((q: any) => q.question_number)
-                        ) + 1
+                        ...currentQuestions.map((q: any) => q.question_number)
+                      ) + 1
                       : 1;
 
                   if (
@@ -1045,7 +1153,6 @@ const TestCreationPage: React.FC = () => {
             }
             className="border p-2 mb-2 w-full"
           />
-
           {/* Passage Type Selection */}
           <div className="mb-4">
             <label className="block mb-2">Select Passage Type</label>
@@ -1063,37 +1170,36 @@ const TestCreationPage: React.FC = () => {
               <option value="type2">Type 2 (Object)</option>
             </select>
           </div>
-
           <div className="mb-2">
             {Array.isArray(passage.passage)
               ? passage.passage.map((para, paraIndex) => (
-                  <textarea
-                    key={paraIndex}
-                    placeholder={`Paragraph ${String.fromCharCode(
-                      65 + paraIndex
-                    )}`}
-                    value={para}
-                    onChange={(e) =>
-                      updateParagraph(passageIndex, paraIndex, e.target.value)
-                    }
-                    className="border p-2 mb-2 w-full"
-                  />
-                ))
+                <textarea
+                  key={paraIndex}
+                  placeholder={`Paragraph ${String.fromCharCode(
+                    65 + paraIndex
+                  )}`}
+                  value={para}
+                  onChange={(e) =>
+                    updateParagraph(passageIndex, paraIndex, e.target.value)
+                  }
+                  className="border p-2 mb-2 w-full"
+                />
+              ))
               : Object.keys(passage.passage).map((key) => (
-                  <textarea
-                    key={key}
-                    placeholder={`Paragraph ${key}`}
-                    value={passage.passage[key]}
-                    onChange={(e) =>
-                      updateParagraph(
-                        passageIndex,
-                        parseInt(key, 36) - 10,
-                        e.target.value
-                      )
-                    }
-                    className="border p-2 mb-2 w-full"
-                  />
-                ))}
+                <textarea
+                  key={key}
+                  placeholder={`Paragraph ${key}`}
+                  value={passage.passage[key]}
+                  onChange={(e) =>
+                    updateParagraph(
+                      passageIndex,
+                      parseInt(key, 36) - 10,
+                      e.target.value
+                    )
+                  }
+                  className="border p-2 mb-2 w-full"
+                />
+              ))}
             <button
               onClick={() => addParagraph(passageIndex)}
               className="bg-green-500 text-white p-2 rounded"
@@ -1101,7 +1207,7 @@ const TestCreationPage: React.FC = () => {
               Add Paragraph
             </button>
           </div>
-
+          selector:
           <div className="mb-2">
             <select
               value={currentQuestionType}
@@ -1116,7 +1222,6 @@ const TestCreationPage: React.FC = () => {
               ))}
             </select>
             {currentQuestionType &&
-              currentQuestionType !== "passage_fill_in_the_blanks" &&
               currentQuestionType !== "summary_fill_in_the_blanks" &&
               currentQuestionType !== "fill_in_the_blanks_with_subtitle" && (
                 <input
@@ -1125,6 +1230,7 @@ const TestCreationPage: React.FC = () => {
                   value={questionCount}
                   onChange={(e) => setQuestionCount(parseInt(e.target.value))}
                   className="border p-2 mr-2"
+                  placeholder="Number of questions"
                 />
               )}
             <button
