@@ -401,24 +401,18 @@ const TestCreationPage: React.FC = () => {
         break;
 
       case "summary_fill_in_the_blanks":
-        // Auto-generate question numbers
-        // const questionNumbers = Array.from(
-        //   { length: questionCount },
-        //   (_, idx) => idx + 1
-        // );
         const summaryQuestionNumbers = Array.from(
           { length: questionCount },
           (_, idx) => nextQuestionNumber + idx
         );
 
-        // Create the summary fill-in-the-blanks question with passage, options, and correct answers
         newQuestions.push({
-          question_numbers: summaryQuestionNumbers, // Auto-generated question numbers
-          passage: summaryPassage, // Passage entered by the admin
-          answers: answers, // Correct answers selected by the admin
-          options: options, // Options entered by the admin
-          input_type: "drag_and_drop", // Drag-and-drop input type
-          question: "", // Placeholder for the question text (admin will input this)
+          question_numbers: summaryQuestionNumbers,
+          passage: summaryPassage, // This should be updated properly
+          answers: [...answers], // Create a copy of the answers
+          options: [...options], // Create a copy of the options
+          input_type: "drag_and_drop",
+          question: "",
         });
         break;
 
@@ -476,6 +470,11 @@ const TestCreationPage: React.FC = () => {
     setTest({ ...test, parts: updatedParts });
     setCurrentQuestionType("");
     setQuestionCount(1);
+
+    setSummaryPassage("");
+    setOptions([]);
+    setAnswers([]);
+    setBlanks([]);
   };
 
   // Render question inputs based on question type
@@ -848,8 +847,9 @@ const TestCreationPage: React.FC = () => {
               {section.extra?.map((text: any, textIdx: any) => (
                 <div key={textIdx} className="mb-2">
                   <textarea
-                    placeholder={`Text line ${textIdx + 1
-                      } (use __________ for blanks)`}
+                    placeholder={`Text line ${
+                      textIdx + 1
+                    } (use __________ for blanks)`}
                     value={text || ""}
                     onChange={(e) => {
                       const updatedParts = [...test.parts];
@@ -952,8 +952,8 @@ const TestCreationPage: React.FC = () => {
                   const nextQuestionNumber =
                     currentQuestions.length > 0
                       ? Math.max(
-                        ...currentQuestions.map((q: any) => q.question_number)
-                      ) + 1
+                          ...currentQuestions.map((q: any) => q.question_number)
+                        ) + 1
                       : 1;
 
                   if (
@@ -987,19 +987,24 @@ const TestCreationPage: React.FC = () => {
       case "summary_fill_in_the_blanks":
         return questions.map((q, idx) => (
           <div key={idx}>
-            {/* Passage input */}
+            {/* Passage input - update both local state and test object */}
             <div className="mb-2">
               <textarea
                 placeholder="Enter Passage for summary fill-in-the-blanks"
-                value={summaryPassage}
+                value={q.passage || ""} // Use value from test object, not local state
                 onChange={(e) => {
                   const newPassage = e.target.value;
+                  // Update the test object directly
+                  updateQuestion("passage", newPassage, idx);
+
+                  // Also update local state for blank detection
                   setSummaryPassage(newPassage);
                   const extractedBlanks =
                     getBlanksFromTextForSummary(newPassage);
-                  setBlanks(extractedBlanks); // Update blanks dynamically
+                  setBlanks(extractedBlanks);
                 }}
                 className="border p-2 mb-2 w-full"
+                rows="6"
               />
             </div>
 
@@ -1009,14 +1014,17 @@ const TestCreationPage: React.FC = () => {
                 <div key={blank}>
                   <label>{`Select answer for blank ${blank}:`}</label>
                   <select
-                    value={answers[blankIdx] || ""}
-                    onChange={(e) =>
-                      handleAnswerChange(blankIdx, e.target.value)
-                    } // Update answer for this blank
+                    value={q.answers?.[blankIdx] || ""} // Use value from test object
+                    onChange={(e) => {
+                      const updatedAnswers = [...(q.answers || [])];
+                      updatedAnswers[blankIdx] = e.target.value;
+                      updateQuestion("answers", updatedAnswers, idx);
+                      setAnswers(updatedAnswers); // Keep local state in sync
+                    }}
                     className="border p-2 mb-2"
                   >
                     <option value="">Select an option</option>
-                    {options.map((option) => (
+                    {(q.options || []).map((option) => (
                       <option key={option.label} value={option.label}>
                         {option.label}: {option.value}
                       </option>
@@ -1028,25 +1036,37 @@ const TestCreationPage: React.FC = () => {
 
             {/* Add Option Button */}
             <button
-              onClick={addOption}
+              type="button"
+              onClick={() => {
+                const label = String.fromCharCode(
+                  65 + (q.options?.length || 0)
+                );
+                const newOption = { label, value: "" };
+                const updatedOptions = [...(q.options || []), newOption];
+                updateQuestion("options", updatedOptions, idx);
+                setOptions(updatedOptions); // Keep local state in sync
+              }}
               className="bg-green-500 text-white p-2 rounded"
             >
               Add Option
             </button>
 
-            {/* Render Inputs for New Options */}
-            {options.map((option, optIdx) => (
+            {/* Render Inputs for Options */}
+            {(q.options || []).map((option, optIdx) => (
               <div key={optIdx} className="mb-2">
-                {/* Label is auto-generated (A, B, C, ...) */}
                 <input
                   type="text"
-                  placeholder={`Option Value ${String.fromCharCode(
-                    65 + optIdx
-                  )}`}
+                  placeholder={`Option Value ${option.label}`}
                   value={option.value}
-                  onChange={(e) =>
-                    handleOptionChange(optIdx, "value", e.target.value)
-                  }
+                  onChange={(e) => {
+                    const updatedOptions = [...(q.options || [])];
+                    updatedOptions[optIdx] = {
+                      ...updatedOptions[optIdx],
+                      value: e.target.value,
+                    };
+                    updateQuestion("options", updatedOptions, idx);
+                    setOptions(updatedOptions); // Keep local state in sync
+                  }}
                   className="border p-2 mb-2 w-full"
                 />
               </div>
@@ -1173,33 +1193,33 @@ const TestCreationPage: React.FC = () => {
           <div className="mb-2">
             {Array.isArray(passage.passage)
               ? passage.passage.map((para, paraIndex) => (
-                <textarea
-                  key={paraIndex}
-                  placeholder={`Paragraph ${String.fromCharCode(
-                    65 + paraIndex
-                  )}`}
-                  value={para}
-                  onChange={(e) =>
-                    updateParagraph(passageIndex, paraIndex, e.target.value)
-                  }
-                  className="border p-2 mb-2 w-full"
-                />
-              ))
+                  <textarea
+                    key={paraIndex}
+                    placeholder={`Paragraph ${String.fromCharCode(
+                      65 + paraIndex
+                    )}`}
+                    value={para}
+                    onChange={(e) =>
+                      updateParagraph(passageIndex, paraIndex, e.target.value)
+                    }
+                    className="border p-2 mb-2 w-full"
+                  />
+                ))
               : Object.keys(passage.passage).map((key) => (
-                <textarea
-                  key={key}
-                  placeholder={`Paragraph ${key}`}
-                  value={passage.passage[key]}
-                  onChange={(e) =>
-                    updateParagraph(
-                      passageIndex,
-                      parseInt(key, 36) - 10,
-                      e.target.value
-                    )
-                  }
-                  className="border p-2 mb-2 w-full"
-                />
-              ))}
+                  <textarea
+                    key={key}
+                    placeholder={`Paragraph ${key}`}
+                    value={passage.passage[key]}
+                    onChange={(e) =>
+                      updateParagraph(
+                        passageIndex,
+                        parseInt(key, 36) - 10,
+                        e.target.value
+                      )
+                    }
+                    className="border p-2 mb-2 w-full"
+                  />
+                ))}
             <button
               onClick={() => addParagraph(passageIndex)}
               className="bg-green-500 text-white p-2 rounded"

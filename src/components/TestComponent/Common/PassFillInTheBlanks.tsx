@@ -12,12 +12,12 @@ const PassFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
 
     let blankNumber = 24; // Start numbering from 24, or any other starting number
 
-    while ((match = regex.exec(question.text)) !== null) {
+    while ((match = regex.exec(question[0].text)) !== null) {
       // Add the part of text before the blank
       if (lastIndex < match.index) {
         parts.push(
           <span key={`text-${lastIndex}`}>
-            {question.text.slice(lastIndex, match.index)}
+            {question[0].text.slice(lastIndex, match.index)}
           </span>
         );
       }
@@ -47,7 +47,7 @@ const PassFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
               e.target.value,
               "text", // As the input_type is 'text' for this case
               "", // The correct answer will be checked later,
-              e.target.value === question.answer ? true : false
+              e.target.value === question[0].answer ? true : false
             )
           }
         />
@@ -59,9 +59,9 @@ const PassFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
     }
 
     // Add any remaining text after the last blank
-    if (lastIndex < question.text?.length) {
+    if (lastIndex < question[0].text?.length) {
       parts.push(
-        <span key={`text-last`}>{question.text.slice(lastIndex)}</span>
+        <span key={`text-last`}>{question[0].text.slice(lastIndex)}</span>
       );
     }
 
@@ -73,6 +73,7 @@ const PassFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
   return (
     <div>
       <h5 className="font-medium mb-2">Passage Fill in the Blanks</h5>
+      <h1>{question[0]?.instruction}</h1>
       <div className="p-4 border rounded-lg mb-2">
         <p>{renderTextWithBlanks()}</p>
       </div>
