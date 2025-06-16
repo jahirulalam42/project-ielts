@@ -45,7 +45,7 @@ const SumFillInTheBlanks = ({
           <div className="whitespace-pre-wrap leading-7">
             {/* Render passage text with numbered blanks */}
             {question.passage
-              .split("__________")
+              ?.split("__________")
               .map((part: string, index: number) => {
                 if (index < question.answers.length) {
                   return (
@@ -72,7 +72,7 @@ const SumFillInTheBlanks = ({
           <h6 className="font-medium mb-2">Drag the correct answers:</h6>
           <div className="flex gap-2 flex-wrap">
             {/* Render draggable options */}
-            {question.options.map((opt: any) => (
+            {question.options?.map((opt: any) => (
               <DraggableOption
                 key={opt.label}
                 id={opt.label}
