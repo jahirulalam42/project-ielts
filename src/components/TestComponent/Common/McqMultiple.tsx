@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 // The McqMultiple component accepts the question and the answer handler
 const McqMultiple = ({ question, handleAnswerChange }: any) => {
@@ -7,9 +7,19 @@ const McqMultiple = ({ question, handleAnswerChange }: any) => {
     [key: string]: string[];
   }>({});
 
+  // Initialize selectedOptions when component mounts or questions change
+  useEffect(() => {
+    const initialSelections: { [key: string]: string[] } = {};
+    question.forEach((q: any, idx: number) => {
+      const groupKey = q.question_numbers.join('-'); // Convert array to string
+      initialSelections[groupKey] = [];
+    });
+    setSelectedOptions(initialSelections);
+  }, [question]);
+
   // Handle checkbox change for each group of questions
   const handleCheckboxChange = (
-    groupKey: number,
+    groupKey: string, // Changed to string
     optionLabel: string,
     q: any
   ) => {
@@ -21,11 +31,17 @@ const McqMultiple = ({ question, handleAnswerChange }: any) => {
         (item) => item !== optionLabel
       );
       setSelectedOptions({ ...selectedOptions, [groupKey]: newSelections });
+
+      // Call handleAnswerChange with the question numbers array
       handleAnswerChange(
-        groupKey,
+        q.question_numbers, // Pass the actual question numbers array
         newSelections,
         q.input_type,
-        q.correct_mapping
+        q.correct_mapping,
+        JSON.stringify(newSelections.sort()) ===
+        JSON.stringify(
+          Array.isArray(q?.correct_mapping) ? q.correct_mapping.sort() : []
+        )
       );
     } else {
       // If the selection limit is not reached, select the option
@@ -33,18 +49,18 @@ const McqMultiple = ({ question, handleAnswerChange }: any) => {
         const newSelections = [...currentSelections, optionLabel];
         setSelectedOptions({ ...selectedOptions, [groupKey]: newSelections });
         console.log("New Selections", newSelections);
+        console.log("Question Numbers", q.question_numbers);
 
+        // Call handleAnswerChange with the question numbers array
         handleAnswerChange(
-          groupKey,
+          q.question_numbers, // Pass the actual question numbers array
           newSelections,
           q.input_type,
           q.correct_mapping,
           JSON.stringify(newSelections.sort()) ===
-            JSON.stringify(
-              Array.isArray(q?.correct_mapping) ? q.correct_mapping.sort() : []
-            )
-            ? true
-            : false
+          JSON.stringify(
+            Array.isArray(q?.correct_mapping) ? q.correct_mapping.sort() : []
+          )
         );
       } else {
         alert(
@@ -58,8 +74,8 @@ const McqMultiple = ({ question, handleAnswerChange }: any) => {
     <div>
       <h5 className="font-medium mb-2">Multiple Select Questions</h5>
       {question.map((q: any, idx: number) => {
-        // Create a group key based on the question numbers
-        const groupKey = q.question_numbers
+        // Create a consistent group key by joining the question numbers
+        const groupKey = q.question_numbers.join('-'); // Convert array to string like "1-2"
         const currentSelections = selectedOptions[groupKey] || [];
 
         return (
@@ -85,6 +101,12 @@ const McqMultiple = ({ question, handleAnswerChange }: any) => {
                   <span>{option.value}</span>
                 </label>
               ))}
+            </div>
+
+            {/* Debug info - remove this in production */}
+            <div className="text-xs text-gray-500 mt-2">
+              Selected: {currentSelections.join(', ')} |
+              Correct: {q.correct_mapping?.join(', ')}
             </div>
           </div>
         );

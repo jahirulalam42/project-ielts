@@ -313,8 +313,8 @@ const TestCreationPage: React.FC = () => {
               currentQuestionType === "fill_in_the_blanks"
                 ? "text"
                 : currentQuestionType === "true_false_not_given"
-                ? "dropdown"
-                : "radio",
+                  ? "dropdown"
+                  : "radio",
           };
 
           if (currentQuestionType === "true_false_not_given") {
@@ -339,20 +339,28 @@ const TestCreationPage: React.FC = () => {
 
       case "matching_headings":
       case "paragraph_matching":
-        const optionsSource =
-          currentQuestionType === "matching_headings" ? "passage" : "passage";
-        const optionsList = Object.keys(updatedParts[passageIndex].passage).map(
-          (key) => ({
-            label: key,
-            value: key,
-          })
-        );
+        const passage = updatedParts[passageIndex].passage;
+        let optionsList;
+
+        if (Array.isArray(passage)) {
+          // For type1 passages (array), create options A, B, C based on array indices
+          optionsList = passage.map((_, index) => ({
+            label: String.fromCharCode(65 + index), // A, B, C, etc.
+            value: String.fromCharCode(65 + index), // A, B, C, etc.
+          }));
+        } else {
+          // For type2 passages (object), use the existing keys
+          optionsList = Object.keys(passage).map((key) => ({
+            label: key, // A, B, C, etc.
+            value: key, // A, B, C, etc.
+          }));
+        }
 
         for (let i = 0; i < questionCount; i++) {
           newQuestions.push({
             question_number: nextQuestionNumber + i,
             question: "",
-            answer: "",
+            answer: optionsList[0]?.value || "A", // Default to first option, never empty or 0
             options: optionsList,
             input_type: "dropdown",
           });
@@ -522,13 +530,14 @@ const TestCreationPage: React.FC = () => {
             />
             {/* Dropdown to select the matching heading */}
             <select
-              value={q.answer as string}
+              value={q.answer as string || "A"} // Ensure there's always a default value
               onChange={(e) => updateQuestion("answer", e.target.value, idx)}
               className="border p-2 mb-2 w-full"
             >
+              <option value="">-- Select Answer --</option> {/* Add default option */}
               {q.options?.map((opt) => (
                 <option key={opt.value} value={opt.value}>
-                  {opt.label} {/* Display 'A', 'B', 'C', etc. */}
+                  {opt.label}: {opt.value} {/* Show both label and value if needed */}
                 </option>
               ))}
             </select>
@@ -548,13 +557,14 @@ const TestCreationPage: React.FC = () => {
             />
             {/* Dropdown to select the matching paragraph */}
             <select
-              value={q.answer as string}
+              value={q.answer as string || "A"} // Ensure there's always a default value
               onChange={(e) => updateQuestion("answer", e.target.value, idx)}
               className="border p-2 mb-2 w-full"
             >
+              <option value="">-- Select Answer --</option> {/* Add default option */}
               {q.options?.map((opt) => (
                 <option key={opt.value} value={opt.value}>
-                  {opt.label} {/* Display 'A', 'B', 'C', etc. */}
+                  {opt.label}: {opt.value} {/* Show both label and value if needed */}
                 </option>
               ))}
             </select>
@@ -823,9 +833,8 @@ const TestCreationPage: React.FC = () => {
               {section.extra?.map((text: any, textIdx: any) => (
                 <div key={textIdx} className="mb-2">
                   <textarea
-                    placeholder={`Text line ${
-                      textIdx + 1
-                    } (use __________ for blanks)`}
+                    placeholder={`Text line ${textIdx + 1
+                      } (use __________ for blanks)`}
                     value={text || ""}
                     onChange={(e) => {
                       const updatedParts = [...test.parts];
@@ -928,8 +937,8 @@ const TestCreationPage: React.FC = () => {
                   const nextQuestionNumber =
                     currentQuestions.length > 0
                       ? Math.max(
-                          ...currentQuestions.map((q: any) => q.question_number)
-                        ) + 1
+                        ...currentQuestions.map((q: any) => q.question_number)
+                      ) + 1
                       : 1;
 
                   if (
@@ -1169,33 +1178,33 @@ const TestCreationPage: React.FC = () => {
           <div className="mb-2">
             {Array.isArray(passage.passage)
               ? passage.passage.map((para, paraIndex) => (
-                  <textarea
-                    key={paraIndex}
-                    placeholder={`Paragraph ${String.fromCharCode(
-                      65 + paraIndex
-                    )}`}
-                    value={para}
-                    onChange={(e) =>
-                      updateParagraph(passageIndex, paraIndex, e.target.value)
-                    }
-                    className="border p-2 mb-2 w-full"
-                  />
-                ))
+                <textarea
+                  key={paraIndex}
+                  placeholder={`Paragraph ${String.fromCharCode(
+                    65 + paraIndex
+                  )}`}
+                  value={para}
+                  onChange={(e) =>
+                    updateParagraph(passageIndex, paraIndex, e.target.value)
+                  }
+                  className="border p-2 mb-2 w-full"
+                />
+              ))
               : Object.keys(passage.passage).map((key) => (
-                  <textarea
-                    key={key}
-                    placeholder={`Paragraph ${key}`}
-                    value={passage.passage[key]}
-                    onChange={(e) =>
-                      updateParagraph(
-                        passageIndex,
-                        parseInt(key, 36) - 10,
-                        e.target.value
-                      )
-                    }
-                    className="border p-2 mb-2 w-full"
-                  />
-                ))}
+                <textarea
+                  key={key}
+                  placeholder={`Paragraph ${key}`}
+                  value={passage.passage[key]}
+                  onChange={(e) =>
+                    updateParagraph(
+                      passageIndex,
+                      parseInt(key, 36) - 10,
+                      e.target.value
+                    )
+                  }
+                  className="border p-2 mb-2 w-full"
+                />
+              ))}
             <button
               onClick={() => addParagraph(passageIndex)}
               className="bg-green-500 text-white p-2 rounded"
