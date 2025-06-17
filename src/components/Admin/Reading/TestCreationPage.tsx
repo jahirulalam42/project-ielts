@@ -119,16 +119,16 @@ const TestCreationPage: React.FC = () => {
   };
 
   // Function to dynamically generate blanks based on the passage text
-  const getBlanksFromText = (text: string) => {
-    const regex = /__________/g; // Match all occurrences of "__________"
-    const matches = [...text.matchAll(regex)]; // Find all occurrences of "__________"
+  // const getBlanksFromText = (text: string) => {
+  //   const regex = /__________/g; // Match all occurrences of "__________"
+  //   const matches = [...text.matchAll(regex)]; // Find all occurrences of "__________"
 
-    return matches.map((match, index) => ({
-      blank_number: index + 1, // Start numbering blanks from 1
-      input_type: "text", // Use text input for each blank
-      answer: "", // Empty answer initially, to be filled by admin
-    }));
-  };
+  //   return matches.map((match, index) => ({
+  //     blank_number: index + 1, // Start numbering blanks from 1
+  //     input_type: "text", // Use text input for each blank
+  //     answer: "", // Empty answer initially, to be filled by admin
+  //   }));
+  // };
 
   const getBlanksFromTextForSummary = (text: string) => {
     const regex = /__________/g; // Match all occurrences of "__________"
@@ -241,194 +241,140 @@ const TestCreationPage: React.FC = () => {
   };
 
   // UI for adding new question groups
+  // Fixed question numbering logic - replace the addQuestionGroup function
+
   const addQuestionGroup = (passageIndex: number) => {
     if (!currentQuestionType || questionCount < 1) return;
     const updatedParts = [...test.parts];
     const newQuestions: any = [];
 
-    // Determine the last question number used across all parts
-    let lastQuestionNumber = 0;
-    updatedParts.forEach((passage) => {
-      passage.questions.forEach((questionGroup) => {
-        Object.values(questionGroup).forEach((questions) => {
-          questions.forEach((q) => {
-            if (q.question_numbers) {
-              lastQuestionNumber = Math.max(
-                lastQuestionNumber,
-                ...q.question_numbers
-              );
-            }
+    // FIXED: Get the highest question number across ALL parts, not just current part
+    const getGlobalMaxQuestionNumber = () => {
+      let maxNumber = 0;
+
+      test.parts.forEach((part) => {
+        part.questions.forEach((questionGroup) => {
+          Object.values(questionGroup).forEach((questionsArray: any) => {
+            questionsArray.forEach((q: any) => {
+              // Handle single question_number
+              if (q.question_number && typeof q.question_number === "number") {
+                maxNumber = Math.max(maxNumber, q.question_number);
+              }
+              // Handle question_numbers array
+              if (q.question_numbers && Array.isArray(q.question_numbers)) {
+                const arrayMax = Math.max(...q.question_numbers);
+                maxNumber = Math.max(maxNumber, arrayMax);
+              }
+              // Handle question_number as array (for passage_fill_in_the_blanks)
+              if (q.question_number && Array.isArray(q.question_number)) {
+                const arrayMax = Math.max(...q.question_number);
+                maxNumber = Math.max(maxNumber, arrayMax);
+              }
+            });
           });
         });
       });
-    });
 
-    // The next question number starts from 1 if no questions exist yet
-    // let nextQuestionNumber = lastQuestionNumber + 1;
-
-    const getMaxQuestionNumberInPart = (part: any) => {
-      if (!part || !part.questions) return 0;
-
-      let max = 0;
-
-      part.questions.forEach((questions: any) => {
-        const questionType = Object.keys(questions)[0];
-        const questionsArray = questions[questionType];
-
-        questionsArray.forEach((q) => {
-          // Check singular question_number
-          if (q.question_number !== undefined && q.question_number > max) {
-            max = q.question_number;
-          }
-
-          // Check plural question_numbers
-          if (q.question_numbers !== undefined) {
-            const currentMax = Math.max(...q.question_numbers);
-            if (currentMax > max) max = currentMax;
-          }
-        });
-      });
-
-      return max;
+      return maxNumber;
     };
 
-    const maxQuestionNumber = getMaxQuestionNumberInPart(
-      updatedParts[passageIndex]
-    );
-    const nextQuestionNumber = maxQuestionNumber + 1;
+    const globalMaxQuestionNumber = getGlobalMaxQuestionNumber();
+    let nextQuestionNumber = globalMaxQuestionNumber + 1;
 
-    // Handle different question types
+    // Handle different question types with corrected numbering
     switch (currentQuestionType) {
       case "fill_in_the_blanks_with_subtitle":
+        // Generate questions based on questionCount, not local state
+        const subtitleQuestions = [];
+        for (let i = 0; i < questionCount; i++) {
+          subtitleQuestions.push({
+            question_number: nextQuestionNumber + i,
+            answer: "", // Start with empty answer
+            input_type: "text", // Default input type
+          });
+        }
+
         newQuestions.push({
           title: title,
           subtitle: subtitle,
-          extra: extra,
-          questions: questions.map((question, idx) => ({
-            question_number: nextQuestionNumber + idx,
-            answer: question.answer,
-            input_type: question.input_type,
-          })),
+          extra: extra.length > 0 ? extra : [""], // Ensure at least one empty extra field
+          questions: subtitleQuestions,
         });
-
         break;
 
       case "true_false_not_given":
+      case "fill_in_the_blanks":
+      case "mcq":
+        for (let i = 0; i < questionCount; i++) {
+          const questionData: any = {
+            question_number: nextQuestionNumber + i,
+            question: "",
+            input_type:
+              currentQuestionType === "fill_in_the_blanks"
+                ? "text"
+                : currentQuestionType === "true_false_not_given"
+                  ? "dropdown"
+                  : "radio",
+          };
+
+          if (currentQuestionType === "true_false_not_given") {
+            questionData.answer = "True";
+          } else if (currentQuestionType === "fill_in_the_blanks") {
+            questionData.answer = "";
+          } else if (currentQuestionType === "mcq") {
+            questionData.answer = [];
+            questionData.options = [
+              { label: "A", value: "" },
+              { label: "B", value: "" },
+              { label: "C", value: "" },
+              { label: "D", value: "" },
+            ];
+            questionData.min_selection = 1;
+            questionData.max_selection = 1;
+          }
+
+          newQuestions.push(questionData);
+        }
+        break;
+
+      case "matching_headings":
+      case "paragraph_matching":
+        const passage = updatedParts[passageIndex].passage;
+        let optionsList;
+
+        if (Array.isArray(passage)) {
+          // For type1 passages (array), create options A, B, C based on array indices
+          optionsList = passage.map((_, index) => ({
+            label: String.fromCharCode(65 + index), // A, B, C, etc.
+            value: String.fromCharCode(65 + index), // A, B, C, etc.
+          }));
+        } else {
+          // For type2 passages (object), use the existing keys
+          optionsList = Object.keys(passage).map((key) => ({
+            label: key, // A, B, C, etc.
+            value: key, // A, B, C, etc.
+          }));
+        }
+
         for (let i = 0; i < questionCount; i++) {
           newQuestions.push({
             question_number: nextQuestionNumber + i,
             question: "",
-            answer: "True",
+            answer: optionsList[0]?.value || "A", // Default to first option, never empty or 0
+            options: optionsList,
             input_type: "dropdown",
           });
         }
         break;
 
-      case "fill_in_the_blanks":
-        for (let i = 0; i < questionCount; i++) {
-          newQuestions.push({
-            question_number: nextQuestionNumber + i,
-            question: "",
-            answer: "",
-            input_type: "text",
-          });
-        }
-        break;
-
-      case "matching_headings":
-        // Generate options (heading keys) from the passage (A, B, C, etc.)
-        const headingOptions = Object.keys(
-          updatedParts[passageIndex].passage
-        ).map((key) => ({
-          label: key, // 'A', 'B', 'C'...
-          value: key, // 'A', 'B', 'C'...
-        }));
-
-        // Create matching_headings questions
-        for (let i = 0; i < questionCount; i++) {
-          newQuestions.push({
-            question_number: nextQuestionNumber + i,
-            question: "", // Admin will enter the question (heading reference)
-            answer: "", // Admin will select the correct answer (A, B, C...)
-            options: headingOptions, // Use headingOptions for matching_headings
-            input_type: "dropdown", // User selects from options (A, B, C, etc.)
-          });
-        }
-        break;
-
-      case "paragraph_matching":
-        // Generate options (paragraph keys) from the passage (A, B, C, etc.)
-        const paragraphOptions = Object.keys(
-          updatedParts[passageIndex].passage
-        ).map((key) => ({
-          label: key, // 'A', 'B', 'C'...
-          value: key, // 'A', 'B', 'C'...
-        }));
-
-        // Create paragraph_matching questions
-        for (let i = 0; i < questionCount; i++) {
-          newQuestions.push({
-            question_number: nextQuestionNumber + i,
-            question: "", // Question reference input by admin
-            answer: "", // Admin will select the correct answer (A, B, C...)
-            options: paragraphOptions, // Use paragraphOptions for paragraph_matching
-            input_type: "dropdown", // User selects from options (A, B, C, etc.)
-          });
-        }
-        break;
-
-      case "mcq":
-        // Create MCQ questions with unique options for each question
-        for (let i = 0; i < questionCount; i++) {
-          const options: { label: string; value: string }[] = [];
-          for (let j = 0; j < 4; j++) {
-            options.push({
-              label: String.fromCharCode(65 + j), // 'A', 'B', 'C', 'D'
-              value: "", // Initially empty, will be filled by user
-            });
-          }
-
-          newQuestions.push({
-            question_number: nextQuestionNumber + i,
-            question: "", // Admin will input the question
-            answer: [], // Admin will select the correct answer(s) (e.g., ["D"])
-            options: options, // Dynamically generated options for this question
-            input_type: "radio", // Only one option can be selected
-            min_selection: 1, // Only 1 option can be selected
-            max_selection: 1, // Only 1 option can be selected
-          });
-        }
-        break;
-
-      case "summary_fill_in_the_blanks":
-        // Auto-generate question numbers
-        // const questionNumbers = Array.from(
-        //   { length: questionCount },
-        //   (_, idx) => idx + 1
-        // );
-        const summaryQuestionNumbers = Array.from(
-          { length: questionCount },
-          (_, idx) => nextQuestionNumber + idx
-        );
-
-        // Create the summary fill-in-the-blanks question with passage, options, and correct answers
-        newQuestions.push({
-          question_numbers: summaryQuestionNumbers, // Auto-generated question numbers
-          passage: summaryPassage, // Passage entered by the admin
-          answers: answers, // Correct answers selected by the admin
-          options: options, // Options entered by the admin
-          input_type: "drag_and_drop", // Drag-and-drop input type
-          question: "", // Placeholder for the question text (admin will input this)
-        });
-        break;
-
       case "multiple_mcq":
         for (let i = 0; i < questionCount; i++) {
-          // Each question gets two consecutive numbers
+          // FIXED: Each multiple_mcq question gets 2 consecutive numbers
           const questionNumbers = [
-            nextQuestionNumber + 2 * i,
-            nextQuestionNumber + 2 * i + 1,
+            nextQuestionNumber + i * 2,
+            nextQuestionNumber + i * 2 + 1,
           ];
+
           newQuestions.push({
             question_numbers: questionNumbers,
             question: "",
@@ -442,27 +388,41 @@ const TestCreationPage: React.FC = () => {
             input_type: "checkbox",
             min_selection: 2,
             max_selection: 2,
-            correct_mapping: [], // Admin can fill correct options
+            correct_mapping: [],
           });
         }
+        // Update nextQuestionNumber for next question type
+        nextQuestionNumber += questionCount * 2;
         break;
 
-      // Replace the "passage_fill_in_the_blanks" case in your addQuestionGroup function with this:
+      case "summary_fill_in_the_blanks":
+        const summaryQuestionNumbers = Array.from(
+          { length: questionCount },
+          (_, idx) => nextQuestionNumber + idx
+        );
+
+        newQuestions.push({
+          question_numbers: summaryQuestionNumbers,
+          passage: summaryPassage,
+          answers: [...answers],
+          options: [...options],
+          input_type: "drag_and_drop",
+          question: "",
+        });
+        break;
 
       case "passage_fill_in_the_blanks":
-        // Generate consecutive question numbers based on the number of questions requested
         const passageQuestionNumbers = Array.from(
           { length: questionCount },
           (_, idx) => nextQuestionNumber + idx
         );
 
-        // Create a single passage_fill_in_the_blanks question structure
         newQuestions.push({
-          question_number: passageQuestionNumbers, // Array of question numbers
+          question_number: passageQuestionNumbers, // This should be an array
           instruction:
             "Complete the summary below. Choose ONE WORD ONLY from the passage for each answer.",
-          text: "", // This will be filled by the admin
-          blanks: [], // This will be populated when admin enters text with blanks
+          text: "",
+          blanks: [],
         });
         break;
 
@@ -473,9 +433,32 @@ const TestCreationPage: React.FC = () => {
     updatedParts[passageIndex].questions.push({
       [currentQuestionType]: newQuestions,
     });
+
     setTest({ ...test, parts: updatedParts });
     setCurrentQuestionType("");
     setQuestionCount(1);
+
+    // Clear state
+    setSummaryPassage("");
+    setOptions([]);
+    setAnswers([]);
+    setBlanks([]);
+    setTitle("");
+    setSubtitle("");
+    setExtra([]);
+    setQuestions([]);
+  };
+
+  // ADDITIONAL FIX: Update the getBlanksFromText function to use proper question numbers
+  const getBlanksFromText = (text: string, questionNumbers?: number[]) => {
+    const regex = /__________/g;
+    const matches = [...text.matchAll(regex)];
+
+    return matches.map((match, index) => ({
+      blank_number: questionNumbers ? questionNumbers[index] : index + 1,
+      input_type: "text",
+      answer: "",
+    }));
   };
 
   // Render question inputs based on question type
@@ -547,13 +530,14 @@ const TestCreationPage: React.FC = () => {
             />
             {/* Dropdown to select the matching heading */}
             <select
-              value={q.answer as string}
+              value={q.answer as string || "A"} // Ensure there's always a default value
               onChange={(e) => updateQuestion("answer", e.target.value, idx)}
               className="border p-2 mb-2 w-full"
             >
+              <option value="">-- Select Answer --</option> {/* Add default option */}
               {q.options?.map((opt) => (
                 <option key={opt.value} value={opt.value}>
-                  {opt.label} {/* Display 'A', 'B', 'C', etc. */}
+                  {opt.label}: {opt.value} {/* Show both label and value if needed */}
                 </option>
               ))}
             </select>
@@ -573,13 +557,14 @@ const TestCreationPage: React.FC = () => {
             />
             {/* Dropdown to select the matching paragraph */}
             <select
-              value={q.answer as string}
+              value={q.answer as string || "A"} // Ensure there's always a default value
               onChange={(e) => updateQuestion("answer", e.target.value, idx)}
               className="border p-2 mb-2 w-full"
             >
+              <option value="">-- Select Answer --</option> {/* Add default option */}
               {q.options?.map((opt) => (
                 <option key={opt.value} value={opt.value}>
-                  {opt.label} {/* Display 'A', 'B', 'C', etc. */}
+                  {opt.label}: {opt.value} {/* Show both label and value if needed */}
                 </option>
               ))}
             </select>
@@ -987,19 +972,24 @@ const TestCreationPage: React.FC = () => {
       case "summary_fill_in_the_blanks":
         return questions.map((q, idx) => (
           <div key={idx}>
-            {/* Passage input */}
+            {/* Passage input - update both local state and test object */}
             <div className="mb-2">
               <textarea
                 placeholder="Enter Passage for summary fill-in-the-blanks"
-                value={summaryPassage}
+                value={q.passage || ""} // Use value from test object, not local state
                 onChange={(e) => {
                   const newPassage = e.target.value;
+                  // Update the test object directly
+                  updateQuestion("passage", newPassage, idx);
+
+                  // Also update local state for blank detection
                   setSummaryPassage(newPassage);
                   const extractedBlanks =
                     getBlanksFromTextForSummary(newPassage);
-                  setBlanks(extractedBlanks); // Update blanks dynamically
+                  setBlanks(extractedBlanks);
                 }}
                 className="border p-2 mb-2 w-full"
+                rows="6"
               />
             </div>
 
@@ -1009,14 +999,17 @@ const TestCreationPage: React.FC = () => {
                 <div key={blank}>
                   <label>{`Select answer for blank ${blank}:`}</label>
                   <select
-                    value={answers[blankIdx] || ""}
-                    onChange={(e) =>
-                      handleAnswerChange(blankIdx, e.target.value)
-                    } // Update answer for this blank
+                    value={q.answers?.[blankIdx] || ""} // Use value from test object
+                    onChange={(e) => {
+                      const updatedAnswers = [...(q.answers || [])];
+                      updatedAnswers[blankIdx] = e.target.value;
+                      updateQuestion("answers", updatedAnswers, idx);
+                      setAnswers(updatedAnswers); // Keep local state in sync
+                    }}
                     className="border p-2 mb-2"
                   >
                     <option value="">Select an option</option>
-                    {options.map((option) => (
+                    {(q.options || []).map((option) => (
                       <option key={option.label} value={option.label}>
                         {option.label}: {option.value}
                       </option>
@@ -1028,25 +1021,37 @@ const TestCreationPage: React.FC = () => {
 
             {/* Add Option Button */}
             <button
-              onClick={addOption}
+              type="button"
+              onClick={() => {
+                const label = String.fromCharCode(
+                  65 + (q.options?.length || 0)
+                );
+                const newOption = { label, value: "" };
+                const updatedOptions = [...(q.options || []), newOption];
+                updateQuestion("options", updatedOptions, idx);
+                setOptions(updatedOptions); // Keep local state in sync
+              }}
               className="bg-green-500 text-white p-2 rounded"
             >
               Add Option
             </button>
 
-            {/* Render Inputs for New Options */}
-            {options.map((option, optIdx) => (
+            {/* Render Inputs for Options */}
+            {(q.options || []).map((option, optIdx) => (
               <div key={optIdx} className="mb-2">
-                {/* Label is auto-generated (A, B, C, ...) */}
                 <input
                   type="text"
-                  placeholder={`Option Value ${String.fromCharCode(
-                    65 + optIdx
-                  )}`}
+                  placeholder={`Option Value ${option.label}`}
                   value={option.value}
-                  onChange={(e) =>
-                    handleOptionChange(optIdx, "value", e.target.value)
-                  }
+                  onChange={(e) => {
+                    const updatedOptions = [...(q.options || [])];
+                    updatedOptions[optIdx] = {
+                      ...updatedOptions[optIdx],
+                      value: e.target.value,
+                    };
+                    updateQuestion("options", updatedOptions, idx);
+                    setOptions(updatedOptions); // Keep local state in sync
+                  }}
                   className="border p-2 mb-2 w-full"
                 />
               </div>

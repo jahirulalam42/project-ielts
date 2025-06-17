@@ -21,15 +21,15 @@ const SumFillInTheBlanks = ({
     if (over) {
       const blankIndex = parseInt(String(over.id)); // Use the index to identify the blank
       const selectedLabel = String(active.id); // Get the selected answer label
-      const submittedAnswer = question.answers[blankIndex]; // Get the correct answer for this blank
+      const submittedAnswer = question[0].answers[blankIndex]; // Get the correct answer for this blank
 
       setSelectedAnswers((prev) => ({ ...prev, [blankIndex]: selectedLabel }));
 
       // Send value, input_type, and correct answer to the parent
       handleAnswerChange(
-        question.question_numbers[blankIndex],
+        question[0].question_numbers[blankIndex],
         selectedLabel,
-        question.input_type,
+        question[0].input_type,
         submittedAnswer,
         selectedLabel === submittedAnswer ? true : false
       );
@@ -41,18 +41,18 @@ const SumFillInTheBlanks = ({
       <h5 className="font-medium mb-2">Summary Completion</h5>
       <DndContext onDragEnd={handleDragEnd}>
         <div className="p-4 border rounded-lg mb-2">
-          <p className="italic mb-2">{question.instruction}</p>
+          <p className="italic mb-2">{question[0].instruction}</p>
           <div className="whitespace-pre-wrap leading-7">
             {/* Render passage text with numbered blanks */}
-            {question.passage
+            {question[0].passage
               ?.split("__________")
               .map((part: string, index: number) => {
-                if (index < question.answers.length) {
+                if (index < question[0].answers.length) {
                   return (
                     <span key={index} className="inline">
                       {part}
                       <span className="font-semibold">
-                        {question.question_numbers[index]}.
+                        {question[0].question_numbers[index]}.
                       </span>{" "}
                       {/* Display the question number */}
                       <DropZone
@@ -72,7 +72,7 @@ const SumFillInTheBlanks = ({
           <h6 className="font-medium mb-2">Drag the correct answers:</h6>
           <div className="flex gap-2 flex-wrap">
             {/* Render draggable options */}
-            {question.options?.map((opt: any) => (
+            {question[0].options?.map((opt: any) => (
               <DraggableOption
                 key={opt.label}
                 id={opt.label}
