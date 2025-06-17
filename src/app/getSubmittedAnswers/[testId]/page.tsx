@@ -16,15 +16,16 @@ interface Submission {
 }
 
 interface Answer {
-  questionId: number | any[]; // Can be a number or array for grouped questions
-  value?: string; // User's answer
-  answers?: any[]; // For grouped questions, often empty in the sample
-  answerText: string | any[]; // Correct answer(s)
+  questionId: number | any[];
+  value?: string;
+  answers?: any[];
+  answerText: string | any[];
   isCorrect: boolean;
+  questionGroup?: number[];
 }
 
 const SubmissionPage = () => {
-  const Params = useParams(); // Get testId from URL params
+  const Params = useParams();
   const { testId } = Params;
   const [submission, setSubmission] = useState<Submission | null>(null);
   const [loading, setLoading] = useState(true);
@@ -63,7 +64,7 @@ const SubmissionPage = () => {
     } else {
       setLoading(false);
     }
-  }, [testId, session?.user?.id, status]);
+  }, [testId, session?.user?.id]);
 
   // Handle loading and error states
   if (loading) return <div className="text-center p-4">Loading...</div>;
@@ -71,13 +72,37 @@ const SubmissionPage = () => {
   if (!submission)
     return <div className="text-center p-4">No submission data available</div>;
 
-  // Filter answers to include only those with questionId as a number (individual answers)
-  const individualAnswers = submission.answers
-    .filter(
-      (answer): answer is Answer & { questionId: number } =>
-        typeof answer.questionId === "number"
-    )
-    .sort((a, b) => a.questionId - b.questionId);
+  // Group answers by questionGroup and maintain order
+  const groupedAnswers = submission.answers.reduce((acc: { [key: string]: Answer[] }, answer) => {
+    if (answer.questionGroup) {
+      const groupKey = answer.questionGroup.join('-');
+      if (!acc[groupKey]) {
+        acc[groupKey] = [];
+      }
+      acc[groupKey].push(answer);
+    } else {
+      const key = answer.questionId.toString();
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(answer);
+    }
+    return acc;
+  }, {});
+
+  // Sort groups by their first question number
+  const sortedGroups = Object.entries(groupedAnswers).sort(([keyA], [keyB]) => {
+    const numA = parseInt(keyA.split('-')[0]);
+    const numB = parseInt(keyB.split('-')[0]);
+    return numA - numB;
+  });
+
+  // Function to calculate partial correctness
+  const getPartialCorrectness = (answers: Answer[]) => {
+    const correctCount = answers.filter(a => a.isCorrect).length;
+    const totalCount = answers.length;
+    return `${correctCount}/${totalCount}`;
+  };
 
   return (
     <div className="container mx-auto p-4">
@@ -103,22 +128,42 @@ const SubmissionPage = () => {
               <th>Question</th>
               <th>Your Answer</th>
               <th>Correct Answer</th>
-              <th>Correct</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
-            {individualAnswers.map((answer, index) => (
-              <tr key={index}>
+            {sortedGroups.map(([groupKey, answers]) => {
+              // For grouped answers (multiple MCQ)
+              if (answers[0].questionGroup) {
+                const selectedAnswers = answers.map(a => a.value).filter(Boolean).join(', ');
+                const correctAnswers = answers.map(a => a.answerText).filter(Boolean).join(', ');
+                const isGroupCorrect = answers.every(a => a.isCorrect);
+                const partialCorrectness = getPartialCorrectness(answers);
+
+                return (
+                  <tr key={groupKey} className="bg-base-200">
+                    <td>{answers[0].questionGroup.join(', ')}</td>
+                    <td>{selectedAnswers}</td>
+                    <td>{correctAnswers}</td>
+                    <td className={isGroupCorrect ? "text-success" : "text-warning"}>
+                      {isGroupCorrect ? "✅" : `⚠️ (${partialCorrectness})`}
+                    </td>
+                  </tr>
+                );
+              }
+              
+              // For individual answers
+              return answers.map((answer, index) => (
+                <tr key={`${groupKey}-${index}`}>
                 <td>{answer.questionId}</td>
                 <td>{answer.value || "Not answered"}</td>
                 <td>{answer.answerText as string}</td>
-                <td
-                  className={answer.isCorrect ? "text-success" : "text-error"}
-                >
+                  <td className={answer.isCorrect ? "text-success" : "text-error"}>
                   {answer.isCorrect ? "✅" : "❌"}
                 </td>
               </tr>
-            ))}
+              ));
+            })}
           </tbody>
         </table>
       </div>

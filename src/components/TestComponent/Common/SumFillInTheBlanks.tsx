@@ -16,22 +16,38 @@ const SumFillInTheBlanks = ({
     [key: number]: string;
   }>({});
 
+  // Initialize selected answers from the answers prop if available
+  useEffect(() => {
+    if (answers) {
+      const initialAnswers: { [key: number]: string } = {};
+      answers.forEach((answer: any) => {
+        if (answer.value) {
+          const index = question.question_numbers.indexOf(answer.questionId);
+          if (index !== -1) {
+            initialAnswers[index] = answer.value;
+          }
+        }
+      });
+      setSelectedAnswers(initialAnswers);
+    }
+  }, [answers, question]);
+
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (over) {
-      const blankIndex = parseInt(String(over.id)); // Use the index to identify the blank
-      const selectedLabel = String(active.id); // Get the selected answer label
-      const submittedAnswer = question[0].answers[blankIndex]; // Get the correct answer for this blank
+      const blankIndex = parseInt(String(over.id));
+      const selectedLabel = String(active.id);
+      const questionNumber = question.question_numbers[blankIndex];
+      const correctAnswer = question.answers[blankIndex];
 
       setSelectedAnswers((prev) => ({ ...prev, [blankIndex]: selectedLabel }));
 
-      // Send value, input_type, and correct answer to the parent
       handleAnswerChange(
-        question[0].question_numbers[blankIndex],
+        questionNumber,
         selectedLabel,
-        question[0].input_type,
-        submittedAnswer,
-        selectedLabel === submittedAnswer ? true : false
+        question.input_type,
+        correctAnswer,
+        selectedLabel === correctAnswer
       );
     }
   };
@@ -41,25 +57,24 @@ const SumFillInTheBlanks = ({
       <h5 className="font-medium mb-2">Summary Completion</h5>
       <DndContext onDragEnd={handleDragEnd}>
         <div className="p-4 border rounded-lg mb-2">
-          <p className="italic mb-2">{question[0].instruction}</p>
+          <p className="italic mb-2">
+            {question.instruction || "Complete the summary using the list of words, A-K, below."}
+          </p>
           <div className="whitespace-pre-wrap leading-7">
-            {/* Render passage text with numbered blanks */}
-            {question[0].passage
+            {question.passage
               ?.split("__________")
               .map((part: string, index: number) => {
-                if (index < question[0].answers.length) {
+                if (index < question.answers.length) {
                   return (
                     <span key={index} className="inline">
                       {part}
                       <span className="font-semibold">
-                        {question[0].question_numbers[index]}.
+                        {question.question_numbers[index]}.
                       </span>{" "}
-                      {/* Display the question number */}
                       <DropZone
                         blankIndex={index}
                         answer={selectedAnswers[index]}
                       />
-                      {/* Show the blank as a drop zone */}
                     </span>
                   );
                 }
@@ -71,8 +86,7 @@ const SumFillInTheBlanks = ({
         <div className="mt-4 p-4 border rounded-lg">
           <h6 className="font-medium mb-2">Drag the correct answers:</h6>
           <div className="flex gap-2 flex-wrap">
-            {/* Render draggable options */}
-            {question[0].options?.map((opt: any) => (
+            {question.options?.map((opt: any) => (
               <DraggableOption
                 key={opt.label}
                 id={opt.label}
@@ -129,7 +143,6 @@ const DropZone = ({
       ref={setNodeRef}
       className="inline-block border-b-2 border-dashed px-2 mx-1 min-w-[50px] text-center"
     >
-      {/* Show answer if selected, otherwise show nothing */}
       {answer}
     </span>
   );
