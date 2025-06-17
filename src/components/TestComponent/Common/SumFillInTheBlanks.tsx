@@ -36,8 +36,6 @@ const SumFillInTheBlanks = ({
     }
   };
 
-  console.log("Summary Completion", question);
-
   return (
     <div>
       <h5 className="font-medium mb-2">Summary Completion</h5>
