@@ -126,15 +126,15 @@ const ReadingTest = ({ test }: any) => {
           return currentArray.map((obj, index) =>
             index === existingEntryIndex
               ? {
-                  questionId,
-                  answers: Array.isArray(obj.answers)
-                    ? obj.answers.includes(value)
-                      ? obj.answers.filter((v: any) => v !== value)
-                      : [...obj.answers, value]
-                    : [value],
-                  answerText: answer,
-                  isCorrect: isCorrect,
-                }
+                questionId,
+                answers: Array.isArray(obj.answers)
+                  ? obj.answers.includes(value)
+                    ? obj.answers.filter((v: any) => v !== value)
+                    : [...obj.answers, value]
+                  : [value],
+                answerText: answer,
+                isCorrect: isCorrect,
+              }
               : obj
           );
         } else {
