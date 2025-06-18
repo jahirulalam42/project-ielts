@@ -77,7 +77,7 @@ const Navbar: React.FC = () => {
               </div>
               <a className="btn btn-ghost text-xl">daisyUI</a>
             </div>
-            <div className="navbar-center hidden lg:flex">
+            <div className="navbar-center hidden lg:flex text-black">
               <ul className="menu menu-horizontal px-1">
                 <li>
                   <Link href={"/test/listening"}>Listening</Link>

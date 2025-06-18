@@ -10,7 +10,7 @@ const PassFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
     const regex = /__________/g;
     let match;
 
-    let blankNumber = question[0]?.question_number[0]; // Start numbering from 24, or any other starting number
+    let blankIndex = 0; // Index to track which blank we're currently processing
 
     while ((match = regex.exec(question[0].text)) !== null) {
       // Add the part of text before the blank
@@ -22,46 +22,40 @@ const PassFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
         );
       }
 
+      // Get the current blank data
+      const currentBlank = question[0].blanks[blankIndex];
+      const blankNumber = currentBlank.blank_number;
+      const correctAnswer = currentBlank.answer;
+
       // Add the number before the input box
-      parts.push(
-        <span key={`number-${blankNumber}`} className="font-bold mx-1">
-          {blankNumber}.
-        </span>
-      );
+      parts.push(<span key={`number-${blankNumber}`}>{blankNumber}.</span>);
 
       // Add the input field for the blank
       parts.push(
         <input
           key={`input-${blankNumber}`}
           type="text"
-          placeholder=""
-          className="input input-bordered inline w-20 text-center"
-          style={{
-            height: "30px", // Shortened height
-            padding: "5px 10px", // Adjusted padding
-            fontSize: "14px",
-          }} // Adjusting height
           onChange={(e) =>
             handleAnswerChange(
               blankNumber,
               e.target.value,
               "text", // As the input_type is 'text' for this case
-              "", // The correct answer will be checked later,
-              e.target.value === question[0].answer ? true : false
+              correctAnswer, // Pass the correct answer for this specific blank
+              e.target.value.toLowerCase().trim() ===
+                correctAnswer.toLowerCase().trim()
             )
           }
         />
       );
 
-      blankNumber++; // Increment blank number for the next blank
-
+      blankIndex++; // Move to the next blank
       lastIndex = regex.lastIndex;
     }
 
     // Add any remaining text after the last blank
     if (lastIndex < question[0].text?.length) {
       parts.push(
-        <span key={`text-last`}>{question[0].text.slice(lastIndex)}</span>
+        <span key={`text-final`}>{question[0].text.slice(lastIndex)}</span>
       );
     }
 
@@ -70,10 +64,16 @@ const PassFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
 
   return (
     <div>
-      <h5 className="font-medium mb-2">Passage Fill in the Blanks</h5>
-      <h1>{question[0]?.instruction}</h1>
-      <div className="p-4 border rounded-lg mb-2">
-        <p>{renderTextWithBlanks()}</p>
+      <div>
+        <h3>Passage Fill in the Blanks</h3>
+      </div>
+
+      <div>
+        <p>{question[0]?.instruction}</p>
+      </div>
+
+      <div>
+        <div>{renderTextWithBlanks()}</div>
       </div>
     </div>
   );

@@ -38,7 +38,6 @@ const ReadingTest = ({ test }: any) => {
                   question_number: q.question_number,
                 }));
               } else if (typeof value === "object") {
-                // Handle single object like summary_fill_in_the_blanks
                 return [
                   {
                     ...value,
@@ -59,29 +58,40 @@ const ReadingTest = ({ test }: any) => {
     console.log("All Questions", allQuestions);
 
     const initialAnswers = allQuestions.flatMap((q) => {
-      console.log("Initial Answers", q);
-      if (q.input_type === "checkbox" && !Array.isArray(q.question_numbers)) {
+      if (q.input_type === "checkbox" && Array.isArray(q.question_numbers)) {
+        // For multiple MCQ questions
+        return q.question_numbers.map(
+          (questionNumber: number, index: number) => ({
+            questionId: questionNumber,
+            value: "", // Will store the selected option
+            answerText: q.correct_mapping[index], // The correct answer
+            isCorrect: false,
+            questionGroup: q.question_numbers, // Store the group of questions
+          })
+        );
+      } else if (
+        q.input_type === "checkbox" &&
+        !Array.isArray(q.question_numbers)
+      ) {
         return {
           questionId: q.question_number,
           answers: [],
           answerText: Array.isArray(q.answer) ? q.answer : [q.answer],
           isCorrect: false,
         };
-      } else if (
-        q.input_type === "checkbox" &&
-        Array.isArray(q.question_numbers)
-      ) {
-        return q.question_numbers.map((que: any, index: number) => ({
-          questionId: q.question_numbers[index],
-          value: "",
-          answerText: q.correct_mapping[index],
-          isCorrect: false,
-        }));
       } else if (q.input_type === "text" && Array.isArray(q.questions)) {
         return q.questions.map((que: any) => ({
           questionId: que.question_number,
           value: "",
           answerText: que.answer,
+          isCorrect: false,
+        }));
+      } else if (q.input_type === "text" && Array.isArray(q.question_number)) {
+        // NEW CONDITION: Handle PassFillInTheBlanks where question_number is an array
+        return q.question_number.map((questionNum: number, index: number) => ({
+          questionId: questionNum,
+          value: "",
+          answerText: q.blanks ? q.blanks[index]?.answer : "", // Get answer from blanks array
           isCorrect: false,
         }));
       } else if (
@@ -95,8 +105,12 @@ const ReadingTest = ({ test }: any) => {
           isCorrect: false,
         }));
       } else {
+        // Ensure questionId is always a single number, not an array
+        const questionId = Array.isArray(q.question_number)
+          ? q.question_number[0]
+          : q.question_number;
         return {
-          questionId: q.question_number,
+          questionId: questionId,
           value: "",
           answerText: q.answer,
           isCorrect: false,
@@ -112,12 +126,26 @@ const ReadingTest = ({ test }: any) => {
     value: string,
     isCheckbox: string,
     answer: string,
-    isCorrect?: boolean
+    isCorrect?: boolean,
+    questionGroup?: number[]
   ) => {
     setAnswers((prev: any) => {
       const currentArray = Array.isArray(prev) ? prev : [];
 
-      if (isCheckbox === "checkbox") {
+      if (isCheckbox === "checkbox" && questionGroup) {
+        // For multiple MCQ questions
+        return currentArray.map((obj) => {
+          if (obj.questionId === questionId) {
+            // If this is the question being answered
+            return {
+              ...obj,
+              value: value, // Store the selected option value
+              isCorrect: isCorrect, // Use the isCorrect parameter passed from McqMultiple
+            };
+          }
+          return obj;
+        });
+      } else if (isCheckbox === "checkbox") {
         const existingEntryIndex = currentArray.findIndex(
           (obj) => obj.questionId === questionId
         );
