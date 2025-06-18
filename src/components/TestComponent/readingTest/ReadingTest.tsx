@@ -55,17 +55,24 @@ const ReadingTest = ({ test }: any) => {
 
     const allQuestions = flattenQuestions(test.parts);
 
+    console.log("All Questions", allQuestions);
+
     const initialAnswers = allQuestions.flatMap((q) => {
       if (q.input_type === "checkbox" && Array.isArray(q.question_numbers)) {
         // For multiple MCQ questions
-        return q.question_numbers.map((questionNumber: number, index: number) => ({
-          questionId: questionNumber,
-          value: "", // Will store the selected option
-          answerText: q.correct_mapping[index], // The correct answer
-          isCorrect: false,
-          questionGroup: q.question_numbers // Store the group of questions
-        }));
-      } else if (q.input_type === "checkbox" && !Array.isArray(q.question_numbers)) {
+        return q.question_numbers.map(
+          (questionNumber: number, index: number) => ({
+            questionId: questionNumber,
+            value: "", // Will store the selected option
+            answerText: q.correct_mapping[index], // The correct answer
+            isCorrect: false,
+            questionGroup: q.question_numbers, // Store the group of questions
+          })
+        );
+      } else if (
+        q.input_type === "checkbox" &&
+        !Array.isArray(q.question_numbers)
+      ) {
         return {
           questionId: q.question_number,
           answers: [],
@@ -79,7 +86,18 @@ const ReadingTest = ({ test }: any) => {
           answerText: que.answer,
           isCorrect: false,
         }));
-      } else if (q.input_type === "drag_and_drop" && Array.isArray(q.question_numbers)) {
+      } else if (q.input_type === "text" && Array.isArray(q.question_number)) {
+        // NEW CONDITION: Handle PassFillInTheBlanks where question_number is an array
+        return q.question_number.map((questionNum: number, index: number) => ({
+          questionId: questionNum,
+          value: "",
+          answerText: q.blanks ? q.blanks[index]?.answer : "", // Get answer from blanks array
+          isCorrect: false,
+        }));
+      } else if (
+        q.input_type === "drag_and_drop" &&
+        Array.isArray(q.question_numbers)
+      ) {
         return q.question_numbers.map((que: any, index: number) => ({
           questionId: q.question_numbers[index],
           value: "",
@@ -87,8 +105,12 @@ const ReadingTest = ({ test }: any) => {
           isCorrect: false,
         }));
       } else {
+        // Ensure questionId is always a single number, not an array
+        const questionId = Array.isArray(q.question_number)
+          ? q.question_number[0]
+          : q.question_number;
         return {
-          questionId: q.question_number,
+          questionId: questionId,
           value: "",
           answerText: q.answer,
           isCorrect: false,
@@ -118,7 +140,7 @@ const ReadingTest = ({ test }: any) => {
             return {
               ...obj,
               value: value, // Store the selected option value
-              isCorrect: isCorrect // Use the isCorrect parameter passed from McqMultiple
+              isCorrect: isCorrect, // Use the isCorrect parameter passed from McqMultiple
             };
           }
           return obj;

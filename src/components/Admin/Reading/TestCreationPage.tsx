@@ -16,7 +16,7 @@ interface Blank {
 }
 
 interface Question {
-  question_number?: number;
+  question_number?: any;
   question_numbers?: number[];
   question: string;
   questions: any;
@@ -49,7 +49,7 @@ interface Passage {
   instructions: string;
   passage_title: string;
   passage_subtitle: string;
-  passage: string[] | Record<string, string>;
+  passage: any;
   image: string;
   questions: Record<string, Question[]>[];
   passageType: "type1" | "type2"; // Added to specify passage type
@@ -170,13 +170,15 @@ const TestCreationPage: React.FC = () => {
       passageType === "type2" &&
       Array.isArray(updatedParts[passageIndex].passage)
     ) {
-      updatedParts[passageIndex].passage = updatedParts[
-        passageIndex
-      ].passage.reduce((acc: any, para: any, idx: number) => {
-        const key = String.fromCharCode(65 + idx); // A, B, C...
-        acc[key] = para;
-        return acc;
-      }, {} as Record<string, string>);
+      const passageArray = updatedParts[passageIndex].passage as string[];
+      updatedParts[passageIndex].passage = passageArray.reduce(
+        (acc: Record<string, string>, para, idx) => {
+          const key = String.fromCharCode(65 + idx); // A, B, C...
+          acc[key] = para;
+          return acc;
+        },
+        {}
+      );
     }
 
     // If changing to type1, ensure the passage is an array
@@ -313,8 +315,8 @@ const TestCreationPage: React.FC = () => {
               currentQuestionType === "fill_in_the_blanks"
                 ? "text"
                 : currentQuestionType === "true_false_not_given"
-                  ? "dropdown"
-                  : "radio",
+                ? "dropdown"
+                : "radio",
           };
 
           if (currentQuestionType === "true_false_not_given") {
@@ -468,12 +470,36 @@ const TestCreationPage: React.FC = () => {
     passageIndex: number,
     groupIndex: number
   ) => {
+    // const updateQuestion = (field: string, value: any, qIndex: number) => {
+    //   const updatedParts = [...test.parts];
+    //   updatedParts[passageIndex].questions[groupIndex][questionType][qIndex][
+    //     field as keyof Question
+    //   ] = value;
+    //   setTest({ ...test, parts: updatedParts });
+    // };
+
     const updateQuestion = (field: string, value: any, qIndex: number) => {
       const updatedParts = [...test.parts];
-      updatedParts[passageIndex].questions[groupIndex][questionType][qIndex][
-        field as keyof Question
-      ] = value;
+
+      // Create a deep copy of the specific question
+      const currentQuestion = {
+        ...updatedParts[passageIndex].questions[groupIndex][questionType][
+          qIndex
+        ],
+      };
+
+      // Update the specific field
+      currentQuestion[field as keyof Question] = value;
+
+      // Update the question in the parts array
+      updatedParts[passageIndex].questions[groupIndex][questionType][qIndex] =
+        currentQuestion;
+
+      // Update the test state
       setTest({ ...test, parts: updatedParts });
+
+      // Debug log to verify the update
+      console.log(`Updated ${field} for question ${qIndex}:`, value);
     };
 
     switch (questionType) {
@@ -530,14 +556,16 @@ const TestCreationPage: React.FC = () => {
             />
             {/* Dropdown to select the matching heading */}
             <select
-              value={q.answer as string || "A"} // Ensure there's always a default value
+              value={(q.answer as string) || "A"} // Ensure there's always a default value
               onChange={(e) => updateQuestion("answer", e.target.value, idx)}
               className="border p-2 mb-2 w-full"
             >
-              <option value="">-- Select Answer --</option> {/* Add default option */}
+              <option value="">-- Select Answer --</option>{" "}
+              {/* Add default option */}
               {q.options?.map((opt) => (
                 <option key={opt.value} value={opt.value}>
-                  {opt.label}: {opt.value} {/* Show both label and value if needed */}
+                  {opt.label}: {opt.value}{" "}
+                  {/* Show both label and value if needed */}
                 </option>
               ))}
             </select>
@@ -557,14 +585,16 @@ const TestCreationPage: React.FC = () => {
             />
             {/* Dropdown to select the matching paragraph */}
             <select
-              value={q.answer as string || "A"} // Ensure there's always a default value
+              value={(q.answer as string) || "A"} // Ensure there's always a default value
               onChange={(e) => updateQuestion("answer", e.target.value, idx)}
               className="border p-2 mb-2 w-full"
             >
-              <option value="">-- Select Answer --</option> {/* Add default option */}
+              <option value="">-- Select Answer --</option>{" "}
+              {/* Add default option */}
               {q.options?.map((opt) => (
                 <option key={opt.value} value={opt.value}>
-                  {opt.label}: {opt.value} {/* Show both label and value if needed */}
+                  {opt.label}: {opt.value}{" "}
+                  {/* Show both label and value if needed */}
                 </option>
               ))}
             </select>
@@ -677,6 +707,8 @@ const TestCreationPage: React.FC = () => {
 
       // Replace the "passage_fill_in_the_blanks" case in your renderQuestionInput function with this:
 
+      // Replace your existing "passage_fill_in_the_blanks" case in renderQuestionInput with this fixed version:
+
       case "passage_fill_in_the_blanks":
         return questions.map((q, idx) => (
           <div key={idx} className="mb-4 border p-4">
@@ -715,16 +747,36 @@ const TestCreationPage: React.FC = () => {
                 value={q.text || ""}
                 onChange={(e) => {
                   const newText = e.target.value;
-                  const extractedBlanks = getBlanksFromText(newText);
 
-                  // Map the blanks to use the question numbers from question_numbers array
+                  // Get existing blanks to preserve answers
+                  const existingBlanks = q.blanks || [];
+                  const existingAnswers = existingBlanks.reduce(
+                    (acc, blank) => {
+                      acc[blank.blank_number] = blank.answer;
+                      return acc;
+                    },
+                    {} as Record<number, string>
+                  );
+
+                  // Extract new blanks from text
+                  const extractedBlanks = getBlanksFromText(
+                    newText,
+                    q.question_number
+                  );
+
+                  // Map the blanks to use the question numbers and preserve existing answers
                   const blanksWithQuestionNumbers = extractedBlanks.map(
                     (blank, blankIdx) => ({
                       blank_number: q.question_number
                         ? q.question_number[blankIdx]
                         : blankIdx + 1,
                       input_type: "text",
-                      answer: blank.answer || "",
+                      answer:
+                        existingAnswers[
+                          q.question_number
+                            ? q.question_number[blankIdx]
+                            : blankIdx + 1
+                        ] || "",
                     })
                   );
 
@@ -733,7 +785,7 @@ const TestCreationPage: React.FC = () => {
                   updateQuestion("blanks", blanksWithQuestionNumbers, idx);
                 }}
                 className="border p-2 w-full"
-                rows="6"
+                rows={6}
               />
             </div>
 
@@ -745,7 +797,7 @@ const TestCreationPage: React.FC = () => {
                 </label>
                 {q.blanks.map((blank, blankIdx) => (
                   <div
-                    key={blank.blank_number}
+                    key={`${blank.blank_number}-${blankIdx}`}
                     className="mb-2 flex items-center"
                   >
                     <span className="mr-2 font-medium">
@@ -754,10 +806,20 @@ const TestCreationPage: React.FC = () => {
                     <input
                       type="text"
                       placeholder="Answer"
-                      value={blank.answer}
+                      value={blank.answer || ""}
                       onChange={(e) => {
-                        const updatedBlanks = [...q.blanks!];
-                        updatedBlanks[blankIdx].answer = e.target.value;
+                        // Create a deep copy of the blanks array
+                        const updatedBlanks = q.blanks ? [...q.blanks] : [];
+
+                        // Update the specific blank's answer
+                        if (updatedBlanks[blankIdx]) {
+                          updatedBlanks[blankIdx] = {
+                            ...updatedBlanks[blankIdx],
+                            answer: e.target.value,
+                          };
+                        }
+
+                        // Update the question with the new blanks array
                         updateQuestion("blanks", updatedBlanks, idx);
                       }}
                       className="border p-2 flex-1"
@@ -785,6 +847,12 @@ const TestCreationPage: React.FC = () => {
                   blanks may not have proper question numbers.
                 </div>
               )}
+
+            {/* Debug info - you can remove this after testing */}
+            <div className="mt-4 p-2 bg-gray-100 text-xs">
+              <strong>Debug Info:</strong>
+              <pre>{JSON.stringify(q.blanks, null, 2)}</pre>
+            </div>
           </div>
         ));
 
@@ -833,8 +901,9 @@ const TestCreationPage: React.FC = () => {
               {section.extra?.map((text: any, textIdx: any) => (
                 <div key={textIdx} className="mb-2">
                   <textarea
-                    placeholder={`Text line ${textIdx + 1
-                      } (use __________ for blanks)`}
+                    placeholder={`Text line ${
+                      textIdx + 1
+                    } (use __________ for blanks)`}
                     value={text || ""}
                     onChange={(e) => {
                       const updatedParts = [...test.parts];
@@ -844,7 +913,7 @@ const TestCreationPage: React.FC = () => {
                       setTest({ ...test, parts: updatedParts });
                     }}
                     className="border p-2 w-full"
-                    rows="2"
+                    rows={2}
                   />
                 </div>
               ))}
@@ -937,8 +1006,8 @@ const TestCreationPage: React.FC = () => {
                   const nextQuestionNumber =
                     currentQuestions.length > 0
                       ? Math.max(
-                        ...currentQuestions.map((q: any) => q.question_number)
-                      ) + 1
+                          ...currentQuestions.map((q: any) => q.question_number)
+                        ) + 1
                       : 1;
 
                   if (
@@ -989,7 +1058,7 @@ const TestCreationPage: React.FC = () => {
                   setBlanks(extractedBlanks);
                 }}
                 className="border p-2 mb-2 w-full"
-                rows="6"
+                rows={6}
               />
             </div>
 
@@ -1178,33 +1247,33 @@ const TestCreationPage: React.FC = () => {
           <div className="mb-2">
             {Array.isArray(passage.passage)
               ? passage.passage.map((para, paraIndex) => (
-                <textarea
-                  key={paraIndex}
-                  placeholder={`Paragraph ${String.fromCharCode(
-                    65 + paraIndex
-                  )}`}
-                  value={para}
-                  onChange={(e) =>
-                    updateParagraph(passageIndex, paraIndex, e.target.value)
-                  }
-                  className="border p-2 mb-2 w-full"
-                />
-              ))
+                  <textarea
+                    key={paraIndex}
+                    placeholder={`Paragraph ${String.fromCharCode(
+                      65 + paraIndex
+                    )}`}
+                    value={para}
+                    onChange={(e) =>
+                      updateParagraph(passageIndex, paraIndex, e.target.value)
+                    }
+                    className="border p-2 mb-2 w-full"
+                  />
+                ))
               : Object.keys(passage.passage).map((key) => (
-                <textarea
-                  key={key}
-                  placeholder={`Paragraph ${key}`}
-                  value={passage.passage[key]}
-                  onChange={(e) =>
-                    updateParagraph(
-                      passageIndex,
-                      parseInt(key, 36) - 10,
-                      e.target.value
-                    )
-                  }
-                  className="border p-2 mb-2 w-full"
-                />
-              ))}
+                  <textarea
+                    key={key}
+                    placeholder={`Paragraph ${key}`}
+                    value={passage.passage[key]}
+                    onChange={(e) =>
+                      updateParagraph(
+                        passageIndex,
+                        parseInt(key, 36) - 10,
+                        e.target.value
+                      )
+                    }
+                    className="border p-2 mb-2 w-full"
+                  />
+                ))}
             <button
               onClick={() => addParagraph(passageIndex)}
               className="bg-green-500 text-white p-2 rounded"
