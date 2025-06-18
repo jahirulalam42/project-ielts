@@ -35,14 +35,19 @@ export default function ListeningTestPage() {
     console.log('testId', testId)
     console.log("Listening", listeningData)
 
-    // Find the selected test
-    // const test = listeningData.find(t => t._id === testId);
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center min-h-[400px]">
+                <span className="loading loading-spinner loading-lg text-primary"></span>
+            </div>
+        );
+    }
 
     if (!listeningData || listeningData.length === 0) {
         return (
             <div className="text-center py-20">
                 <h1 className="text-2xl text-error">Test not found</h1>
-                <Link href="/listening" className="btn btn-primary mt-4">
+                <Link href="/test/listening" className="btn btn-primary mt-4">
                     Back to Tests
                 </Link>
             </div>

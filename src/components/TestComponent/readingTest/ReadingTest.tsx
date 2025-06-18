@@ -178,19 +178,19 @@ const ReadingTest = ({ test }: any) => {
         }
       } else {
         const existingEntryIndex = currentArray.findIndex(
-          (obj) => obj.questionId === questionId
+          (obj) => String(obj.questionId) === String(questionId)
         );
 
         if (existingEntryIndex !== -1) {
           return currentArray.map((obj, index) =>
             index === existingEntryIndex
-              ? { ...obj, value, answerText: answer, isCorrect: isCorrect }
+              ? { ...obj, value: String(value), answerText: answer, isCorrect: isCorrect }
               : obj
           );
         } else {
           return [
             ...currentArray,
-            { questionId, value, answerText: answer, isCorrect: isCorrect },
+            { questionId: String(questionId), value: String(value), answerText: answer, isCorrect: isCorrect },
           ];
         }
       }

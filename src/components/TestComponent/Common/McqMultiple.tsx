@@ -90,7 +90,7 @@ const McqMultiple = ({ question, handleAnswerChange }: any) => {
         const currentSelections = selectedOptions[groupKey] || {};
 
         return (
-          <div key={idx} className="p-4 border rounded-lg mb-2">
+          <div key={idx} className="p-4 border border-black rounded-lg mb-2">
             <p>
               <strong>{q.question_numbers.join(", ")}. </strong>
               {q.question}
@@ -121,7 +121,7 @@ const McqMultiple = ({ question, handleAnswerChange }: any) => {
             </div>
 
             {/* Debug info - remove this in production */}
-            <div className="text-xs text-gray-500 mt-2">
+            <div className="text-xs text-black-500 mt-2">
               Selected: {Object.entries(currentSelections)
                 .filter(([_, value]) => value !== '')
                 .map(([key, value]) => `${key}: ${value}`)

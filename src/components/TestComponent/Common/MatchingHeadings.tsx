@@ -13,14 +13,14 @@ const MatchingHeadings = ({
         return (
           <div
             key={q.question_number}
-            className="p-4 border rounded-lg mb-2 flex items-center gap-3"
+            className="p-4 border border-black rounded-lg mb-2 flex items-center gap-3"
           >
             {/* Question Number */}
             <strong className="min-w-[30px]">{q.question_number}.</strong>
 
             {/* Dropdown */}
             <select
-              className="border border-gray-400 px-2 py-1 rounded-md text-sm w-32"
+              className="border border-black-400 px-2 py-1 rounded-md text-sm w-32"
               onChange={(e) =>
                 handleAnswerChange(
                   q.question_number,

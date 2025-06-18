@@ -44,25 +44,25 @@ const Map: React.FC<MapProps> = ({ question, handleAnswerChange, answers = {} })
                 <table className="min-w-full border-separate border-spacing-0">
                     <thead>
                         <tr>
-                            <th className="bg-black text-white px-2 py-1 text-left font-normal"></th>
+                            <th className="text-black px-2 py-1 text-left font-normal"></th>
                             {question?.labels.map((label) => (
-                                <th key={label} className="bg-black text-white px-4 py-1 font-bold text-center">{label}</th>
+                                <th key={label} className="text-black px-4 py-1 font-bold text-center">{label}</th>
                             ))}
                         </tr>
                     </thead>
                     <tbody>
                         {question?.questions.map((q) => (
-                            <tr key={q?.question_number} className="border-b border-white">
-                                <td className="pr-2 py-2 text-white whitespace-nowrap font-medium">
+                            <tr key={q?.question_number} className="border-b border-black">
+                                <td className="pr-2 py-2 text-black whitespace-nowrap font-medium">
                                     {q?.question_number}. {q.question}
                                 </td>
                                 {question?.labels.map((label) => (
                                     <td key={label} className="text-center">
                                         <input
                                             type="radio"
-                                            name={`map_${q?.question_number}`}
+                                            name={`${q?.question_number}`}
                                             value={label}
-                                            checked={answers && answers[`map_${q?.question_number}`]?.value === label}
+                                            checked={answers && answers[`${q?.question_number}`]?.value === label}
                                             onChange={() => handleAnswerChange(
                                                 q?.question_number,
                                                 label,
@@ -70,7 +70,8 @@ const Map: React.FC<MapProps> = ({ question, handleAnswerChange, answers = {} })
                                                 q?.answer,
                                                 label === q?.answer
                                             )}
-                                            className="form-radio h-5 w-5 text-primary bg-black border-white focus:ring-2 focus:ring-primary"
+                                            className="form-radio h-5 w-5 accent-black"
+                                            style={{ accentColor: 'black' }}
                                         />
                                     </td>
                                 ))}

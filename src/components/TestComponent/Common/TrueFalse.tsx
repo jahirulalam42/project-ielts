@@ -17,7 +17,7 @@ const TrueFalse = ({
         return (
           <div
             key={q.question_number}
-            className="p-4 border rounded-lg mb-2 flex items-center gap-3"
+            className="p-4 border border-black rounded-lg mb-2 flex items-center gap-3"
           >
             {/* Question Number */}
             <strong className="min-w-[30px]">{q.question_number}.</strong>
@@ -25,7 +25,7 @@ const TrueFalse = ({
             <div>
               {/* Dropdown */}
               <select
-                className="border border-gray-400 px-2 py-1 rounded-md text-sm"
+                className="border border-black px-2 py-1 rounded-md text-sm"
                 id={q.question_number}
                 onChange={(e) =>
                   handleAnswerChange(
