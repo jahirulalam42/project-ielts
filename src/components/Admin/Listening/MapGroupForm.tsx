@@ -164,7 +164,7 @@ const MapGroupForm = ({ group, updateGroup }: MapGroupFormProps) => {
                             </label>
                             <input
                                 type="text"
-                                className="input input-bordered"
+                                className="input input-bordered border-black"
                                 value={mapItem.title}
                                 onChange={e => handleMapItemChange(mapIndex, 'title', e.target.value)}
                             />
@@ -176,7 +176,7 @@ const MapGroupForm = ({ group, updateGroup }: MapGroupFormProps) => {
                             </label>
                             <input
                                 type="text"
-                                className="input input-bordered"
+                                className="input input-bordered border-black"
                                 value={mapItem.image}
                                 onChange={e => handleMapItemChange(mapIndex, 'image', e.target.value)}
                             />
@@ -244,7 +244,7 @@ const MapGroupForm = ({ group, updateGroup }: MapGroupFormProps) => {
                                         </label>
                                         <input
                                             type="text"
-                                            className="input input-bordered"
+                                            className="input input-bordered border-black"
                                             value={question.question}
                                             onChange={e => handleQuestionChange(mapIndex, questionIndex, 'question', e.target.value)}
                                         />
@@ -255,7 +255,7 @@ const MapGroupForm = ({ group, updateGroup }: MapGroupFormProps) => {
                                             <span className="label-text">Answer</span>
                                         </label>
                                         <select
-                                            className="select select-bordered"
+                                            className="select select-bordered border-black"
                                             value={question.answer}
                                             onChange={e => handleQuestionChange(mapIndex, questionIndex, 'answer', e.target.value)}
                                         >

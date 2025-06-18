@@ -86,7 +86,7 @@ const WritingCreationPage: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="bg-base-100 rounded-2xl shadow-xl p-6 md:p-8">
+      <div className="bg-base-100 rounded-xl shadow-xl p-6 md:p-8">
         <h1 className="text-3xl font-bold text-center mb-8">
           Create IELTS Writing Test
         </h1>
@@ -101,7 +101,7 @@ const WritingCreationPage: React.FC = () => {
                 type="text"
                 value={testData.title}
                 onChange={(e) => handleTestChange("title", e.target.value)}
-                className="input input-bordered"
+                className="input input-bordered border-black"
                 placeholder="Writing Test 1"
                 required
               />
@@ -114,7 +114,7 @@ const WritingCreationPage: React.FC = () => {
               <select
                 value={testData.type}
                 onChange={(e) => handleTestChange("type", e.target.value)}
-                className="select select-bordered"
+                className="select select-bordered border-black"
               >
                 <option value="Academic">Academic</option>
                 <option value="General">General</option>
@@ -131,7 +131,7 @@ const WritingCreationPage: React.FC = () => {
                 onChange={(e) =>
                   handleTestChange("duration", parseInt(e.target.value))
                 }
-                className="input input-bordered"
+                className="input input-bordered border-black"
                 min="1"
                 required
               />

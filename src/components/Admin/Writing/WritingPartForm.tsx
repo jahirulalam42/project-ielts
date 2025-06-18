@@ -59,7 +59,7 @@ const WritingPartForm: React.FC<WritingPartFormProps> = ({
             type="text"
             value={part.title}
             onChange={(e) => handleChange("title", e.target.value)}
-            className="input input-bordered"
+            className="input input-bordered border-black"
             placeholder="Writing Task 1"
           />
         </div>
@@ -72,7 +72,7 @@ const WritingPartForm: React.FC<WritingPartFormProps> = ({
             type="text"
             value={part.subtitle}
             onChange={(e) => handleChange("subtitle", e.target.value)}
-            className="input input-bordered"
+            className="input input-bordered border-black"
             placeholder="You should spend about 20 minutes on this task."
           />
         </div>
@@ -88,7 +88,7 @@ const WritingPartForm: React.FC<WritingPartFormProps> = ({
                 onChange={(e) =>
                   handleArrayChange("Question", qIdx, e.target.value)
                 }
-                className="textarea textarea-bordered flex-grow mr-2"
+                className="textarea textarea-bordered border-black flex-grow mr-2"
                 placeholder="Question text"
                 rows={2}
               />
@@ -123,7 +123,7 @@ const WritingPartForm: React.FC<WritingPartFormProps> = ({
                 onChange={(e) =>
                   handleArrayChange("instruction", instIdx, e.target.value)
                 }
-                className="textarea textarea-bordered flex-grow mr-2"
+                className="textarea textarea-bordered border-black flex-grow mr-2"
                 placeholder="Instruction"
                 rows={2}
               />
@@ -155,7 +155,7 @@ const WritingPartForm: React.FC<WritingPartFormProps> = ({
             type="text"
             value={part.image}
             onChange={(e) => handleChange("image", e.target.value)}
-            className="input input-bordered"
+            className="input input-bordered border-black"
             placeholder="https://example.com/image.png"
           />
         </div>

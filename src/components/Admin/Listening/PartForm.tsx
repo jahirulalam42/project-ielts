@@ -99,7 +99,7 @@ const PartForm = ({ part, partIndex, updatePart, removePart, isLast }: PartFormP
                 </label>
                 <input
                     type="text"
-                    className="input input-bordered"
+                    className="input input-bordered border-black"
                     value={part.title}
                     onChange={handleTitleChange}
                     required

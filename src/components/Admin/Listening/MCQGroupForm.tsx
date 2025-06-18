@@ -93,7 +93,7 @@ const MCQGroupForm = ({ questions = [], onUpdate }: MCQGroupFormProps) => {
                         </label>
                         <input
                             type="text"
-                            className="input input-bordered"
+                            className="input input-bordered border-black"
                             value={question.question}
                             onChange={e => updateQuestion(qIndex, 'question', e.target.value)}
                             required
@@ -105,7 +105,7 @@ const MCQGroupForm = ({ questions = [], onUpdate }: MCQGroupFormProps) => {
                             <span className="label-text">Correct Answer</span>
                         </label>
                         <select
-                            className="select select-bordered"
+                            className="select select-bordered border-black"
                             value={question.answer}
                             onChange={e => updateQuestion(qIndex, 'answer', e.target.value)}
                             required
@@ -129,7 +129,7 @@ const MCQGroupForm = ({ questions = [], onUpdate }: MCQGroupFormProps) => {
                                     <span className="font-medium w-6">{option.label}:</span>
                                     <input
                                         type="text"
-                                        className="input input-bordered flex-1"
+                                        className="input input-bordered border-black flex-1"
                                         value={option.value}
                                         onChange={e => updateOption(qIndex, optIndex, e.target.value)}
                                         required

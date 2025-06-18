@@ -62,7 +62,7 @@ const ListeningCreationPage = () => {
 
     return (
         <div className="max-w-6xl mx-auto p-6">
-            <h1 className="text-3xl font-bold mb-6">Create Listening Test</h1>
+            <h1 className="text-3xl font-bold mb-6 text-center">Create Listening Test</h1>
 
             <form onSubmit={handleSubmit} className="space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -85,7 +85,7 @@ const ListeningCreationPage = () => {
                         </label>
                         <input
                             type="text"
-                            className="input input-bordered"
+                            className="input input-bordered border-black"
                             value={test.title}
                             onChange={e => handleTestChange('title', e.target.value)}
                             required
@@ -97,7 +97,7 @@ const ListeningCreationPage = () => {
                             <span className="label-text">Type</span>
                         </label>
                         <select
-                            className="select select-bordered"
+                            className="select select-bordered border-black"
                             value={test.type}
                             onChange={e => handleTestChange('type', e.target.value)}
                         >
@@ -112,7 +112,7 @@ const ListeningCreationPage = () => {
                         </label>
                         <input
                             type="number"
-                            className="input input-bordered"
+                            className="input input-bordered border-black"
                             value={test.duration}
                             onChange={e => handleTestChange('duration', parseInt(e.target.value))}
                             required
@@ -125,7 +125,7 @@ const ListeningCreationPage = () => {
                         </label>
                         <input
                             type="url"
-                            className="input input-bordered"
+                            className="input input-bordered border-black"
                             value={test.audioUrl}
                             onChange={e => handleTestChange('audioUrl', e.target.value)}
                             required

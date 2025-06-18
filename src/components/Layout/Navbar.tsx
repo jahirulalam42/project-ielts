@@ -29,7 +29,7 @@ const Navbar: React.FC = () => {
     <div>
       {!pathName.startsWith("/test/reading/") &&
         !pathName.startsWith("/admin") && (
-          <div className="navbar bg-base-100 border-b border-base-300">
+          <div className="navbar bg-base-100 border-b border-black">
             <div className="navbar-start">
               <div className="dropdown">
                 <div

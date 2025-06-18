@@ -151,7 +151,7 @@ const FillBlanksGroupForm = ({ group, updateGroup }: FillBlanksGroupFormProps) =
                                 </label>
                                 <input
                                     type="text"
-                                    className="input input-bordered"
+                                    className="input input-bordered border-black"
                                     value={section.title || ''}
                                     onChange={e => handleSectionChange(sectionIndex, 'title', e.target.value)}
                                 />
@@ -163,7 +163,7 @@ const FillBlanksGroupForm = ({ group, updateGroup }: FillBlanksGroupFormProps) =
                             </label>
                             <input
                                 type="text"
-                                className="input input-bordered"
+                                className="input input-bordered border-black"
                                 value={section.subtitle || ''}
                                 onChange={e => handleSectionChange(sectionIndex, 'subtitle', e.target.value)}
                             />
