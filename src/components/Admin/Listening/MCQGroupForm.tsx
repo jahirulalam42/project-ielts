@@ -77,7 +77,7 @@ const MCQGroupForm = ({ questions = [], onUpdate }: MCQGroupFormProps) => {
             {localQuestions.map((question, qIndex) => (
                 <div key={qIndex} className="bg-base-100 p-4 rounded-lg">
                     <div className="flex justify-between items-center mb-3">
-                        <h4 className="font-medium">Question {question.question_number}</h4>
+                        <h4 className="font-medium font-semibold">Question {question.question_number}</h4>
                         <button
                             type="button"
                             onClick={() => removeQuestion(qIndex)}
@@ -89,7 +89,7 @@ const MCQGroupForm = ({ questions = [], onUpdate }: MCQGroupFormProps) => {
 
                     <div className="form-control mb-4">
                         <label className="label">
-                            <span className="label-text">Question Text</span>
+                            <span className="label-text font-semibold">Question Text</span>
                         </label>
                         <input
                             type="text"
@@ -102,7 +102,7 @@ const MCQGroupForm = ({ questions = [], onUpdate }: MCQGroupFormProps) => {
 
                     <div className="form-control mb-4">
                         <label className="label">
-                            <span className="label-text">Correct Answer</span>
+                            <span className="label-text font-semibold">Correct Answer</span>
                         </label>
                         <select
                             className="select select-bordered border-black"
@@ -121,7 +121,7 @@ const MCQGroupForm = ({ questions = [], onUpdate }: MCQGroupFormProps) => {
 
                     <div className="form-control">
                         <label className="label">
-                            <span className="label-text">Options</span>
+                            <span className="label-text font-semibold">Options</span>
                         </label>
                         <div className="space-y-2">
                             {question.options.map((option, optIndex) => (

@@ -95,7 +95,7 @@ const WritingCreationPage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="form-control">
               <label className="label">
-                <span className="label-text">Test Title</span>
+                <span className="label-text font-semibold">Test Title</span>
               </label>
               <input
                 type="text"
@@ -109,7 +109,7 @@ const WritingCreationPage: React.FC = () => {
 
             <div className="form-control">
               <label className="label">
-                <span className="label-text">Test Type</span>
+                <span className="label-text font-semibold">Test Type</span>
               </label>
               <select
                 value={testData.type}
@@ -123,7 +123,7 @@ const WritingCreationPage: React.FC = () => {
 
             <div className="form-control">
               <label className="label">
-                <span className="label-text">Duration (minutes)</span>
+                <span className="label-text font-semibold">Duration (minutes)</span>
               </label>
               <input
                 type="number"

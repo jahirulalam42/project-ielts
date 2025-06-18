@@ -147,7 +147,7 @@ const MapGroupForm = ({ group, updateGroup }: MapGroupFormProps) => {
             {localGroup.map.map((mapItem, mapIndex) => (
                 <div key={mapIndex} className="bg-base-100 p-4 rounded-lg">
                     <div className="flex justify-between items-center mb-3">
-                        <h4 className="font-medium">Map Section {mapIndex + 1}</h4>
+                        <h4 className="font-medium font-semibold">Map Section {mapIndex + 1}</h4>
                         <button
                             type="button"
                             onClick={() => removeMapItem(mapIndex)}
@@ -160,7 +160,7 @@ const MapGroupForm = ({ group, updateGroup }: MapGroupFormProps) => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div className="form-control">
                             <label className="label">
-                                <span className="label-text">Title</span>
+                                <span className="label-text font-semibold">Title</span>
                             </label>
                             <input
                                 type="text"
@@ -172,7 +172,7 @@ const MapGroupForm = ({ group, updateGroup }: MapGroupFormProps) => {
 
                         <div className="form-control">
                             <label className="label">
-                                <span className="label-text">Image URL</span>
+                                <span className="label-text font-semibold">Image URL</span>
                             </label>
                             <input
                                 type="text"
@@ -186,7 +186,7 @@ const MapGroupForm = ({ group, updateGroup }: MapGroupFormProps) => {
                     <div className="form-control mb-4">
                         <div className="flex justify-between items-center mb-2">
                             <label className="label">
-                                <span className="label-text">Labels</span>
+                                <span className="label-text font-semibold">Labels</span>
                             </label>
                             <button
                                 type="button"
@@ -214,7 +214,7 @@ const MapGroupForm = ({ group, updateGroup }: MapGroupFormProps) => {
 
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
-                            <h5 className="font-medium">Questions</h5>
+                            <h5 className="font-medium font-semibold">Questions</h5>
                             <button
                                 type="button"
                                 onClick={() => addQuestion(mapIndex)}
@@ -227,7 +227,7 @@ const MapGroupForm = ({ group, updateGroup }: MapGroupFormProps) => {
                         {mapItem.questions.map((question, questionIndex) => (
                             <div key={questionIndex} className="bg-base-200 p-4 rounded-lg">
                                 <div className="flex justify-between items-center mb-3">
-                                    <h6 className="font-medium">Question {question.question_number}</h6>
+                                    <h6 className="font-medium font-semibold">Question {question.question_number}</h6>
                                     <button
                                         type="button"
                                         onClick={() => removeQuestion(mapIndex, questionIndex)}

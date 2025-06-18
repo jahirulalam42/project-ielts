@@ -53,7 +53,7 @@ const WritingPartForm: React.FC<WritingPartFormProps> = ({
       <div className="space-y-4">
         <div className="form-control">
           <label className="label">
-            <span className="label-text">Title</span>
+            <span className="label-text font-semibold">Title</span>
           </label>
           <input
             type="text"
@@ -66,7 +66,7 @@ const WritingPartForm: React.FC<WritingPartFormProps> = ({
 
         <div className="form-control">
           <label className="label">
-            <span className="label-text">Subtitle</span>
+            <span className="label-text font-semibold">Subtitle</span>
           </label>
           <input
             type="text"
@@ -79,7 +79,7 @@ const WritingPartForm: React.FC<WritingPartFormProps> = ({
 
         <div className="form-control">
           <label className="label">
-            <span className="label-text">Questions</span>
+            <span className="label-text font-semibold">Questions</span>
           </label>
           {part.Question.map((q, qIdx) => (
             <div key={qIdx} className="flex mb-2">
@@ -114,7 +114,7 @@ const WritingPartForm: React.FC<WritingPartFormProps> = ({
 
         <div className="form-control">
           <label className="label">
-            <span className="label-text">Instructions</span>
+            <span className="label-text font-semibold">Instructions</span>
           </label>
           {part.instruction.map((inst, instIdx) => (
             <div key={instIdx} className="flex mb-2">
@@ -149,7 +149,7 @@ const WritingPartForm: React.FC<WritingPartFormProps> = ({
 
         <div className="form-control">
           <label className="label">
-            <span className="label-text">Image URL (Optional)</span>
+            <span className="label-text font-semibold">Image URL (Optional)</span>
           </label>
           <input
             type="text"

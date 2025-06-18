@@ -81,7 +81,7 @@ const ListeningCreationPage = () => {
 
                     <div className="form-control">
                         <label className="label">
-                            <span className="label-text">Title</span>
+                            <span className="label-text font-semibold">Title</span>
                         </label>
                         <input
                             type="text"
@@ -94,7 +94,7 @@ const ListeningCreationPage = () => {
 
                     <div className="form-control">
                         <label className="label">
-                            <span className="label-text">Type</span>
+                            <span className="label-text font-semibold">Type</span>
                         </label>
                         <select
                             className="select select-bordered border-black"
@@ -108,7 +108,7 @@ const ListeningCreationPage = () => {
 
                     <div className="form-control">
                         <label className="label">
-                            <span className="label-text">Duration (minutes)</span>
+                            <span className="label-text font-semibold">Duration (minutes)</span>
                         </label>
                         <input
                             type="number"
@@ -121,7 +121,7 @@ const ListeningCreationPage = () => {
 
                     <div className="md:col-span-2 form-control">
                         <label className="label">
-                            <span className="label-text">Audio URL</span>
+                            <span className="label-text font-semibold">Audio URL</span>
                         </label>
                         <input
                             type="url"

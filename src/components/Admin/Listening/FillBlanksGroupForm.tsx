@@ -133,7 +133,7 @@ const FillBlanksGroupForm = ({ group, updateGroup }: FillBlanksGroupFormProps) =
             {localGroup.fill_in_the_blanks_with_subtitle.map((section, sectionIndex) => (
                 <div key={sectionIndex} className="bg-base-100 p-4 rounded-lg">
                     <div className="flex justify-between items-center mb-3">
-                        <h4 className="font-medium">Section {sectionIndex + 1}</h4>
+                        <h4 className="font-medium font-semibold">Section {sectionIndex + 1}</h4>
                         <button
                             type="button"
                             onClick={() => removeSection(sectionIndex)}
@@ -147,7 +147,7 @@ const FillBlanksGroupForm = ({ group, updateGroup }: FillBlanksGroupFormProps) =
                         {sectionIndex === 0 && (
                             <div className="form-control">
                                 <label className="label">
-                                    <span className="label-text">Title</span>
+                                    <span className="label-text font-semibold">Title</span>
                                 </label>
                                 <input
                                     type="text"
@@ -159,7 +159,7 @@ const FillBlanksGroupForm = ({ group, updateGroup }: FillBlanksGroupFormProps) =
                         )}
                         <div className="form-control">
                             <label className="label">
-                                <span className="label-text">Subtitle</span>
+                                <span className="label-text font-semibold">Subtitle</span>
                             </label>
                             <input
                                 type="text"
@@ -172,7 +172,7 @@ const FillBlanksGroupForm = ({ group, updateGroup }: FillBlanksGroupFormProps) =
 
                     <div className="space-y-4 mb-4">
                         <div className="flex justify-between items-center">
-                            <h5 className="font-medium">Extra Information</h5>
+                            <h5 className="font-medium font-semibold">Extra Information</h5>
                             <button
                                 type="button"
                                 onClick={() => addExtra(sectionIndex)}
@@ -204,7 +204,7 @@ const FillBlanksGroupForm = ({ group, updateGroup }: FillBlanksGroupFormProps) =
 
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
-                            <h5 className="font-medium">Questions</h5>
+                            <h5 className="font-medium font-semibold">Questions</h5>
                             <button
                                 type="button"
                                 onClick={() => addQuestion(sectionIndex)}
@@ -229,7 +229,7 @@ const FillBlanksGroupForm = ({ group, updateGroup }: FillBlanksGroupFormProps) =
 
                                 <div className="form-control">
                                     <label className="label">
-                                        <span className="label-text">Answer</span>
+                                        <span className="label-text font-semibold">Answer</span>
                                     </label>
                                     <input
                                         type="text"
