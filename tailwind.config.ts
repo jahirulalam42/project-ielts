@@ -14,8 +14,19 @@ export default {
       },
     },
   },
-  plugins: [require("daisyui")],
   daisyui: {
-    darkTheme: "cupcake",
+    themes: [
+      "cupcake",
+      "dark",
+      "light",
+      "forest",
+      "synthwave",
+      "cyberpunk",
+      "valentine",
+      "halloween",
+      "business",
+      "acid",
+    ],
   },
+  plugins: [require("daisyui")],
 } satisfies Config;

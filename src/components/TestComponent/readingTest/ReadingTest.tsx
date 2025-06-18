@@ -278,7 +278,7 @@ const ReadingTest = ({ test }: any) => {
     <form onSubmit={handleSubmit}>
       <div className="container mx-auto p-4 min-h-screen">
         {/* Exam Header */}
-        <div className="card bg-base-100 shadow-xl mb-6">
+        <div className="card bg-base-100 shadow-xl mb-6 ">
           <div className="card-body">
             <h1 className="card-title text-3xl">{test.title}</h1>
             <div className="flex justify-between items-center">
