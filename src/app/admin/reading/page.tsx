@@ -1,10 +1,10 @@
 import React from 'react'
-import TestCreationPage from '@/components/Admin/Reading/TestCreationPage'
+import ReadingCreationPage from '@/components/Admin/Reading/ReadingCreationPage'
 
 const page = () => {
   return (
     <div>
-      <TestCreationPage />
+      <ReadingCreationPage />
     </div>
   )
 }
