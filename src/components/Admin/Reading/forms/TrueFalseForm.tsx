@@ -34,12 +34,12 @@ const TrueFalseForm: React.FC<TrueFalseFormProps> = ({
             placeholder="Question"
             value={q.question}
             onChange={(e) => updateQuestion("question", e.target.value, idx)}
-            className="border p-2 mr-2"
+            className="input input-bordered border-black w-full mb-4"
           />
           <select
             value={q.answer}
             onChange={(e) => updateQuestion("answer", e.target.value, idx)}
-            className="border p-2"
+            className="select select-bordered border-black w-full"
           >
             <option>True</option>
             <option>False</option>

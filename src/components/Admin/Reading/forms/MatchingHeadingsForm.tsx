@@ -37,7 +37,7 @@ const MatchingHeadingsForm: React.FC<MatchingHeadingsFormProps> = ({
         <div key={idx} className="border p-4 rounded-lg">
           {/* Question Number Display */}
           <div className="mb-2">
-            <span className="font-medium">Question Number: </span>
+            <span className="font-medium font-semibold">Question Number: </span>
             <span className="text-blue-600">
               {formatQuestionNumber(q.question_number)}
             </span>
@@ -45,7 +45,7 @@ const MatchingHeadingsForm: React.FC<MatchingHeadingsFormProps> = ({
 
           {/* Question Input */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2 font-semibold">
               Question:
             </label>
             <input
@@ -59,7 +59,7 @@ const MatchingHeadingsForm: React.FC<MatchingHeadingsFormProps> = ({
 
           {/* Answer Selection */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2 font-semibold">
               Select Answer:
             </label>
             <select
@@ -76,7 +76,7 @@ const MatchingHeadingsForm: React.FC<MatchingHeadingsFormProps> = ({
             </select>
           </div>
 
-          {/* Available Options Display */}
+          {/* Available Options Display
           {q.options && q.options.length > 0 && (
             <div className="mt-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -91,7 +91,7 @@ const MatchingHeadingsForm: React.FC<MatchingHeadingsFormProps> = ({
                 ))}
               </div>
             </div>
-          )}
+          )} */}
 
           {/* Warning Message */}
           {!q.answer && (

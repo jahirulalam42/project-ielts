@@ -40,7 +40,7 @@ const ReadingCreationPage: React.FC = () => {
         ...test,
         parts: test.parts.map((part) => {
           // Group all question groups into a single object by type
-          const questionsByType: Record<string, any[]> = {};
+          const questionsByType: Record<string, any> = {};
           part.questions.forEach((questionGroup) => {
             const questionType = Object.keys(questionGroup)[0];
             const questions = questionGroup[questionType];
@@ -51,6 +51,31 @@ const ReadingCreationPage: React.FC = () => {
                 instruction: q?.instruction,
                 text: q?.text,
                 blanks: q?.blanks
+              }));
+              return;
+            }
+            if (questionType === 'summary_fill_in_the_blanks') {
+              // Each question in summary_fill_in_the_blanks should be an object in the array
+              questionsByType[questionType] = questions.map((q: any) => ({
+                question_numbers: q?.question_numbers || [],
+                passage: q?.passage,
+                answers: q?.answers || [],
+                options: (q?.options && Array.isArray(q.options) && q.options.length > 0) ? q.options : [],
+                input_type: q?.input_type || "drag_and_drop"
+              }));
+              return;
+            }
+            if (questionType === 'fill_in_the_blanks_with_subtitle') {
+              // Each question in fill_in_the_blanks_with_subtitle should be an object in the array
+              questionsByType[questionType] = questions.map((q: any) => ({
+                title: q?.title || "",
+                subtitle: q?.subtitle || "",
+                extra: (q?.extra && Array.isArray(q.extra) && q.extra.length > 0) ? q.extra : [],
+                questions: (q?.questions && Array.isArray(q.questions) && q.questions.length > 0) ? q.questions.map((subQ: any) => ({
+                  question_number: subQ?.question_number,
+                  answer: subQ?.answer,
+                  input_type: subQ?.input_type || "text"
+                })) : []
               }));
               return;
             }
