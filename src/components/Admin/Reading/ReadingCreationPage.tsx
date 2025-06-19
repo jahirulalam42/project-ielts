@@ -35,41 +35,76 @@ const ReadingCreationPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // Enhanced console logging
-      console.group('📝 Reading Test Data');
-      console.log('Test Title:', test.title);
-      console.log('Test Type:', test.type);
-      console.log('Duration:', test.duration, 'minutes');
-      console.log('Number of Passages:', test.parts.length);
-      
-      // Log each passage with its questions
-      test.parts.forEach((passage, index) => {
-        console.group(`Passage ${index + 1}`);
-        console.log('Title:', passage.title);
-        console.log('Instructions:', passage.instructions);
-        console.log('Passage Title:', passage.passage_title);
-        console.log('Passage Subtitle:', passage.passage_subtitle);
-        console.log('Passage Type:', passage.passageType);
-        
-        // Log questions for this passage
-        if (passage.questions.length > 0) {
-          console.group('Questions');
-          passage.questions.forEach((questionGroup, qIndex) => {
+      // Transform test data to match required JSON structure
+      const transformedTest = {
+        ...test,
+        parts: test.parts.map((part) => {
+          // Group all question groups into a single object by type
+          const questionsByType: Record<string, any[]> = {};
+          part.questions.forEach((questionGroup) => {
             const questionType = Object.keys(questionGroup)[0];
-            console.group(`${questionType} Questions`);
-            console.log(JSON.stringify(questionGroup[questionType], null, 2));
-            console.groupEnd();
+            const questions = questionGroup[questionType];
+            if (questionType === 'passage_fill_in_the_blanks') {
+              // Each question in passage_fill_in_the_blanks should be an object in the array
+              questionsByType[questionType] = questions.map((q: any) => ({
+                question_number: q?.blanks?.map((b: any) => b.blank_number) || [],
+                instruction: q?.instruction,
+                text: q?.text,
+                blanks: q?.blanks
+              }));
+              return;
+            }
+            // ...rest of the mapping logic for other types...
+            let base: any;
+            if (questionType === 'multiple_mcq') {
+              base = {
+                question_numbers: questions[0]?.question_numbers,
+                question: questions[0]?.question,
+                options: (questions[0]?.options && Array.isArray(questions[0].options) && questions[0].options.length > 0) ? questions[0].options : undefined,
+                input_type: questions[0]?.input_type,
+                min_selection: questions[0]?.min_selection,
+                max_selection: questions[0]?.max_selection,
+              };
+              if (questions[0]?.correct_mapping) base.correct_mapping = questions[0].correct_mapping;
+              questionsByType[questionType] = [base];
+            } else {
+              const filteredQuestions = questions.map((q: any) => {
+                const base: any = {
+                  question_number: q?.question_number,
+                  question: q?.question,
+                  answer: q?.answer,
+                  input_type: q?.input_type,
+                };
+                if (q?.options && Array.isArray(q.options) && q.options.length > 0) base.options = q.options;
+                if (q?.min_selection !== undefined) base.min_selection = q.min_selection;
+                if (q?.max_selection !== undefined) base.max_selection = q.max_selection;
+                if (q?.question_numbers && Array.isArray(q.question_numbers) && q.question_numbers.length > 0) base.question_numbers = q.question_numbers;
+                if (q?.instruction) base.instruction = q.instruction;
+                if (q?.text) base.text = q.text;
+                if (q?.blanks && Array.isArray(q.blanks) && q.blanks.length > 0) base.blanks = q.blanks;
+                if (q?.answers && Array.isArray(q.answers) && q.answers.length > 0) base.answers = q.answers;
+                if (q?.passage) base.passage = q.passage;
+                if (q?.title) base.title = q.title;
+                if (q?.subtitle) base.subtitle = q.subtitle;
+                if (q?.extra && ((Array.isArray(q.extra) && q.extra.length > 0) || typeof q.extra === 'string' && q.extra)) base.extra = q.extra;
+                if (q?.questions && Array.isArray(q.questions) && q.questions.length > 0) base.questions = q.questions;
+                return base;
+              });
+              questionsByType[questionType] = filteredQuestions;
+            }
           });
-          console.groupEnd();
-        }
-        
-        console.groupEnd();
-      });
-      
-      console.groupEnd();
-      
-      // Submit the test
-      const response = await submitReadingQuestions(test);
+          const { passageType, ...partWithoutPassageType } = part;
+          return {
+            ...partWithoutPassageType,
+            questions: questionsByType,
+          };
+        }),
+      };
+
+      // Print the final transformed test JSON
+      console.log("Final Test JSON:", JSON.stringify(transformedTest, null, 2));
+      // Submit the transformed test
+      const response = await submitReadingQuestions(transformedTest);
       if (response.success) {
         toast.success("Test created successfully!");
         // Reset form or redirect

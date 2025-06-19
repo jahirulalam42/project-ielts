@@ -175,7 +175,7 @@ const PartForm: React.FC<PartFormProps> = ({
                 />
               </div>
             ))}
-            <button onClick={addParagraph} className="btn btn-primary">
+            <button type="button" onClick={addParagraph} className="btn btn-primary">
               Add Paragraph
             </button>
           </div>
@@ -194,7 +194,7 @@ const PartForm: React.FC<PartFormProps> = ({
                 />
               </div>
             ))}
-            <button onClick={addParagraph} className="btn btn-primary">
+            <button type="button" onClick={addParagraph} className="btn btn-primary">
               Add Paragraph
             </button>
           </div>

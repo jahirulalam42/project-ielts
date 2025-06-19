@@ -55,7 +55,9 @@ const PassageFillBlanksForm: React.FC<PassageFillBlanksFormProps> = ({
           <div className="mb-2">
             <span className="font-medium">Question Numbers: </span>
             <span className="text-blue-600">
-              {formatQuestionNumbers(q.question_number)}
+              {q.blanks && q.blanks.length > 0
+                ? q.blanks.map((b) => b.blank_number).join(", ")
+                : formatQuestionNumbers(q.question_number)}
             </span>
           </div>
 
