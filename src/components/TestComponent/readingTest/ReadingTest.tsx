@@ -10,6 +10,7 @@ import PassFillInTheBlanks from "../Common/PassFillInTheBlanks";
 import McqMultiple from "../Common/McqMultiple";
 import SumFillInTheBlanks from "../Common/SumFillInTheBlanks";
 import SubFillInTheBlanks from "../Common/SubFillInTheBlanks";
+import TextHighlighter from "./TextHighlighter";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
@@ -20,6 +21,7 @@ const ReadingTest = ({ test }: any) => {
   const [currentPartIndex, setCurrentPartIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(60 * 60); // 60 minutes in seconds
   const [isTimeUp, setIsTimeUp] = useState(false);
+  const [passageHighlights, setPassageHighlights] = useState<any[]>([]);
   const { data: session }: any = useSession();
 
   const currentPart = test.parts[currentPartIndex];
@@ -197,6 +199,11 @@ const ReadingTest = ({ test }: any) => {
     });
   };
 
+  const handleHighlightChange = (highlights: any[]) => {
+    setPassageHighlights(highlights);
+    console.log('Passage highlights updated:', highlights);
+  };
+
   const handleNextPart = () => {
     if (currentPartIndex < test.parts.length - 1) {
       setCurrentPartIndex((prev) => prev + 1);
@@ -221,6 +228,7 @@ const ReadingTest = ({ test }: any) => {
       answers: answers,
       totalScore: totalPoint,
       submittedAt: submissionTime.toLocaleString(),
+      passageHighlights: passageHighlights,
     };
 
     // 3. Send POST to App Router route
@@ -320,18 +328,10 @@ const ReadingTest = ({ test }: any) => {
             )}
 
             <div className="prose max-w-none space-y-4">
-              {currentPart.passage.map((p: any, i: number) =>
-                typeof p === "object" ? (
-                  Object.entries(p).map(([key, value]) => (
-                    <p key={`${i}-${key}`}>
-                      <span className="font-bold">{key}.</span>{" "}
-                      {value as string}
-                    </p>
-                  ))
-                ) : (
-                  <p key={i}>{p}</p>
-                )
-              )}
+              <TextHighlighter 
+                content={currentPart.passage} 
+                onHighlightChange={handleHighlightChange}
+              />
             </div>
           </div>
 
