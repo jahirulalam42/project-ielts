@@ -156,15 +156,15 @@ const ReadingTest = ({ test }: any) => {
           return currentArray.map((obj, index) =>
             index === existingEntryIndex
               ? {
-                questionId,
-                answers: Array.isArray(obj.answers)
-                  ? obj.answers.includes(value)
-                    ? obj.answers.filter((v: any) => v !== value)
-                    : [...obj.answers, value]
-                  : [value],
-                answerText: answer,
-                isCorrect: isCorrect,
-              }
+                  questionId,
+                  answers: Array.isArray(obj.answers)
+                    ? obj.answers.includes(value)
+                      ? obj.answers.filter((v: any) => v !== value)
+                      : [...obj.answers, value]
+                    : [value],
+                  answerText: answer,
+                  isCorrect: isCorrect,
+                }
               : obj
           );
         } else {
@@ -186,13 +186,23 @@ const ReadingTest = ({ test }: any) => {
         if (existingEntryIndex !== -1) {
           return currentArray.map((obj, index) =>
             index === existingEntryIndex
-              ? { ...obj, value: String(value), answerText: answer, isCorrect: isCorrect }
+              ? {
+                  ...obj,
+                  value: String(value),
+                  answerText: answer,
+                  isCorrect: isCorrect,
+                }
               : obj
           );
         } else {
           return [
             ...currentArray,
-            { questionId: String(questionId), value: String(value), answerText: answer, isCorrect: isCorrect },
+            {
+              questionId: String(questionId),
+              value: String(value),
+              answerText: answer,
+              isCorrect: isCorrect,
+            },
           ];
         }
       }
@@ -201,7 +211,7 @@ const ReadingTest = ({ test }: any) => {
 
   const handleHighlightChange = (highlights: any[]) => {
     setPassageHighlights(highlights);
-    console.log('Passage highlights updated:', highlights);
+    console.log("Passage highlights updated:", highlights);
   };
 
   const handleNextPart = () => {
@@ -328,8 +338,8 @@ const ReadingTest = ({ test }: any) => {
             )}
 
             <div className="prose max-w-none space-y-4">
-              <TextHighlighter 
-                content={currentPart.passage} 
+              <TextHighlighter
+                content={currentPart.passage}
                 onHighlightChange={handleHighlightChange}
               />
             </div>
