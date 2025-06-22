@@ -41,58 +41,69 @@ const ReadingCreationPage: React.FC = () => {
         parts: test.parts.map((part) => {
           // Group all question groups into a single object by type
           const questionsByType: Record<string, any> = {};
+          // Replace the problematic forEach section with this corrected version:
+
           part.questions.forEach((questionGroup) => {
             const questionType = Object.keys(questionGroup)[0];
             const questions = questionGroup[questionType];
-            if (questionType === 'passage_fill_in_the_blanks') {
-              // Each question in passage_fill_in_the_blanks should be an object in the array
+
+            if (questionType === "passage_fill_in_the_blanks") {
               questionsByType[questionType] = questions.map((q: any) => ({
-                question_number: q?.blanks?.map((b: any) => b.blank_number) || [],
+                question_number:
+                  q?.blanks?.map((b: any) => b.blank_number) || [],
                 instruction: q?.instruction,
                 text: q?.text,
-                blanks: q?.blanks
+                blanks: q?.blanks,
               }));
-              return;
-            }
-            if (questionType === 'summary_fill_in_the_blanks') {
-              // Each question in summary_fill_in_the_blanks should be an object in the array
+            } else if (questionType === "summary_fill_in_the_blanks") {
               questionsByType[questionType] = questions.map((q: any) => ({
                 question_numbers: q?.question_numbers || [],
                 passage: q?.passage,
                 answers: q?.answers || [],
-                options: (q?.options && Array.isArray(q.options) && q.options.length > 0) ? q.options : [],
-                input_type: q?.input_type || "drag_and_drop"
+                options:
+                  q?.options && Array.isArray(q.options) && q.options.length > 0
+                    ? q.options
+                    : [],
+                input_type: q?.input_type || "drag_and_drop",
               }));
-              return;
-            }
-            if (questionType === 'fill_in_the_blanks_with_subtitle') {
-              // Each question in fill_in_the_blanks_with_subtitle should be an object in the array
+            } else if (questionType === "fill_in_the_blanks_with_subtitle") {
               questionsByType[questionType] = questions.map((q: any) => ({
                 title: q?.title || "",
                 subtitle: q?.subtitle || "",
-                extra: (q?.extra && Array.isArray(q.extra) && q.extra.length > 0) ? q.extra : [],
-                questions: (q?.questions && Array.isArray(q.questions) && q.questions.length > 0) ? q.questions.map((subQ: any) => ({
-                  question_number: subQ?.question_number,
-                  answer: subQ?.answer,
-                  input_type: subQ?.input_type || "text"
-                })) : []
+                extra:
+                  q?.extra && Array.isArray(q.extra) && q.extra.length > 0
+                    ? q.extra
+                    : [],
+                questions:
+                  q?.questions &&
+                  Array.isArray(q.questions) &&
+                  q.questions.length > 0
+                    ? q.questions.map((subQ: any) => ({
+                        question_number: subQ?.question_number,
+                        answer: subQ?.answer,
+                        input_type: subQ?.input_type || "text",
+                      }))
+                    : [],
               }));
-              return;
-            }
-            // ...rest of the mapping logic for other types...
-            let base: any;
-            if (questionType === 'multiple_mcq') {
-              base = {
+            } else if (questionType === "multiple_mcq") {
+              let base: any = {
                 question_numbers: questions[0]?.question_numbers,
                 question: questions[0]?.question,
-                options: (questions[0]?.options && Array.isArray(questions[0].options) && questions[0].options.length > 0) ? questions[0].options : undefined,
+                options:
+                  questions[0]?.options &&
+                  Array.isArray(questions[0].options) &&
+                  questions[0].options.length > 0
+                    ? questions[0].options
+                    : undefined,
                 input_type: questions[0]?.input_type,
                 min_selection: questions[0]?.min_selection,
                 max_selection: questions[0]?.max_selection,
               };
-              if (questions[0]?.correct_mapping) base.correct_mapping = questions[0].correct_mapping;
+              if (questions[0]?.correct_mapping)
+                base.correct_mapping = questions[0].correct_mapping;
               questionsByType[questionType] = [base];
             } else {
+              // Handle all other question types
               const filteredQuestions = questions.map((q: any) => {
                 const base: any = {
                   question_number: q?.question_number,
@@ -100,19 +111,47 @@ const ReadingCreationPage: React.FC = () => {
                   answer: q?.answer,
                   input_type: q?.input_type,
                 };
-                if (q?.options && Array.isArray(q.options) && q.options.length > 0) base.options = q.options;
-                if (q?.min_selection !== undefined) base.min_selection = q.min_selection;
-                if (q?.max_selection !== undefined) base.max_selection = q.max_selection;
-                if (q?.question_numbers && Array.isArray(q.question_numbers) && q.question_numbers.length > 0) base.question_numbers = q.question_numbers;
+                if (
+                  q?.options &&
+                  Array.isArray(q.options) &&
+                  q.options.length > 0
+                )
+                  base.options = q.options;
+                if (q?.min_selection !== undefined)
+                  base.min_selection = q.min_selection;
+                if (q?.max_selection !== undefined)
+                  base.max_selection = q.max_selection;
+                if (
+                  q?.question_numbers &&
+                  Array.isArray(q.question_numbers) &&
+                  q.question_numbers.length > 0
+                )
+                  base.question_numbers = q.question_numbers;
                 if (q?.instruction) base.instruction = q.instruction;
                 if (q?.text) base.text = q.text;
-                if (q?.blanks && Array.isArray(q.blanks) && q.blanks.length > 0) base.blanks = q.blanks;
-                if (q?.answers && Array.isArray(q.answers) && q.answers.length > 0) base.answers = q.answers;
+                if (q?.blanks && Array.isArray(q.blanks) && q.blanks.length > 0)
+                  base.blanks = q.blanks;
+                if (
+                  q?.answers &&
+                  Array.isArray(q.answers) &&
+                  q.answers.length > 0
+                )
+                  base.answers = q.answers;
                 if (q?.passage) base.passage = q.passage;
                 if (q?.title) base.title = q.title;
                 if (q?.subtitle) base.subtitle = q.subtitle;
-                if (q?.extra && ((Array.isArray(q.extra) && q.extra.length > 0) || typeof q.extra === 'string' && q.extra)) base.extra = q.extra;
-                if (q?.questions && Array.isArray(q.questions) && q.questions.length > 0) base.questions = q.questions;
+                if (
+                  q?.extra &&
+                  ((Array.isArray(q.extra) && q.extra.length > 0) ||
+                    (typeof q.extra === "string" && q.extra))
+                )
+                  base.extra = q.extra;
+                if (
+                  q?.questions &&
+                  Array.isArray(q.questions) &&
+                  q.questions.length > 0
+                )
+                  base.questions = q.questions;
                 return base;
               });
               questionsByType[questionType] = filteredQuestions;
@@ -145,11 +184,10 @@ const ReadingCreationPage: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="bg-base-100 rounded-xl shadow-xl p-6 md:p-8">
-        <h1 className="text-3xl font-bold text-center mb-8">Create Reading Test</h1>
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-8"
-        >
+        <h1 className="text-3xl font-bold text-center mb-8">
+          Create Reading Test
+        </h1>
+        <form onSubmit={handleSubmit} className="space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="form-control">
               <label className="label">
@@ -159,7 +197,7 @@ const ReadingCreationPage: React.FC = () => {
                 type="text"
                 className="input input-bordered border-black w-full"
                 value={test.title}
-                onChange={e => setTest({ ...test, title: e.target.value })}
+                onChange={(e) => setTest({ ...test, title: e.target.value })}
                 required
               />
             </div>
@@ -170,7 +208,12 @@ const ReadingCreationPage: React.FC = () => {
               <select
                 className="select select-bordered border-black w-full"
                 value={test.type}
-                onChange={e => setTest({ ...test, type: e.target.value as "academic" | "general" })}
+                onChange={(e) =>
+                  setTest({
+                    ...test,
+                    type: e.target.value as "academic" | "general",
+                  })
+                }
               >
                 <option value="academic">Academic</option>
                 <option value="general">General Training</option>
@@ -178,13 +221,17 @@ const ReadingCreationPage: React.FC = () => {
             </div>
             <div className="form-control">
               <label className="label">
-                <span className="label-text font-semibold">Duration (minutes)</span>
+                <span className="label-text font-semibold">
+                  Duration (minutes)
+                </span>
               </label>
               <input
                 type="number"
                 className="input input-bordered border-black w-full"
                 value={test.duration}
-                onChange={e => setTest({ ...test, duration: parseInt(e.target.value) })}
+                onChange={(e) =>
+                  setTest({ ...test, duration: parseInt(e.target.value) })
+                }
                 required
               />
             </div>
@@ -222,4 +269,4 @@ const ReadingCreationPage: React.FC = () => {
   );
 };
 
-export default ReadingCreationPage; 
+export default ReadingCreationPage;

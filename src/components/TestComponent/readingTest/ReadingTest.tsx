@@ -26,33 +26,37 @@ const ReadingTest = ({ test }: any) => {
 
   const currentPart = test.parts[currentPartIndex];
 
+  console.log("Current Part", currentPart);
+
   useEffect(() => {
     // Flatten all questions from all parts
     const flattenQuestions = (parts: any[]) => {
-      return parts.flatMap(
-        (part) =>
-          part.questions?.flatMap((questionGroup: any) =>
-            Object.entries(questionGroup).flatMap(([key, value]: any) => {
-              if (Array.isArray(value)) {
-                return value.map((q: any) => ({
-                  ...q,
-                  input_type: q.input_type || "text",
-                  question_number: q.question_number,
-                }));
-              } else if (typeof value === "object") {
-                return [
-                  {
-                    ...value,
-                    input_type: value?.input_type || "text",
-                    question_number:
-                      value?.question_number || value?.question_numbers,
-                  },
-                ];
-              }
-              return [];
-            })
-          ) || []
-      );
+      return parts.flatMap((part) => {
+        if (!part.questions || typeof part.questions !== "object") return [];
+
+        return Object.entries(part.questions).flatMap(([key, value]: any) => {
+          if (Array.isArray(value)) {
+            return value.map((q: any) => ({
+              ...q,
+              input_type: q.input_type || "text",
+              question_number: q.question_number,
+              question_type: key, // optional: add type info
+            }));
+          } else if (typeof value === "object" && value !== null) {
+            return [
+              {
+                ...value,
+                input_type: value.input_type || "text",
+                question_number:
+                  value.question_number || value.question_numbers,
+                question_type: key, // optional
+              },
+            ];
+          }
+
+          return [];
+        });
+      });
     };
 
     const allQuestions = flattenQuestions(test.parts);
@@ -334,6 +338,7 @@ const ReadingTest = ({ test }: any) => {
                 width={600}
                 height={400}
                 className="rounded-lg mb-4"
+                unoptimized
               />
             )}
 
@@ -353,82 +358,75 @@ const ReadingTest = ({ test }: any) => {
                 {currentPart.instructions}
               </p>
 
-              {currentPart.questions?.map((question: any, index: number) => (
-                <div key={index}>
-                  {/* Existing question type components */}
-                  {question.true_false_not_given && (
-                    <TrueFalse
-                      question={question.true_false_not_given}
-                      handleAnswerChange={handleAnswerChange}
-                    />
-                  )}
+              {currentPart.questions &&
+                Object.entries(currentPart.questions).map(
+                  ([questionType, questionArray]: any, index: number) => (
+                    <div key={index}>
+                      {questionType === "true_false_not_given" && (
+                        <TrueFalse
+                          question={questionArray}
+                          handleAnswerChange={handleAnswerChange}
+                        />
+                      )}
 
-                  {/* Fill in the Blanks */}
-                  {question.fill_in_the_blanks &&
-                    Array.isArray(question.fill_in_the_blanks) && (
-                      <FillInTheBlanks
-                        question={question.fill_in_the_blanks}
-                        handleAnswerChange={handleAnswerChange}
-                      />
-                    )}
+                      {questionType === "fill_in_the_blanks" && (
+                        <FillInTheBlanks
+                          question={questionArray}
+                          handleAnswerChange={handleAnswerChange}
+                        />
+                      )}
 
-                  {/* Matching Headings */}
-                  {question.matching_headings && (
-                    <MatchingHeadings
-                      question={question.matching_headings}
-                      handleAnswerChange={handleAnswerChange}
-                    />
-                  )}
+                      {questionType === "matching_headings" && (
+                        <MatchingHeadings
+                          question={questionArray}
+                          handleAnswerChange={handleAnswerChange}
+                        />
+                      )}
 
-                  {/* Paragraph Matching */}
-                  {question.paragraph_matching && (
-                    <ParagraphMatching
-                      question={question.paragraph_matching}
-                      handleAnswerChange={handleAnswerChange}
-                    />
-                  )}
+                      {questionType === "paragraph_matching" && (
+                        <ParagraphMatching
+                          question={questionArray}
+                          handleAnswerChange={handleAnswerChange}
+                        />
+                      )}
 
-                  {/* Multiple Choice (Single/Multi) */}
-                  {question.mcq && (
-                    <McqSingle
-                      question={question.mcq}
-                      handleAnswerChange={handleAnswerChange}
-                    />
-                  )}
+                      {questionType === "mcq" && (
+                        <McqSingle
+                          question={questionArray}
+                          handleAnswerChange={handleAnswerChange}
+                        />
+                      )}
 
-                  {/* Passage Fill in Blanks */}
-                  {question.passage_fill_in_the_blanks && (
-                    <PassFillInTheBlanks
-                      question={question.passage_fill_in_the_blanks}
-                      handleAnswerChange={handleAnswerChange}
-                    />
-                  )}
+                      {questionType === "multiple_mcq" && (
+                        <McqMultiple
+                          question={questionArray}
+                          handleAnswerChange={handleAnswerChange}
+                        />
+                      )}
 
-                  {/* Multiple MCQ (Checkbox style) */}
-                  {question.multiple_mcq && (
-                    <McqMultiple
-                      question={question.multiple_mcq}
-                      handleAnswerChange={handleAnswerChange}
-                    />
-                  )}
+                      {questionType === "passage_fill_in_the_blanks" && (
+                        <PassFillInTheBlanks
+                          question={questionArray}
+                          handleAnswerChange={handleAnswerChange}
+                        />
+                      )}
 
-                  {/* Summary Fill in Blanks */}
-                  {question.summary_fill_in_the_blanks && (
-                    <SumFillInTheBlanks
-                      question={question.summary_fill_in_the_blanks}
-                      handleAnswerChange={handleAnswerChange}
-                    />
-                  )}
+                      {questionType === "summary_fill_in_the_blanks" && (
+                        <SumFillInTheBlanks
+                          question={questionArray}
+                          handleAnswerChange={handleAnswerChange}
+                        />
+                      )}
 
-                  {/* Fill in Blanks with Subtitles */}
-                  {question.fill_in_the_blanks_with_subtitle && (
-                    <SubFillInTheBlanks
-                      question={question.fill_in_the_blanks_with_subtitle}
-                      handleAnswerChange={handleAnswerChange}
-                    />
-                  )}
-                </div>
-              ))}
+                      {questionType === "fill_in_the_blanks_with_subtitle" && (
+                        <SubFillInTheBlanks
+                          question={questionArray}
+                          handleAnswerChange={handleAnswerChange}
+                        />
+                      )}
+                    </div>
+                  )
+                )}
             </div>
 
             {/* Navigation */}
