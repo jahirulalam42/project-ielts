@@ -1,6 +1,12 @@
 "use client";
 import React, { useState } from "react";
-import { Passage, ReadingTest, Question, QuestionType, questionTypes } from "./readingTest";
+import {
+  Passage,
+  ReadingTest,
+  Question,
+  QuestionType,
+  questionTypes,
+} from "./readingTest";
 import TrueFalseForm from "./forms/TrueFalseForm";
 import FillBlanksForm from "./forms/FillBlanksForm";
 import MatchingHeadingsForm from "./forms/MatchingHeadingsForm";
@@ -24,7 +30,9 @@ const QuestionGroupEditor: React.FC<QuestionGroupEditorProps> = ({
   test,
   setTest,
 }) => {
-  const [currentQuestionType, setCurrentQuestionType] = useState<QuestionType | "">("");
+  const [currentQuestionType, setCurrentQuestionType] = useState<
+    QuestionType | ""
+  >("");
   const [questionCount, setQuestionCount] = useState<number>(1);
 
   const addQuestionGroup = () => {
@@ -73,7 +81,8 @@ const QuestionGroupEditor: React.FC<QuestionGroupEditorProps> = ({
                 : currentQuestionType === "true_false_not_given"
                 ? "dropdown"
                 : "radio",
-            answer: currentQuestionType === "true_false_not_given" ? "True" : "",
+            answer:
+              currentQuestionType === "true_false_not_given" ? "True" : "",
             title: "",
             subtitle: "",
             extra: "",
@@ -234,7 +243,11 @@ const QuestionGroupEditor: React.FC<QuestionGroupEditorProps> = ({
     setQuestionCount(1);
   };
 
-  const renderQuestionForm = (questionType: string, questions: Question[], groupIndex: number) => {
+  const renderQuestionForm = (
+    questionType: string,
+    questions: Question[],
+    groupIndex: number
+  ) => {
     const formProps = {
       questions,
       passageIndex,
@@ -272,7 +285,9 @@ const QuestionGroupEditor: React.FC<QuestionGroupEditorProps> = ({
       <div className="flex gap-4 items-center">
         <select
           value={currentQuestionType}
-          onChange={(e) => setCurrentQuestionType(e.target.value as QuestionType)}
+          onChange={(e) =>
+            setCurrentQuestionType(e.target.value as QuestionType)
+          }
           className="select select-bordered border-black"
         >
           <option value="">Select Question Type</option>
@@ -316,4 +331,4 @@ const QuestionGroupEditor: React.FC<QuestionGroupEditorProps> = ({
   );
 };
 
-export default QuestionGroupEditor; 
+export default QuestionGroupEditor;

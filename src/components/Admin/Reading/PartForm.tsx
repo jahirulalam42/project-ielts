@@ -1,6 +1,11 @@
 "use client";
 import React, { useState } from "react";
-import { Passage, ReadingTest, QuestionType, questionTypes } from "./readingTest";
+import {
+  Passage,
+  ReadingTest,
+  QuestionType,
+  questionTypes,
+} from "./readingTest";
 import QuestionGroupEditor from "./QuestionGroupEditor";
 
 interface PartFormProps {
@@ -16,18 +21,13 @@ const PartForm: React.FC<PartFormProps> = ({
   test,
   setTest,
 }) => {
-  const updatePassageField = (
-    field: keyof Passage,
-    value: any
-  ) => {
+  const updatePassageField = (field: keyof Passage, value: any) => {
     const updatedParts = [...test.parts];
     updatedParts[passageIndex][field] = value;
     setTest({ ...test, parts: updatedParts });
   };
 
-  const updatePassageType = (
-    passageType: "type1" | "type2"
-  ) => {
+  const updatePassageType = (passageType: "type1" | "type2") => {
     const updatedParts = [...test.parts];
 
     // If changing to type2, ensure the passage is in the correct structure
@@ -60,16 +60,14 @@ const PartForm: React.FC<PartFormProps> = ({
     setTest({ ...test, parts: updatedParts });
   };
 
-  const updateParagraph = (
-    paraIndex: number,
-    value: string
-  ) => {
+  const updateParagraph = (paraIndex: number, value: string) => {
     const updatedParts = [...test.parts];
     if (Array.isArray(updatedParts[passageIndex].passage)) {
       updatedParts[passageIndex].passage[paraIndex] = value;
     } else {
       const key = String.fromCharCode(65 + paraIndex);
-      (updatedParts[passageIndex].passage as Record<string, string>)[key] = value;
+      (updatedParts[passageIndex].passage as Record<string, string>)[key] =
+        value;
     }
     setTest({ ...test, parts: updatedParts });
   };
@@ -79,7 +77,9 @@ const PartForm: React.FC<PartFormProps> = ({
     if (Array.isArray(updatedParts[passageIndex].passage)) {
       updatedParts[passageIndex].passage.push("");
     } else {
-      const key = String.fromCharCode(65 + Object.keys(updatedParts[passageIndex].passage).length);
+      const key = String.fromCharCode(
+        65 + Object.keys(updatedParts[passageIndex].passage).length
+      );
       (updatedParts[passageIndex].passage as Record<string, string>)[key] = "";
     }
     setTest({ ...test, parts: updatedParts });
@@ -117,7 +117,9 @@ const PartForm: React.FC<PartFormProps> = ({
           <input
             type="text"
             value={passage.passage_title}
-            onChange={(e) => updatePassageField("passage_title", e.target.value)}
+            onChange={(e) =>
+              updatePassageField("passage_title", e.target.value)
+            }
             className="input input-bordered border-black w-full"
           />
         </div>
@@ -128,7 +130,9 @@ const PartForm: React.FC<PartFormProps> = ({
           <input
             type="text"
             value={passage.passage_subtitle}
-            onChange={(e) => updatePassageField("passage_subtitle", e.target.value)}
+            onChange={(e) =>
+              updatePassageField("passage_subtitle", e.target.value)
+            }
             className="input input-bordered border-black w-full"
           />
         </div>
@@ -149,7 +153,9 @@ const PartForm: React.FC<PartFormProps> = ({
           </label>
           <select
             value={passage.passageType}
-            onChange={(e) => updatePassageType(e.target.value as "type1" | "type2")}
+            onChange={(e) =>
+              updatePassageType(e.target.value as "type1" | "type2")
+            }
             className="select select-bordered border-black w-full"
           >
             <option value="type1">Type 1 (Array)</option>
@@ -175,7 +181,11 @@ const PartForm: React.FC<PartFormProps> = ({
                 />
               </div>
             ))}
-            <button type="button" onClick={addParagraph} className="btn btn-primary">
+            <button
+              type="button"
+              onClick={addParagraph}
+              className="btn btn-primary"
+            >
               Add Paragraph
             </button>
           </div>
@@ -184,7 +194,9 @@ const PartForm: React.FC<PartFormProps> = ({
             {Object.entries(passage.passage).map(([key, value], paraIndex) => (
               <div key={key} className="form-control">
                 <label className="label">
-                  <span className="label-text font-semibold">Paragraph {key}</span>
+                  <span className="label-text font-semibold">
+                    Paragraph {key}
+                  </span>
                 </label>
                 <textarea
                   value={value as string}
@@ -194,7 +206,11 @@ const PartForm: React.FC<PartFormProps> = ({
                 />
               </div>
             ))}
-            <button type="button" onClick={addParagraph} className="btn btn-primary">
+            <button
+              type="button"
+              onClick={addParagraph}
+              className="btn btn-primary"
+            >
               Add Paragraph
             </button>
           </div>
@@ -215,4 +231,4 @@ const PartForm: React.FC<PartFormProps> = ({
   );
 };
 
-export default PartForm; 
+export default PartForm;
