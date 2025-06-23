@@ -27,45 +27,113 @@ const QuestionGroupEditor: React.FC<QuestionGroupEditorProps> = ({
   const [currentQuestionType, setCurrentQuestionType] = useState<QuestionType | "">("");
   const [questionCount, setQuestionCount] = useState<number>(1);
 
+  // Global function to recalculate all question numbers in the test
+  const recalculateAllQuestionNumbers = (testData: ReadingTest): ReadingTest => {
+    const updatedTest = { ...testData };
+    let currentQuestionNumber = 1;
+
+    updatedTest.parts.forEach((part, partIndex) => {
+      part.questions.forEach((questionGroup, groupIndex) => {
+        const questionType = Object.keys(questionGroup)[0] as QuestionType;
+        const questions = questionGroup[questionType];
+
+        switch (questionType) {
+          case "true_false_not_given":
+          case "fill_in_the_blanks":
+          case "mcq":
+          case "matching_headings":
+          case "paragraph_matching":
+            questions.forEach((q, qIndex) => {
+              updatedTest.parts[partIndex].questions[groupIndex][questionType][qIndex].question_number = currentQuestionNumber++;
+            });
+            break;
+
+          case "multiple_mcq":
+            questions.forEach((q, qIndex) => {
+              const questionNumbers = [currentQuestionNumber, currentQuestionNumber + 1];
+              updatedTest.parts[partIndex].questions[groupIndex][questionType][qIndex].question_numbers = questionNumbers;
+              updatedTest.parts[partIndex].questions[groupIndex][questionType][qIndex].question_number = currentQuestionNumber;
+              currentQuestionNumber += 2;
+            });
+            break;
+
+          case "passage_fill_in_the_blanks":
+            questions.forEach((q, qIndex) => {
+              const question = updatedTest.parts[partIndex].questions[groupIndex][questionType][qIndex];
+              const numBlanks = question.blanks?.length || 0;
+              const questionNumbers = Array.from({ length: numBlanks }, (_, idx) => currentQuestionNumber + idx);
+              
+              question.question_number = questionNumbers;
+              question.question_numbers = questionNumbers;
+              
+              // Update blank numbers
+              if (question.blanks) {
+                question.blanks.forEach((blank, blankIdx) => {
+                  blank.blank_number = currentQuestionNumber + blankIdx;
+                });
+              }
+              
+              currentQuestionNumber += numBlanks;
+            });
+            break;
+
+          case "summary_fill_in_the_blanks":
+            questions.forEach((q, qIndex) => {
+              const question = updatedTest.parts[partIndex].questions[groupIndex][questionType][qIndex];
+              const numBlanks = question.question_numbers?.length || 0;
+              const questionNumbers = Array.from({ length: numBlanks }, (_, idx) => currentQuestionNumber + idx);
+              
+              question.question_numbers = questionNumbers;
+              currentQuestionNumber += numBlanks;
+            });
+            break;
+
+          case "fill_in_the_blanks_with_subtitle":
+            questions.forEach((q, qIndex) => {
+              const question = updatedTest.parts[partIndex].questions[groupIndex][questionType][qIndex];
+              const numQuestions = question.questions?.length || 0;
+              
+              if (question.questions) {
+                question.questions.forEach((subQ: any, subQIdx: number) => {
+                  subQ.question_number = currentQuestionNumber + subQIdx;
+                });
+              }
+              
+              currentQuestionNumber += numQuestions;
+            });
+            break;
+        }
+      });
+    });
+
+    return updatedTest;
+  };
+
+  // Function to update test with recalculated question numbers
+  const updateTestWithRecalculatedNumbers = (newTest: ReadingTest) => {
+    const recalculatedTest = recalculateAllQuestionNumbers(newTest);
+    setTest(recalculatedTest);
+  };
+
+  // Utility function to trigger global recalculation (can be passed to form components)
+  const triggerGlobalRecalculation = () => {
+    const recalculatedTest = recalculateAllQuestionNumbers(test);
+    setTest(recalculatedTest);
+  };
+
   const addQuestionGroup = () => {
     if (!currentQuestionType || questionCount < 1) return;
     const updatedParts = [...test.parts];
     const newQuestions: Question[] = [];
 
-    // Get the highest question number across ALL parts
-    const getGlobalMaxQuestionNumber = () => {
-      let maxNumber = 0;
-
-      test.parts.forEach((part) => {
-        part.questions.forEach((questionGroup) => {
-          Object.values(questionGroup).forEach((questionsArray: Question[]) => {
-            questionsArray.forEach((q) => {
-              if (q.question_number) {
-                maxNumber = Math.max(maxNumber, q.question_number);
-              }
-              if (q.question_numbers) {
-                const arrayMax = Math.max(...q.question_numbers);
-                maxNumber = Math.max(maxNumber, arrayMax);
-              }
-            });
-          });
-        });
-      });
-
-      return maxNumber;
-    };
-
-    const globalMaxQuestionNumber = getGlobalMaxQuestionNumber();
-    let nextQuestionNumber = globalMaxQuestionNumber + 1;
-
-    // Handle different question types
+    // Create new questions with temporary numbering (will be recalculated globally)
     switch (currentQuestionType) {
       case "true_false_not_given":
       case "fill_in_the_blanks":
       case "mcq":
         for (let i = 0; i < questionCount; i++) {
           const questionData: Question = {
-            question_number: nextQuestionNumber + i,
+            question_number: 1, // Temporary, will be recalculated
             question: "",
             input_type:
               currentQuestionType === "fill_in_the_blanks"
@@ -114,7 +182,7 @@ const QuestionGroupEditor: React.FC<QuestionGroupEditorProps> = ({
 
         for (let i = 0; i < questionCount; i++) {
           newQuestions.push({
-            question_number: nextQuestionNumber + i,
+            question_number: 1, // Temporary, will be recalculated
             question: "",
             answer: optionsList[0]?.value || "A",
             options: optionsList,
@@ -129,14 +197,9 @@ const QuestionGroupEditor: React.FC<QuestionGroupEditorProps> = ({
 
       case "multiple_mcq":
         for (let i = 0; i < questionCount; i++) {
-          const questionNumbers = [
-            nextQuestionNumber + i * 2,
-            nextQuestionNumber + i * 2 + 1,
-          ];
-
           newQuestions.push({
-            question_number: nextQuestionNumber + i,
-            question_numbers: questionNumbers,
+            question_number: 1, // Temporary, will be recalculated
+            question_numbers: [1, 2], // Temporary, will be recalculated
             question: "",
             options: [
               { label: "A", value: "" },
@@ -156,18 +219,12 @@ const QuestionGroupEditor: React.FC<QuestionGroupEditorProps> = ({
             questions: [],
           });
         }
-        nextQuestionNumber += questionCount * 2;
         break;
 
       case "passage_fill_in_the_blanks":
-        const passageQuestionNumbers = Array.from(
-          { length: questionCount },
-          (_, idx) => nextQuestionNumber + idx
-        );
-
         newQuestions.push({
-          question_number: nextQuestionNumber,
-          question_numbers: passageQuestionNumbers,
+          question_number: [1], // Temporary, will be recalculated
+          question_numbers: [1], // Temporary, will be recalculated
           question: "",
           input_type: "text",
           instruction:
@@ -183,14 +240,9 @@ const QuestionGroupEditor: React.FC<QuestionGroupEditorProps> = ({
         break;
 
       case "summary_fill_in_the_blanks":
-        const summaryQuestionNumbers = Array.from(
-          { length: questionCount },
-          (_, idx) => nextQuestionNumber + idx
-        );
-
         newQuestions.push({
-          question_number: nextQuestionNumber,
-          question_numbers: summaryQuestionNumbers,
+          question_number: 1, // Temporary, will be recalculated
+          question_numbers: [1], // Temporary, will be recalculated
           question: "",
           input_type: "text",
           passage: "",
@@ -204,14 +256,21 @@ const QuestionGroupEditor: React.FC<QuestionGroupEditorProps> = ({
         break;
 
       case "fill_in_the_blanks_with_subtitle":
+        const subtitleQuestions = [];
+        for (let i = 0; i < questionCount; i++) {
+          subtitleQuestions.push({
+            question_number: 1, // Temporary, will be recalculated
+            answer: "",
+            input_type: "text"
+          });
+        }
         newQuestions.push({
-          question_number: nextQuestionNumber,
           question: "",
           input_type: "text",
           title: "",
           subtitle: "",
           extra: [""],
-          questions: [],
+          questions: subtitleQuestions
         });
         break;
 
@@ -219,6 +278,7 @@ const QuestionGroupEditor: React.FC<QuestionGroupEditorProps> = ({
         return;
     }
 
+    // Add the new questions to the test
     const updatedTest = { ...test };
     updatedTest.parts = [...test.parts];
     updatedTest.parts[passageIndex] = {
@@ -229,7 +289,9 @@ const QuestionGroupEditor: React.FC<QuestionGroupEditorProps> = ({
       ],
     };
 
-    setTest(updatedTest);
+    // Recalculate all question numbers globally
+    updateTestWithRecalculatedNumbers(updatedTest);
+    
     setCurrentQuestionType("");
     setQuestionCount(1);
   };
@@ -241,6 +303,7 @@ const QuestionGroupEditor: React.FC<QuestionGroupEditorProps> = ({
       groupIndex,
       test,
       setTest,
+      triggerGlobalRecalculation,
     };
 
     switch (questionType) {
