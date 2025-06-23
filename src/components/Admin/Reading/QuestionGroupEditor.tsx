@@ -369,8 +369,22 @@ const QuestionGroupEditor: React.FC<QuestionGroupEditorProps> = ({
         const questionType = Object.keys(questionGroup)[0] as QuestionType;
         const questions = questionGroup[questionType];
         return (
-          <div key={groupIndex} className="border p-4 rounded-lg">
-            <h3 className="font-semibold mb-4">{questionType}</h3>
+          <div key={groupIndex} className="border p-4 rounded-lg relative">
+            {/* Header with question type and remove button */}
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-semibold">{questionType}</h3>
+              <button
+                onClick={() => {
+                  const updatedTest = { ...test };
+                  updatedTest.parts[passageIndex].questions.splice(groupIndex, 1);
+                  updateTestWithRecalculatedNumbers(updatedTest);
+                }}
+                className="btn btn-error btn-sm"
+                title="Remove this question group"
+              >
+                ✕
+              </button>
+            </div>
             {renderQuestionForm(questionType, questions, groupIndex)}
           </div>
         );
