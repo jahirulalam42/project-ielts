@@ -8,6 +8,7 @@ interface FillBlanksWithSubtitleFormProps {
   groupIndex: number;
   test: ReadingTest;
   setTest: (test: ReadingTest) => void;
+  triggerGlobalRecalculation?: () => void;
 }
 
 interface SubQuestion {
@@ -22,6 +23,7 @@ const FillBlanksWithSubtitleForm: React.FC<FillBlanksWithSubtitleFormProps> = ({
   groupIndex,
   test,
   setTest,
+  triggerGlobalRecalculation,
 }) => {
   const updateQuestion = (field: string, value: any, qIndex: number) => {
     const updatedParts = [...test.parts];
@@ -29,6 +31,9 @@ const FillBlanksWithSubtitleForm: React.FC<FillBlanksWithSubtitleFormProps> = ({
       qIndex
     ][field as keyof Question] = value;
     setTest({ ...test, parts: updatedParts });
+    if (triggerGlobalRecalculation) {
+      triggerGlobalRecalculation();
+    }
   };
 
   return (

@@ -8,6 +8,7 @@ interface SummaryFillBlanksFormProps {
   groupIndex: number;
   test: ReadingTest;
   setTest: (test: ReadingTest) => void;
+  triggerGlobalRecalculation?: () => void;
 }
 
 const SummaryFillBlanksForm: React.FC<SummaryFillBlanksFormProps> = ({
@@ -16,6 +17,7 @@ const SummaryFillBlanksForm: React.FC<SummaryFillBlanksFormProps> = ({
   groupIndex,
   test,
   setTest,
+  triggerGlobalRecalculation,
 }) => {
   const updateQuestion = (field: string, value: any, qIndex: number) => {
     const updatedParts = [...test.parts];
@@ -23,6 +25,9 @@ const SummaryFillBlanksForm: React.FC<SummaryFillBlanksFormProps> = ({
       qIndex
     ][field as keyof Question] = value;
     setTest({ ...test, parts: updatedParts });
+    if (triggerGlobalRecalculation) {
+      triggerGlobalRecalculation();
+    }
   };
 
   // Helper function to format question numbers

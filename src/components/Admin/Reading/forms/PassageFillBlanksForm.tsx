@@ -8,6 +8,7 @@ interface PassageFillBlanksFormProps {
   groupIndex: number;
   test: ReadingTest;
   setTest: (test: ReadingTest) => void;
+  triggerGlobalRecalculation?: () => void;
 }
 
 const PassageFillBlanksForm: React.FC<PassageFillBlanksFormProps> = ({
@@ -16,6 +17,7 @@ const PassageFillBlanksForm: React.FC<PassageFillBlanksFormProps> = ({
   groupIndex,
   test,
   setTest,
+  triggerGlobalRecalculation,
 }) => {
   const updateQuestion = (field: string, value: any, qIndex: number) => {
     const updatedParts = [...test.parts];
@@ -23,6 +25,9 @@ const PassageFillBlanksForm: React.FC<PassageFillBlanksFormProps> = ({
       qIndex
     ][field as keyof Question] = value;
     setTest({ ...test, parts: updatedParts });
+    if (triggerGlobalRecalculation) {
+      triggerGlobalRecalculation();
+    }
   };
 
   // Function to extract blanks from text

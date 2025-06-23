@@ -130,10 +130,10 @@ const SubmissionPage = () => {
         <table className="table w-full">
           <thead>
             <tr>
-              <th>Question</th>
-              <th>Your Answer</th>
-              <th>Correct Answer</th>
-              <th>Status</th>
+              <th className="font-bold text-black">Question</th>
+              <th className="font-bold text-black">Your Answer</th>
+              <th className="font-bold text-black">Correct Answer</th>
+              <th className="font-bold text-black">Status</th>
             </tr>
           </thead>
           <tbody>
