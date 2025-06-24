@@ -67,24 +67,35 @@ const ReadingCreationPage: React.FC = () => {
                 input_type: q?.input_type || "drag_and_drop",
               }));
             } else if (questionType === "fill_in_the_blanks_with_subtitle") {
-              questionsByType[questionType] = questions.map((q: any) => ({
-                title: q?.title || "",
-                subtitle: q?.subtitle || "",
-                extra:
-                  q?.extra && Array.isArray(q.extra) && q.extra.length > 0
-                    ? q.extra
-                    : [],
-                questions:
-                  q?.questions &&
-                  Array.isArray(q.questions) &&
-                  q.questions.length > 0
-                    ? q.questions.map((subQ: any) => ({
-                        question_number: subQ?.question_number,
-                        answer: subQ?.answer,
-                        input_type: subQ?.input_type || "text",
-                      }))
-                    : [],
-              }));
+              questionsByType[questionType] = questions.map((q: any, index: number) => {
+                const base: any = {
+                  subtitle: q?.subtitle || "",
+                  extra:
+                    q?.extra && Array.isArray(q.extra) && q.extra.length > 0
+                      ? q.extra
+                      : [],
+                  questions:
+                    q?.questions &&
+                    Array.isArray(q.questions) &&
+                    q.questions.length > 0
+                      ? q.questions.map((subQ: any) => ({
+                          question_number: subQ?.question_number,
+                          answer: subQ?.answer,
+                          input_type: subQ?.input_type || "text",
+                        }))
+                      : [],
+                };
+                
+                // Only include title for the first question, and put it at the top
+                if (index === 0) {
+                  return {
+                    title: q?.title || "",
+                    ...base
+                  };
+                }
+                
+                return base;
+              });
             } else if (questionType === "multiple_mcq") {
               questionsByType[questionType] = questions.map((q: any) => {
                 let base: any = {

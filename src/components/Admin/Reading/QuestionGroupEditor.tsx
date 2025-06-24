@@ -265,22 +265,23 @@ const QuestionGroupEditor: React.FC<QuestionGroupEditorProps> = ({
         break;
 
       case "fill_in_the_blanks_with_subtitle":
-        const subtitleQuestions = [];
+        // Create multiple separate question groups, each with its own subtitle
         for (let i = 0; i < questionCount; i++) {
-          subtitleQuestions.push({
-            question_number: 1, // Temporary, will be recalculated
-            answer: "",
-            input_type: "text"
+          newQuestions.push({
+            question: "",
+            input_type: "text",
+            title: i === 0 ? "" : "", // Always use empty string, not undefined
+            subtitle: "",
+            extra: [""],
+            questions: [
+              {
+                question_number: 1, // Temporary, will be recalculated
+                answer: "",
+                input_type: "text"
+              }
+            ]
           });
         }
-        newQuestions.push({
-          question: "",
-          input_type: "text",
-          title: "",
-          subtitle: "",
-          extra: [""],
-          questions: subtitleQuestions
-        });
         break;
 
       default:
@@ -290,13 +291,33 @@ const QuestionGroupEditor: React.FC<QuestionGroupEditorProps> = ({
     // Add the new questions to the test
     const updatedTest = { ...test };
     updatedTest.parts = [...test.parts];
-    updatedTest.parts[passageIndex] = {
-      ...test.parts[passageIndex],
-      questions: [
-        ...test.parts[passageIndex].questions,
-        { [currentQuestionType]: newQuestions },
-      ],
-    };
+    
+    // Special handling for fill_in_the_blanks_with_subtitle - merge into existing group if it exists
+    if (currentQuestionType === "fill_in_the_blanks_with_subtitle") {
+      const existingQuestions = updatedTest.parts[passageIndex].questions;
+      const existingFillBlanksGroup = existingQuestions.find(group => 
+        Object.keys(group)[0] === "fill_in_the_blanks_with_subtitle"
+      );
+      
+      if (existingFillBlanksGroup) {
+        // Merge new questions into existing group
+        const existingGroup = existingFillBlanksGroup as Record<string, Question[]>;
+        existingGroup["fill_in_the_blanks_with_subtitle"] = [
+          ...existingGroup["fill_in_the_blanks_with_subtitle"],
+          ...newQuestions
+        ];
+      } else {
+        // Create new group
+        updatedTest.parts[passageIndex].questions.push({
+          [currentQuestionType as string]: newQuestions
+        });
+      }
+    } else {
+      // Normal handling for other question types
+      updatedTest.parts[passageIndex].questions.push({
+        [currentQuestionType as string]: newQuestions
+      });
+    }
 
     // Recalculate all question numbers globally
     updateTestWithRecalculatedNumbers(updatedTest);

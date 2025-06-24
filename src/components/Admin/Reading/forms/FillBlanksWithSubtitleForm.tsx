@@ -40,19 +40,21 @@ const FillBlanksWithSubtitleForm: React.FC<FillBlanksWithSubtitleFormProps> = ({
     <div className="space-y-4">
       {questions.map((section, sectionIdx) => (
         <div key={sectionIdx} className="border p-4 rounded-lg">
-          {/* Title Input */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Title (optional):
-            </label>
-            <input
-              type="text"
-              placeholder="Title"
-              value={section.title || ""}
-              onChange={(e) => updateQuestion("title", e.target.value, sectionIdx)}
-              className="input input-bordered border-black w-full"
-            />
-          </div>
+          {/* Title Input - Only show for the first question */}
+          {sectionIdx === 0 && (
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Title (optional):
+              </label>
+              <input
+                type="text"
+                placeholder="Title"
+                value={section.title || ""}
+                onChange={(e) => updateQuestion("title", e.target.value, sectionIdx)}
+                className="input input-bordered border-black w-full"
+              />
+            </div>
+          )}
 
           {/* Subtitle Input */}
           <div className="mb-4">
