@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import React, { useState } from "react";
 import {
   FaChartBar,
@@ -17,7 +18,6 @@ import {
 } from "react-icons/fa";
 
 const AdminDashboard = () => {
-  const [activePage, setActivePage] = useState("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Mock data
@@ -183,88 +183,10 @@ const AdminDashboard = () => {
 
       {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Top bar */}
-        <header className="bg-base-100 shadow">
-          <div className="flex justify-between items-center px-6 py-4">
-            <div className="relative w-64">
-              <div className="join w-full">
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  className="input input-bordered join-item w-full"
-                />
-                <button className="btn join-item">
-                  <FaSearch />
-                </button>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4">
-              <div className="dropdown dropdown-end">
-                <div
-                  tabIndex={0}
-                  role="button"
-                  className="btn btn-ghost btn-circle"
-                >
-                  <div className="indicator">
-                    <FaBell className="text-xl" />
-                    <span className="badge badge-xs badge-primary indicator-item"></span>
-                  </div>
-                </div>
-                <div
-                  tabIndex={0}
-                  className="dropdown-content z-50 mt-4 card card-compact w-72 bg-base-100 shadow"
-                >
-                  <div className="card-body">
-                    <span className="font-bold text-lg">Notifications</span>
-                    <div className="mt-2 space-y-2">
-                      <div className="alert alert-info p-2">
-                        <span>New speaking test submission</span>
-                      </div>
-                      <div className="alert p-2">
-                        <span>System update scheduled</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="dropdown dropdown-end">
-                <div
-                  tabIndex={0}
-                  role="button"
-                  className="btn btn-ghost rounded-full"
-                >
-                  <div className="avatar placeholder">
-                    <div className="bg-neutral text-neutral-content rounded-full w-10">
-                      <span>A</span>
-                    </div>
-                  </div>
-                  <span className="ml-2">Admin</span>
-                  <FaChevronDown className="ml-1" />
-                </div>
-                <ul
-                  tabIndex={0}
-                  className="dropdown-content z-50 menu p-2 shadow bg-base-100 rounded-box w-52 mt-2"
-                >
-                  <li>
-                    <a>Profile</a>
-                  </li>
-                  <li>
-                    <a>Settings</a>
-                  </li>
-                  <li>
-                    <a>Logout</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </header>
 
         {/* Dashboard content */}
         <main className="flex-1 overflow-y-auto p-6">
-          <div className="mb-8">
+          <div className="mb-8 flex items-center justify-center flex-col gap-2">
             <h1 className="text-3xl font-bold">Admin Dashboard</h1>
             <p className="text-base-content/70">
               Manage IELTS tests and content
@@ -337,22 +259,34 @@ const AdminDashboard = () => {
               <div className="card-body">
                 <h2 className="card-title">Quick Actions</h2>
                 <div className="grid grid-cols-2 gap-4">
-                  <button className="btn btn-outline flex flex-col h-24">
+
+                  <Link href="/admin/reading"> <button className="btn btn-outline flex flex-col w-full h-24">
                     <FaBook className="text-2xl mb-2" />
                     <span>Add Reading Test</span>
-                  </button>
-                  <button className="btn btn-outline flex flex-col h-24">
-                    <FaHeadphones className="text-2xl mb-2" />
-                    <span>Add Listening Test</span>
-                  </button>
-                  <button className="btn btn-outline flex flex-col h-24">
-                    <FaEdit className="text-2xl mb-2" />
-                    <span>Add Writing Task</span>
-                  </button>
-                  <button className="btn btn-outline flex flex-col h-24">
-                    <FaMicrophone className="text-2xl mb-2" />
-                    <span>Add Speaking Test</span>
-                  </button>
+                  </button></Link>
+
+                  <Link href="/admin/listening">
+                    <button className="btn btn-outline flex flex-col w-full h-24">
+                      <FaHeadphones className="text-2xl mb-2" />
+                      <span>Add Listening Test</span>
+
+                    </button>
+                  </Link>
+
+
+                  <Link href="/admin/writing">
+                    <button className="btn btn-outline flex flex-col w-full h-24">
+                      <FaEdit className="text-2xl mb-2" />
+                      <span>Add Writing Task</span>
+                    </button></Link>
+
+
+                  <Link href="/admin/speaking">
+                    <button className="btn btn-outline flex flex-col w-full h-24">
+                      <FaMicrophone className="text-2xl mb-2" />
+                      <span>Add Speaking Test</span>
+                    </button></Link>
+
                 </div>
               </div>
             </div>

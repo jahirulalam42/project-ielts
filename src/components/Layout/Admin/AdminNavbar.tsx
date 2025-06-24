@@ -104,13 +104,12 @@ const AdminNavbar = () => {
 
                 <li>
                   <button
-                    className={`flex items-center ${
-                      activePage === "dashboard" ? "active" : ""
-                    }`}
+                    className={`flex items-center ${activePage === "dashboard" ? "active" : ""
+                      }`}
                     onClick={() => setActivePage("dashboard")}
                   >
                     <FaChartBar />
-                    Dashboard
+                    <Link href="/admin">Dashboard</Link>
                   </button>
                 </li>
 
@@ -120,49 +119,49 @@ const AdminNavbar = () => {
 
                 <li>
                   <button
-                    className={`flex items-center ${
-                      activePage === "reading" ? "active" : ""
-                    }`}
+                    className={`flex items-center ${activePage === "reading" ? "active" : ""
+                      }`}
                     onClick={() => setActivePage("reading")}
                   >
                     <FaBook />
-                    Reading Tests
+
+                    <Link href="/admin/reading">Reading Tests</Link>
                   </button>
                 </li>
 
                 <li>
                   <button
-                    className={`flex items-center ${
-                      activePage === "listening" ? "active" : ""
-                    }`}
+                    className={`flex items-center ${activePage === "listening" ? "active" : ""
+                      }`}
                     onClick={() => setActivePage("listening")}
                   >
                     <FaHeadphones />
-                    Listening Tests
+
+                    <Link href="/admin/listening">Listening Tests</Link>
                   </button>
                 </li>
 
                 <li>
                   <button
-                    className={`flex items-center ${
-                      activePage === "writing" ? "active" : ""
-                    }`}
+                    className={`flex items-center ${activePage === "writing" ? "active" : ""
+                      }`}
                     onClick={() => setActivePage("writing")}
                   >
                     <FaEdit />
-                    Writing Tests
+
+                    <Link href="/admin/writing">Writing Tests</Link>
                   </button>
                 </li>
 
                 <li>
                   <button
-                    className={`flex items-center ${
-                      activePage === "speaking" ? "active" : ""
-                    }`}
+                    className={`flex items-center ${activePage === "speaking" ? "active" : ""
+                      }`}
                     onClick={() => setActivePage("speaking")}
                   >
                     <FaMicrophone />
-                    Speaking Tests
+
+                    <Link href="/admin/speaking">Speaking Tests</Link>
                   </button>
                 </li>
 
@@ -172,13 +171,13 @@ const AdminNavbar = () => {
 
                 <li>
                   <button
-                    className={`flex items-center ${
-                      activePage === "settings" ? "active" : ""
-                    }`}
+                    className={`flex items-center ${activePage === "settings" ? "active" : ""
+                      }`}
                     onClick={() => setActivePage("settings")}
                   >
                     <FaCog />
-                    System Settings
+
+                    <Link href="/admin">System Settings</Link>
                   </button>
                 </li>
               </ul>
@@ -189,17 +188,77 @@ const AdminNavbar = () => {
         </div>
       </div>
       <div className="navbar-center hidden lg:flex">
-        <input
-          type="text"
-          placeholder="Search"
-          className="input input-bordered w-24 md:w-auto"
-        />
+        <div className="relative w-64">
+          <div className="join w-full">
+            <input
+              type="text"
+              placeholder="Search..."
+              className="input input-bordered join-item w-full"
+            />
+            <button className="btn join-item">
+              <FaSearch />
+            </button>
+          </div>
+        </div>
       </div>
       <div className="navbar-end flex gap-2">
-        <Link href={"/"} className="btn">
-          Main
-        </Link>
-        <a className="btn">Button</a>
+        <div>
+          <Link href={"/"} className="btn">
+            Main
+          </Link>
+          <a className="btn">Button</a>
+        </div>
+
+        <div className="dropdown dropdown-end">
+          <div
+            tabIndex={0}
+            role="button"
+            className="btn btn-ghost btn-circle"
+          >
+            <div className="indicator">
+              <FaBell className="text-xl" />
+              <span className="badge badge-xs badge-primary indicator-item"></span>
+            </div>
+          </div>
+          <div
+            tabIndex={0}
+            className="dropdown-content z-50 mt-4 card card-compact w-72 bg-base-100 shadow"
+          >
+            <div className="card-body">
+              <span className="font-bold text-lg">Notifications</span>
+              <div className="mt-2 space-y-2">
+                <div className="alert alert-info p-2">
+                  <span>New speaking test submission</span>
+                </div>
+                <div className="alert p-2">
+                  <span>System update scheduled</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="dropdown dropdown-end">
+          <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+            <div className="w-10 rounded-full">
+              <img
+                alt="Tailwind CSS Navbar component"
+                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+            </div>
+          </div>
+          <ul
+            tabIndex={0}
+            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+            <li>
+              <a className="justify-between">
+                Profile
+                <span className="badge">New</span>
+              </a>
+            </li>
+            <li><a>Settings</a></li>
+            <li><a>Logout</a></li>
+          </ul>
+        </div>
       </div>
     </div>
   );
