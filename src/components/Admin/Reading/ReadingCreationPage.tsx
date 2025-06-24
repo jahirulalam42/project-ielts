@@ -86,22 +86,24 @@ const ReadingCreationPage: React.FC = () => {
                     : [],
               }));
             } else if (questionType === "multiple_mcq") {
-              let base: any = {
-                question_numbers: questions[0]?.question_numbers,
-                question: questions[0]?.question,
-                options:
-                  questions[0]?.options &&
-                  Array.isArray(questions[0].options) &&
-                  questions[0].options.length > 0
-                    ? questions[0].options
-                    : undefined,
-                input_type: questions[0]?.input_type,
-                min_selection: questions[0]?.min_selection,
-                max_selection: questions[0]?.max_selection,
-              };
-              if (questions[0]?.correct_mapping)
-                base.correct_mapping = questions[0].correct_mapping;
-              questionsByType[questionType] = [base];
+              questionsByType[questionType] = questions.map((q: any) => {
+                let base: any = {
+                  question_numbers: q?.question_numbers,
+                  question: q?.question,
+                  options:
+                    q?.options &&
+                    Array.isArray(q.options) &&
+                    q.options.length > 0
+                      ? q.options
+                      : undefined,
+                  input_type: q?.input_type,
+                  min_selection: q?.min_selection,
+                  max_selection: q?.max_selection,
+                };
+                if (q?.correct_mapping)
+                  base.correct_mapping = q.correct_mapping;
+                return base;
+              });
             } else {
               // Handle all other question types
               const filteredQuestions = questions.map((q: any) => {

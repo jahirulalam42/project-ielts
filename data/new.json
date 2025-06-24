@@ -1,0 +1,589 @@
+{
+    "title": "Academic Reading Test 1",
+    "type": "academic",
+    "duration": 60,
+    "parts": [
+      {
+        "title": "READING PASSAGE 1",
+        "instructions": "You should spend about 20 minutes on Questions 1-13, which are based on Reading Passage 1 below.",
+        "passage_title": "How tennis rackets have changed",
+        "passage_subtitle": "subtitle",
+        "passage": [
+          "In 2016, the British professional tennis player Andy Murray was ranked as the world's number one. It was an incredible achievement by any standard – made even more remarkable by the fact that he did this during a period considered to be one of the strongest in the sport's history, competing against the likes of Rafael Nadal, Roger Federer, and Novak Djokovic. Yet five years previously, he had been regarded as a talented outsider who entered but never won the major tournaments.",
+          "Of the changes that account for this transformation, one was visible and widely publicised: in 2011, Murray invited former number one player Ivan Lendl onto his coaching team – a valuable addition that had a visible impact on the player's playing style. Another change was so subtle as to pass more or less unnoticed. Like many players, Murray has long preferred a racket that consists of two types of string: one for the mains (verticals) and another for the crosses (horizontals). While he continued to use natural string in the crosses, in 2012 he switched to a synthetic string for the mains.",
+          "The modification that Murray made is just one of a number of options available to players looking to tweak their rackets in order to improve their games. 'Touring professionals have their rackets customised to their specific needs,' says Colin Triplow, a UK-based professional racket stringer. 'It’s a highly important part of performance maximisation.' Consequently, the specific rackets used by the world’s elite are not actually readily available to the public; rather, each racket is individually made to suit the player who uses it. Take the US professional tennis players Mike and Bob Bryan, for example: 'We’re very particular with our racket specifications,' they say. 'All our rackets are sent from our manufacturer to Tampa, Florida, where our frames go through a . . . thorough customisation process.' They explain how they have adjusted not only racket length, but even experimented with different kinds of paint. The rackets they use now weigh more than the average model and also have a denser string pattern (i.e. more crosses and mains).",
+          "The primary reason for these modifications is simple: as the line between winning and losing becomes thinner and thinner, even these slight changes become more and more important. As a result, players and their teams are becoming increasingly creative with the modifications to their rackets as they look to maximise their competitive advantage.",
+          "Racket modifications mainly date back to the 1970s, when the amateur German tennis player Werner Fischer started playing with the so-called spaghetti-strung racket. It created a string bed that generated so much topspin that it was quickly banned by the International Tennis Federation. However, within a decade or two, racket modification became a regularity. Today it is, in many ways, an aspect of the game that is equal in significance to nutrition or training.",
+          "Modifications can be divided into two categories: those to the string bed and those to the racket frame. The former is far more common than the latter: the choice of the strings and the tension with which they are installed is something that nearly all professional players experiment with. They will continually change it depending on various factors including the court surface, climatic conditions, and game styles. Some will even change it depending on how they feel at the time.",
+          "At one time, all tennis rackets were strung with natural gut made from the outer layer of sheep or cow intestines. This all changed in the early 1990s with the development of synthetic strings that were cheaper and more durable. They are made from three materials: nylon (relatively durable and affordable), Kevlar (too stiff to be used alone) or co-polyester (polyester combined with additives that enhance its performance). Even so, many professional players continue to use a 'hybrid set-up', where a combination of both synthetic and natural strings are used.",
+          "Of the synthetics, co-polyester is by far the most widely used. It's a perfect fit for the style of tennis now played, where players tend to battle it out from the back of the court rather than coming to the net. Studies indicate that the average spin from a co-polyester string is 25% greater than that from natural string or other synthetics. In a sense, the development of co-polyester strings has revolutionised the game.",
+          "However, many players go beyond these basic adjustments to the strings and make changes to the racket frame itself. For example, much of the serving power of US professional player Pete Sampras was attributed to the addition of four to five lead weights onto his rackets, and today many professionals have the weight adjusted during the manufacturing process.",
+          "Other changes to the frame involve the handle. Players have individual preferences for the shape of the handle and some will have the handle of one racket moulded onto the frame of a different racket. Other players make different changes. The professional Portuguese player Gonçalo Oliveira replaced the original grips of his rackets with something thinner because they had previously felt uncomfortable to hold.",
+          "Racket customisation and modification have pushed the standards of the game to greater levels that few could have anticipated in the days of natural strings and heavy, wooden frames, and it's exciting to see what further developments there will be in the future."
+        ],
+        "image": "/images/reading/passage1.png",
+        "questions": {
+          "fill_in_the_blanks_with_subtitle": [
+            {
+              "title": "",
+              "subtitle": "Urbanisation",
+              "extra": [
+                "Small towns turned into cities very quickly.",
+                "The new cities were dirty, crowded and lacked sufficient __________."
+              ],
+              "questions": [
+                {
+                  "question_number": 6,
+                  "answer": "sanitation",
+                  "input_type": "text"
+                }
+              ]
+            }
+          ],
+          "true_false_not_given": [
+            {
+              "question_number": 7,
+              "question": "Britain's canal network grew rapidly so that more goods could be transported around the country.",
+              "answer": "True",
+              "input_type": "dropdown"
+            },
+            {
+              "question_number": 8,
+              "question": "Costs in the iron industry rose when the technique of smelting iron ore with coke was introduced.",
+              "answer": "False",
+              "input_type": "dropdown"
+            },
+            {
+              "question_number": 9,
+              "question": "Samuel Morse's communication system was more reliable than that developed by William Cooke and Charles Wheatstone.",
+              "answer": "Not Given",
+              "input_type": "dropdown"
+            },
+            {
+              "question_number": 10,
+              "question": "The economic benefits of industrialisation were limited to certain sectors of society.",
+              "answer": "Not Given",
+              "input_type": "dropdown"
+            },
+            {
+              "question_number": 11,
+              "question": "Some skilled weavers believed that the introduction of the new textile machines would lead to job losses.",
+              "answer": "Not Given",
+              "input_type": "dropdown"
+            },
+            {
+              "question_number": 12,
+              "question": "There was some sympathy among local people for the Luddites who were arrested near Huddersfield.",
+              "answer": "Not Given",
+              "input_type": "dropdown"
+            }
+          ],
+          "fill_in_the_blanks": [
+            {
+              "question_number": 13,
+              "question": "Mike and Bob Bryan made changes to the types of __________ used on their racket frames.",
+              "answer": "paint",
+              "input_type": "text"
+            },
+            {
+              "question_number": 14,
+              "question": "Players were not allowed to use the spaghetti-strung racket because of the amount of __________ it created.",
+              "answer": "topspin",
+              "input_type": "text"
+            },
+            {
+              "question_number": 15,
+              "question": "Changes to rackets can be regarded as being as important as players’ diets or the __________ they do.",
+              "answer": "training",
+              "input_type": "text"
+            },
+            {
+              "question_number": 16,
+              "question": "All rackets used to have natural strings made from the __________ of animals.",
+              "answer": "training",
+              "input_type": "text"
+            },
+            {
+              "question_number": 17,
+              "question": "Pete Sampras had metal __________ put into the frames of his rackets.",
+              "answer": "training",
+              "input_type": "text"
+            },
+            {
+              "question_number": 18,
+              "question": "Gonçalo Oliveira changed the  __________ on his racket handles.",
+              "answer": "training",
+              "input_type": "text"
+            }
+          ]
+        }
+      },
+      {
+        "title": "READING PASSAGE 2",
+        "instructions": "You should spend about 20 minutes on Questions 14-26, which are based on Reading Passage 2 below.",
+        "passage_title": "The pirates of the ancient Mediterranean",
+        "passage_subtitle": "In the first and second millennia BCE, pirates sailed around the Mediterranean, attacking ships and avoiding pursuers",
+        "passage": {
+          "A": "Itisn't easy being a professional athlete. Not only are the physical demands greater than most people could handle, athletes also face intense psychological pressure during competition. This is something that British tennis player Emma Raducanu wrote about on social media following her withdrawal from the 2021 Wimbledon tournament. Though the young player had been doing well in the tournament, she began having difficulty regulating her breathing and heart rate during a match, which she later attributed to ‘the accumulation of the excitement and the buzz’.",
+          "B": "For athletes, some level of performance stress is almost unavoidable. But there are many different factors that dictate just how people's minds and bodies respond to stressful events. Typically, stress is the resull of an exchange between lwo factors: demands and resources. An athlete may feel stressed about an event if they feel the demands on them are greater than they can handle. These demands include the high level of physical and mental effort required to succeed, and also the athlete's concerns about the difficulty of the event, their chance of succeeding, and any potential dangers such as injury. Resources, on the other hand, are a person's ability to cope with these demands. These include factors such as the competitor's degree of confidence, how much they believe they can control the situation’s outcome, and whether they're looking forward to the event or not.",
+          "C": "Each new demand or change in circumstances affects whether a person responds positively or negatively to stress. Typically, the more resources a person feels they have in handling the situation, the more positive their stress response. This positive stress response is called a challenge state. But should the person feel there are too many demands placed on them, the more likely they are to experience a negative stress response — known as a threat state. Research shows that the challenge states lead to good performance, while threat states lead lo poorer performance. So, in Emma Raducanu’s case, a much larger audience, higher expectations and facing a more skilful opponent, may all have led her to feel there were greater demands being placed on her at Wimbledon — but she didn't have the resources to tackle them. This led to her experiencing a threat response.",
+          "D": "Our challenge and threat responses essentially influence how our body responds to stressful situations, as both affect the production of adrenaline and cortisol — also known as ‘stress hormones’. During a challenge state, adrenaline increases the amount of blood pumped from the heart and expands the blood vessels, which allows more energy to be delivered lo the muscles and brain. This increase of blood and decrease of pressure in the blood vessels has been consistently related to superior sport performance in everything from crickel batting, to golf putting and football penalty taking. But during a threat state, cortisol inhibits the positive effect of adrenaline, resulting in tighter blood vessels, higher blood pressure, slower psychological responses, and a faster heart rate. In short, a threat state makes people more anxious — they make worse decisions and perform more poorly. In tennis players, cortisol has been associated with more unsuccessful serves and greater anxiety.",
+          "E": "That said, anxiety is also a common experience for athletes when they're under pressure. Anxiety can increase heart rate and perspiration, cause heart palpitations, muscle tremors and shortness of breath, as well as headaches, nausea, stomach pain, weakness and a desire to escape in more extreme cases. Anxiety can also reduce concentration and self-control and cause overthinking. The intensity with which a person experiences anxiety depends on the demands and resources they have. Anxiety may also manifest itself in the form of excitement or nervousness depending on the stress response. Negative stress responses can be damaging to both physical and mental health — and repeated episodes of anxiety coupled with negative responses can increase risk of heart disease and depression.",
+          "F": "But there are many ways athletes can ensure they respond positively under pressure. Positive stress responses can be promoted through the language that they and others — such as coaches or parents — use. Psychologists can also help athletes change how they see their physiological responses — such as helping them see a higher heart rate as excitement, rather than nerves. Developing psychological skills, such as visualisation, can also help decrease physiological responses to threat. Visualisation may involve the athlete recreating a mental picture of a time when they performed well, or picturing themselves doing well in the future. This can help create a feeling of control over the stressful event. Recreating competitive pressure during training can also help athletes learn how to deal with stress. An example of this might be scoring athletes against their peers to create a sense of competition. This would increase the demands which players experience compared to a normal training session, while still allowing them to practise coping with stress."
+        },
+        "image": "/images/reading/passage1.png",
+        "questions": {
+          "paragraph_matching": [
+            {
+              "question_number": 19,
+              "question": "reference to two chemical compounds which impact on performance",
+              "answer": "C",
+              "input_type": "dropdown",
+              "options": [
+                {
+                  "label": "A",
+                  "value": "A"
+                },
+                {
+                  "label": "B",
+                  "value": "B"
+                },
+                {
+                  "label": "C",
+                  "value": "C"
+                },
+                {
+                  "label": "D",
+                  "value": "D"
+                },
+                {
+                  "label": "E",
+                  "value": "E"
+                },
+                {
+                  "label": "F",
+                  "value": "F"
+                }
+              ]
+            },
+            {
+              "question_number": 20,
+              "question": "examples of strategies for minimising the effects of stress",
+              "answer": "D",
+              "input_type": "dropdown",
+              "options": [
+                {
+                  "label": "A",
+                  "value": "A"
+                },
+                {
+                  "label": "B",
+                  "value": "B"
+                },
+                {
+                  "label": "C",
+                  "value": "C"
+                },
+                {
+                  "label": "D",
+                  "value": "D"
+                },
+                {
+                  "label": "E",
+                  "value": "E"
+                },
+                {
+                  "label": "F",
+                  "value": "F"
+                }
+              ]
+            },
+            {
+              "question_number": 21,
+              "question": "how a sportsperson accounted for their own experience of stress",
+              "answer": "A",
+              "input_type": "dropdown",
+              "options": [
+                {
+                  "label": "A",
+                  "value": "A"
+                },
+                {
+                  "label": "B",
+                  "value": "B"
+                },
+                {
+                  "label": "C",
+                  "value": "C"
+                },
+                {
+                  "label": "D",
+                  "value": "D"
+                },
+                {
+                  "label": "E",
+                  "value": "E"
+                },
+                {
+                  "label": "F",
+                  "value": "F"
+                }
+              ]
+            },
+            {
+              "question_number": 22,
+              "question": "study results indicating links between stress responses and performance",
+              "answer": "F",
+              "input_type": "dropdown",
+              "options": [
+                {
+                  "label": "A",
+                  "value": "A"
+                },
+                {
+                  "label": "B",
+                  "value": "B"
+                },
+                {
+                  "label": "C",
+                  "value": "C"
+                },
+                {
+                  "label": "D",
+                  "value": "D"
+                },
+                {
+                  "label": "E",
+                  "value": "E"
+                },
+                {
+                  "label": "F",
+                  "value": "F"
+                }
+              ]
+            },
+            {
+              "question_number": 23,
+              "question": "mention of people who can influence how athletes perceive their stress responses",
+              "answer": "E",
+              "input_type": "dropdown",
+              "options": [
+                {
+                  "label": "A",
+                  "value": "A"
+                },
+                {
+                  "label": "B",
+                  "value": "B"
+                },
+                {
+                  "label": "C",
+                  "value": "C"
+                },
+                {
+                  "label": "D",
+                  "value": "D"
+                },
+                {
+                  "label": "E",
+                  "value": "E"
+                },
+                {
+                  "label": "F",
+                  "value": "F"
+                }
+              ]
+            },
+            {
+              "question_number": 24,
+              "question": "A mention of the need for many sailing vessels to stay relatively close to land",
+              "answer": "C",
+              "input_type": "dropdown",
+              "options": [
+                {
+                  "label": "A",
+                  "value": "A"
+                },
+                {
+                  "label": "B",
+                  "value": "B"
+                },
+                {
+                  "label": "C",
+                  "value": "C"
+                },
+                {
+                  "label": "D",
+                  "value": "D"
+                },
+                {
+                  "label": "E",
+                  "value": "E"
+                },
+                {
+                  "label": "F",
+                  "value": "F"
+                }
+              ]
+            }
+          ],
+          "multiple_mcq": [
+            {
+              "question_numbers": [
+                25,
+                26
+              ],
+              "question": "Which TWO facts about Emma Raducanu’s withdrawal from the Wimbledon tournament are mentioned in the text?",
+              "options": [
+                {
+                  "label": "A",
+                  "value": "the stage at which she dropped out of the tournament"
+                },
+                {
+                  "label": "B",
+                  "value": "symptoms of her performance stress at the tournament"
+                },
+                {
+                  "label": "C",
+                  "value": "measures which she had taken to manage her stress levels"
+                },
+                {
+                  "label": "D",
+                  "value": "aspects of the Wimbledon tournament which increased her stress levels"
+                },
+                {
+                  "label": "E",
+                  "value": "reactions to her social media posts about her experience at Wimbledon"
+                }
+              ],
+              "input_type": "checkbox",
+              "min_selection": 2,
+              "max_selection": 2,
+              "correct_mapping": [
+                "B",
+                "C"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "title": "READING PASSAGE 3",
+        "instructions": "You should spend about 20 minutes on Questions 27-40, which are based on Reading Passage 3 below.",
+        "passage_title": "The persistence and peril of misinformation",
+        "passage_subtitle": "Brain Southwell looks at how human brains verify information and discusses some of the challenges of battling widespread falsehoods",
+        "passage": [
+          "Let us start by looking at a modern ‘genius’, Maryam Mirzakhani, who died at the early age of 40. She was the only woman to win the Fields Medal — the mathematical equivalent of a Nobel prize. It would be easy to assume that someone as special as Mirzakhani must have been one of those ‘gifted’ children, those who have an extraordinary ability in a specific sphere of activity or knowledge. But look closer and a different story emerges. Mirzakhani was born in Tehran, Iran. She went to a highly selective girls” school but maths wasn’t her interest — reading was. She could lay her hands on. As for maths, she did rather poorly at it for the first couple of years in her middle school, but became interested when her elder brother told her about what he’d learned. He shared a famous maths problem from a magazine that fascinated her — and she was hooked.",
+          "In adult life it is clear that she was curious, excited by what she did and also resolute in the face of setbacks. One of her comments sums it up. ‘Of course, the most rewarding part is the “Aha” moment, the excitement of discovery and enjoyment of understanding something new . . . But most of the time, doing mathematics for me is like being on a long hike with no trail and no end in sight.” That trail took her to the heights of original research into mathematics.",
+          "Is her background unusual? Apparently not. Most Nobel prize winners were unexceptional in childhood. Einstein was slow to talk as a baby. He failed the general part of the entry test to Zurich Polytechnic — though they let him in because of high physics and maths scores. He struggled at work initially, but he kept plugging away and eventually rewrote the laws of Newtonian mechanics with his theory of relativity.",
+          "There has been a considerable amount of research on high performance over the last century that suggests it goes way beyond tested intelligence. On top of that, research is clear that brains are flexible, new neural pathways can be created, and 1Q isn’t fixed. For example, just because you can read stories with hundreds of pages al the age of five doesn’t mean you will still be ahead of your contemporaries in your teens.",
+          "While the jury is out on giftedness being innate and other factors potentially making the difference, what is certain is that the behaviours associated with high levels of performance are replicable and most can be taught — even traits such as curiosity.",
+          "According to my colleague Prof Deborah Eyre, with whom I’ve collaborated on the book Great Minds and How to Grow Them, the latest neuroscience and psychological research suggests most individuals can reach levels of performance associated in school with the gifted and talented. However, they must be taught the right attitudes and approaches to their learning and develop the attributes of high performers — curiosity, persistence and hard work, for example — an approach Eyre calls ‘high performance learning’. Critically, they need the right support in developing those approaches at home as well as at school.",
+          "Prof Anders Ericsson, an eminent education psychologist at Florida State University, US, is the co-author of Peak: Secrets from the New Science of Expertise. After research going back to 1980 into diverse achievements, from music to memory to sport, he doesn’t think unique and innate talents are at the heart of performance. Deliberate practice, that stretches you every step of the way, and around 10,000 hours of it, is what produces the goods. It’s not a magic number — the highest performers move on to doing a whole lot more, of course. Ericsson’s memory research is particularly interesting because random students, trained in memory techniques for the study, went on to outperform others thought to have innately superior memories — those who you might call gifted.",
+          "But it is perhaps the work of Benjamin Bloom, another distinguished American educationist working in the 1980s, that gives the most pause for thought. Bloom's team looked at a group of extraordinarily high achieving people in disciplines as varied as ballet, swimming, piano, tennis, maths, sculpture and neurology. He found a pattern of parents encouraging and supporting their children, often in areas they enjoyed themselves. Bloom's outstanding people had worked very hard and consistently at something they had become hooked on when at a young age, and their parents all emerged as having strong work ethics themselves.",
+          "Eyre says we know how high performers learn. From that she has developed a high performing learning approach. She is working on this with a group of schools, both in Britain and abroad. Some spin-off research, which looked in detail at 24 of the 3,000 children being studied who were succeeding despite difficult circumstances, found something remarkable. Half were getting free school meals because of poverty, more than half were living with a single parent, and four in five were living in disadvantaged areas. Interviews uncovered strong evidence of an adult or adults in the child’s life who valued and supported education, either in the immediate or extended family or in the child’s wider community. Children talked about the need to work hard at school, to listen in class and keep trying.",
+          "Let us end with Einstein, the epitome of a genius. He clearly had curiosity, character and determination. He struggled against rejection in early life but was undeterred. Did he think he was a genius or even gifted? He once wrote: ‘It’s not that I'm so smart, it’s just that I stay with problems longer. Most people say it is the intellect which makes a great scientist. They are wrong: it is character."
+        ],
+        "image": "/images/reading/passage1.png",
+        "questions": {
+          "mcq": [
+            {
+              "question_number": 29,
+              "question": "What point does the writer make about misinformation in the first paragraph?",
+              "answer": [
+                "D"
+              ],
+              "input_type": "radio",
+              "options": [
+                {
+                  "label": "A",
+                  "value": "Misinformation is a relatively recent phenomenon."
+                },
+                {
+                  "label": "B",
+                  "value": "Some people find it easy to identify misinformation."
+                },
+                {
+                  "label": "C",
+                  "value": "Misinformation changes as it is passed from one person to another."
+                },
+                {
+                  "label": "D",
+                  "value": "There may be a number of reasons for the spread of misinformation."
+                }
+              ],
+              "min_selection": 1,
+              "max_selection": 1
+            },
+            {
+              "question_number": 30,
+              "question": "What does the writer say about the role of technology?",
+              "answer": [
+                "A"
+              ],
+              "input_type": "radio",
+              "options": [
+                {
+                  "label": "A",
+                  "value": "It may at some point provide us with a solution to misinformation."
+                },
+                {
+                  "label": "B",
+                  "value": "It could fundamentally alter the way in which people regard information."
+                },
+                {
+                  "label": "C",
+                  "value": "It has changed the way in which organisations use misinformation."
+                },
+                {
+                  "label": "D",
+                  "value": "It has made it easier for people to check whether information is accurate."
+                }
+              ],
+              "min_selection": 1,
+              "max_selection": 1
+            },
+            {
+              "question_number": 31,
+              "question": "What is the writer doing in the fourth paragraph?",
+              "answer": [
+                "C"
+              ],
+              "input_type": "radio",
+              "options": [
+                {
+                  "label": "A",
+                  "value": "Comparing the different opinions people have of misinformation."
+                },
+                {
+                  "label": "B",
+                  "value": "Explaining how the effects of misinformation have changed over time."
+                },
+                {
+                  "label": "C",
+                  "value": "Outlining which issues connected with misinformation are significant today."
+                },
+                {
+                  "label": "D",
+                  "value": "Describing the attitude of policymakers towards misinformation in the media."
+                }
+              ],
+              "min_selection": 1,
+              "max_selection": 1
+            },
+            {
+              "question_number": 32,
+              "question": "What point does the writer make about regulation in the USA?",
+              "answer": [
+                "D"
+              ],
+              "input_type": "radio",
+              "options": [
+                {
+                  "label": "A",
+                  "value": "The guidelines issued by the FDA need to be simplified."
+                },
+                {
+                  "label": "B",
+                  "value": "Regulation does not affect people's opinions of new prescription drugs."
+                },
+                {
+                  "label": "C",
+                  "value": "The USA has more regulatory bodies than most other countries."
+                },
+                {
+                  "label": "D",
+                  "value": "Regulation fails to prevent misinformation from appearing in the media."
+                }
+              ],
+              "min_selection": 1,
+              "max_selection": 1
+            }
+          ],
+          "summary_fill_in_the_blanks": [
+            {
+              "question_numbers": [
+                33,
+                34,
+                35,
+                36,
+                37,
+                38
+              ],
+              "passage": "Maryam Mirzakhani is regarded as __________ in the field of mathematics because she was the only female holder of the prestigious Fields Medal — a record that she retained at the time of her death. However, maths held little __________ for her as a child and in fact her performance was below average until she was __________ by a difficult puzzle that one of her siblings showed her. Later, as a professional mathematician, she had an inquiring mind and proved herself to be __________ when things did not go smoothly. She said she got the greatest __________ from making ground-breaking discoveries and in fact she was responsible for some extremely __________ mathematical studies.",
+              "answers": [
+                "G",
+                "J",
+                "H",
+                "B",
+                "E",
+                "C"
+              ],
+              "options": [
+                {
+                  "label": "A",
+                  "value": "appeal"
+                },
+                {
+                  "label": "B",
+                  "value": "determined"
+                },
+                {
+                  "label": "C",
+                  "value": "intrigued"
+                },
+                {
+                  "label": "D",
+                  "value": "single"
+                },
+                {
+                  "label": "E",
+                  "value": "achievement"
+                },
+                {
+                  "label": "F",
+                  "value": "devoted"
+                },
+                {
+                  "label": "G",
+                  "value": "involved"
+                },
+                {
+                  "label": "H",
+                  "value": "unique"
+                },
+                {
+                  "label": "I",
+                  "value": "innovative"
+                },
+                {
+                  "label": "J",
+                  "value": "satisfaction"
+                },
+                {
+                  "label": "K",
+                  "value": "intent"
+                }
+              ],
+              "input_type": "text"
+            }
+          ],
+          "true_false_not_given": [
+            {
+              "question_number": 39,
+              "question": "Many people who ended up winning prestigious intellectual prizes only reached an average standard when young.",
+              "answer": "True",
+              "input_type": "dropdown"
+            },
+            {
+              "question_number": 40,
+              "question": "Einstein's failures as a young man were due to his lack of confidence.",
+              "answer": "False",
+              "input_type": "dropdown"
+            }
+          ]
+        }
+      }
+    ]
+  }
+
