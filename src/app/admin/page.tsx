@@ -1,7 +1,12 @@
+import AdminDashboard from "@/components/Admin/Dashboard/AdminDashboard";
 import React from "react";
 
 const page = () => {
-  return <div className="text-6xl text-center font-bold">Admin Route</div>;
+  return (
+    <div>
+      <AdminDashboard />
+    </div>
+  );
 };
 
 export default page;
