@@ -191,7 +191,7 @@ const ReadingCreationPage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="form-control">
               <label className="label">
-                <span className="label-text font-semibold">Title</span>
+                <span className="label-text font-semibold text-black">Title</span>
               </label>
               <input
                 type="text"
@@ -203,7 +203,7 @@ const ReadingCreationPage: React.FC = () => {
             </div>
             <div className="form-control">
               <label className="label">
-                <span className="label-text font-semibold">Type</span>
+                <span className="label-text font-semibold text-black">Type</span>
               </label>
               <select
                 className="select select-bordered border-black w-full"
@@ -221,7 +221,7 @@ const ReadingCreationPage: React.FC = () => {
             </div>
             <div className="form-control">
               <label className="label">
-                <span className="label-text font-semibold">
+                <span className="label-text font-semibold text-black">
                   Duration (minutes)
                 </span>
               </label>

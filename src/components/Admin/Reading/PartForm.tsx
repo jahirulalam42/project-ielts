@@ -90,7 +90,7 @@ const PartForm: React.FC<PartFormProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <div className="form-control">
           <label className="label">
-            <span className="label-text font-semibold">Title</span>
+            <span className="label-text font-semibold text-black">Title</span>
           </label>
           <input
             type="text"
@@ -101,7 +101,7 @@ const PartForm: React.FC<PartFormProps> = ({
         </div>
         <div className="form-control">
           <label className="label">
-            <span className="label-text font-semibold">Instructions</span>
+            <span className="label-text font-semibold text-black">Instructions</span>
           </label>
           <input
             type="text"
@@ -112,7 +112,7 @@ const PartForm: React.FC<PartFormProps> = ({
         </div>
         <div className="form-control">
           <label className="label">
-            <span className="label-text font-semibold">Passage Title</span>
+            <span className="label-text font-semibold text-black">Passage Title</span>
           </label>
           <input
             type="text"
@@ -125,7 +125,7 @@ const PartForm: React.FC<PartFormProps> = ({
         </div>
         <div className="form-control">
           <label className="label">
-            <span className="label-text font-semibold">Passage Subtitle</span>
+            <span className="label-text font-semibold text-black">Passage Subtitle</span>
           </label>
           <input
             type="text"
@@ -138,7 +138,7 @@ const PartForm: React.FC<PartFormProps> = ({
         </div>
         <div className="form-control">
           <label className="label">
-            <span className="label-text font-semibold">Image URL</span>
+            <span className="label-text font-semibold text-black">Image URL</span>
           </label>
           <input
             type="text"
@@ -149,7 +149,7 @@ const PartForm: React.FC<PartFormProps> = ({
         </div>
         <div className="form-control">
           <label className="label">
-            <span className="label-text font-semibold">Passage Type</span>
+            <span className="label-text font-semibold text-black">Passage Type</span>
           </label>
           <select
             value={passage.passageType}
@@ -167,7 +167,7 @@ const PartForm: React.FC<PartFormProps> = ({
       {/* Passage Content */}
       <div className="mb-4">
         <label className="label">
-          <span className="label-text font-semibold">Passage Content</span>
+          <span className="label-text font-semibold text-black">Passage Content</span>
         </label>
         {Array.isArray(passage.passage) ? (
           <div className="space-y-4">
@@ -194,7 +194,7 @@ const PartForm: React.FC<PartFormProps> = ({
             {Object.entries(passage.passage).map(([key, value], paraIndex) => (
               <div key={key} className="form-control">
                 <label className="label">
-                  <span className="label-text font-semibold">
+                  <span className="label-text font-semibold text-black">
                     Paragraph {key}
                   </span>
                 </label>
