@@ -89,7 +89,7 @@ const MCQGroupForm = ({ questions = [], onUpdate }: MCQGroupFormProps) => {
 
                     <div className="form-control mb-4">
                         <label className="label">
-                            <span className="label-text font-semibold">Question Text</span>
+                            <span className="label-text font-semibold text-black">Question Text</span>
                         </label>
                         <input
                             type="text"
@@ -102,7 +102,7 @@ const MCQGroupForm = ({ questions = [], onUpdate }: MCQGroupFormProps) => {
 
                     <div className="form-control mb-4">
                         <label className="label">
-                            <span className="label-text font-semibold">Correct Answer</span>
+                            <span className="label-text font-semibold text-black">Correct Answer</span>
                         </label>
                         <select
                             className="select select-bordered border-black"
@@ -121,7 +121,7 @@ const MCQGroupForm = ({ questions = [], onUpdate }: MCQGroupFormProps) => {
 
                     <div className="form-control">
                         <label className="label">
-                            <span className="label-text font-semibold">Options</span>
+                            <span className="label-text font-semibold text-black">Options</span>
                         </label>
                         <div className="space-y-2">
                             {question.options.map((option, optIndex) => (

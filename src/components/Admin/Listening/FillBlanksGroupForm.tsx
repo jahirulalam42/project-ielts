@@ -147,7 +147,7 @@ const FillBlanksGroupForm = ({ group, updateGroup }: FillBlanksGroupFormProps) =
                         {sectionIndex === 0 && (
                             <div className="form-control">
                                 <label className="label">
-                                    <span className="label-text font-semibold">Title</span>
+                                    <span className="label-text font-semibold text-black">Title</span>
                                 </label>
                                 <input
                                     type="text"
@@ -159,7 +159,7 @@ const FillBlanksGroupForm = ({ group, updateGroup }: FillBlanksGroupFormProps) =
                         )}
                         <div className="form-control">
                             <label className="label">
-                                <span className="label-text font-semibold">Subtitle</span>
+                                <span className="label-text font-semibold text-black">Subtitle</span>
                             </label>
                             <input
                                 type="text"
@@ -229,7 +229,7 @@ const FillBlanksGroupForm = ({ group, updateGroup }: FillBlanksGroupFormProps) =
 
                                 <div className="form-control">
                                     <label className="label">
-                                        <span className="label-text font-semibold">Answer</span>
+                                        <span className="label-text font-semibold text-black">Answer</span>
                                     </label>
                                     <input
                                         type="text"

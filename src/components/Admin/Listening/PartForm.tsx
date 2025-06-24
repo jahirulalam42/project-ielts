@@ -95,7 +95,7 @@ const PartForm = ({ part, partIndex, updatePart, removePart, isLast }: PartFormP
 
             <div className="form-control mb-6">
                 <label className="label">
-                    <span className="label-text">Part Title</span>
+                    <span className="label-text text-black">Part Title</span>
                 </label>
                 <input
                     type="text"

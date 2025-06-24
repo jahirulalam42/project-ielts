@@ -160,7 +160,7 @@ const MapGroupForm = ({ group, updateGroup }: MapGroupFormProps) => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div className="form-control">
                             <label className="label">
-                                <span className="label-text font-semibold">Title</span>
+                                <span className="label-text font-semibold text-black">Title</span>
                             </label>
                             <input
                                 type="text"
@@ -172,7 +172,7 @@ const MapGroupForm = ({ group, updateGroup }: MapGroupFormProps) => {
 
                         <div className="form-control">
                             <label className="label">
-                                <span className="label-text font-semibold">Image URL</span>
+                                <span className="label-text font-semibold text-black">Image URL</span>
                             </label>
                             <input
                                 type="text"
@@ -186,7 +186,7 @@ const MapGroupForm = ({ group, updateGroup }: MapGroupFormProps) => {
                     <div className="form-control mb-4">
                         <div className="flex justify-between items-center mb-2">
                             <label className="label">
-                                <span className="label-text font-semibold">Labels</span>
+                                <span className="label-text font-semibold text-black">Labels</span>
                             </label>
                             <button
                                 type="button"
@@ -240,7 +240,7 @@ const MapGroupForm = ({ group, updateGroup }: MapGroupFormProps) => {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="form-control">
                                         <label className="label">
-                                            <span className="label-text">Question</span>
+                                            <span className="label-text text-black">Question</span>
                                         </label>
                                         <input
                                             type="text"
@@ -252,7 +252,7 @@ const MapGroupForm = ({ group, updateGroup }: MapGroupFormProps) => {
 
                                     <div className="form-control">
                                         <label className="label">
-                                            <span className="label-text">Answer</span>
+                                            <span className="label-text text-black">Answer</span>
                                         </label>
                                         <select
                                             className="select select-bordered border-black"
