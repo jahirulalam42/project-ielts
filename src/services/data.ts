@@ -24,6 +24,17 @@ export async function getReadingTest() {
   }
 }
 
+export async function deleteReadingTest(paramsId: any) {
+  try {
+    const response = await axios.delete(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/readingQuestions/${paramsId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export async function getSingleReadingTest(paramsId: any) {
   try {
     const response = await axios.get(
