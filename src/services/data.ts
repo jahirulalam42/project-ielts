@@ -35,6 +35,31 @@ export async function deleteReadingTest(paramsId: any) {
   }
 }
 
+// services/data.ts
+export const editReadingTest = async (id: string, updates: any) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/readingQuestions/${id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updates),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to update reading test");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error in editReadingTest:", error);
+    throw error;
+  }
+};
+
 export async function getSingleReadingTest(paramsId: any) {
   try {
     const response = await axios.get(
