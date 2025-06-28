@@ -137,6 +137,41 @@ export async function submitWritingQuestions(formData: any) {
   }
 }
 
+export const updateWritingTest = async (id: string, updates: any) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/writingQuestions/${id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updates),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to update writing test");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error in Update Writing Test:", error);
+    throw error;
+  }
+};
+
+export async function deleteWritingTest(paramsId: any) {
+  try {
+    const response = await axios.delete(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/writingQuestions/${paramsId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 // Reading Submit Answers
 
 export async function postSubmitReadingTest(formData: any) {

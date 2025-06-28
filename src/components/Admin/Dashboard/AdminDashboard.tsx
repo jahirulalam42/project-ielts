@@ -38,7 +38,7 @@ const AdminDashboard = () => {
     },
     {
       name: "Writing Tests",
-      link: "/admin",
+      link: "/admin/allWriting",
       value: "15",
       icon: FaEdit,
       color: "bg-yellow-500",
