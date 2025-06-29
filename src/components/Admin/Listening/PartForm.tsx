@@ -10,11 +10,70 @@ interface PartFormProps {
 }
 
 const PartForm = ({ part, partIndex, updatePart, removePart, isLast }: PartFormProps) => {
+    // Helper function to get total question count across all question groups
+    const getTotalQuestionCount = () => {
+        return part.questions.reduce((total, group) => {
+            if ('fill_in_the_blanks_with_subtitle' in group) {
+                return total + group.fill_in_the_blanks_with_subtitle.reduce((sectionTotal, section) => {
+                    return sectionTotal + section.questions.length;
+                }, 0);
+            } else if ('mcq' in group) {
+                return total + group.mcq.length;
+            } else if ('map' in group) {
+                return total + group.map.reduce((mapTotal, mapItem) => {
+                    return mapTotal + mapItem.questions.length;
+                }, 0);
+            }
+            return total;
+        }, 0);
+    };
+
+    // Helper function to renumber all questions globally across all question groups
+    const renumberAllQuestions = (questions: QuestionGroup[]) => {
+        let globalQuestionNumber = 1;
+        
+        return questions.map(group => {
+            if ('fill_in_the_blanks_with_subtitle' in group) {
+                return {
+                    ...group,
+                    fill_in_the_blanks_with_subtitle: group.fill_in_the_blanks_with_subtitle.map(section => ({
+                        ...section,
+                        questions: section.questions.map(question => ({
+                            ...question,
+                            question_number: globalQuestionNumber++
+                        }))
+                    }))
+                };
+            } else if ('mcq' in group) {
+                return {
+                    ...group,
+                    mcq: group.mcq.map(question => ({
+                        ...question,
+                        question_number: globalQuestionNumber++
+                    }))
+                };
+            } else if ('map' in group) {
+                return {
+                    ...group,
+                    map: group.map.map(mapItem => ({
+                        ...mapItem,
+                        questions: mapItem.questions.map(question => ({
+                            ...question,
+                            question_number: globalQuestionNumber++
+                        }))
+                    }))
+                };
+            }
+            return group;
+        });
+    };
+
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         updatePart(partIndex, { ...part, title: e.target.value });
     };
 
     const addQuestionGroup = (type: 'fill' | 'mcq' | 'map') => {
+        const nextQuestionNumber = getTotalQuestionCount() + 1;
         let newGroup;
 
         switch (type) {
@@ -31,7 +90,7 @@ const PartForm = ({ part, partIndex, updatePart, removePart, isLast }: PartFormP
             case 'mcq':
                 newGroup = {
                     mcq: [{
-                        question_number: 1,
+                        question_number: nextQuestionNumber,
                         question: '',
                         answer: '',
                         options: [
@@ -68,14 +127,18 @@ const PartForm = ({ part, partIndex, updatePart, removePart, isLast }: PartFormP
     const updateQuestionGroup = (index: number, group: QuestionGroup) => {
         const updatedQuestions = [...part.questions];
         updatedQuestions[index] = group;
-        updatePart(partIndex, { ...part, questions: updatedQuestions });
+        
+        // Renumber all questions globally after any update
+        const renumberedQuestions = renumberAllQuestions(updatedQuestions);
+        updatePart(partIndex, { ...part, questions: renumberedQuestions });
     };
 
     const removeQuestionGroup = (index: number) => {
-        updatePart(partIndex, {
-            ...part,
-            questions: part.questions.filter((_, i) => i !== index)
-        });
+        const updatedQuestions = part.questions.filter((_, i) => i !== index);
+        
+        // Renumber all questions globally after removal
+        const renumberedQuestions = renumberAllQuestions(updatedQuestions);
+        updatePart(partIndex, { ...part, questions: renumberedQuestions });
     };
 
     return (

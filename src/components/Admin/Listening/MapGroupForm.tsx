@@ -113,12 +113,11 @@ const MapGroupForm = ({ group, updateGroup }: MapGroupFormProps) => {
         setLocalGroup(prev => {
             const updatedMap = [...prev.map];
             const currentQuestions = updatedMap[mapIndex].questions;
-            const newQuestionNumber = currentQuestions.length + 1;
             
             updatedMap[mapIndex] = {
                 ...updatedMap[mapIndex],
                 questions: [...currentQuestions, {
-                    question_number: newQuestionNumber,
+                    question_number: 0, // Will be set globally by PartForm
                     question: '',
                     answer: '',
                     input_type: 'radio',

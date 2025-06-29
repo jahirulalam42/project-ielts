@@ -11,7 +11,7 @@ const MCQGroupForm = ({ questions = [], onUpdate }: MCQGroupFormProps) => {
 
     const addQuestion = () => {
         const newQuestion: MCQItem = {
-            question_number: localQuestions.length + 1,
+            question_number: 0,
             question: '',
             answer: '',
             options: [

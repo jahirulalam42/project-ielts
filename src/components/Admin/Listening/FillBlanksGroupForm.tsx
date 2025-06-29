@@ -69,10 +69,10 @@ const FillBlanksGroupForm = ({ group, updateGroup }: FillBlanksGroupFormProps) =
     };
 
     const removeSection = (sectionIndex: number) => {
-        setLocalGroup(prev => ({
-            ...prev,
-            fill_in_the_blanks_with_subtitle: prev.fill_in_the_blanks_with_subtitle.filter((_, index) => index !== sectionIndex)
-        }));
+        setLocalGroup(prev => {
+            const updatedSections = prev.fill_in_the_blanks_with_subtitle.filter((_, index) => index !== sectionIndex);
+            return { ...prev, fill_in_the_blanks_with_subtitle: updatedSections };
+        });
     };
 
     const addExtra = (sectionIndex: number) => {
@@ -101,13 +101,11 @@ const FillBlanksGroupForm = ({ group, updateGroup }: FillBlanksGroupFormProps) =
     const addQuestion = (sectionIndex: number) => {
         setLocalGroup(prev => {
             const updatedSections = [...prev.fill_in_the_blanks_with_subtitle];
-            const currentQuestions = updatedSections[sectionIndex].questions;
-            const newQuestionNumber = currentQuestions.length + 1;
             
             updatedSections[sectionIndex] = {
                 ...updatedSections[sectionIndex],
-                questions: [...currentQuestions, {
-                    question_number: newQuestionNumber,
+                questions: [...updatedSections[sectionIndex].questions, {
+                    question_number: 0, // Will be set globally by PartForm
                     answer: '',
                     input_type: 'text'
                 }]
