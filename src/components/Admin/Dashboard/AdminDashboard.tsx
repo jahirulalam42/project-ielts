@@ -31,7 +31,7 @@ const AdminDashboard = () => {
     },
     {
       name: "Listening Tests",
-      link: "/admin",
+      link: "/admin/allListening",
       value: "18",
       icon: FaHeadphones,
       color: "bg-green-500",

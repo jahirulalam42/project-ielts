@@ -302,6 +302,17 @@ export async function submitListeningQuestions(formData: any) {
   }
 }
 
+export async function deleteListeningTest(paramsId: any) {
+  try {
+    const response = await axios.delete(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/listeningQuestions/${paramsId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 // Listening Submit Answers
 
 export async function postSubmitListeningTest(formData: any) {
