@@ -73,6 +73,7 @@ export async function getSingleReadingTest(paramsId: any) {
 
 export async function submitReadingQuestions(formData: any) {
   try {
+    console.log("Sending data to API:", formData);
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/readingQuestions`,
       formData,
@@ -82,12 +83,16 @@ export async function submitReadingQuestions(formData: any) {
         },
       }
     );
+    console.log("API Response:", response.data);
     // return response.data;
     return {
       success: true,
     };
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    console.error("Full error object:", error);
+    console.error("Error response data:", error.response?.data);
+    console.error("Error status:", error.response?.status);
+    console.error("Error message:", error.message);
     throw error; // ← re‑throw or handle as needed
   }
 }

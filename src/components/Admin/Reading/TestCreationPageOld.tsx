@@ -286,22 +286,21 @@ const TestCreationPage: React.FC = () => {
     // Handle different question types with corrected numbering
     switch (currentQuestionType) {
       case "fill_in_the_blanks_with_subtitle":
-        // Generate questions based on questionCount, not local state
-        const subtitleQuestions = [];
+        // Create multiple separate question groups, each with its own subtitle
         for (let i = 0; i < questionCount; i++) {
-          subtitleQuestions.push({
-            question_number: nextQuestionNumber + i,
-            answer: "", // Start with empty answer
-            input_type: "text", // Default input type
+          newQuestions.push({
+            title: i === 0 ? title : undefined, // Only first question gets title, others get undefined
+            subtitle: subtitle,
+            extra: extra.length > 0 ? extra : [""], // Ensure at least one empty extra field
+            questions: [
+              {
+                question_number: nextQuestionNumber + i,
+                answer: "",
+                input_type: "text",
+              }
+            ],
           });
         }
-
-        newQuestions.push({
-          title: title,
-          subtitle: subtitle,
-          extra: extra.length > 0 ? extra : [""], // Ensure at least one empty extra field
-          questions: subtitleQuestions,
-        });
         break;
 
       case "true_false_not_given":
@@ -435,9 +434,44 @@ const TestCreationPage: React.FC = () => {
         return;
     }
 
-    updatedParts[passageIndex].questions.push({
-      [currentQuestionType]: newQuestions,
-    });
+    // Special handling for fill_in_the_blanks_with_subtitle - merge into existing group if it exists
+    if (currentQuestionType === "fill_in_the_blanks_with_subtitle") {
+      const existingQuestions = updatedParts[passageIndex].questions;
+      const existingFillBlanksGroup = existingQuestions.find(group => 
+        Object.keys(group)[0] === "fill_in_the_blanks_with_subtitle"
+      );
+      
+      if (existingFillBlanksGroup) {
+        // Merge new questions into existing group
+        const existingGroup = existingFillBlanksGroup as Record<string, any[]>;
+        const allSections = [
+          ...existingGroup["fill_in_the_blanks_with_subtitle"],
+          ...newQuestions
+        ];
+        
+        // Recalculate question numbers across all sections to ensure sequential numbering
+        let questionCounter = 1;
+        allSections.forEach((section: any) => {
+          if (section.questions && Array.isArray(section.questions)) {
+            section.questions.forEach((q: any) => {
+              q.question_number = questionCounter++;
+            });
+          }
+        });
+        
+        existingGroup["fill_in_the_blanks_with_subtitle"] = allSections;
+      } else {
+        // Create new group
+        updatedParts[passageIndex].questions.push({
+          [currentQuestionType]: newQuestions,
+        });
+      }
+    } else {
+      // For other question types, add normally
+      updatedParts[passageIndex].questions.push({
+        [currentQuestionType]: newQuestions,
+      });
+    }
 
     setTest({ ...test, parts: updatedParts });
     setCurrentQuestionType("");
@@ -862,22 +896,24 @@ const TestCreationPage: React.FC = () => {
       case "fill_in_the_blanks_with_subtitle":
         return questions.map((section, sectionIdx) => (
           <div key={sectionIdx} className="mb-4 border p-4">
-            {/* Title input */}
-            <div className="mb-2">
-              <input
-                type="text"
-                placeholder="Title (optional)"
-                value={section.title || ""}
-                onChange={(e) => {
-                  const updatedParts = [...test.parts];
-                  updatedParts[passageIndex].questions[groupIndex][
-                    questionType
-                  ][sectionIdx].title = e.target.value;
-                  setTest({ ...test, parts: updatedParts });
-                }}
-                className="border p-2 mb-2 w-full"
-              />
-            </div>
+            {/* Title Input - Only show for the first question */}
+            {sectionIdx === 0 && (
+              <div className="mb-2">
+                <input
+                  type="text"
+                  placeholder="Title (optional)"
+                  value={section.title || ""}
+                  onChange={(e) => {
+                    const updatedParts = [...test.parts];
+                    updatedParts[passageIndex].questions[groupIndex][
+                      questionType
+                    ][sectionIdx].title = e.target.value;
+                    setTest({ ...test, parts: updatedParts });
+                  }}
+                  className="border p-2 mb-2 w-full"
+                />
+              </div>
+            )}
 
             {/* Subtitle input */}
             <div className="mb-2">
@@ -989,6 +1025,11 @@ const TestCreationPage: React.FC = () => {
                         questionType
                       ][sectionIdx].questions.splice(qIdx, 1);
                       setTest({ ...test, parts: updatedParts });
+                      
+                      // Recalculate question numbers to ensure sequential numbering
+                      setTimeout(() => {
+                        recalculateFillInTheBlanksQuestionNumbers(passageIndex, groupIndex);
+                      }, 0);
                     }}
                     className="bg-red-500 text-white px-2 py-1 rounded ml-2 text-sm"
                   >
@@ -1002,16 +1043,22 @@ const TestCreationPage: React.FC = () => {
                 type="button"
                 onClick={() => {
                   const updatedParts = [...test.parts];
-                  const currentQuestions =
-                    updatedParts[passageIndex].questions[groupIndex][
-                      questionType
-                    ][sectionIdx].questions || [];
-                  const nextQuestionNumber =
-                    currentQuestions.length > 0
-                      ? Math.max(
-                          ...currentQuestions.map((q: any) => q.question_number)
-                        ) + 1
-                      : 1;
+                  const allQuestions = updatedParts[passageIndex].questions[groupIndex][questionType];
+                  
+                  // Get the next question number across ALL sections
+                  const getNextQuestionNumber = () => {
+                    let maxNumber = 0;
+                    allQuestions.forEach((section: any) => {
+                      if (section.questions && Array.isArray(section.questions)) {
+                        section.questions.forEach((q: any) => {
+                          if (q.question_number && typeof q.question_number === "number") {
+                            maxNumber = Math.max(maxNumber, q.question_number);
+                          }
+                        });
+                      }
+                    });
+                    return maxNumber + 1;
+                  };
 
                   if (
                     !updatedParts[passageIndex].questions[groupIndex][
@@ -1026,18 +1073,45 @@ const TestCreationPage: React.FC = () => {
                   updatedParts[passageIndex].questions[groupIndex][
                     questionType
                   ][sectionIdx].questions.push({
-                    question_number: nextQuestionNumber,
+                    question_number: getNextQuestionNumber(),
                     answer: "",
                     input_type: "text",
                   });
 
                   setTest({ ...test, parts: updatedParts });
+                  
+                  // Recalculate question numbers to ensure sequential numbering
+                  setTimeout(() => {
+                    recalculateFillInTheBlanksQuestionNumbers(passageIndex, groupIndex);
+                  }, 0);
                 }}
                 className="bg-green-500 text-white px-3 py-1 rounded text-sm"
               >
                 Add Answer
               </button>
             </div>
+
+            {/* Remove section button - only show for sections after the first one */}
+            {sectionIdx > 0 && (
+              <div className="mt-4 text-center">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const updatedParts = [...test.parts];
+                    updatedParts[passageIndex].questions[groupIndex][questionType].splice(sectionIdx, 1);
+                    setTest({ ...test, parts: updatedParts });
+                    
+                    // Recalculate question numbers to ensure sequential numbering
+                    setTimeout(() => {
+                      recalculateFillInTheBlanksQuestionNumbers(passageIndex, groupIndex);
+                    }, 0);
+                  }}
+                  className="bg-red-500 text-white px-4 py-2 rounded text-sm"
+                >
+                  Remove This Section
+                </button>
+              </div>
+            )}
           </div>
         ));
 
@@ -1149,6 +1223,44 @@ const TestCreationPage: React.FC = () => {
     } catch (error) {
       toast.error("An error occurred while creating the test.");
     }
+  };
+
+  // Function to recalculate question numbers for fill_in_the_blanks_with_subtitle
+  const recalculateFillInTheBlanksQuestionNumbers = (passageIndex: number, groupIndex: number) => {
+    const updatedParts = [...test.parts];
+    const questionType = "fill_in_the_blanks_with_subtitle";
+    const sections = updatedParts[passageIndex].questions[groupIndex][questionType];
+    
+    if (sections && Array.isArray(sections)) {
+      let questionCounter = 1;
+      sections.forEach((section: any) => {
+        if (section.questions && Array.isArray(section.questions)) {
+          section.questions.forEach((q: any) => {
+            q.question_number = questionCounter++;
+          });
+        }
+      });
+      setTest({ ...test, parts: updatedParts });
+    }
+  };
+
+  // Function to clean test data before submission
+  const cleanTestData = (testData: any) => {
+    const cleaned = {
+      title: testData.title,
+      type: testData.type,
+      duration: testData.duration,
+      parts: testData.parts.map((part: any) => ({
+        title: part.title,
+        instructions: part.instructions,
+        passage_title: part.passage_title,
+        passage_subtitle: part.passage_subtitle,
+        passage: part.passage,
+        image: part.image || "",
+        questions: part.questions
+      }))
+    };
+    return cleaned;
   };
 
   return (
@@ -1298,17 +1410,16 @@ const TestCreationPage: React.FC = () => {
                 </option>
               ))}
             </select>
-            {currentQuestionType &&
-              currentQuestionType !== "fill_in_the_blanks_with_subtitle" && (
-                <input
-                  type="number"
-                  min="1"
-                  value={questionCount}
-                  onChange={(e) => setQuestionCount(parseInt(e.target.value))}
-                  className="border p-2 mr-2"
-                  placeholder="Number of questions"
-                />
-              )}
+            {currentQuestionType && (
+              <input
+                type="number"
+                min="1"
+                value={questionCount}
+                onChange={(e) => setQuestionCount(parseInt(e.target.value))}
+                className="border p-2 mr-2"
+                placeholder="Number of questions"
+              />
+            )}
             <button
               onClick={() => addQuestionGroup(passageIndex)}
               className="bg-blue-500 text-white p-2 rounded"
@@ -1333,11 +1444,24 @@ const TestCreationPage: React.FC = () => {
         </div>
       ))}
       <button
-        // onClick={() => console.log(JSON.stringify(test, null, 2))}
         onClick={(e) => {
           e.preventDefault();
-          console.log(JSON.stringify(test, null, 2));
-          handleReadingTestSubmit(JSON.stringify(test));
+          console.log("Test object before submission:", JSON.stringify(test, null, 2));
+          
+          // Validate test object before submission
+          if (!test.title || !test.type || !test.duration || !test.parts || test.parts.length === 0) {
+            toast.error("Please fill in all required fields: title, type, duration, and at least one passage");
+            return;
+          }
+          
+          // Check if any passage has questions
+          const hasQuestions = test.parts.some(part => part.questions && part.questions.length > 0);
+          if (!hasQuestions) {
+            toast.error("Please add at least one question to a passage");
+            return;
+          }
+          
+          handleReadingTestSubmit(cleanTestData(test));
         }}
         className=" btn btn-success btn-md text-white "
       >

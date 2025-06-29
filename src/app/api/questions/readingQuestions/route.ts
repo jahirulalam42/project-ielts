@@ -22,13 +22,35 @@ export async function POST(request: Request) {
   try {
     await dbConnect();
     const body = await request.json();
+    console.log("Received data:", JSON.stringify(body, null, 2));
+    
+    // Validate required fields
+    if (!body.title || !body.type || !body.duration || !body.parts) {
+      console.error("Missing required fields:", { 
+        title: !!body.title, 
+        type: !!body.type, 
+        duration: !!body.duration, 
+        parts: !!body.parts 
+      });
+      return NextResponse.json(
+        { success: false, error: "Missing required fields" },
+        { status: 400 }
+      );
+    }
+    
     // Validate input data here if needed
     const newTest = await ReadingModel.create(body);
+    console.log("Created test:", newTest);
     return NextResponse.json({ success: true, data: newTest }, { status: 201 });
-  } catch (error) {
-    console.error("POST Error:", error);
+  } catch (error: any) {
+    console.error("POST Error details:", error);
+    console.error("Error name:", error.name);
+    console.error("Error message:", error.message);
+    if (error.errors) {
+      console.error("Validation errors:", error.errors);
+    }
     return NextResponse.json(
-      { success: false, error: "Invalid data format - Failed to create test" },
+      { success: false, error: "Invalid data format - Failed to create test", details: error.message },
       { status: 400 }
     );
   }
