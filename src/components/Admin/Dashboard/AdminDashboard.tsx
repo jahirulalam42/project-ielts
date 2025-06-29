@@ -22,21 +22,30 @@ const AdminDashboard = () => {
 
   // Mock data
   const stats = [
-    { name: "Reading Tests", value: "24", icon: FaBook, color: "bg-blue-500" },
+    {
+      name: "Reading Tests",
+      link: "/admin/allReading",
+      value: "24",
+      icon: FaBook,
+      color: "bg-blue-500",
+    },
     {
       name: "Listening Tests",
+      link: "/admin/allListening",
       value: "18",
       icon: FaHeadphones,
       color: "bg-green-500",
     },
     {
       name: "Writing Tests",
+      link: "/admin/allWriting",
       value: "15",
       icon: FaEdit,
       color: "bg-yellow-500",
     },
     {
       name: "Speaking Tests",
+      link: "/admin",
       value: "12",
       icon: FaMicrophone,
       color: "bg-purple-500",
@@ -183,7 +192,6 @@ const AdminDashboard = () => {
 
       {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-
         {/* Dashboard content */}
         <main className="flex-1 overflow-y-auto p-6">
           <div className="mb-8 flex items-center justify-center flex-col gap-2">
@@ -210,7 +218,10 @@ const AdminDashboard = () => {
                     </div>
                   </div>
                   <div className="card-actions mt-4">
-                    <button className="btn btn-sm btn-outline">Manage</button>
+                    <Link href={stat.link}>
+                      {" "}
+                      <button className="btn btn-sm btn-outline">Manage</button>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -259,34 +270,34 @@ const AdminDashboard = () => {
               <div className="card-body">
                 <h2 className="card-title">Quick Actions</h2>
                 <div className="grid grid-cols-2 gap-4">
-
-                  <Link href="/admin/reading"> <button className="btn btn-outline flex flex-col w-full h-24">
-                    <FaBook className="text-2xl mb-2" />
-                    <span>Add Reading Test</span>
-                  </button></Link>
+                  <Link href="/admin/reading">
+                    {" "}
+                    <button className="btn btn-outline flex flex-col w-full h-24">
+                      <FaBook className="text-2xl mb-2" />
+                      <span>Add Reading Test</span>
+                    </button>
+                  </Link>
 
                   <Link href="/admin/listening">
                     <button className="btn btn-outline flex flex-col w-full h-24">
                       <FaHeadphones className="text-2xl mb-2" />
                       <span>Add Listening Test</span>
-
                     </button>
                   </Link>
-
 
                   <Link href="/admin/writing">
                     <button className="btn btn-outline flex flex-col w-full h-24">
                       <FaEdit className="text-2xl mb-2" />
                       <span>Add Writing Task</span>
-                    </button></Link>
-
+                    </button>
+                  </Link>
 
                   <Link href="/admin/speaking">
                     <button className="btn btn-outline flex flex-col w-full h-24">
                       <FaMicrophone className="text-2xl mb-2" />
                       <span>Add Speaking Test</span>
-                    </button></Link>
-
+                    </button>
+                  </Link>
                 </div>
               </div>
             </div>

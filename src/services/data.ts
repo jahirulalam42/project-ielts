@@ -24,6 +24,42 @@ export async function getReadingTest() {
   }
 }
 
+export async function deleteReadingTest(paramsId: any) {
+  try {
+    const response = await axios.delete(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/readingQuestions/${paramsId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+// services/data.ts
+export const editReadingTest = async (id: string, updates: any) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/readingQuestions/${id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updates),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to update reading test");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error in editReadingTest:", error);
+    throw error;
+  }
+};
+
 export async function getSingleReadingTest(paramsId: any) {
   try {
     const response = await axios.get(
@@ -98,6 +134,41 @@ export async function submitWritingQuestions(formData: any) {
   } catch (error) {
     console.error(error);
     throw error; // ← re‑throw or handle as needed
+  }
+}
+
+export const updateWritingTest = async (id: string, updates: any) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/writingQuestions/${id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updates),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to update writing test");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error in Update Writing Test:", error);
+    throw error;
+  }
+};
+
+export async function deleteWritingTest(paramsId: any) {
+  try {
+    const response = await axios.delete(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/writingQuestions/${paramsId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
   }
 }
 
@@ -228,6 +299,17 @@ export async function submitListeningQuestions(formData: any) {
   } catch (error) {
     console.error(error);
     throw error; // ← re‑throw or handle as needed
+  }
+}
+
+export async function deleteListeningTest(paramsId: any) {
+  try {
+    const response = await axios.delete(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/listeningQuestions/${paramsId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
   }
 }
 

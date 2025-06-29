@@ -41,3 +41,93 @@ export async function GET(
     );
   }
 }
+
+// Update an existing reading test
+export async function PATCH(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    // const session = await getServerSession(authOptions);
+    // if (!session) {
+    //   return NextResponse.json(
+    //     { success: false, error: "Unauthorized" },
+    //     { status: 401 }
+    //   );
+    // }
+
+    await dbConnect();
+    const { id } = params;
+
+    if (!/^[0-9a-fA-F]{24}$/.test(id)) {
+      return NextResponse.json(
+        { success: false, error: "Invalid MongoDB ObjectID format" },
+        { status: 400 }
+      );
+    }
+
+    const updates: ReadingTest = await request.json();
+    const updatedTest = await ReadingModel.findByIdAndUpdate(
+      id,
+      { $set: updates },
+      { new: true }
+    );
+
+    if (!updatedTest) {
+      return NextResponse.json(
+        { success: false, error: "Reading test not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ success: true, data: updatedTest });
+  } catch (error) {
+    console.error("PATCH Error:", error);
+    return NextResponse.json(
+      { success: false, error: "Server error - Failed to update reading test" },
+      { status: 500 }
+    );
+  }
+}
+
+// Delete a reading test by ID
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    // const session = await getServerSession(authOptions);
+    // if (!session) {
+    //   return NextResponse.json(
+    //     { success: false, error: "Unauthorized" },
+    //     { status: 401 }
+    //   );
+    // }
+
+    await dbConnect();
+    const { id } = params;
+
+    if (!/^[0-9a-fA-F]{24}$/.test(id)) {
+      return NextResponse.json(
+        { success: false, error: "Invalid MongoDB ObjectID format" },
+        { status: 400 }
+      );
+    }
+
+    const deletedTest = await ReadingModel.findByIdAndDelete(id);
+    if (!deletedTest) {
+      return NextResponse.json(
+        { success: false, error: "Reading test not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ success: true, data: null });
+  } catch (error) {
+    console.error("DELETE Error:", error);
+    return NextResponse.json(
+      { success: false, error: "Server error - Failed to delete reading test" },
+      { status: 500 }
+    );
+  }
+}

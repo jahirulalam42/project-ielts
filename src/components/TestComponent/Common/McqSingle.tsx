@@ -37,7 +37,7 @@ const McqSingle = ({
                           option.label,
                           q.input_type,
                           q.answer,
-                          option.label === q.answer ? true : false
+                          option.label === q.answer[0] ? true : false
                         )
                       }
                       value={currentValue}
