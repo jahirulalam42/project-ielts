@@ -307,6 +307,30 @@ export async function submitListeningQuestions(formData: any) {
   }
 }
 
+export const editListeningTest = async (id: string, updates: any) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/listeningQuestions/${id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updates),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to update listening test");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error in editListeningTest:", error);
+    throw error;
+  }
+};
+
 export async function deleteListeningTest(paramsId: any) {
   try {
     const response = await axios.delete(

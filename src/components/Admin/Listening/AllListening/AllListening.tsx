@@ -1,8 +1,10 @@
 "use client";
-import { deleteListeningTest } from "@/services/data";
+import { deleteListeningTest, editListeningTest } from "@/services/data";
 import Link from "next/link";
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
+import AllDeleteModal from "../../Common/AllDeleteModal";
+import EditListening from "./EditListening";
 
 const AllListening = ({ listeningData, setListeningData }: any) => {
   const [selectedTest, setSelectedTest]: any = useState(null);
@@ -12,9 +14,27 @@ const AllListening = ({ listeningData, setListeningData }: any) => {
   const [error, setError] = useState<string | null>(null);
   const [editedTest, setEditedTest] = useState<any>(null);
 
+  const handleEdit = (test: any) => {
+    setSelectedTest(test);
+    setEditedTest(JSON.parse(JSON.stringify(test)));
+    setShowEditModal(true);
+  };
+
   const handleDelete = (test: any) => {
     setSelectedTest(test);
     setShowDeleteModal(true);
+  };
+
+  const saveChanges = () => {
+    // Here you would typically save the changes to your database
+    // For now, just update the state and close the modal
+    setListeningData(
+      listeningData.map((t: any) => (t._id === editedTest._id ? editedTest : t))
+    );
+    setShowEditModal(false);
+    editListeningTest(selectedTest._id, editedTest);
+    console.log("Listening Data", listeningData);
+    toast.success("Listening test updated successfully");
   };
 
   const confirmDelete = async () => {
@@ -81,7 +101,7 @@ const AllListening = ({ listeningData, setListeningData }: any) => {
                 <td className="text-center py-4 px-6">
                   <div className="flex justify-center space-x-2">
                     <button
-                      //   onClick={() => handleEdit(test)}
+                      onClick={() => handleEdit(test)}
                       className="btn btn-sm btn-outline btn-info"
                     >
                       Edit
@@ -102,64 +122,25 @@ const AllListening = ({ listeningData, setListeningData }: any) => {
       </div>
 
       {/* Edit Modal */}
-      {showEditModal && selectedTest && editedTest && <div>Edit Modal</div>}
+      {showEditModal && selectedTest && editedTest && (
+        <EditListening
+          editedTest={editedTest}
+          setEditedTest={setEditedTest}
+          setShowEditModal={setShowEditModal}
+          saveChanges={saveChanges}
+        />
+      )}
 
       {/* Delete Confirmation Modal */}
+
       {showDeleteModal && selectedTest && (
-        <div className="modal modal-open">
-          <div className="modal-box">
-            <h3 className="font-bold text-xl">Confirm Deletion</h3>
-
-            {error && (
-              <div className="alert alert-error mt-4">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="stroke-current shrink-0 h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                <span>{error}</span>
-              </div>
-            )}
-
-            <p className="py-4">
-              Are you sure you want to delete the reading test:
-              <span className="font-semibold"> {selectedTest.title}</span>?
-            </p>
-
-            <div className="modal-action">
-              <button
-                className="btn btn-ghost"
-                onClick={() => setShowDeleteModal(false)}
-                disabled={isDeleting}
-              >
-                Cancel
-              </button>
-
-              <button
-                className="btn btn-error"
-                onClick={confirmDelete}
-                disabled={isDeleting}
-              >
-                {isDeleting ? (
-                  <>
-                    Deleting...
-                    <span className="loading loading-spinner loading-xs ml-2"></span>
-                  </>
-                ) : (
-                  "Delete Permanently"
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
+        <AllDeleteModal
+          selectedTest={selectedTest}
+          setShowDeleteModal={setShowDeleteModal}
+          confirmDelete={confirmDelete}
+          isDeleting={isDeleting}
+          error={error}
+        />
       )}
 
       <ToastContainer />

@@ -1,0 +1,316 @@
+import React from "react";
+import { RenderReadingQuestionFields } from "./RenderReadingQuestionFields";
+
+const EditReading = ({
+  editedTest,
+  handleTestFieldChange,
+  handlePartFieldChange,
+  handlePassageParagraphChange,
+  handleQuestionChange,
+  setShowEditModal,
+  saveChanges,
+}: any) => {
+  const formatQuestionType = (type: string) => {
+    return type
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
+  // Helper to get question number
+  const getQuestionNumber = (question: any) => {
+    if (question.question_number) return question.question_number;
+    if (question.question_numbers) return question.question_numbers.join("-");
+    return null;
+  };
+
+  return (
+    <div className="modal modal-open">
+      <div className="modal-box max-w-5xl max-h-[90vh] overflow-y-auto">
+        <h3 className="font-bold text-2xl mb-4">Edit Reading Test</h3>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text">Test Title</span>
+            </label>
+            <input
+              type="text"
+              value={editedTest.title || ""} // ✅ Use editedTest and value
+              onChange={(e) => handleTestFieldChange("title", e.target.value)} // ✅ Add onChange
+              className="input input-bordered w-full"
+            />
+          </div>
+
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text">Duration (minutes)</span>
+            </label>
+            <input
+              type="number"
+              value={editedTest.duration || ""} // ✅ Use editedTest
+              onChange={(e) =>
+                handleTestFieldChange("duration", parseInt(e.target.value))
+              }
+              className="input input-bordered w-full"
+            />
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <label className="label">
+            <span className="label-text">Test Type</span>
+          </label>
+          <div className="flex space-x-4">
+            <label className="cursor-pointer label">
+              <input
+                type="radio"
+                name="type"
+                checked={editedTest.type === "academic"} // ✅ Use checked instead of defaultChecked
+                onChange={() => handleTestFieldChange("type", "academic")}
+                className="radio radio-primary"
+              />
+              <span className="label-text ml-2">Academic</span>
+            </label>
+            <label className="cursor-pointer label">
+              <input
+                type="radio"
+                name="type"
+                checked={editedTest.type === "general"} // ✅ Use checked
+                onChange={() => handleTestFieldChange("type", "general")}
+                className="radio radio-primary"
+              />
+              <span className="label-text ml-2">General</span>
+            </label>
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <h4 className="text-lg font-semibold mb-3">Passages</h4>
+          <div className="space-y-4">
+            {editedTest.parts.map(
+              (
+                part: any,
+                partIndex: any // ✅ Use editedTest.parts
+              ) => (
+                <div
+                  key={partIndex}
+                  className="collapse collapse-arrow bg-base-200 border border-base-300"
+                >
+                  <input type="checkbox" defaultChecked />
+                  <div className="collapse-title font-medium">
+                    Passage {partIndex + 1}: {part.passage_title || "Untitled"}
+                  </div>
+                  <div className="collapse-content pt-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div className="form-control">
+                        <label className="label">
+                          <span className="label-text">Passage Title</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={part.passage_title || ""} // ✅ Use value
+                          onChange={(e) =>
+                            handlePartFieldChange(
+                              partIndex,
+                              "passage_title",
+                              e.target.value
+                            )
+                          }
+                          className="input input-bordered w-full"
+                        />
+                      </div>
+
+                      <div className="form-control">
+                        <label className="label">
+                          <span className="label-text">Passage Subtitle</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={part.passage_subtitle || ""}
+                          onChange={(e) =>
+                            handlePartFieldChange(
+                              partIndex,
+                              "passage_subtitle",
+                              e.target.value
+                            )
+                          }
+                          className="input input-bordered w-full"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-control mb-4">
+                      <label className="label">
+                        <span className="label-text">Instructions</span>
+                      </label>
+                      <textarea
+                        value={part.instructions || ""} // ✅ Use value
+                        onChange={(e) =>
+                          handlePartFieldChange(
+                            partIndex,
+                            "instructions",
+                            e.target.value
+                          )
+                        }
+                        className="textarea textarea-bordered h-24 w-full"
+                      />
+                    </div>
+
+                    <div className="form-control mb-4">
+                      <label className="label">
+                        <span className="label-text">Passage Content</span>
+                      </label>
+                      <div className="space-y-2">
+                        {part.passage.map((paragraph: any, paraIndex: any) => (
+                          <div
+                            key={paraIndex}
+                            className="flex items-start gap-2"
+                          >
+                            <span className="badge badge-neutral mt-1">
+                              {paraIndex + 1}
+                            </span>
+                            <textarea
+                              value={paragraph || ""} // ✅ Use value
+                              onChange={(e) =>
+                                handlePassageParagraphChange(
+                                  partIndex,
+                                  paraIndex,
+                                  e.target.value
+                                )
+                              }
+                              className="textarea textarea-bordered w-full h-32"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                      <button className="btn btn-sm btn-outline mt-2">
+                        + Add Paragraph
+                      </button>
+                    </div>
+
+                    <div className="form-control mb-4">
+                      <label className="label">
+                        <span className="label-text">Image URL</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={part.image || ""} // ✅ Use value
+                        onChange={(e) =>
+                          handlePartFieldChange(
+                            partIndex,
+                            "image",
+                            e.target.value
+                          )
+                        }
+                        className="input input-bordered w-full"
+                        placeholder="https://example.com/image.png"
+                      />
+                    </div>
+
+                    {/* Questions section remains the same as your existing handleQuestionChange already works */}
+                    <div className="mt-6">
+                      <h5 className="text-md font-semibold mb-3">Questions</h5>
+                      <div className="space-y-4">
+                        {part.questions.map(
+                          (questionGroup: any, groupIndex: any) => {
+                            const questionType = Object.keys(questionGroup)[0];
+                            const questions = questionGroup[questionType];
+
+                            return (
+                              <div
+                                key={groupIndex}
+                                className="collapse collapse-arrow bg-base-100 border border-base-300"
+                              >
+                                <input type="checkbox" />
+                                <div className="collapse-title font-medium">
+                                  {formatQuestionType(questionType)} (
+                                  {questions.length} questions)
+                                </div>
+                                <div className="collapse-content pt-4">
+                                  <div className="space-y-6">
+                                    {questions.map(
+                                      (question: any, qIndex: any) => (
+                                        <div
+                                          key={qIndex}
+                                          className="border rounded-lg p-4 bg-base-100"
+                                        >
+                                          <div className="flex justify-between items-start mb-3">
+                                            <div className="badge badge-primary">
+                                              Question{" "}
+                                              {getQuestionNumber(question) ||
+                                                qIndex + 1}
+                                            </div>
+                                            <button className="btn btn-xs btn-error">
+                                              Delete
+                                            </button>
+                                          </div>
+
+                                          <div className="form-control mb-3">
+                                            <label className="label">
+                                              <span className="label-text">
+                                                Question Text
+                                              </span>
+                                            </label>
+                                            <textarea
+                                              value={question.question || ""} // ✅ Use value instead of defaultValue
+                                              onChange={(e) =>
+                                                handleQuestionChange(
+                                                  partIndex,
+                                                  groupIndex,
+                                                  qIndex,
+                                                  "question",
+                                                  e.target.value
+                                                )
+                                              }
+                                              className="textarea textarea-bordered w-full"
+                                            />
+                                          </div>
+
+                                          {RenderReadingQuestionFields(
+                                            questionType,
+                                            question,
+                                            partIndex,
+                                            groupIndex,
+                                            qIndex,
+                                            handleQuestionChange
+                                          )}
+                                        </div>
+                                      )
+                                    )}
+                                    <button className="btn btn-sm btn-outline">
+                                      + Add Question to this Type
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          }
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )
+            )}
+          </div>
+          <button className="btn btn-outline mt-4">+ Add New Passage</button>
+        </div>
+
+        <div className="modal-action">
+          <button
+            className="btn btn-ghost"
+            onClick={() => setShowEditModal(false)}
+          >
+            Cancel
+          </button>
+          <button className="btn btn-primary" onClick={saveChanges}>
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default EditReading;
