@@ -272,6 +272,15 @@ const TestCreationPage: React.FC = () => {
                 const arrayMax = Math.max(...q.question_number);
                 maxNumber = Math.max(maxNumber, arrayMax);
               }
+              
+              // Handle nested questions structure (for fill_in_the_blanks_with_subtitle)
+              if (q.questions && Array.isArray(q.questions)) {
+                q.questions.forEach((nestedQ: any) => {
+                  if (nestedQ.question_number && typeof nestedQ.question_number === "number") {
+                    maxNumber = Math.max(maxNumber, nestedQ.question_number);
+                  }
+                });
+              }
             });
           });
         });

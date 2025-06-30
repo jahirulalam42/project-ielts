@@ -198,27 +198,30 @@ const EditListening = ({
                                   key={itemIndex}
                                   className="border rounded-lg p-4"
                                 >
-                                  <div className="form-control mb-3">
-                                    <label className="label">
-                                      <span className="label-text">Title</span>
-                                    </label>
-                                    <input
-                                      type="text"
-                                      value={item.title || ""}
-                                      onChange={(e) => {
-                                        const newParts = [...editedTest.parts];
-                                        newParts[partIndex].questions[
-                                          groupIndex
-                                        ][questionType][itemIndex].title =
-                                          e.target.value;
-                                        setEditedTest({
-                                          ...editedTest,
-                                          parts: newParts,
-                                        });
-                                      }}
-                                      className="input input-bordered input-sm"
-                                    />
-                                  </div>
+                                  {/* Only show title field for the first section */}
+                                  {itemIndex === 0 && (
+                                    <div className="form-control mb-3">
+                                      <label className="label">
+                                        <span className="label-text">Title</span>
+                                      </label>
+                                      <input
+                                        type="text"
+                                        value={item.title || ""}
+                                        onChange={(e) => {
+                                          const newParts = [...editedTest.parts];
+                                          newParts[partIndex].questions[
+                                            groupIndex
+                                          ][questionType][itemIndex].title =
+                                            e.target.value;
+                                          setEditedTest({
+                                            ...editedTest,
+                                            parts: newParts,
+                                          });
+                                        }}
+                                        className="input input-bordered input-sm"
+                                      />
+                                    </div>
+                                  )}
 
                                   <div className="form-control mb-3">
                                     <label className="label">

@@ -246,26 +246,29 @@ const EditReading = ({
                                             </button>
                                           </div>
 
-                                          <div className="form-control mb-3">
-                                            <label className="label">
-                                              <span className="label-text">
-                                                Question Text
-                                              </span>
-                                            </label>
-                                            <textarea
-                                              value={question.question || ""} // ✅ Use value instead of defaultValue
-                                              onChange={(e) =>
-                                                handleQuestionChange(
-                                                  partIndex,
-                                                  groupIndex,
-                                                  qIndex,
-                                                  "question",
-                                                  e.target.value
-                                                )
-                                              }
-                                              className="textarea textarea-bordered w-full"
-                                            />
-                                          </div>
+                                          {/* Only show Question Text for question types that need it */}
+                                          {questionType !== "fill_in_the_blanks_with_subtitle" && (
+                                            <div className="form-control mb-3">
+                                              <label className="label">
+                                                <span className="label-text">
+                                                  Question Text
+                                                </span>
+                                              </label>
+                                              <textarea
+                                                value={question.question || ""}
+                                                onChange={(e) =>
+                                                  handleQuestionChange(
+                                                    partIndex,
+                                                    groupIndex,
+                                                    qIndex,
+                                                    "question",
+                                                    e.target.value
+                                                  )
+                                                }
+                                                className="textarea textarea-bordered w-full"
+                                              />
+                                            </div>
+                                          )}
 
                                           {RenderReadingQuestionFields(
                                             questionType,
