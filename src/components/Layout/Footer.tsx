@@ -60,7 +60,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="border-t border-gray-700 mt-10 pt-6 text-center text-gray-400">
-          <p>© 2023 IELTS Master. All rights reserved.</p>
+          <p>© 2025 IELTS. All rights reserved.</p>
         </div>
       </div>
     </footer>
