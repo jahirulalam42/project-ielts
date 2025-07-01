@@ -1,3 +1,4 @@
+// components/Navbar.tsx
 "use client";
 import Link from "next/link";
 import React from "react";
@@ -6,105 +7,131 @@ import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
 
-// Extenthe Sd ession type to include the role property
 declare module "next-auth" {
   interface Session {
     user: {
       id: string;
       name: string;
       email: string;
-      role?: string; // Add the role property
+      role?: string;
     };
   }
 }
 
 const Navbar: React.FC = () => {
   const pathName = usePathname();
-
   const { data } = useSession();
 
-  console.log("Session Data", data?.user?.role);
+  // Navigation links data
+  const navLinks = [
+    { href: "/test/listening", label: "Listening" },
+    { href: "/test/reading", label: "Reading" },
+    { href: "/test/writing", label: "Writing" },
+    { href: "/test/speaking", label: "Speaking" },
+  ];
 
   return (
     <div>
       {!pathName.startsWith("/test/reading/") &&
         !pathName.startsWith("/admin") && (
-          <div className="navbar bg-base-100 border-b border-black">
-            <div className="navbar-start">
-              <div className="dropdown">
-                <div
-                  tabIndex={0}
-                  role="button"
-                  className="btn btn-ghost lg:hidden"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M4 6h16M4 12h8m-8 6h16"
-                    />
-                  </svg>
+          <nav className="bg-white shadow-sm">
+            <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+              {/* Logo */}
+              <div className="navbar-start">
+                <div className="flex items-center space-x-2">
+                  <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center">
+                    <span className="text-white font-bold text-xl">I</span>
+                  </div>
+                  <span className="text-2xl font-bold text-indigo-800 hidden sm:block">
+                    IELTS
+                  </span>
                 </div>
-                <ul
-                  tabIndex={0}
-                  className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
-                >
-                  <li>
-                    <a>Item 1</a>
-                  </li>
-                  <li>
-                    <a>Parent</a>
-                    <ul className="p-2">
-                      <li>
-                        <a>Submenu 1</a>
-                      </li>
-                      <li>
-                        <a>Submenu 2</a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li>
-                    <a>Item 3</a>
-                  </li>
+              </div>
+
+              {/* Desktop Navigation */}
+              <div className="navbar-center hidden lg:flex">
+                <ul className="menu menu-horizontal space-x-2">
+                  {navLinks.map((link) => (
+                    <li key={link.href}>
+                      <Link
+                        href={link.href}
+                        className={`font-medium px-4 py-2 rounded-lg transition-colors ${
+                          pathName.startsWith(link.href)
+                            ? "text-indigo-600 bg-indigo-50"
+                            : "text-gray-600 hover:text-indigo-600 hover:bg-indigo-50"
+                        }`}
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
                 </ul>
               </div>
-              <a className="btn btn-ghost text-xl">daisyUI</a>
-            </div>
-            <div className="navbar-center hidden lg:flex ">
-              <ul className="menu menu-horizontal px-1">
-                <li>
-                  <Link href={"/test/listening"}>Listening</Link>
-                </li>
-                <li>
-                  <Link href={"/test/reading"}>Reading</Link>
-                </li>
-                <li>
-                  <Link href={"/test/writing"}>Writing</Link>
-                </li>
-                <li>
-                  <Link href={"/test/speaking"}>Speaking</Link>
-                </li>
-              </ul>
-            </div>
-            <div className="navbar-end flex gap-2">
-              {data?.user.role === "admin" && (
-                <button className="btn">
-                  <Link href={"/admin"}>Admin</Link>
-                </button>
-              )}
 
-              <div className="btn">
-                <LoginButton />
+              {/* Mobile menu button */}
+              <div className="navbar-end flex gap-2 items-center">
+                {data?.user.role === "admin" && (
+                  <Link
+                    href="/admin"
+                    className="btn btn-sm btn-outline border-indigo-600 text-indigo-600 hover:bg-indigo-50 hidden sm:inline-flex"
+                  >
+                    Admin
+                  </Link>
+                )}
+
+                <div className="dropdown dropdown-end">
+                  <div
+                    tabIndex={0}
+                    role="button"
+                    className="btn btn-ghost lg:hidden"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M4 6h16M4 12h8m-8 6h16"
+                      />
+                    </svg>
+                  </div>
+                  <ul
+                    tabIndex={0}
+                    className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
+                  >
+                    {navLinks.map((link) => (
+                      <li key={link.href}>
+                        <Link
+                          href={link.href}
+                          className={`${
+                            pathName.startsWith(link.href)
+                              ? "text-indigo-600 bg-indigo-50"
+                              : ""
+                          }`}
+                        >
+                          {link.label}
+                        </Link>
+                      </li>
+                    ))}
+                    {data?.user.role === "admin" && (
+                      <li>
+                        <Link href="/admin">Admin</Link>
+                      </li>
+                    )}
+                  </ul>
+                </div>
+
+                <div className="hidden sm:block">
+                  <LoginButton />
+                </div>
               </div>
             </div>
-          </div>
+          </nav>
         )}
     </div>
   );

@@ -104,8 +104,9 @@ const AdminNavbar = () => {
 
                 <li>
                   <button
-                    className={`flex items-center ${activePage === "dashboard" ? "active" : ""
-                      }`}
+                    className={`flex items-center ${
+                      activePage === "dashboard" ? "active" : ""
+                    }`}
                     onClick={() => setActivePage("dashboard")}
                   >
                     <FaChartBar />
@@ -119,44 +120,48 @@ const AdminNavbar = () => {
 
                 <li>
                   <button
-                    className={`flex items-center ${activePage === "reading" ? "active" : ""
-                      }`}
+                    className={`flex items-center ${
+                      activePage === "reading" ? "active" : ""
+                    }`}
                     onClick={() => setActivePage("reading")}
                   >
                     <FaBook />
 
-                    <Link href="/admin/reading">Reading Tests</Link>
+                    <Link href="/admin/allReading">Reading Tests</Link>
                   </button>
                 </li>
 
                 <li>
                   <button
-                    className={`flex items-center ${activePage === "listening" ? "active" : ""
-                      }`}
+                    className={`flex items-center ${
+                      activePage === "listening" ? "active" : ""
+                    }`}
                     onClick={() => setActivePage("listening")}
                   >
                     <FaHeadphones />
 
-                    <Link href="/admin/listening">Listening Tests</Link>
+                    <Link href="/admin/allListening">Listening Tests</Link>
                   </button>
                 </li>
 
                 <li>
                   <button
-                    className={`flex items-center ${activePage === "writing" ? "active" : ""
-                      }`}
+                    className={`flex items-center ${
+                      activePage === "writing" ? "active" : ""
+                    }`}
                     onClick={() => setActivePage("writing")}
                   >
                     <FaEdit />
 
-                    <Link href="/admin/writing">Writing Tests</Link>
+                    <Link href="/admin/allWriting">Writing Tests</Link>
                   </button>
                 </li>
 
                 <li>
                   <button
-                    className={`flex items-center ${activePage === "speaking" ? "active" : ""
-                      }`}
+                    className={`flex items-center ${
+                      activePage === "speaking" ? "active" : ""
+                    }`}
                     onClick={() => setActivePage("speaking")}
                   >
                     <FaMicrophone />
@@ -171,8 +176,9 @@ const AdminNavbar = () => {
 
                 <li>
                   <button
-                    className={`flex items-center ${activePage === "settings" ? "active" : ""
-                      }`}
+                    className={`flex items-center ${
+                      activePage === "settings" ? "active" : ""
+                    }`}
                     onClick={() => setActivePage("settings")}
                   >
                     <FaCog />
@@ -210,11 +216,7 @@ const AdminNavbar = () => {
         </div>
 
         <div className="dropdown dropdown-end">
-          <div
-            tabIndex={0}
-            role="button"
-            className="btn btn-ghost btn-circle"
-          >
+          <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
             <div className="indicator">
               <FaBell className="text-xl" />
               <span className="badge badge-xs badge-primary indicator-item"></span>
@@ -239,24 +241,34 @@ const AdminNavbar = () => {
         </div>
 
         <div className="dropdown dropdown-end">
-          <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+          <div
+            tabIndex={0}
+            role="button"
+            className="btn btn-ghost btn-circle avatar"
+          >
             <div className="w-10 rounded-full">
               <img
                 alt="Tailwind CSS Navbar component"
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+              />
             </div>
           </div>
           <ul
             tabIndex={0}
-            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+          >
             <li>
               <a className="justify-between">
                 Profile
                 <span className="badge">New</span>
               </a>
             </li>
-            <li><a>Settings</a></li>
-            <li><a>Logout</a></li>
+            <li>
+              <a>Settings</a>
+            </li>
+            <li>
+              <a>Logout</a>
+            </li>
           </ul>
         </div>
       </div>
