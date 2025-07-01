@@ -35,7 +35,7 @@ const Footer = () => {
               <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center">
                 <span className="font-bold">I</span>
               </div>
-              <span className="text-xl font-bold">IELTS Master</span>
+              <span className="text-xl font-bold">IELTS</span>
             </div>
             <p className="mt-4 text-gray-400 max-w-xs">
               Premium IELTS preparation resources and practice tests for
