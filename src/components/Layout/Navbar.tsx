@@ -33,6 +33,8 @@ const Navbar: React.FC = () => {
   return (
     <div>
       {!pathName.startsWith("/test/reading/") &&
+        !pathName.startsWith("/test/writing/") &&
+        !pathName.startsWith("/test/listening/") &&
         !pathName.startsWith("/admin") && (
           <nav className="bg-white shadow-sm">
             <div className="container mx-auto px-4 py-3 flex justify-between items-center">
@@ -42,9 +44,11 @@ const Navbar: React.FC = () => {
                   <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center">
                     <span className="text-white font-bold text-xl">I</span>
                   </div>
-                  <span className="text-2xl font-bold text-indigo-800 hidden sm:block">
-                    IELTS
-                  </span>
+                  <Link href={"/"}>
+                    <span className="text-2xl font-bold text-indigo-800 hidden sm:block">
+                      IELTS
+                    </span>
+                  </Link>
                 </div>
               </div>
 
