@@ -10,12 +10,11 @@ const isValidObjectId = (id: string) => /^[0-9a-fA-F]{24}$/.test(id);
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await dbConnect();
-    const resolvedParams = await params;
-    const { id } = resolvedParams;
+    const { id } = await params;
 
     // Validate the ID is a properly formatted MongoDB ObjectID
     if (!id || id === "undefined" || !/^[0-9a-fA-F]{24}$/.test(id)) {
@@ -38,7 +37,7 @@ export async function GET(
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await dbConnect();
@@ -50,7 +49,7 @@ export async function PATCH(
     //   );
     // }
 
-    const { id } = params;
+    const { id } = await params;
     if (!isValidObjectId(id)) {
       return NextResponse.json(
         { success: false, error: "Invalid ID format" },
@@ -89,7 +88,7 @@ export async function PATCH(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await dbConnect();
@@ -101,7 +100,7 @@ export async function DELETE(
     //   );
     // }
 
-    const { id } = params;
+    const { id } = await params;
     if (!isValidObjectId(id)) {
       return NextResponse.json(
         { success: false, error: "Invalid ID format" },

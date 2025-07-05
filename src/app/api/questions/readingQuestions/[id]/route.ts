@@ -16,12 +16,11 @@ interface ReadingTest {
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await dbConnect();
-    const resolvedParams = await params;
-    const { id } = resolvedParams;
+    const { id } = await params;
 
     // Validate the ID is a properly formatted MongoDB ObjectID
     if (!id || id === "undefined" || !/^[0-9a-fA-F]{24}$/.test(id)) {
@@ -45,7 +44,7 @@ export async function GET(
 // Update an existing reading test
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // const session = await getServerSession(authOptions);
@@ -57,7 +56,7 @@ export async function PATCH(
     // }
 
     await dbConnect();
-    const { id } = params;
+    const { id } = await params;
 
     if (!/^[0-9a-fA-F]{24}$/.test(id)) {
       return NextResponse.json(
@@ -93,7 +92,7 @@ export async function PATCH(
 // Delete a reading test by ID
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // const session = await getServerSession(authOptions);
@@ -105,7 +104,7 @@ export async function DELETE(
     // }
 
     await dbConnect();
-    const { id } = params;
+    const { id } = await params;
 
     if (!/^[0-9a-fA-F]{24}$/.test(id)) {
       return NextResponse.json(

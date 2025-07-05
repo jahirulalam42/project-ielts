@@ -1,11 +1,12 @@
-import React from 'react'
+import React from "react";
+import SpeakingCreationPage from "@/components/Admin/Speaking/SpeakingCreationPage";
 
-const page = () => {
+const SpeakingAdminPage = () => {
   return (
     <div>
-      Speaking
+      <SpeakingCreationPage />
     </div>
-  )
-}
+  );
+};
 
-export default page
+export default SpeakingAdminPage;

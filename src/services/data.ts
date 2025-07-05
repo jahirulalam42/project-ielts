@@ -372,3 +372,130 @@ export async function getSubmitListeningTest(testId: any, userId: any) {
     console.log(error);
   }
 }
+
+// Speaking Questions
+export async function getSpeakingTests() {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/speakingQuestions`
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getSpeakingTestById(id: string) {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/speakingQuestions/${id}`
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function submitSpeakingQuestions(formData: any) {
+  try {
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/speakingQuestions`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export const editSpeakingTest = async (id: string, updates: any) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/speakingQuestions/${id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updates),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to update speaking test");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error in editSpeakingTest:", error);
+    throw error;
+  }
+};
+
+export async function deleteSpeakingTest(paramsId: any) {
+  try {
+    const response = await axios.delete(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/speakingQuestions/${paramsId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+// Speaking Submit Answers
+export async function postSubmitSpeakingTest(formData: any) {
+  try {
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/submitAnswers/submitSpeakingAnswers`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export async function getSubmitSpeakingTest(testId: any, userId: any) {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/submitAnswers/submitSpeakingAnswers?testId=${testId}&userId=${userId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+// Speaking Audio Analysis
+export async function analyzeSpeakingAudio(audioData: any) {
+  try {
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/speaking/analyze`,
+      audioData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
