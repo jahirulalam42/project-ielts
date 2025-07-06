@@ -2,6 +2,21 @@ import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/models/UserModel";
 import { NextResponse } from "next/server";
 
+// GET - Fetch all users
+export async function GET() {
+  try {
+    await dbConnect();
+    const users = await UserModel.find({});
+    return NextResponse.json({ success: true, data: users }, { status: 200 });
+  } catch (error) {
+    console.error("GET Error:", error);
+    return NextResponse.json(
+      { success: false, error: "Failed to fetch users" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST(request: Request) {
   try {
     await dbConnect();

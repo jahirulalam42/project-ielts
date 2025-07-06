@@ -171,6 +171,23 @@ const AdminNavbar = () => {
                 </li>
 
                 <li className="menu-title mt-4">
+                  <span>User Management</span>
+                </li>
+
+                <li>
+                  <button
+                    className={`flex items-center ${
+                      activePage === "userManage" ? "active" : ""
+                    }`}
+                    onClick={() => setActivePage("userManage")}
+                  >
+                    <FaUser />
+
+                    <Link href="/admin/users">Users</Link>
+                  </button>
+                </li>
+
+                <li className="menu-title mt-4">
                   <span>Settings</span>
                 </li>
 

@@ -1,5 +1,71 @@
 import axios from "axios";
 
+// Users
+
+export async function getAllUsers() {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/users`
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function postUser(formData: any) {
+  try {
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/users`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error; // ← re‑throw or handle as needed
+  }
+}
+
+export const updateUser = async (id: string, updates: any) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/users/${id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updates),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to update user");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error in User:", error);
+    throw error;
+  }
+};
+
+export async function deleteUser(paramsId: any) {
+  try {
+    const response = await axios.delete(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/users/${paramsId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 // Reading Questions
 
 export async function getReadingQuestions(paramsId: any) {
