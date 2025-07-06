@@ -39,18 +39,20 @@ const ListeningTest: React.FC<any> = ({ test }) => {
   useEffect(() => {
     // Initialize answers state
     const initialAnswers: any = {};
-    test.parts.forEach((part) => {
-      part.questions.forEach((questionSet) => {
+    test.parts.forEach((part: any) => {
+      part.questions.forEach((questionSet: any) => {
         if (questionSet.fill_in_the_blanks_with_subtitle) {
-          questionSet.fill_in_the_blanks_with_subtitle.forEach((blankSet) => {
-            blankSet.questions?.forEach((q: any) => {
-              initialAnswers[`${q.question_number}`] = {
-                value: "",
-                answerText: q.answer,
-                isCorrect: false,
-              };
-            });
-          });
+          questionSet.fill_in_the_blanks_with_subtitle.forEach(
+            (blankSet: any) => {
+              blankSet.questions?.forEach((q: any) => {
+                initialAnswers[`${q.question_number}`] = {
+                  value: "",
+                  answerText: q.answer,
+                  isCorrect: false,
+                };
+              });
+            }
+          );
         }
         if (questionSet.mcq) {
           questionSet.mcq.forEach((q: any) => {
@@ -203,7 +205,7 @@ const ListeningTest: React.FC<any> = ({ test }) => {
           <div className="card-body">
             <h2 className="text-2xl font-bold mb-4">{currentPart.title}</h2>
             <div className="space-y-6">
-              {currentPart.questions?.map((questionSet, index) => (
+              {currentPart.questions?.map((questionSet: any, index: any) => (
                 <div key={index}>
                   {questionSet.fill_in_the_blanks_with_subtitle && (
                     <SubFillInTheBlanks
