@@ -10,7 +10,8 @@ const Profile = () => {
     phone: "+1 (555) 123-4567",
     location: "London, UK",
     birthDate: "1995-08-15",
-    profilePic: "https://randomuser.me/api/portraits/men/32.jpg",
+    profilePic:
+      "https://img.daisyui.com/images/profile/demo/averagebulk@192.webp",
     memberSince: "January 2023",
     lastLogin: "2 hours ago",
   });
