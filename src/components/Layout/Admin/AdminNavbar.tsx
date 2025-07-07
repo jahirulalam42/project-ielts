@@ -1,4 +1,5 @@
 "use client";
+import LoginButton from "@/components/Auth/LoginButton";
 import Link from "next/link";
 import React, { useState } from "react";
 import {
@@ -15,12 +16,14 @@ import {
   FaSearch,
   FaUser,
   FaClipboardList,
+  FaCaretDown,
+  FaHome,
 } from "react-icons/fa";
 
 const AdminNavbar = () => {
   const [activePage, setActivePage] = useState("dashboard");
   return (
-    <div className="navbar bg-base-100 border-b border-black">
+    <div className="navbar bg-gradient-to-r from-indigo-700 to-purple-700 text-white px-6 py-4 shadow-xl">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -94,144 +97,196 @@ const AdminNavbar = () => {
                 className="drawer-overlay"
               ></label>
 
-              <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
-                <div className="py-4 border-b border-base-300">
-                  <h1 className="text-xl font-bold flex items-center gap-2">
-                    <FaClipboardList className="text-primary" />
-                    <span>IELTS Admin</span>
-                  </h1>
+              <div
+                className={`fixed inset-y-0 left-0 z-40 w-72 bg-gradient-to-b from-indigo-900 to-purple-900 text-white transform transition-transform duration-300 lg:translate-x-0 translate-x-0`}
+              >
+                <div className="flex flex-col h-full">
+                  {/* Sidebar header */}
+                  <div className="p-6 border-b border-indigo-700">
+                    <h1 className="text-xl font-bold flex items-center gap-2">
+                      <FaClipboardList className="text-purple-300" />
+                      <span>IELTS Admin</span>
+                    </h1>
+                    <p className="text-xs text-purple-300 mt-1">
+                      Dashboard v2.1
+                    </p>
+                  </div>
+
+                  {/* Sidebar navigation */}
+                  <nav className="flex-1 overflow-y-auto py-4 px-2">
+                    <ul className="space-y-1">
+                      <li>
+                        <Link
+                          href="/admin"
+                          className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
+                            activePage === "dashboard"
+                              ? "bg-purple-700 text-white shadow-md"
+                              : "text-purple-200 hover:bg-purple-800"
+                          }`}
+                          onClick={() => setActivePage("dashboard")}
+                        >
+                          <FaChartBar className="text-lg" />
+                          <span>Dashboard</span>
+                        </Link>
+                      </li>
+
+                      <li className="mt-6 px-3">
+                        <h3 className="text-xs uppercase tracking-wider text-purple-400">
+                          Test Management
+                        </h3>
+                      </li>
+
+                      <li>
+                        <Link
+                          href="/admin/allReading"
+                          className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
+                            activePage === "reading"
+                              ? "bg-purple-700 text-white shadow-md"
+                              : "text-purple-200 hover:bg-purple-800"
+                          }`}
+                          onClick={() => setActivePage("reading")}
+                        >
+                          <FaBook className="text-lg" />
+                          <span>Reading Tests</span>
+                        </Link>
+                      </li>
+
+                      <li>
+                        <Link
+                          href="/admin/allListening"
+                          className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
+                            activePage === "listening"
+                              ? "bg-purple-700 text-white shadow-md"
+                              : "text-purple-200 hover:bg-purple-800"
+                          }`}
+                          onClick={() => setActivePage("listening")}
+                        >
+                          <FaHeadphones className="text-lg" />
+                          <span>Listening Tests</span>
+                        </Link>
+                      </li>
+
+                      <li>
+                        <Link
+                          href="/admin/allWriting"
+                          className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
+                            activePage === "writing"
+                              ? "bg-purple-700 text-white shadow-md"
+                              : "text-purple-200 hover:bg-purple-800"
+                          }`}
+                          onClick={() => setActivePage("writing")}
+                        >
+                          <FaEdit className="text-lg" />
+                          <span>Writing Tests</span>
+                        </Link>
+                      </li>
+
+                      <li>
+                        <Link
+                          href="/admin/speaking"
+                          className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
+                            activePage === "speaking"
+                              ? "bg-purple-700 text-white shadow-md"
+                              : "text-purple-200 hover:bg-purple-800"
+                          }`}
+                          onClick={() => setActivePage("speaking")}
+                        >
+                          <FaMicrophone className="text-lg" />
+                          <span>Speaking Tests</span>
+                        </Link>
+                      </li>
+
+                      <li className="mt-6 px-3">
+                        <h3 className="text-xs uppercase tracking-wider text-purple-400">
+                          User Management
+                        </h3>
+                      </li>
+
+                      <li>
+                        <Link
+                          href="/admin/users"
+                          className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
+                            activePage === "userManage"
+                              ? "bg-purple-700 text-white shadow-md"
+                              : "text-purple-200 hover:bg-purple-800"
+                          }`}
+                          onClick={() => setActivePage("userManage")}
+                        >
+                          <FaUser className="text-lg" />
+                          <span>Users</span>
+                        </Link>
+                      </li>
+
+                      <li className="mt-6 px-3">
+                        <h3 className="text-xs uppercase tracking-wider text-purple-400">
+                          Settings
+                        </h3>
+                      </li>
+
+                      <li>
+                        <Link
+                          href="/admin/settings"
+                          className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
+                            activePage === "settings"
+                              ? "bg-purple-700 text-white shadow-md"
+                              : "text-purple-200 hover:bg-purple-800"
+                          }`}
+                          onClick={() => setActivePage("settings")}
+                        >
+                          <FaCog className="text-lg" />
+                          <span>System Settings</span>
+                        </Link>
+                      </li>
+                    </ul>
+                  </nav>
+
+                  {/* Sidebar footer */}
+                  <div className="p-4 border-t border-indigo-700 text-center">
+                    <div className="badge badge-success gap-2">Online</div>
+                    <p className="text-xs text-purple-300 mt-2">
+                      © 2023 IELTS Admin
+                    </p>
+                  </div>
                 </div>
-
-                <li>
-                  <button
-                    className={`flex items-center ${
-                      activePage === "dashboard" ? "active" : ""
-                    }`}
-                    onClick={() => setActivePage("dashboard")}
-                  >
-                    <FaChartBar />
-                    <Link href="/admin">Dashboard</Link>
-                  </button>
-                </li>
-
-                <li className="menu-title mt-4">
-                  <span>Test Management</span>
-                </li>
-
-                <li>
-                  <button
-                    className={`flex items-center ${
-                      activePage === "reading" ? "active" : ""
-                    }`}
-                    onClick={() => setActivePage("reading")}
-                  >
-                    <FaBook />
-
-                    <Link href="/admin/allReading">Reading Tests</Link>
-                  </button>
-                </li>
-
-                <li>
-                  <button
-                    className={`flex items-center ${
-                      activePage === "listening" ? "active" : ""
-                    }`}
-                    onClick={() => setActivePage("listening")}
-                  >
-                    <FaHeadphones />
-
-                    <Link href="/admin/allListening">Listening Tests</Link>
-                  </button>
-                </li>
-
-                <li>
-                  <button
-                    className={`flex items-center ${
-                      activePage === "writing" ? "active" : ""
-                    }`}
-                    onClick={() => setActivePage("writing")}
-                  >
-                    <FaEdit />
-
-                    <Link href="/admin/allWriting">Writing Tests</Link>
-                  </button>
-                </li>
-
-                <li>
-                  <button
-                    className={`flex items-center ${
-                      activePage === "speaking" ? "active" : ""
-                    }`}
-                    onClick={() => setActivePage("speaking")}
-                  >
-                    <FaMicrophone />
-
-                    <Link href="/admin/speaking">Speaking Tests</Link>
-                  </button>
-                </li>
-
-                <li className="menu-title mt-4">
-                  <span>User Management</span>
-                </li>
-
-                <li>
-                  <button
-                    className={`flex items-center ${
-                      activePage === "userManage" ? "active" : ""
-                    }`}
-                    onClick={() => setActivePage("userManage")}
-                  >
-                    <FaUser />
-
-                    <Link href="/admin/users">Users</Link>
-                  </button>
-                </li>
-
-                <li className="menu-title mt-4">
-                  <span>Settings</span>
-                </li>
-
-                <li>
-                  <button
-                    className={`flex items-center ${
-                      activePage === "settings" ? "active" : ""
-                    }`}
-                    onClick={() => setActivePage("settings")}
-                  >
-                    <FaCog />
-
-                    <Link href="/admin">System Settings</Link>
-                  </button>
-                </li>
-              </ul>
+              </div>
             </div>
           </div>
+        </div>
 
-          <a className="btn btn-ghost text-xl">daisyUI</a>
+        {/* Branding */}
+        <div className="flex items-center gap-2">
+          {/* <div className="bg-white p-2 rounded-lg">
+            <FaClipboardList className="text-indigo-700 text-xl" />
+          </div> */}
+          <h1 className="text-xl font-bold">IELTS Admin</h1>
         </div>
       </div>
       <div className="navbar-center hidden lg:flex">
-        <div className="relative w-64">
+        <div className="relative w-96">
           <div className="join w-full">
             <input
               type="text"
-              placeholder="Search..."
-              className="input input-bordered join-item w-full"
+              placeholder="Search tests, users, settings..."
+              className="input input-bordered join-item w-full bg-white/90 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-300"
             />
-            <button className="btn join-item">
+            <button className="btn join-item bg-indigo-600 border-indigo-600 hover:bg-indigo-700 text-white">
               <FaSearch />
             </button>
           </div>
         </div>
       </div>
-      <div className="navbar-end flex gap-2">
-        <div>
-          <Link href={"/"} className="btn">
-            Main
-          </Link>
-          <a className="btn">Button</a>
-        </div>
 
+      {/* Right section */}
+      <div className="navbar-end flex gap-4">
+        {/* Home button */}
+        <Link
+          href="/"
+          className="btn btn-sm btn-outline btn-accent hidden md:flex"
+        >
+          <FaHome className="mr-1" /> Main Site
+        </Link>
+
+        {/* Notifications dropdown */}
         <div className="dropdown dropdown-end">
           <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
             <div className="indicator">
@@ -257,7 +312,8 @@ const AdminNavbar = () => {
           </div>
         </div>
 
-        <div className="dropdown dropdown-end">
+        {/* User profile dropdown */}
+        <div className="dropdown dropdown-end text-black">
           <div
             tabIndex={0}
             role="button"
@@ -266,7 +322,7 @@ const AdminNavbar = () => {
             <div className="w-10 rounded-full">
               <img
                 alt="Tailwind CSS Navbar component"
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                src="https://img.daisyui.com/images/profile/demo/averagebulk@192.webp"
               />
             </div>
           </div>
@@ -284,7 +340,7 @@ const AdminNavbar = () => {
               <a>Settings</a>
             </li>
             <li>
-              <a>Logout</a>
+              <LoginButton />
             </li>
           </ul>
         </div>
