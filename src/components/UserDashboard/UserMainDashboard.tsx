@@ -13,6 +13,7 @@ import {
   Title,
 } from "chart.js";
 import { FaChartLine, FaHistory, FaBell } from "react-icons/fa";
+import { useSession } from "next-auth/react";
 
 ChartJS.register(
   LineElement,
@@ -189,7 +190,7 @@ const Dashboard = () => {
       : "text-gray-500";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-6">
+    <div className="min-h-screen bg-indigo-50 p-4 md:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -201,193 +202,10 @@ const Dashboard = () => {
               Track your test scores and improvement over time
             </p>
           </div>
-          <div className="flex items-center gap-4">
-            <button className="btn btn-ghost btn-circle relative">
-              <FaBell className="text-xl text-gray-600" />
-              <span className="badge badge-xs badge-primary indicator-item"></span>
-            </button>
-            <div className="flex items-center gap-2">
-              <div className="avatar">
-                <div className="w-10 rounded-full bg-indigo-500 text-white flex items-center justify-center">
-                  <span className="text-lg font-bold">JS</span>
-                </div>
-              </div>
-              <div>
-                <p className="font-medium">John Smith</p>
-                <p className="text-xs text-gray-500">Premium Member</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Skill & Range Select */}
-        <div className="bg-white rounded-xl shadow-md p-4 mb-6">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <h2 className="text-xl font-semibold text-gray-800">
-              Skill Progress
-            </h2>
-            <div className="flex flex-wrap gap-2">
-              {skills.map((s) => (
-                <button
-                  key={s.id}
-                  className={`px-4 py-2 text-sm font-medium transition-all btn btn-md btn-outline ${
-                    selectedSkill === s.id
-                      ? `${s.color} text-white shadow-md`
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  }`}
-                  onClick={() => setSelectedSkill(s.id as any)}
-                >
-                  {s.name}
-                </button>
-              ))}
-            </div>
-            <select
-              className="select select-bordered select-sm"
-              value={timeRange}
-              onChange={(e) => setTimeRange(e.target.value as any)}
-            >
-              <option value="1m">1 Month</option>
-              <option value="3m">3 Months</option>
-              <option value="6m">6 Months</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Charts & History */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Chart Card */}
-          <div className="bg-white rounded-xl shadow-md overflow-hidden">
-            <div className="p-5 border-b border-gray-100 flex justify-between items-center">
-              <h3 className="text-lg font-semibold text-gray-800">
-                Progress Over Time
-              </h3>
-              <div className="flex items-center gap-2">
-                <span className={`text-sm ${trendColor}`}>
-                  {trend === "up"
-                    ? "↑ Improving"
-                    : trend === "down"
-                    ? "↓ Declining"
-                    : "→ Stable"}
-                </span>
-                <span className="badge badge-outline">
-                  {filteredTests.length} tests
-                </span>
-              </div>
-            </div>
-            <div className="p-6 h-64">
-              {filteredTests.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-gray-500">
-                  <FaChartLine className="text-4xl mb-4" />
-                  <p>No test data available for the selected period</p>
-                  <p className="text-sm mt-2">
-                    Take some tests to see your progress
-                  </p>
-                </div>
-              ) : (
-                <Line data={chartData} options={chartOptions} />
-              )}
-            </div>
-          </div>
-
-          {/* Recent History */}
-          <div className="bg-white rounded-xl shadow-md overflow-hidden">
-            <div className="p-5 border-b border-gray-100">
-              <h3 className="text-lg font-semibold text-gray-800">
-                Recent Test History
-              </h3>
-            </div>
-            <div className="p-1">
-              <table className="table-auto w-full">
-                <thead>
-                  <tr className="bg-gray-50">
-                    <th className="py-3 px-4 text-left text-gray-600 text-sm">
-                      Test
-                    </th>
-                    <th className="py-3 px-4 text-center text-gray-600 text-sm">
-                      Date
-                    </th>
-                    <th className="py-3 px-4 text-center text-gray-600 text-sm">
-                      L
-                    </th>
-                    <th className="py-3 px-4 text-center text-gray-600 text-sm">
-                      R
-                    </th>
-                    <th className="py-3 px-4 text-center text-gray-600 text-sm">
-                      W
-                    </th>
-                    <th className="py-3 px-4 text-center text-gray-600 text-sm">
-                      S
-                    </th>
-                    <th className="py-3 px-4 text-center text-gray-600 text-sm">
-                      Overall
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredTests.map((test) => {
-                    const overall = (
-                      (test.listening +
-                        test.reading +
-                        test.writing +
-                        test.speaking) /
-                      4
-                    ).toFixed(1);
-                    return (
-                      <tr key={test.id} className="border-b hover:bg-gray-50">
-                        <td className="py-3 px-4 font-medium text-gray-800">
-                          {test.id}
-                        </td>
-                        <td className="py-3 px-4 text-center text-gray-600 text-sm">
-                          {new Date(test.date).toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                          })}
-                        </td>
-                        {(
-                          [
-                            "listening",
-                            "reading",
-                            "writing",
-                            "speaking",
-                          ] as const
-                        ).map((skill) => (
-                          <td key={skill} className="py-3 px-4 text-center">
-                            <span
-                              className={`font-medium ${
-                                selectedSkill === skill
-                                  ? "text-purple-600"
-                                  : "text-gray-700"
-                              }`}
-                            >
-                              {test[skill]}
-                            </span>
-                          </td>
-                        ))}
-                        <td className="py-3 px-4 text-center font-bold text-gray-900">
-                          {overall}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-              {filteredTests.length === 0 && (
-                <div className="py-12 text-center text-gray-500">
-                  <FaHistory className="mx-auto text-3xl mb-2" />
-                  <p>No test history available</p>
-                </div>
-              )}
-              <div className="p-4 border-t border-gray-100">
-                <button className="btn btn-outline w-full">
-                  View All Test Results
-                </button>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 my-6">
           <div className="bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl shadow-md p-5 text-white">
             <div className="text-sm opacity-80">Listening</div>
             <div className="text-3xl font-bold mt-1">
@@ -423,6 +241,194 @@ const Dashboard = () => {
                 : "--"}
             </div>
             <div className="text-sm mt-2">Latest score</div>
+          </div>
+        </div>
+
+        {/* Skill & Range Select */}
+        {/* Filters + Charts Layout */}
+        <div className="flex flex-col md:flex-row gap-6 mb-6">
+          {/* Filter Panel */}
+          <div className="w-full lg:w-1/4">
+            <div className="card bg-base-100 shadow-md border border-base-200">
+              <div className="card-body p-5">
+                <h2 className="card-title text-lg font-semibold mb-4">
+                  Filter
+                </h2>
+
+                {/* Skill Selector */}
+                <div className="mb-6">
+                  <h3 className="text-sm font-medium text-gray-700 mb-3">
+                    Skill
+                  </h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    {skills.map((s) => (
+                      <button
+                        key={s.id}
+                        className={`btn btn-sm ${
+                          selectedSkill === s.id ? "" : "btn-outline"
+                        } ${
+                          s.id === "listening"
+                            ? "btn-primary"
+                            : s.id === "reading"
+                            ? "btn-info"
+                            : s.id === "writing"
+                            ? "btn-success"
+                            : "btn-warning"
+                        }`}
+                        onClick={() => setSelectedSkill(s.id as any)}
+                      >
+                        {s.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Time Range Selector */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Time Range
+                  </label>
+                  <select
+                    className="select select-bordered w-full select-sm"
+                    value={timeRange}
+                    onChange={(e) => setTimeRange(e.target.value as any)}
+                  >
+                    <option value="1m">1 Month</option>
+                    <option value="3m">3 Months</option>
+                    <option value="6m">6 Months</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Main Dashboard Content */}
+          <div className="w-full md:w-3/4 flex flex-col gap-6">
+            {/* Chart Card */}
+            <div className="bg-white rounded-xl shadow-md overflow-hidden">
+              <div className="p-5 border-b border-gray-100 flex justify-between items-center">
+                <h3 className="text-lg font-semibold text-gray-800">
+                  Progress Over Time
+                </h3>
+                <div className="flex items-center gap-2">
+                  <span className={`text-sm ${trendColor}`}>
+                    {trend === "up"
+                      ? "↑ Improving"
+                      : trend === "down"
+                      ? "↓ Declining"
+                      : "→ Stable"}
+                  </span>
+                  <span className="badge badge-outline">
+                    {filteredTests.length} tests
+                  </span>
+                </div>
+              </div>
+              <div className="p-6 h-64">
+                {filteredTests.length === 0 ? (
+                  <div className="h-full flex flex-col items-center justify-center text-gray-500">
+                    <FaChartLine className="text-4xl mb-4" />
+                    <p>No test data available for the selected period</p>
+                    <p className="text-sm mt-2">
+                      Take some tests to see your progress
+                    </p>
+                  </div>
+                ) : (
+                  <Line data={chartData} options={chartOptions} />
+                )}
+              </div>
+            </div>
+
+            {/* Recent History Table (keep as is) */}
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-md overflow-hidden">
+          <div className="p-5 border-b border-gray-100">
+            <h3 className="text-lg font-semibold text-gray-800">
+              Recent Test History
+            </h3>
+          </div>
+          <div className="p-1">
+            <table className="table-auto w-full">
+              <thead>
+                <tr className="bg-gray-50">
+                  <th className="py-3 px-4 text-left text-gray-600 text-sm">
+                    Test
+                  </th>
+                  <th className="py-3 px-4 text-center text-gray-600 text-sm">
+                    Date
+                  </th>
+                  <th className="py-3 px-4 text-center text-gray-600 text-sm">
+                    L
+                  </th>
+                  <th className="py-3 px-4 text-center text-gray-600 text-sm">
+                    R
+                  </th>
+                  <th className="py-3 px-4 text-center text-gray-600 text-sm">
+                    W
+                  </th>
+                  <th className="py-3 px-4 text-center text-gray-600 text-sm">
+                    S
+                  </th>
+                  <th className="py-3 px-4 text-center text-gray-600 text-sm">
+                    Overall
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredTests.map((test) => {
+                  const overall = (
+                    (test.listening +
+                      test.reading +
+                      test.writing +
+                      test.speaking) /
+                    4
+                  ).toFixed(1);
+                  return (
+                    <tr key={test.id} className="border-b hover:bg-gray-50">
+                      <td className="py-3 px-4 font-medium text-gray-800">
+                        {test.id}
+                      </td>
+                      <td className="py-3 px-4 text-center text-gray-600 text-sm">
+                        {new Date(test.date).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </td>
+                      {(
+                        ["listening", "reading", "writing", "speaking"] as const
+                      ).map((skill) => (
+                        <td key={skill} className="py-3 px-4 text-center">
+                          <span
+                            className={`font-medium ${
+                              selectedSkill === skill
+                                ? "text-purple-600"
+                                : "text-gray-700"
+                            }`}
+                          >
+                            {test[skill]}
+                          </span>
+                        </td>
+                      ))}
+                      <td className="py-3 px-4 text-center font-bold text-gray-900">
+                        {overall}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+            {filteredTests.length === 0 && (
+              <div className="py-12 text-center text-gray-500">
+                <FaHistory className="mx-auto text-3xl mb-2" />
+                <p>No test history available</p>
+              </div>
+            )}
+            <div className="p-4 border-t border-gray-100">
+              <button className="btn btn-outline w-full">
+                View All Test Results
+              </button>
+            </div>
           </div>
         </div>
       </div>

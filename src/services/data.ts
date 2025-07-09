@@ -13,6 +13,17 @@ export async function getAllUsers() {
   }
 }
 
+export async function getSingleUser(paramsId: any) {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/users/${paramsId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export async function postUser(formData: any) {
   try {
     const response = await axios.post(
