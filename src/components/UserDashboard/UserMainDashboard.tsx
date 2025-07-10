@@ -251,15 +251,10 @@ const Dashboard = () => {
           <div className="w-full lg:w-1/4">
             <div className="card bg-base-100 shadow-md border border-base-200">
               <div className="card-body p-5">
-                <h2 className="card-title text-lg font-semibold mb-4">
-                  Filter
-                </h2>
+                <h2 className="card-title text-lg font-semibold mb-2">Skill</h2>
 
                 {/* Skill Selector */}
                 <div className="mb-6">
-                  <h3 className="text-sm font-medium text-gray-700 mb-3">
-                    Skill
-                  </h3>
                   <div className="grid grid-cols-2 gap-2">
                     {skills.map((s) => (
                       <button

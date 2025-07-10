@@ -9,7 +9,8 @@ export async function GET(
 ) {
   try {
     await dbConnect();
-    const user = await UserModel.findById(params.id);
+    const { id } = await params;
+    const user = await UserModel.findById(id);
 
     if (!user) {
       return NextResponse.json(

@@ -1,7 +1,8 @@
 "use client";
-import { getSingleUser } from "@/services/data";
+import { getSingleUser, updateUser } from "@/services/data";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -18,19 +19,27 @@ const Profile = () => {
     setUserData((prev: any) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsEditing(false);
+    try {
+      await updateUser(data?.user.id, userData);
+      toast.success("User Updated");
+    } catch (err) {
+      toast.error("Something went wrong");
+    }
     // In a real app, you would submit to your backend here
     console.log("Profile updated:", userData);
   };
 
   useEffect(() => {
     const fetchSingleUser = async () => {
-      const result = await getSingleUser(data?.user.id);
-      console.log("Single Data information", result);
-      setUserData(result?.data);
-      return result;
+      if (data) {
+        const result = await getSingleUser(data?.user.id);
+        console.log("Single Data information", result);
+        setUserData(result?.data);
+        return result;
+      }
     };
     fetchSingleUser();
   }, [data]);
@@ -101,7 +110,7 @@ const Profile = () => {
                     {isEditing ? (
                       <input
                         type="text"
-                        name="name"
+                        name="username"
                         value={userData.username}
                         onChange={handleInputChange}
                         className="input input-bordered w-full focus:ring-indigo-500 focus:border-indigo-500"
@@ -256,6 +265,7 @@ const Profile = () => {
           </div>
         )} */}
       </div>
+      <ToastContainer />
     </div>
   );
 };
