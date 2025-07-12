@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -14,6 +14,11 @@ import {
 } from "chart.js";
 import { FaChartLine, FaHistory, FaBell } from "react-icons/fa";
 import { useSession } from "next-auth/react";
+import {
+  getAllListeningAnswers,
+  getAllReadingAnswers,
+  getAllWritingAnswers,
+} from "@/services/data";
 
 ChartJS.register(
   LineElement,
@@ -27,9 +32,11 @@ ChartJS.register(
 );
 
 const Dashboard = () => {
+  const { data } = useSession();
   const [selectedSkill, setSelectedSkill] = useState<
     "listening" | "reading" | "writing" | "speaking"
-  >("listening");
+  >("reading");
+  const [selectedData, setSelectedData] = useState();
   const [timeRange, setTimeRange] = useState<"1m" | "3m" | "6m">("3m");
 
   const skills = [
@@ -38,6 +45,38 @@ const Dashboard = () => {
     { id: "writing", name: "Writing", color: "bg-green-500" },
     { id: "speaking", name: "Speaking", color: "bg-orange-500" },
   ];
+
+  console.log("Data", selectedData);
+
+  console.log("Selected Skill", selectedSkill);
+
+  useEffect(() => {
+    const fetchSkillData = async () => {
+      if (!data?.user?.id) return;
+
+      let result;
+      const userId = data.user.id;
+
+      try {
+        if (selectedSkill === "listening") {
+          result = await getAllListeningAnswers(userId);
+        } else if (selectedSkill === "reading") {
+          result = await getAllReadingAnswers(userId);
+        } else if (selectedSkill === "writing") {
+          result = await getAllWritingAnswers(userId);
+        }
+
+        // Add this setter for all cases
+        setSelectedData(result);
+      } catch (error) {
+        console.error("Error fetching skill data:", error);
+      }
+    };
+
+    if (data?.user?.id) {
+      fetchSkillData();
+    }
+  }, [selectedSkill, data?.user]);
 
   const testHistory = useMemo(() => {
     const today = new Date();

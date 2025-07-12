@@ -219,6 +219,17 @@ export async function submitWritingQuestions(formData: any) {
   }
 }
 
+export async function getAllWritingAnswers(userId: any) {
+  try {
+    const response = await axios.get(
+      `api/submitAnswers/submitWritingAnswers/getAllWritingAnswers/${userId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export const updateWritingTest = async (id: string, updates: any) => {
   try {
     const response = await fetch(
@@ -271,6 +282,17 @@ export async function postSubmitReadingTest(formData: any) {
   } catch (error) {
     console.error(error);
     throw error; // ← re‑throw or handle as needed
+  }
+}
+
+export async function getAllReadingAnswers(userId: any) {
+  try {
+    const response = await axios.get(
+      `api/submitAnswers/submitReadingAnswers/getAllReadingAnswers/${userId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
   }
 }
 
@@ -436,6 +458,17 @@ export async function postSubmitListeningTest(formData: any) {
   } catch (error) {
     console.error(error);
     throw error; // ← re‑throw or handle as needed
+  }
+}
+
+export async function getAllListeningAnswers(userId: any) {
+  try {
+    const response = await axios.get(
+      `/api/submitAnswers/submitListeningAnswers/getAllListeningAnswers/${userId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
   }
 }
 
