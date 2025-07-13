@@ -21,32 +21,16 @@ const HistoryTable = ({ selectedSkill, testHistory }: any) => {
                                     Date
                                 </th>
                                 <th className="py-3 px-4 text-center text-gray-600 text-sm">
-                                    L
+                                    Total Score
                                 </th>
                                 <th className="py-3 px-4 text-center text-gray-600 text-sm">
-                                    R
-                                </th>
-                                <th className="py-3 px-4 text-center text-gray-600 text-sm">
-                                    W
-                                </th>
-                                <th className="py-3 px-4 text-center text-gray-600 text-sm">
-                                    S
-                                </th>
-                                <th className="py-3 px-4 text-center text-gray-600 text-sm">
-                                    Overall
+                                    Show Result
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
                             {testHistory.map((test: any) => {
-                                const overall = (
-                                    (test.listening +
-                                        test.reading +
-                                        test.writing +
-                                        test.speaking) /
-                                    4
-                                ).toFixed(1);
-
+                                const totalScore = test[selectedSkill] !== undefined ? test[selectedSkill] : '--';
                                 return (
                                     <tr key={test.id} className="border-b hover:bg-gray-50">
                                         <td className="py-3 px-4 font-medium text-gray-800">
@@ -58,22 +42,11 @@ const HistoryTable = ({ selectedSkill, testHistory }: any) => {
                                                 day: "numeric",
                                             })}
                                         </td>
-                                        {(
-                                            ["listening", "reading", "writing", "speaking"] as const
-                                        ).map((skill) => (
-                                            <td key={skill} className="py-3 px-4 text-center">
-                                                <span
-                                                    className={`font-medium ${selectedSkill === skill
-                                                            ? "text-purple-600 font-bold"
-                                                            : "text-gray-700"
-                                                        }`}
-                                                >
-                                                    {test[skill] || "--"}
-                                                </span>
-                                            </td>
-                                        ))}
                                         <td className="py-3 px-4 text-center font-bold text-gray-900">
-                                            {overall}
+                                            {totalScore}
+                                        </td>
+                                        <td className="py-3 px-4 text-center">
+                                            <button className="btn btn-sm btn-primary">Show Result</button>
                                         </td>
                                     </tr>
                                 );
