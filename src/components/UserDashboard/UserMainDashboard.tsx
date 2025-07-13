@@ -12,13 +12,14 @@ import {
   Filler,
   Title,
 } from "chart.js";
-import { FaChartLine, FaHistory } from "react-icons/fa";
+import { FaChartLine } from "react-icons/fa";
 import { useSession } from "next-auth/react";
 import {
   getAllListeningAnswers,
   getAllReadingAnswers,
   getAllWritingAnswers,
 } from "@/services/data";
+import HistoryTable from "./HistoryTable";
 
 ChartJS.register(
   LineElement,
@@ -179,8 +180,8 @@ const Dashboard = () => {
     trend === "up"
       ? "text-green-500"
       : trend === "down"
-      ? "text-red-500"
-      : "text-gray-500";
+        ? "text-red-500"
+        : "text-gray-500";
 
   return (
     <div className="min-h-screen bg-indigo-50 p-4 md:p-6">
@@ -208,19 +209,17 @@ const Dashboard = () => {
               <div
                 key={skill.id}
                 onClick={() => setSelectedSkill(skill.id as any)}
-                className={`cursor-pointer rounded-xl shadow-md p-5 text-white transition-all duration-300 ${
-                  isSelected
-                    ? "ring-4 ring-white ring-opacity-80 transform scale-[1.02]"
-                    : "opacity-70 hover:opacity-100"
-                } ${
-                  skill.id === "listening"
+                className={`cursor-pointer rounded-xl shadow-md p-5 text-white transition-all duration-300 ${isSelected
+                  ? "ring-4 ring-white ring-opacity-80 transform scale-[1.02]"
+                  : "opacity-70 hover:opacity-100"
+                  } ${skill.id === "listening"
                     ? "bg-gradient-to-br from-purple-600 to-indigo-700"
                     : skill.id === "reading"
-                    ? "bg-gradient-to-br from-blue-600 to-cyan-700"
-                    : skill.id === "writing"
-                    ? "bg-gradient-to-br from-green-600 to-emerald-700"
-                    : "bg-gradient-to-br from-orange-600 to-amber-700"
-                }`}
+                      ? "bg-gradient-to-br from-blue-600 to-cyan-700"
+                      : skill.id === "writing"
+                        ? "bg-gradient-to-br from-green-600 to-emerald-700"
+                        : "bg-gradient-to-br from-orange-600 to-amber-700"
+                  }`}
               >
                 <div className="flex justify-between items-start">
                   <div>
@@ -253,17 +252,15 @@ const Dashboard = () => {
                     {skills.map((s) => (
                       <button
                         key={s.id}
-                        className={`btn btn-sm ${
-                          selectedSkill === s.id ? "" : "btn-outline"
-                        } ${
-                          s.id === "listening"
+                        className={`btn btn-sm ${selectedSkill === s.id ? "" : "btn-outline"
+                          } ${s.id === "listening"
                             ? "btn-primary"
                             : s.id === "reading"
-                            ? "btn-info"
-                            : s.id === "writing"
-                            ? "btn-success"
-                            : "btn-warning"
-                        }`}
+                              ? "btn-info"
+                              : s.id === "writing"
+                                ? "btn-success"
+                                : "btn-warning"
+                          }`}
                         onClick={() => setSelectedSkill(s.id as any)}
                       >
                         {s.name}
@@ -295,8 +292,8 @@ const Dashboard = () => {
                     {trend === "up"
                       ? "↑ Improving"
                       : trend === "down"
-                      ? "↓ Declining"
-                      : "→ Stable"}
+                        ? "↓ Declining"
+                        : "→ Stable"}
                   </span>
                   <span className="badge badge-outline">
                     {testHistory.length} tests
@@ -321,91 +318,7 @@ const Dashboard = () => {
         </div>
 
         {/* Recent History Table */}
-        <div className="bg-white rounded-xl shadow-md overflow-hidden">
-          <div className="p-5 border-b border-gray-100">
-            <h3 className="text-lg font-semibold text-gray-800">
-              Latest 10 Test History
-            </h3>
-          </div>
-          <div className="p-1">
-            <table className="table-auto w-full">
-              <thead>
-                <tr className="bg-gray-50">
-                  <th className="py-3 px-4 text-left text-gray-600 text-sm">
-                    Test
-                  </th>
-                  <th className="py-3 px-4 text-center text-gray-600 text-sm">
-                    Date
-                  </th>
-                  <th className="py-3 px-4 text-center text-gray-600 text-sm">
-                    L
-                  </th>
-                  <th className="py-3 px-4 text-center text-gray-600 text-sm">
-                    R
-                  </th>
-                  <th className="py-3 px-4 text-center text-gray-600 text-sm">
-                    W
-                  </th>
-                  <th className="py-3 px-4 text-center text-gray-600 text-sm">
-                    S
-                  </th>
-                  <th className="py-3 px-4 text-center text-gray-600 text-sm">
-                    Overall
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {testHistory.map((test: any) => {
-                  const overall = (
-                    (test.listening +
-                      test.reading +
-                      test.writing +
-                      test.speaking) /
-                    4
-                  ).toFixed(1);
-
-                  return (
-                    <tr key={test.id} className="border-b hover:bg-gray-50">
-                      <td className="py-3 px-4 font-medium text-gray-800">
-                        {test.id.slice(-6)}
-                      </td>
-                      <td className="py-3 px-4 text-center text-gray-600 text-sm">
-                        {new Date(test.date).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </td>
-                      {(
-                        ["listening", "reading", "writing", "speaking"] as const
-                      ).map((skill) => (
-                        <td key={skill} className="py-3 px-4 text-center">
-                          <span
-                            className={`font-medium ${
-                              selectedSkill === skill
-                                ? "text-purple-600 font-bold"
-                                : "text-gray-700"
-                            }`}
-                          >
-                            {test[skill] || "--"}
-                          </span>
-                        </td>
-                      ))}
-                      <td className="py-3 px-4 text-center font-bold text-gray-900">
-                        {overall}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-            {testHistory.length === 0 && (
-              <div className="py-12 text-center text-gray-500">
-                <FaHistory className="mx-auto text-3xl mb-2" />
-                <p>No test history available</p>
-              </div>
-            )}
-          </div>
-        </div>
+        <HistoryTable selectedSkill={selectedSkill} testHistory={testHistory} />
       </div>
     </div>
   );
