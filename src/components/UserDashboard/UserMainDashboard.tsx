@@ -37,7 +37,15 @@ const Dashboard = () => {
   const [selectedSkill, setSelectedSkill] = useState<
     "listening" | "reading" | "writing" | "speaking"
   >("listening");
-  const [selectedData, setSelectedData] = useState<any>(null);
+
+  // Store all test data for all skills
+  const [allSkillData, setAllSkillData] = useState<{
+    listening: any[];
+    reading: any[];
+    writing: any[];
+    speaking: any[];
+  }>({ listening: [], reading: [], writing: [], speaking: [] });
+  const [loading, setLoading] = useState(true);
 
   const skills = [
     { id: "listening", name: "Listening", color: "bg-purple-500" },
@@ -47,37 +55,35 @@ const Dashboard = () => {
   ];
 
   useEffect(() => {
-    const fetchSkillData = async () => {
+    const fetchAllSkills = async () => {
       if (!data?.user?.id) return;
-
-      let result;
+      setLoading(true);
       const userId = data.user.id;
-
       try {
-        if (selectedSkill === "listening") {
-          result = await getAllListeningAnswers(userId);
-        } else if (selectedSkill === "reading") {
-          result = await getAllReadingAnswers(userId);
-        } else if (selectedSkill === "writing") {
-          result = await getAllWritingAnswers(userId);
-        }
-
-        setSelectedData(result);
+        const [listening, reading, writing] = await Promise.all([
+          getAllListeningAnswers(userId),
+          getAllReadingAnswers(userId),
+          getAllWritingAnswers(userId),
+        ]);
+        setAllSkillData({
+          listening: listening?.data || [],
+          reading: reading?.data || [],
+          writing: writing?.data || [],
+          speaking: [], // Add speaking logic if available
+        });
       } catch (error) {
-        console.error("Error fetching skill data:", error);
+        console.error("Error fetching all skill data:", error);
+      } finally {
+        setLoading(false);
       }
     };
+    if (data?.user?.id) fetchAllSkills();
+  }, [data?.user]);
 
-    if (data?.user?.id) {
-      fetchSkillData();
-    }
-  }, [selectedSkill, data?.user]);
-
-  // Process fetched data into test history format and get latest 10
+  // For the selected skill, build testHistory for chart/table as before
   const testHistory = useMemo(() => {
-    if (!selectedData || !selectedData.success || !selectedData.data) return [];
-
-    const processed = selectedData.data
+    const arr = allSkillData[selectedSkill] || [];
+    return arr
       .map((test: any) => ({
         id: test._id,
         date: new Date(test.submittedAt).toISOString().split("T")[0],
@@ -87,14 +93,9 @@ const Dashboard = () => {
         speaking: 0,
         [selectedSkill]: test.totalScore,
       }))
-      .sort(
-        (a: any, b: any) =>
-          new Date(b.date).getTime() - new Date(a.date).getTime()
-      );
-
-    // Return only the latest 10 tests
-    return processed.slice(0, 10);
-  }, [selectedData, selectedSkill]);
+      .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .slice(0, 10);
+  }, [allSkillData, selectedSkill]);
 
   // min/max for y-axis
   const [minScore, maxScore] = useMemo(() => {
@@ -201,10 +202,9 @@ const Dashboard = () => {
         {/* Stats Cards - Highlight selected skill */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 my-6">
           {skills.map((skill) => {
-            const latestTest = testHistory[0];
-            const score = latestTest ? latestTest[skill.id] : "--";
+            const arr = allSkillData[skill.id as keyof typeof allSkillData] || [];
+            const highestScore = arr.length > 0 ? Math.max(...arr.map((test: any) => test.totalScore || 0)) : 0;
             const isSelected = selectedSkill === skill.id;
-
             return (
               <div
                 key={skill.id}
@@ -224,8 +224,8 @@ const Dashboard = () => {
                 <div className="flex justify-between items-start">
                   <div>
                     <div className="text-sm opacity-80">{skill.name}</div>
-                    <div className="text-3xl font-bold mt-1">{score}</div>
-                    <div className="text-sm mt-2">Latest score</div>
+                    <div className="text-3xl font-bold mt-1">{highestScore}</div>
+                    <div className="text-sm mt-2">Highest score</div>
                   </div>
                   {isSelected && (
                     <div className="bg-white bg-opacity-20 rounded-full p-1">
