@@ -1,7 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FaHistory } from 'react-icons/fa';
+import { useSession } from 'next-auth/react';
+import SubmissionResultModal from './SubmissionResultModal';
 
 const HistoryTable = ({ selectedSkill, testHistory }: any) => {
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selectedTestId, setSelectedTestId] = useState<string | null>(null);
+    const { data: session } = useSession();
+
+    const handleShowResult = (testId: string) => {
+        setSelectedTestId(testId);
+        setModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setModalOpen(false);
+        setSelectedTestId(null);
+    };
+
     return (
         <div>
             <div className="bg-white rounded-xl shadow-md overflow-hidden">
@@ -46,7 +62,9 @@ const HistoryTable = ({ selectedSkill, testHistory }: any) => {
                                             {totalScore}
                                         </td>
                                         <td className="py-3 px-4 text-center">
-                                            <button className="btn btn-sm btn-primary">Show Result</button>
+                                            <button className="btn btn-sm btn-primary" onClick={() => handleShowResult(test.id)}>
+                                                Show Result
+                                            </button>
                                         </td>
                                     </tr>
                                 );
@@ -61,6 +79,14 @@ const HistoryTable = ({ selectedSkill, testHistory }: any) => {
                     )}
                 </div>
             </div>
+            {/* Modal overlay */}
+            {modalOpen && selectedTestId && session?.user?.id && (
+                <SubmissionResultModal
+                    testId={selectedTestId}
+                    userId={session.user.id}
+                    onClose={handleCloseModal}
+                />
+            )}
         </div>
     )
 }
