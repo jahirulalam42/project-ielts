@@ -22,6 +22,7 @@ export interface SubmitWritingAnswers extends mongoose.Document {
     evaluation?: EvaluationResult;
   }>;
   submittedAt: string;
+  totalScore: Number;
 }
 
 const SubmitWritingAnswerSchema = new mongoose.Schema<SubmitWritingAnswers>({
@@ -33,27 +34,36 @@ const SubmitWritingAnswerSchema = new mongoose.Schema<SubmitWritingAnswers>({
     type: String,
     required: [true, "Please provide a unique testId"],
   },
-  answers: [{
-    partId: String,
-    question: String,
-    response: String,
-    instructions: [String],
-    evaluation: {
-      score: Number,
-      feedback: {
-        taskAchievement: String,
-        coherenceAndCohesion: String,
-        lexicalResource: String,
-        grammaticalRangeAndAccuracy: String
+  answers: [
+    {
+      partId: String,
+      question: String,
+      response: String,
+      instructions: [String],
+      evaluation: {
+        score: Number,
+        feedback: {
+          taskAchievement: String,
+          coherenceAndCohesion: String,
+          lexicalResource: String,
+          grammaticalRangeAndAccuracy: String,
+        },
+        overallFeedback: String,
       },
-      overallFeedback: String
-    }
-  }],
+    },
+  ],
   submittedAt: {
     type: String,
     required: [true, "Please provide submission time"],
   },
+  totalScore: {
+    type: Number,
+  },
 });
 
-export default (mongoose.models.SubmitWritingAnswer as Model<SubmitWritingAnswers>) ||
-  mongoose.model<SubmitWritingAnswers>("SubmitWritingAnswer", SubmitWritingAnswerSchema);
+export default (mongoose.models
+  .SubmitWritingAnswer as Model<SubmitWritingAnswers>) ||
+  mongoose.model<SubmitWritingAnswers>(
+    "SubmitWritingAnswer",
+    SubmitWritingAnswerSchema
+  );

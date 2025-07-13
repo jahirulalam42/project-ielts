@@ -84,7 +84,7 @@ export async function PATCH(request: Request, { params }: { params: any }) {
       { $set: { "answers.$[elem].evaluation": evaluation } },
       {
         arrayFilters: [{ "elem.partId": partId }],
-        new: true
+        new: true,
       }
     );
 
