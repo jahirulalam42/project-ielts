@@ -46,7 +46,19 @@ const HistoryTable = ({ selectedSkill, testHistory }: any) => {
                         </thead>
                         <tbody>
                             {testHistory.map((test: any) => {
-                                const totalScore = test[selectedSkill] !== undefined ? test[selectedSkill] : '--';
+                                let totalScore = '--';
+                                if (selectedSkill === 'writing') {
+                                    if (Array.isArray(test.answers) && test.answers.length > 0) {
+                                        const scores = test.answers
+                                            .map((a: any) => a.evaluation?.score)
+                                            .filter((s: any) => typeof s === 'number');
+                                        if (scores.length > 0) {
+                                            totalScore = (scores.reduce((sum: number, s: number) => sum + s, 0) / scores.length).toFixed(1);
+                                        }
+                                    }
+                                } else {
+                                    totalScore = test[selectedSkill] !== undefined ? test[selectedSkill] : '--';
+                                }
                                 return (
                                     <tr key={test.id} className="border-b hover:bg-gray-50">
                                         <td className="py-3 px-4 font-medium text-gray-800">

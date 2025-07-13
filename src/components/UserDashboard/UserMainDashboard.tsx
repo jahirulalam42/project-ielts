@@ -84,15 +84,27 @@ const Dashboard = () => {
   const testHistory = useMemo(() => {
     const arr = allSkillData[selectedSkill] || [];
     return arr
-      .map((test: any) => ({
-        id: test._id,
-        date: new Date(test.submittedAt).toISOString().split("T")[0],
-        listening: 0,
-        reading: 0,
-        writing: 0,
-        speaking: 0,
-        [selectedSkill]: test.totalScore,
-      }))
+      .map((test: any) => {
+        let writingScore = 0;
+        if (selectedSkill === 'writing' && Array.isArray(test.answers) && test.answers.length > 0) {
+          const scores = test.answers
+            .map((a: any) => a.evaluation?.score)
+            .filter((s: any) => typeof s === 'number');
+          if (scores.length > 0) {
+            writingScore = scores.reduce((sum: number, s: number) => sum + s, 0) / scores.length;
+          }
+        }
+        return {
+          ...test,
+          id: test._id,
+          date: new Date(test.submittedAt).toISOString().split("T")[0],
+          listening: 0,
+          reading: 0,
+          writing: selectedSkill === 'writing' ? writingScore : 0,
+          speaking: 0,
+          [selectedSkill]: selectedSkill === 'writing' ? writingScore : test.totalScore,
+        };
+      })
       .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime())
       .slice(0, 10);
   }, [allSkillData, selectedSkill]);
