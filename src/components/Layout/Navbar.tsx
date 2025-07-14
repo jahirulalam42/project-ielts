@@ -35,7 +35,8 @@ const Navbar: React.FC = () => {
       {!pathName.startsWith("/test/reading/") &&
         !pathName.startsWith("/test/writing/") &&
         !pathName.startsWith("/test/listening/") &&
-        !pathName.startsWith("/admin") && (
+        !pathName.startsWith("/admin") &&
+        !pathName.startsWith("/user/") && (
           <nav className="bg-white shadow-sm">
             <div className="container mx-auto px-4 py-3 flex justify-between items-center">
               {/* Logo */}

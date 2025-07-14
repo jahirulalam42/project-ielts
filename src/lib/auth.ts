@@ -18,6 +18,9 @@ import { getToken } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 export const authOptions: NextAuthOptions = {
+  pages: {
+    signIn: "/user/signin",
+  },
   providers: [
     CredentialsProvider({
       name: "Credentials",

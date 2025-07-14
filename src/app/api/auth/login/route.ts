@@ -20,7 +20,7 @@ export const POST = async (request: Request) => {
   } catch (error) {
     console.error("POST Error:", error);
     return NextResponse.json(
-      { success: false, error: "Invalid User format - Failed to create test" },
+      { success: false, error: "Invalid User format - Failed to Log In" },
       { status: 400 }
     );
   }

@@ -33,7 +33,8 @@ const Footer = () => {
     !pathName.startsWith("/test/reading/") &&
     !pathName.startsWith("/test/writing/") &&
     !pathName.startsWith("/test/listening/") &&
-    !pathName.startsWith("/admin") && (
+    !pathName.startsWith("/admin") &&
+    !pathName.startsWith("/user/") && (
       <footer className="bg-gray-900 text-white py-12">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between">

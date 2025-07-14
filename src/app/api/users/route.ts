@@ -27,7 +27,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("POST Error:", error);
     return NextResponse.json(
-      { success: false, error: "Invalid User format - Failed to create test" },
+      { success: false, error: "Invalid User format - Failed to create User" },
       { status: 400 }
     );
   }
