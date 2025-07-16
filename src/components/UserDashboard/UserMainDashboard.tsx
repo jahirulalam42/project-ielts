@@ -215,7 +215,24 @@ const Dashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 my-6">
           {skills.map((skill) => {
             const arr = allSkillData[skill.id as keyof typeof allSkillData] || [];
-            const highestScore = arr.length > 0 ? Math.max(...arr.map((test: any) => test.totalScore || 0)) : 0;
+            
+            // Calculate highest score properly for each skill
+            const highestScore = arr.length > 0 ? Math.max(...arr.map((test: any) => {
+              if (skill.id === 'writing' && Array.isArray(test.answers) && test.answers.length > 0) {
+                // For writing, calculate average score from answers
+                const scores = test.answers
+                  .map((a: any) => a.evaluation?.score)
+                  .filter((s: any) => typeof s === 'number');
+                if (scores.length > 0) {
+                  return scores.reduce((sum: number, s: number) => sum + s, 0) / scores.length;
+                }
+                return 0;
+              } else {
+                // For other skills, use totalScore
+                return test.totalScore || 0;
+              }
+            })) : 0;
+            
             const isSelected = selectedSkill === skill.id;
             return (
               <div
