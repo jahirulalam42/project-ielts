@@ -1,27 +1,51 @@
+// /app/api/auth/login/route.ts (App Router)
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/models/UserModel";
 import { NextResponse } from "next/server";
-
-interface User {
-  username: string;
-  email: string;
-  password: string;
-}
+import bcrypt from "bcrypt";
 
 export const POST = async (request: Request) => {
   try {
     await dbConnect();
+
     const body = await request.json();
-    // Validate input data here if needed
-    const user: User[] = await UserModel.find({ email: body.email });
-    if (body.password === user[0].password) {
-      return NextResponse.json({ success: true, data: user }, { status: 201 });
+    const { email, password } = body;
+
+    if (!email || !password) {
+      return NextResponse.json(
+        { success: false, error: "Email and password are required" },
+        { status: 400 }
+      );
     }
-  } catch (error) {
-    console.error("POST Error:", error);
+
+    const user = await UserModel.findOne({ email: email.toLowerCase().trim() });
+    if (!user) {
+      return NextResponse.json(
+        { success: false, error: "Invalid email or password" },
+        { status: 401 }
+      );
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return NextResponse.json(
+        { success: false, error: "Invalid email or password" },
+        { status: 401 }
+      );
+    }
+
+    // Return user as an array to match credentials.authorize() expectation
+    const { password: _, ...userData } = user.toObject();
+
     return NextResponse.json(
-      { success: false, error: "Invalid User format - Failed to Log In" },
-      { status: 400 }
+      { success: true, data: [userData] },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Login API Error:", error);
+    return NextResponse.json(
+      { success: false, error: "Server error during login" },
+      { status: 500 }
     );
   }
 };

@@ -1,11 +1,11 @@
 // components/SignUp.tsx
 "use client";
 import { useState, FormEvent } from "react";
-import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
 import { postUser } from "@/services/data";
 import { ToastContainer, toast } from "react-toastify";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+// import { redirect } from "next/navigation";
 
 interface SignUpData {
   username: string;
@@ -18,7 +18,7 @@ interface SignUpData {
 }
 
 const SignUp = () => {
-  //   const router = useRouter();
+  const router = useRouter();
   const [form, setForm] = useState<SignUpData>({
     username: "",
     email: "",
@@ -55,11 +55,14 @@ const SignUp = () => {
       console.log("sign up", res);
 
       if (res.success) {
-        toast.success("User has been Created!");
+        toast.success("User has been Created!", {
+          onClose: () => router.push("/user/signin"),
+          autoClose: 2000, // ensure the toast auto-dismisses
+        });
       }
 
       // On success, redirect or clear form
-      redirect("/");
+      // redirect("/user/signin");
     } catch (err: any) {
       setError(err.message);
       toast.error(err);

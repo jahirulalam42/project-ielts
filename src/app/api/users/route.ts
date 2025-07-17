@@ -1,6 +1,7 @@
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/models/UserModel";
 import { NextResponse } from "next/server";
+import bcrypt from "bcrypt";
 
 // GET - Fetch all users
 export async function GET() {
@@ -20,15 +21,63 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     await dbConnect();
+
     const body = await request.json();
-    // Validate input data here if needed
-    const newUser = await UserModel.create(body);
-    return NextResponse.json({ success: true, data: newUser }, { status: 201 });
-  } catch (error) {
-    console.error("POST Error:", error);
+    const {
+      username,
+      email,
+      password,
+      phone,
+      location,
+      bio,
+      role = "user", // default role
+    } = body;
+
+    // ✅ Basic field validation
+    if (!username || !email || !password) {
+      return NextResponse.json(
+        { success: false, error: "Username, email, and password are required" },
+        { status: 400 }
+      );
+    }
+
+    // ✅ Check for existing user
+    const existingUser = await UserModel.findOne({
+      email: email.toLowerCase().trim(),
+    });
+    if (existingUser) {
+      return NextResponse.json(
+        { success: false, error: "User with this email already exists" },
+        { status: 409 }
+      );
+    }
+
+    // ✅ Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // ✅ Create user
+    const newUser = await UserModel.create({
+      username,
+      email: email.toLowerCase().trim(),
+      password: hashedPassword,
+      phone,
+      location,
+      bio,
+      role,
+    });
+
+    // ✅ Strip password from response
+    const { password: _, ...userWithoutPassword } = newUser.toObject();
+
     return NextResponse.json(
-      { success: false, error: "Invalid User format - Failed to create User" },
-      { status: 400 }
+      { success: true, data: userWithoutPassword },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error("Register Error:", error);
+    return NextResponse.json(
+      { success: false, error: "Failed to register user" },
+      { status: 500 }
     );
   }
 }
