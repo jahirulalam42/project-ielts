@@ -222,11 +222,12 @@ export async function submitWritingQuestions(formData: any) {
 export async function getAllWritingAnswers(userId: any) {
   try {
     const response = await axios.get(
-      `api/submitAnswers/submitWritingAnswers/getAllWritingAnswers/${userId}`
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/submitAnswers/submitWritingAnswers/getAllWritingAnswers/${userId}`
     );
     return response.data;
   } catch (error) {
-    console.log(error);
+    console.error("Error fetching writing answers:", error);
+    return { success: false, data: [] };
   }
 }
 
@@ -330,15 +331,17 @@ export async function postSubmitWritingTest(formData: any) {
 export async function getSubmitWritingTest(testId: any, userId: any) {
   try {
     console.log("Fetching writing test submission:", { testId, userId });
-    // If testId is actually a submission ID, use it directly
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/submitAnswers/submitWritingAnswers/${testId}`
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/submitAnswers/submitWritingAnswers/${testId}/${userId}`
     );
     console.log("Writing test submission response:", response.data);
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching writing test submission:", error);
-    throw error;
+    if (error.response?.status === 404) {
+      return { success: false, error: "Writing submission not found" };
+    }
+    return { success: false, error: "Failed to fetch writing submission" };
   }
 }
 

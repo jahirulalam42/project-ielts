@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getSubmitReadingTest, getSubmitWritingTest, getSubmitSpeakingTest } from "@/services/data";
+import { getSubmitReadingTest, getSubmitWritingTest, getSubmitSpeakingTest, getSingleWritingTest } from "@/services/data";
 
 interface SubmissionResultModalProps {
   testId: string;
@@ -44,6 +44,24 @@ interface Answer {
   question?: string;
   response?: string;
   instructions?: string[];
+  image?: string;
+}
+
+interface OriginalTestPart {
+  title: string;
+  subtitle: string;
+  Question: string[];
+  instruction: string[];
+  image: string;
+  _id: string;
+}
+
+interface OriginalTest {
+  title: string;
+  _id: string;
+  type: string;
+  duration: number;
+  parts: OriginalTestPart[];
 }
 
 const SubmissionResultModal: React.FC<SubmissionResultModalProps> = ({ 
@@ -53,6 +71,7 @@ const SubmissionResultModal: React.FC<SubmissionResultModalProps> = ({
   testType = "reading" 
 }) => {
   const [submission, setSubmission] = useState<Submission | null>(null);
+  const [originalTest, setOriginalTest] = useState<OriginalTest | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -85,10 +104,25 @@ const SubmissionResultModal: React.FC<SubmissionResultModalProps> = ({
             : response.data;
           console.log("Submission data received:", data);
           setSubmission(data || null);
+
+          // For writing tests, fetch original test data to get images if missing
+          if (testType === "writing" && data) {
+            try {
+              const originalTestResponse = await getSingleWritingTest(testId);
+              if (originalTestResponse && originalTestResponse.success) {
+                setOriginalTest(originalTestResponse.data);
+                console.log("Original test data for modal:", originalTestResponse.data);
+              }
+            } catch (err) {
+              console.error("Failed to fetch original test data for modal:", err);
+            }
+          }
+
           setError(null);
         } else {
           console.error("API response error:", response);
-          setError("Failed to fetch submission data: " + (response?.error || response?.message || 'No data.'));
+          const errorMessage = response?.error || response?.message || 'No data.';
+          setError(`Failed to fetch submission data: ${errorMessage}`);
         }
       } catch (err: any) {
         console.error('Error details:', err);
@@ -143,6 +177,21 @@ const SubmissionResultModal: React.FC<SubmissionResultModalProps> = ({
     return text.trim().split(/\s+/).filter(word => word.length > 0).length;
   };
 
+  // Helper function to get image for an answer (for writing tests)
+  const getImageForAnswer = (answer: Answer, index: number): string | undefined => {
+    // First try to get image from submission
+    if (answer.image) {
+      return answer.image;
+    }
+    
+    // If no image in submission, try to get from original test
+    if (originalTest && originalTest.parts && originalTest.parts[index]) {
+      return originalTest.parts[index].image;
+    }
+    
+    return undefined;
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50" onClick={onClose}>
       <div className="bg-white rounded-lg shadow-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto relative" onClick={(e) => e.stopPropagation()}>
@@ -182,6 +231,16 @@ const SubmissionResultModal: React.FC<SubmissionResultModalProps> = ({
                           <div className="prose max-w-none mb-4">
                             <p className="mb-2">{answer.question}</p>
                           </div>
+
+                          {getImageForAnswer(answer, index) && (
+                            <div className="my-4">
+                              <img
+                                src={getImageForAnswer(answer, index)}
+                                alt="Question Image"
+                                className="rounded-lg max-w-full h-auto mx-auto"
+                              />
+                            </div>
+                          )}
 
                           <div className="mt-4 bg-neutral text-neutral-content p-4 rounded-lg">
                             <h4 className="font-bold mb-2">Instructions:</h4>

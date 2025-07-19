@@ -129,7 +129,8 @@ export default function WritingTestPage() {
       partId: part._id,
       question: part.Question.join(' '), // Combine question array
       response: responses[part._id] || '',
-      instructions: part.instruction
+      instructions: part.instruction,
+      image: part.image // Include the image URL
     }));
 
     // Create test data object exactly as requested

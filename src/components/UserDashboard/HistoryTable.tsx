@@ -88,7 +88,7 @@ const HistoryTable = ({ selectedSkill, testHistory }: any) => {
                                             </div>
                                         </td>
                                         <td className="py-3 px-4 text-center">
-                                            <button className="btn btn-sm btn-primary" onClick={() => handleShowResult(test.id)}>
+                                            <button className="btn btn-sm btn-primary" onClick={() => handleShowResult(selectedSkill === 'writing' ? test.testId : test.id)}>
                                                 Show Result
                                             </button>
                                         </td>

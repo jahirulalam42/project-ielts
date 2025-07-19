@@ -8,6 +8,7 @@ export interface SubmitWritingAnswers extends mongoose.Document {
     question: string;
     response: string;
     instructions: string[];
+    image?: string;
   }>;
   submittedAt: string;
 }
@@ -27,6 +28,7 @@ const SubmitWritingAnswerSchema = new mongoose.Schema<SubmitWritingAnswers>({
       question: String,
       response: String,
       instructions: [String],
+      image: String,
     },
   ],
   submittedAt: {

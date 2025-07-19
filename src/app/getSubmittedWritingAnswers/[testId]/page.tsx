@@ -1,7 +1,7 @@
 "use client";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { getSubmitWritingTest } from "@/services/data";
+import { getSubmitWritingTest, getSingleWritingTest } from "@/services/data";
 import { useSession } from "next-auth/react";
 
 // Define TypeScript interfaces
@@ -10,6 +10,7 @@ interface Answer {
   question: string;
   response: string;
   instructions: string[];
+  image?: string;
 }
 
 interface Submission {
@@ -21,13 +22,46 @@ interface Submission {
   __v: number;
 }
 
+interface OriginalTestPart {
+  title: string;
+  subtitle: string;
+  Question: string[];
+  instruction: string[];
+  image: string;
+  _id: string;
+}
+
+interface OriginalTest {
+  title: string;
+  _id: string;
+  type: string;
+  duration: number;
+  parts: OriginalTestPart[];
+}
+
 const SubmissionPage = () => {
   const params = useParams();
   const { testId } = params;
   const [submission, setSubmission] = useState<Submission | null>(null);
+  const [originalTest, setOriginalTest] = useState<OriginalTest | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { data: session } = useSession();
+
+  // Helper function to get image for an answer
+  const getImageForAnswer = (answer: Answer, index: number): string | undefined => {
+    // First try to get image from submission
+    if (answer.image) {
+      return answer.image;
+    }
+    
+    // If no image in submission, try to get from original test
+    if (originalTest && originalTest.parts && originalTest.parts[index]) {
+      return originalTest.parts[index].image;
+    }
+    
+    return undefined;
+  };
 
   useEffect(() => {
     const fetchSubmission = async () => {
@@ -43,6 +77,8 @@ const SubmissionPage = () => {
         }
 
         const response = await getSubmitWritingTest(testIdStr, session.user.id);
+        console.log("Raw submission response:", response);
+        
         if (response && response.success) {
           const submissionData = response.data;
           if (!submissionData) {
@@ -51,7 +87,33 @@ const SubmissionPage = () => {
             return;
           }
 
+          console.log("Submission data:", submissionData);
+          console.log("Answers:", submissionData.answers);
+          
+          // Check if answers have images
+          if (submissionData.answers) {
+            submissionData.answers.forEach((answer: any, index: number) => {
+              console.log(`Answer ${index + 1}:`, {
+                question: answer.question,
+                image: answer.image,
+                hasImage: !!answer.image
+              });
+            });
+          }
+
           setSubmission(submissionData);
+
+          // Fetch original test data to get images if missing
+          try {
+            const originalTestResponse = await getSingleWritingTest(testIdStr);
+            if (originalTestResponse && originalTestResponse.success) {
+              setOriginalTest(originalTestResponse.data);
+              console.log("Original test data:", originalTestResponse.data);
+            }
+          } catch (err) {
+            console.error("Failed to fetch original test data:", err);
+          }
+
           setError(null);
         } else {
           setError("No data received from server");
@@ -145,6 +207,25 @@ const SubmissionPage = () => {
                 <div className="prose max-w-none mb-4">
                   <p className="mb-2">{answer.question}</p>
                 </div>
+
+                {getImageForAnswer(answer, index) && (
+                  <div className="my-4">
+                    <img
+                      src={getImageForAnswer(answer, index)}
+                      alt="Question Image"
+                      className="rounded-lg max-w-full h-auto mx-auto"
+                      onError={(e) => console.error("Image failed to load:", getImageForAnswer(answer, index))}
+                      onLoad={() => console.log("Image loaded successfully:", getImageForAnswer(answer, index))}
+                    />
+                  </div>
+                )}
+                {!getImageForAnswer(answer, index) && (
+                  <div className="my-4 p-2 bg-yellow-100 text-yellow-800 rounded">
+                    Debug: No image found for this answer. 
+                    Submission image: {JSON.stringify(answer.image)} | 
+                    Original test image: {originalTest?.parts?.[index]?.image || 'N/A'}
+                  </div>
+                )}
 
                 <div className="mt-4 bg-neutral text-neutral-content p-4 rounded-lg">
                   <h4 className="font-bold mb-2">Instructions:</h4>
