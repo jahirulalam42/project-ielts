@@ -1,9 +1,8 @@
 "use client";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { getSubmitWritingTest, updateWritingEvaluation } from "@/services/data";
+import { getSubmitWritingTest } from "@/services/data";
 import { useSession } from "next-auth/react";
-import { evaluateWritingAnswer } from "@/services/ai";
 
 // Define TypeScript interfaces
 interface Answer {
@@ -11,7 +10,6 @@ interface Answer {
   question: string;
   response: string;
   instructions: string[];
-  evaluation?: Evaluation;
 }
 
 interface Submission {
@@ -23,29 +21,13 @@ interface Submission {
   __v: number;
 }
 
-interface Evaluation {
-  score: number;
-  feedback: {
-    taskAchievement: string;
-    coherenceAndCohesion: string;
-    lexicalResource: string;
-    grammaticalRangeAndAccuracy: string;
-  };
-  overallFeedback: string;
-}
-
 const SubmissionPage = () => {
   const params = useParams();
   const { testId } = params;
   const [submission, setSubmission] = useState<Submission | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [evaluations, setEvaluations] = useState<Record<string, Evaluation>>(
-    {}
-  );
-  const [evaluating, setEvaluating] = useState<Record<string, boolean>>({});
   const { data: session } = useSession();
-  const [totalScore, setTotalScore] = useState(0);
 
   useEffect(() => {
     const fetchSubmission = async () => {
@@ -71,43 +53,6 @@ const SubmissionPage = () => {
 
           setSubmission(submissionData);
           setError(null);
-
-          if (submissionData.answers && Array.isArray(submissionData.answers)) {
-            for (const answer of submissionData.answers) {
-              if (!answer.evaluation) {
-                try {
-                  setEvaluating((prev) => ({ ...prev, [answer.partId]: true }));
-                  const evaluation = await evaluateWritingAnswer(
-                    answer.question,
-                    answer.response,
-                    answer.instructions
-                  );
-                  setEvaluations((prev) => ({
-                    ...prev,
-                    [answer.partId]: evaluation,
-                  }));
-                  await updateWritingEvaluation(
-                    testIdStr,
-                    session.user.id,
-                    answer.partId,
-                    evaluation
-                  );
-                } catch (error) {
-                  setError("Failed to evaluate some answers");
-                } finally {
-                  setEvaluating((prev) => ({
-                    ...prev,
-                    [answer.partId]: false,
-                  }));
-                }
-              } else {
-                setEvaluations((prev) => ({
-                  ...prev,
-                  [answer.partId]: answer.evaluation,
-                }));
-              }
-            }
-          }
         } else {
           setError("No data received from server");
         }
@@ -120,58 +65,6 @@ const SubmissionPage = () => {
 
     fetchSubmission();
   }, [testId, session?.user?.id]);
-
-  useEffect(() => {
-    if (
-      submission &&
-      submission.answers.length > 0 &&
-      Object.keys(evaluations).length === submission.answers.length
-    ) {
-      const score = submission.answers.reduce((total, answer) => {
-        const evalResult = evaluations[answer.partId];
-        return total + (evalResult?.score || 0);
-      }, 0);
-
-      // Save totalScore to DB
-      if (submission) {
-        const saveTotalScore = async () => {
-          try {
-            await fetch("/api/submitAnswers/submitWritingAnswers", {
-              method: "PATCH",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                submissionId: submission?._id,
-                totalScore: score,
-              }),
-            });
-
-            setTotalScore(score);
-            console.log("Fetch Success!");
-          } catch (err) {
-            console.error("Failed to save totalScore", err);
-          }
-        };
-
-        saveTotalScore();
-      }
-    }
-  }, [evaluations, submission]);
-
-  console.log("Submission and Total Score", { submission, totalScore });
-
-  // Function to calculate the total score
-  //   const getTotalScore = () => {
-  //     return (
-  //       submission?.answers.reduce((total, answer) => {
-  //         const evaluation = evaluations[answer.partId];
-  //         if (evaluation && evaluation.score) {
-  //           return total + evaluation.score;
-  //         }
-  //         setTotalScore(total);
-  //         return total;
-  //       }, 0) || 0
-  //     );
-  //   };
 
   if (loading) {
     return (
@@ -242,12 +135,6 @@ const SubmissionPage = () => {
             </div>
           </div>
 
-          {/* Display the Total Score */}
-          <div className="mb-4">
-            <h2 className="text-2xl font-semibold mb-4">Total Score</h2>
-            <p className="text-xl font-bold">Score: {totalScore}</p>
-          </div>
-
           {submission?.answers?.map((answer, index) => (
             <div key={answer.partId} className="mb-8">
               <div className="divider"></div>
@@ -276,70 +163,8 @@ const SubmissionPage = () => {
                     </pre>
                   </div>
                   <div className="mt-2 text-right text-sm text-gray-500">
-                    Word Count: {answer.response.trim().split(/\s+/).length}
+                    Word Count: {answer.response.trim().split(/\s+/).filter(word => word.length > 0).length}
                   </div>
-                </div>
-
-                <div className="mt-6">
-                  {evaluating[answer.partId] ? (
-                    <div className="flex items-center gap-2">
-                      <span className="loading loading-spinner loading-sm"></span>
-                      Evaluating your answer...
-                    </div>
-                  ) : evaluations[answer.partId] ? (
-                    <div className="mt-4 p-4 bg-base-100 rounded-lg shadow">
-                      <h4 className="text-lg font-semibold mb-2">
-                        Evaluation Results
-                      </h4>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <p>
-                            <b>Task Achievement:</b>{" "}
-                            {
-                              evaluations[answer.partId].feedback
-                                .taskAchievement
-                            }
-                          </p>
-                          <br />
-                          <p>
-                            <b>Coherence & Cohesion:</b>{" "}
-                            {
-                              evaluations[answer.partId].feedback
-                                .coherenceAndCohesion
-                            }
-                          </p>
-                          <br />
-                          <p>
-                            <b>Lexical Resource:</b>{" "}
-                            {
-                              evaluations[answer.partId].feedback
-                                .lexicalResource
-                            }
-                          </p>
-                          <br />
-                          <p>
-                            <b>Grammatical Range:</b>{" "}
-                            {
-                              evaluations[answer.partId].feedback
-                                .grammaticalRangeAndAccuracy
-                            }
-                          </p>
-                          <br />
-                        </div>
-                        <div>
-                          <p className="text-xl font-bold">
-                            Final Band Score: {evaluations[answer.partId].score}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="mt-4">
-                        <h5 className="font-semibold">Overall Feedback:</h5>
-                        <p className="mt-2">
-                          {evaluations[answer.partId].overallFeedback}
-                        </p>
-                      </div>
-                    </div>
-                  ) : null}
                 </div>
               </div>
             </div>

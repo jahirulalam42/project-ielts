@@ -330,8 +330,9 @@ export async function postSubmitWritingTest(formData: any) {
 export async function getSubmitWritingTest(testId: any, userId: any) {
   try {
     console.log("Fetching writing test submission:", { testId, userId });
+    // If testId is actually a submission ID, use it directly
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/submitAnswers/submitWritingAnswers/${testId}/${userId}`
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/submitAnswers/submitWritingAnswers/${testId}`
     );
     console.log("Writing test submission response:", response.data);
     return response.data;
@@ -341,26 +342,7 @@ export async function getSubmitWritingTest(testId: any, userId: any) {
   }
 }
 
-export async function updateWritingEvaluation(
-  testId: string,
-  userId: string,
-  partId: string,
-  evaluation: any
-) {
-  try {
-    const response = await axios.patch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/submitAnswers/submitWritingAnswers/${testId}/${userId}`,
-      {
-        partId,
-        evaluation,
-      }
-    );
-    return response.data;
-  } catch (error) {
-    console.error("Error updating writing evaluation:", error);
-    throw error;
-  }
-}
+
 
 // Listening Questions
 export async function getListeningTests() {

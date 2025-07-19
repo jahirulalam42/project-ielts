@@ -1,16 +1,5 @@
 import mongoose, { Model, Schema } from "mongoose";
 
-interface EvaluationResult {
-  score: number;
-  feedback: {
-    taskAchievement: string;
-    coherenceAndCohesion: string;
-    lexicalResource: string;
-    grammaticalRangeAndAccuracy: string;
-  };
-  overallFeedback: string;
-}
-
 export interface SubmitWritingAnswers extends mongoose.Document {
   userId: String;
   testId: String;
@@ -19,10 +8,8 @@ export interface SubmitWritingAnswers extends mongoose.Document {
     question: string;
     response: string;
     instructions: string[];
-    evaluation?: EvaluationResult;
   }>;
   submittedAt: string;
-  totalScore: Number;
 }
 
 const SubmitWritingAnswerSchema = new mongoose.Schema<SubmitWritingAnswers>({
@@ -40,24 +27,11 @@ const SubmitWritingAnswerSchema = new mongoose.Schema<SubmitWritingAnswers>({
       question: String,
       response: String,
       instructions: [String],
-      evaluation: {
-        score: Number,
-        feedback: {
-          taskAchievement: String,
-          coherenceAndCohesion: String,
-          lexicalResource: String,
-          grammaticalRangeAndAccuracy: String,
-        },
-        overallFeedback: String,
-      },
     },
   ],
   submittedAt: {
     type: String,
     required: [true, "Please provide submission time"],
-  },
-  totalScore: {
-    type: Number,
   },
 });
 

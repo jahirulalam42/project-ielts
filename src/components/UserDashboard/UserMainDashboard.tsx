@@ -87,12 +87,12 @@ const Dashboard = () => {
       .map((test: any) => {
         let writingScore = 0;
         if (selectedSkill === 'writing' && Array.isArray(test.answers) && test.answers.length > 0) {
-          const scores = test.answers
-            .map((a: any) => a.evaluation?.score)
-            .filter((s: any) => typeof s === 'number');
-          if (scores.length > 0) {
-            writingScore = scores.reduce((sum: number, s: number) => sum + s, 0) / scores.length;
-          }
+          // For writing, calculate total word count instead of score
+          const totalWords = test.answers.reduce((sum: number, answer: any) => {
+            const wordCount = answer.response?.trim().split(/\s+/).filter((word: string) => word.length > 0).length || 0;
+            return sum + wordCount;
+          }, 0);
+          writingScore = totalWords;
         }
         return {
           ...test,
@@ -144,7 +144,9 @@ const Dashboard = () => {
       labels,
       datasets: [
         {
-          label: `${skills.find((s) => s.id === selectedSkill)?.name} Score`,
+          label: selectedSkill === 'writing' 
+            ? "Word Count Progression" 
+            : `${skills.find((s) => s.id === selectedSkill)?.name} Score`,
           data: dataPoints,
           fill: true,
           borderColor: "#6366f1",
@@ -165,7 +167,10 @@ const Dashboard = () => {
         y: {
           min: minScore,
           max: maxScore,
-          title: { display: true, text: "Score" },
+          title: { 
+            display: true, 
+            text: selectedSkill === 'writing' ? "Word Count" : "Score" 
+          },
         },
         x: {
           title: { display: true, text: "Test Date" },
@@ -176,7 +181,7 @@ const Dashboard = () => {
         title: { display: false },
       },
     }),
-    [minScore, maxScore]
+    [minScore, maxScore, selectedSkill]
   );
 
   // Trend indicator
@@ -217,21 +222,20 @@ const Dashboard = () => {
             const arr = allSkillData[skill.id as keyof typeof allSkillData] || [];
             
             // Calculate highest score properly for each skill
-            const highestScore = arr.length > 0 ? Math.max(...arr.map((test: any) => {
-              if (skill.id === 'writing' && Array.isArray(test.answers) && test.answers.length > 0) {
-                // For writing, calculate average score from answers
-                const scores = test.answers
-                  .map((a: any) => a.evaluation?.score)
-                  .filter((s: any) => typeof s === 'number');
-                if (scores.length > 0) {
-                  return scores.reduce((sum: number, s: number) => sum + s, 0) / scores.length;
-                }
-                return 0;
-              } else {
-                // For other skills, use totalScore
+            let highestScore = 0;
+            let scoreLabel = "Highest score";
+            
+            if (skill.id === 'writing') {
+              // For writing, show total tests taken
+              highestScore = arr.length;
+              scoreLabel = "Total Tests Taken";
+            } else {
+              // For other skills, use totalScore as before
+              highestScore = arr.length > 0 ? Math.max(...arr.map((test: any) => {
                 return test.totalScore || 0;
-              }
-            })) : 0;
+              })) : 0;
+              scoreLabel = "Highest score";
+            }
             
             const isSelected = selectedSkill === skill.id;
             return (
@@ -254,7 +258,7 @@ const Dashboard = () => {
                   <div>
                     <div className="text-sm opacity-80">{skill.name}</div>
                     <div className="text-3xl font-bold mt-1">{highestScore}</div>
-                    <div className="text-sm mt-2">Highest score</div>
+                    <div className="text-sm mt-2">{scoreLabel}</div>
                   </div>
                   {isSelected && (
                     <div className="bg-white bg-opacity-20 rounded-full p-1">

@@ -9,6 +9,7 @@ const HistoryTable = ({ selectedSkill, testHistory }: any) => {
     const { data: session } = useSession();
 
     const handleShowResult = (testId: string) => {
+        console.log('HistoryTable - Show Result clicked with testId:', testId);
         setSelectedTestId(testId);
         setModalOpen(true);
     };
@@ -37,7 +38,7 @@ const HistoryTable = ({ selectedSkill, testHistory }: any) => {
                                     Date
                                 </th>
                                 <th className="py-3 px-4 text-center text-gray-600 text-sm">
-                                    Total Score
+                                    {selectedSkill === 'writing' ? 'Word Count' : 'Total Score'}
                                 </th>
                                 <th className="py-3 px-4 text-center text-gray-600 text-sm">
                                     Show Result
@@ -49,12 +50,12 @@ const HistoryTable = ({ selectedSkill, testHistory }: any) => {
                                 let totalScore = '--';
                                 if (selectedSkill === 'writing') {
                                     if (Array.isArray(test.answers) && test.answers.length > 0) {
-                                        const scores = test.answers
-                                            .map((a: any) => a.evaluation?.score)
-                                            .filter((s: any) => typeof s === 'number');
-                                        if (scores.length > 0) {
-                                            totalScore = (scores.reduce((sum: number, s: number) => sum + s, 0) / scores.length).toFixed(1);
-                                        }
+                                        // Show individual task word counts
+                                        const taskWordCounts = test.answers.map((answer: any, index: number) => {
+                                            const wordCount = answer.response?.trim().split(/\s+/).filter((word: string) => word.length > 0).length || 0;
+                                            return `Task ${index + 1}: ${wordCount} words`;
+                                        });
+                                        totalScore = taskWordCounts.join(', ');
                                     }
                                 } else {
                                     totalScore = test[selectedSkill] !== undefined ? test[selectedSkill] : '--';
@@ -71,7 +72,9 @@ const HistoryTable = ({ selectedSkill, testHistory }: any) => {
                                             })}
                                         </td>
                                         <td className="py-3 px-4 text-center font-bold text-gray-900">
-                                            {totalScore}
+                                            <div className="text-sm">
+                                                {totalScore}
+                                            </div>
                                         </td>
                                         <td className="py-3 px-4 text-center">
                                             <button className="btn btn-sm btn-primary" onClick={() => handleShowResult(test.id)}>
@@ -96,6 +99,7 @@ const HistoryTable = ({ selectedSkill, testHistory }: any) => {
                 <SubmissionResultModal
                     testId={selectedTestId}
                     userId={session.user.id}
+                    testType={selectedSkill}
                     onClose={handleCloseModal}
                 />
             )}

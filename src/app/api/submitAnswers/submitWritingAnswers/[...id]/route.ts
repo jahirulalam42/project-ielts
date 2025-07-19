@@ -8,98 +8,75 @@ export async function GET(request: Request, { params }: { params: any }) {
     const resolvedParams = await params;
 
     const ids = resolvedParams.id;
+    console.log('API Route - Received IDs:', ids);
 
-    // Validate that ids is an array with two valid ObjectIDs
-    if (
-      !Array.isArray(ids) ||
-      ids.length !== 2 ||
-      !/^[0-9a-fA-F]{24}$/.test(ids[0]) ||
-      !/^[0-9a-fA-F]{24}$/.test(ids[1])
-    ) {
-      return NextResponse.json(
-        { success: false, error: "Invalid testId or userId format" },
-        { status: 400 }
-      );
+    // If single ID is passed (submission ID)
+    if (Array.isArray(ids) && ids.length === 1) {
+      const submissionId = ids[0];
+      console.log('API Route - Looking for submission by ID:', submissionId);
+      
+      const result = await SubmitAnswerModel.findById(submissionId);
+      
+      if (!result) {
+        console.log('API Route - No submission found with ID:', submissionId);
+        return NextResponse.json(
+          {
+            success: false,
+            error: "No submission found with the provided ID",
+          },
+          { status: 404 }
+        );
+      }
+
+      console.log('API Route - Found submission:', result._id);
+      return NextResponse.json({ success: true, data: result });
     }
 
-    const [testId, userId] = ids;
+    // If two IDs are passed (testId and userId) - keep for backward compatibility
+    if (Array.isArray(ids) && ids.length === 2) {
+      const [testId, userId] = ids;
+      console.log('API Route - Parsed IDs:', { testId, userId });
 
-    const result = await SubmitAnswerModel.findOne({ testId, userId }).sort({
-      submittedAt: -1,
-    }); // Sort by submittedAt descending (most recent first)
+      // Try to find the submission with more flexible matching
+      let result = await SubmitAnswerModel.findOne({ testId, userId }).sort({
+        submittedAt: -1,
+      });
 
-    if (!result) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "No data found for the provided testId and userId",
-        },
-        { status: 404 }
-      );
+      // If not found, try with string comparison
+      if (!result) {
+        console.log('API Route - Not found with exact match, trying string comparison');
+        result = await SubmitAnswerModel.findOne({
+          testId: testId.toString(),
+          userId: userId.toString()
+        }).sort({
+          submittedAt: -1,
+        });
+      }
+
+      if (!result) {
+        console.log('API Route - No data found for:', { testId, userId });
+        return NextResponse.json(
+          {
+            success: false,
+            error: "No data found for the provided testId and userId",
+          },
+          { status: 404 }
+        );
+      }
+
+      console.log('API Route - Found result:', result._id);
+      return NextResponse.json({ success: true, data: result });
     }
 
-    return NextResponse.json({ success: true, data: result });
+    console.log('API Route - Invalid IDs format:', ids);
+    return NextResponse.json(
+      { success: false, error: "Invalid ID format" },
+      { status: 400 }
+    );
   } catch (error) {
     console.error("GET Error:", error);
     return NextResponse.json(
       { success: false, error: "Server error - Failed to fetch data" },
-      { status: 500 }
-    );
-  }
-}
-
-export async function PATCH(request: Request, { params }: { params: any }) {
-  try {
-    await dbConnect();
-    const resolvedParams = await params;
-    const ids = resolvedParams.id;
-
-    // Validate that ids is an array with two valid ObjectIDs
-    if (
-      !Array.isArray(ids) ||
-      ids.length !== 2 ||
-      !/^[0-9a-fA-F]{24}$/.test(ids[0]) ||
-      !/^[0-9a-fA-F]{24}$/.test(ids[1])
-    ) {
-      return NextResponse.json(
-        { success: false, error: "Invalid testId or userId format" },
-        { status: 400 }
-      );
-    }
-
-    const [testId, userId] = ids;
-    const body = await request.json();
-    const { partId, evaluation } = body;
-
-    if (!partId || !evaluation) {
-      return NextResponse.json(
-        { success: false, error: "Missing partId or evaluation data" },
-        { status: 400 }
-      );
-    }
-
-    // Find the submission and update the specific answer's evaluation
-    const result = await SubmitAnswerModel.findOneAndUpdate(
-      { testId, userId },
-      { $set: { "answers.$[elem].evaluation": evaluation } },
-      {
-        arrayFilters: [{ "elem.partId": partId }],
-        new: true,
-      }
-    );
-
-    if (!result) {
-      return NextResponse.json(
-        { success: false, error: "No submission found to update" },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json({ success: true, data: result });
-  } catch (error) {
-    console.error("PATCH Error:", error);
-    return NextResponse.json(
-      { success: false, error: "Server error - Failed to update evaluation" },
       { status: 500 }
     );
   }
