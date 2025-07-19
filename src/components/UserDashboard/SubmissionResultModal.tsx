@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getSubmitReadingTest, getSubmitWritingTest } from "@/services/data";
+import { getSubmitReadingTest, getSubmitWritingTest, getSubmitSpeakingTest } from "@/services/data";
 
 interface SubmissionResultModalProps {
   testId: string;
@@ -16,6 +16,20 @@ interface Submission {
   submittedAt: string;
   totalScore?: number;
   __v: number;
+  // Speaking specific fields
+  testType?: string;
+  questionNumber?: number;
+  audioFile?: string;
+  cloudinaryPublicId?: string;
+  feedback?: {
+    transcript: string;
+    filler_words: Array<{ word: string; count: number }>;
+    total_filler_words: number;
+    fluency_score: number;
+    feedback_tips: string[];
+    audio_url: string;
+    recording_duration: number;
+  };
 }
 
 interface Answer {
@@ -44,8 +58,8 @@ const SubmissionResultModal: React.FC<SubmissionResultModalProps> = ({
 
   useEffect(() => {
     console.log('SubmissionResultModal: testId:', testId, 'userId:', userId, 'testType:', testType);
-    if (!testId || !userId) {
-      setError('Missing testId or userId.');
+    if (!testId) {
+      setError('Missing testId.');
       setLoading(false);
       return;
     }
@@ -56,6 +70,9 @@ const SubmissionResultModal: React.FC<SubmissionResultModalProps> = ({
         if (testType === "writing") {
           console.log('Fetching writing test with:', { testId, userId });
           response = await getSubmitWritingTest(testId, userId);
+        } else if (testType === "speaking") {
+          console.log('Fetching speaking test with:', { testId });
+          response = await getSubmitSpeakingTest(testId);
         } else {
           console.log('Fetching reading test with:', { testId, userId });
           response = await getSubmitReadingTest(testId, userId);
@@ -66,10 +83,12 @@ const SubmissionResultModal: React.FC<SubmissionResultModalProps> = ({
           const data = Array.isArray(response.data)
             ? response.data[0]
             : response.data;
+          console.log("Submission data received:", data);
           setSubmission(data || null);
           setError(null);
         } else {
-          setError("Failed to fetch submission data: " + (response?.message || 'No data.'));
+          console.error("API response error:", response);
+          setError("Failed to fetch submission data: " + (response?.error || response?.message || 'No data.'));
         }
       } catch (err: any) {
         console.error('Error details:', err);
@@ -82,7 +101,7 @@ const SubmissionResultModal: React.FC<SubmissionResultModalProps> = ({
   }, [testId, userId, testType]);
 
   // Group answers by questionGroup and maintain order (for reading/listening)
-  const groupedAnswers = submission?.answers.reduce(
+  const groupedAnswers = submission?.answers?.reduce(
     (acc: { [key: string]: Answer[] }, answer) => {
       if (answer.questionGroup) {
         const groupKey = answer.questionGroup.join("-");
@@ -115,6 +134,9 @@ const SubmissionResultModal: React.FC<SubmissionResultModalProps> = ({
     const totalCount = answers.length;
     return `${correctCount}/${totalCount}`;
   };
+
+  // Check if submission has answers (for reading/listening tests)
+  const hasAnswers = submission?.answers && Array.isArray(submission.answers) && submission.answers.length > 0;
 
   // Function to count words
   const countWords = (text: string): number => {
@@ -188,8 +210,52 @@ const SubmissionResultModal: React.FC<SubmissionResultModalProps> = ({
                 </div>
               )}
 
+              {/* Speaking Test Display */}
+              {testType === "speaking" && (
+                <div className="card bg-base-100 shadow-xl mb-6">
+                  <div className="card-body">
+                    <div className="flex flex-wrap gap-4 mb-6">
+                      <div className="badge badge-info">
+                        Submitted: {submission?.submittedAt}
+                      </div>
+                      <div className="badge badge-primary">
+                        Test ID: {submission?.testId}
+                      </div>
+                      <div className="badge badge-secondary">
+                        Type: {submission?.testType}
+                      </div>
+                      <div className="badge badge-accent">
+                        Question: {submission?.questionNumber}
+                      </div>
+                    </div>
+
+                    {/* Audio Player */}
+                    {submission?.audioFile && (
+                      <div className="mb-6">
+                        <h3 className="text-lg font-semibold mb-2">Your Recording</h3>
+                        <audio controls className="w-full">
+                          <source src={submission.audioFile} type="audio/wav" />
+                          Your browser does not support the audio element.
+                        </audio>
+                      </div>
+                    )}
+
+                    {/* Recording Duration */}
+                    {submission?.feedback?.recording_duration && (
+                      <div className="mb-4">
+                        <h3 className="text-lg font-semibold mb-2">Recording Duration</h3>
+                        <div className="badge badge-outline">
+                          {Math.floor(submission.feedback.recording_duration / 60)}:
+                          {Math.floor(submission.feedback.recording_duration % 60).toString().padStart(2, '0')}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {/* Reading/Listening Test Display */}
-              {testType !== "writing" && (
+              {testType !== "writing" && testType !== "speaking" && hasAnswers && (
                 <>
                   {/* Total Score Card */}
                   <div className="card bg-base-100 shadow-xl mb-6">
@@ -262,6 +328,18 @@ const SubmissionResultModal: React.FC<SubmissionResultModalProps> = ({
                     </table>
                   </div>
                 </>
+              )}
+
+              {/* Fallback for tests without answers */}
+              {testType !== "writing" && testType !== "speaking" && !hasAnswers && (
+                <div className="card bg-base-100 shadow-xl mb-6">
+                  <div className="card-body">
+                    <h2 className="card-title">Test Information</h2>
+                    <p>Test ID: {submission?.testId}</p>
+                    <p>Submitted: {submission?.submittedAt}</p>
+                    <p>No detailed answers available for this test type.</p>
+                  </div>
+                </div>
               )}
             </>
           )}

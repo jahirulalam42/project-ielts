@@ -48,6 +48,10 @@ const SubmitSpeakingAnswerSchema = new mongoose.Schema<SubmitSpeakingAnswer>({
     type: String,
     required: [true, "Audio file URL is required."],
   },
+  cloudinaryPublicId: {
+    type: String,
+    required: false, // Optional for backward compatibility
+  },
   feedback: {
     transcript: {
       type: String,

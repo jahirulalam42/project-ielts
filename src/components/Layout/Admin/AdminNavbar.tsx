@@ -18,6 +18,7 @@ import {
   FaClipboardList,
   FaCaretDown,
   FaHome,
+  FaMusic,
 } from "react-icons/fa";
 
 const AdminNavbar = () => {
@@ -193,6 +194,21 @@ const AdminNavbar = () => {
                         >
                           <FaMicrophone className="text-lg" />
                           <span>Speaking Tests</span>
+                        </Link>
+                      </li>
+
+                      <li>
+                        <Link
+                          href="/admin/audio-management"
+                          className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
+                            activePage === "audio-management"
+                              ? "bg-purple-700 text-white shadow-md"
+                              : "text-purple-200 hover:bg-purple-800"
+                          }`}
+                          onClick={() => setActivePage("audio-management")}
+                        >
+                          <FaMusic className="text-lg" />
+                          <span>Audio Management</span>
                         </Link>
                       </li>
 

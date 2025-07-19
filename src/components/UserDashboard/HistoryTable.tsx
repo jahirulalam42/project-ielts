@@ -38,7 +38,8 @@ const HistoryTable = ({ selectedSkill, testHistory }: any) => {
                                     Date
                                 </th>
                                 <th className="py-3 px-4 text-center text-gray-600 text-sm">
-                                    {selectedSkill === 'writing' ? 'Word Count' : 'Total Score'}
+                                    {selectedSkill === 'writing' ? 'Word Count' : 
+                                     selectedSkill === 'speaking' ? 'Recording Duration' : 'Total Score'}
                                 </th>
                                 <th className="py-3 px-4 text-center text-gray-600 text-sm">
                                     Show Result
@@ -56,6 +57,16 @@ const HistoryTable = ({ selectedSkill, testHistory }: any) => {
                                             return `Task ${index + 1}: ${wordCount} words`;
                                         });
                                         totalScore = taskWordCounts.join(', ');
+                                    }
+                                } else if (selectedSkill === 'speaking') {
+                                    // Show recording duration in minutes and seconds
+                                    const duration = test.feedback?.recording_duration || 0;
+                                    if (duration > 0) {
+                                        const minutes = Math.floor(duration / 60);
+                                        const seconds = Math.floor(duration % 60);
+                                        totalScore = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                                    } else {
+                                        totalScore = '--';
                                     }
                                 } else {
                                     totalScore = test[selectedSkill] !== undefined ? test[selectedSkill] : '--';

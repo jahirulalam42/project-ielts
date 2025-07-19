@@ -11,17 +11,17 @@ export async function POST(request: NextRequest) {
       userId: body.userId,
       testId: body.testId,
       testType: body.testType,
-      questionNumber: body.questionNumber,
+      questionNumbers: body.questionNumbers,
       hasAudioFile: !!body.audioFile,
       hasFeedback: !!body.feedback
     });
     
     // Validate required fields
-    if (!body.userId || !body.testId || !body.testType || !body.questionNumber) {
+    if (!body.userId || !body.testId || !body.testType || !body.questionNumbers) {
       return NextResponse.json(
         { 
           success: false, 
-          error: "Missing required fields: userId, testId, testType, questionNumber" 
+          error: "Missing required fields: userId, testId, testType, questionNumbers" 
         },
         { status: 400 }
       );
@@ -47,13 +47,28 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    const speakingAnswer = await SubmitSpeakingAnswerModel.create(body);
+    // Create a submission for each question number
+    const submissions = [];
+    for (const questionNumber of body.questionNumbers) {
+      const submissionData = {
+        userId: body.userId,
+        testId: body.testId,
+        testType: body.testType,
+        questionNumber: questionNumber,
+        audioFile: body.audioFile,
+        cloudinaryPublicId: body.cloudinaryPublicId,
+        feedback: body.feedback
+      };
+      
+      const speakingAnswer = await SubmitSpeakingAnswerModel.create(submissionData);
+      submissions.push(speakingAnswer);
+    }
     
-    console.log("Successfully created speaking answer:", speakingAnswer._id);
+    console.log("Successfully created speaking answers:", submissions.length);
     
     return NextResponse.json({
       success: true,
-      data: speakingAnswer,
+      data: submissions,
     }, { status: 201 });
   } catch (error: any) {
     console.error("POST Error:", error);

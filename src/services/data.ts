@@ -562,14 +562,27 @@ export async function postSubmitSpeakingTest(formData: any) {
   }
 }
 
-export async function getSubmitSpeakingTest(testId: any, userId: any) {
+export async function getAllSpeakingAnswers(userId: any) {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/submitAnswers/submitSpeakingAnswers?testId=${testId}&userId=${userId}`
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/submitAnswers/submitSpeakingAnswers?userId=${userId}`
     );
     return response.data;
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return { success: false, data: [] };
+  }
+}
+
+export async function getSubmitSpeakingTest(submissionId: any, userId?: any) {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/submitAnswers/submitSpeakingAnswers/${submissionId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching speaking submission:", error);
+    return { success: false, error: "Failed to fetch speaking submission" };
   }
 }
 

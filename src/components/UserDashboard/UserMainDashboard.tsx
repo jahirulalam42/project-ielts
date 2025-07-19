@@ -18,6 +18,7 @@ import {
   getAllListeningAnswers,
   getAllReadingAnswers,
   getAllWritingAnswers,
+  getAllSpeakingAnswers,
 } from "@/services/data";
 import HistoryTable from "./HistoryTable";
 
@@ -60,16 +61,17 @@ const Dashboard = () => {
       setLoading(true);
       const userId = data.user.id;
       try {
-        const [listening, reading, writing] = await Promise.all([
+        const [listening, reading, writing, speaking] = await Promise.all([
           getAllListeningAnswers(userId),
           getAllReadingAnswers(userId),
           getAllWritingAnswers(userId),
+          getAllSpeakingAnswers(userId),
         ]);
         setAllSkillData({
           listening: listening?.data || [],
           reading: reading?.data || [],
           writing: writing?.data || [],
-          speaking: [], // Add speaking logic if available
+          speaking: speaking?.data || [],
         });
       } catch (error) {
         console.error("Error fetching all skill data:", error);
@@ -86,6 +88,8 @@ const Dashboard = () => {
     return arr
       .map((test: any) => {
         let writingScore = 0;
+        let speakingScore = 0;
+        
         if (selectedSkill === 'writing' && Array.isArray(test.answers) && test.answers.length > 0) {
           // For writing, calculate total word count instead of score
           const totalWords = test.answers.reduce((sum: number, answer: any) => {
@@ -94,6 +98,12 @@ const Dashboard = () => {
           }, 0);
           writingScore = totalWords;
         }
+        
+        if (selectedSkill === 'speaking') {
+          // For speaking, use recording duration as the metric
+          speakingScore = test.feedback?.recording_duration || 0;
+        }
+        
         return {
           ...test,
           id: test._id,
@@ -101,8 +111,9 @@ const Dashboard = () => {
           listening: 0,
           reading: 0,
           writing: selectedSkill === 'writing' ? writingScore : 0,
-          speaking: 0,
-          [selectedSkill]: selectedSkill === 'writing' ? writingScore : test.totalScore,
+          speaking: selectedSkill === 'speaking' ? speakingScore : 0,
+          [selectedSkill]: selectedSkill === 'writing' ? writingScore : 
+                          selectedSkill === 'speaking' ? speakingScore : test.totalScore,
         };
       })
       .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime())
@@ -146,6 +157,8 @@ const Dashboard = () => {
         {
           label: selectedSkill === 'writing' 
             ? "Word Count Progression" 
+            : selectedSkill === 'speaking'
+            ? "Recording Duration (seconds)"
             : `${skills.find((s) => s.id === selectedSkill)?.name} Score`,
           data: dataPoints,
           fill: true,
@@ -169,7 +182,8 @@ const Dashboard = () => {
           max: maxScore,
           title: { 
             display: true, 
-            text: selectedSkill === 'writing' ? "Word Count" : "Score" 
+            text: selectedSkill === 'writing' ? "Word Count" : 
+                  selectedSkill === 'speaking' ? "Duration (seconds)" : "Score" 
           },
         },
         x: {
@@ -227,6 +241,10 @@ const Dashboard = () => {
             
             if (skill.id === 'writing') {
               // For writing, show total tests taken
+              highestScore = arr.length;
+              scoreLabel = "Total Tests Taken";
+            } else if (skill.id === 'speaking') {
+              // For speaking, show total tests taken and average duration
               highestScore = arr.length;
               scoreLabel = "Total Tests Taken";
             } else {

@@ -187,27 +187,36 @@ const SpeakingTest: React.FC<SpeakingTestProps> = ({ test }) => {
       console.log("Test ID:", test._id);
       console.log("Total questions answered:", answeredQuestions.size);
 
-      // Convert audio to base64 for transmission
-      console.log("Converting audio to base64...");
-      const arrayBuffer = await recordedAudio.arrayBuffer();
-      
-      // Use a more efficient base64 conversion
-      let base64Audio = '';
-      try {
-        // Convert to base64 using a more efficient method
-        const uint8Array = new Uint8Array(arrayBuffer);
-        const binaryString = [];
-        for (let i = 0; i < uint8Array.length; i++) {
-          binaryString.push(String.fromCharCode(uint8Array[i]));
-        }
-        base64Audio = btoa(binaryString.join(''));
-      } catch (error) {
-        console.error("Base64 conversion failed:", error);
-        // Use a simple placeholder for testing
-        base64Audio = "test_audio_data";
+      // Upload audio to Cloudinary
+      console.log("Uploading audio to Cloudinary...");
+      const formData = new FormData();
+      formData.append('audio', recordedAudio, 'speaking-test.wav');
+
+      const uploadResponse = await fetch('/api/upload/audio', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!uploadResponse.ok) {
+        const errorText = await uploadResponse.text();
+        console.error('Upload response error:', {
+          status: uploadResponse.status,
+          statusText: uploadResponse.statusText,
+          body: errorText
+        });
+        throw new Error(`Upload failed: ${uploadResponse.status} - ${uploadResponse.statusText}`);
       }
-      
-      console.log("Audio converted to base64, length:", base64Audio.length);
+
+      const uploadResult = await uploadResponse.json();
+      console.log("Cloudinary upload result:", uploadResult);
+
+      if (!uploadResult.success) {
+        console.error('Upload result error:', uploadResult);
+        throw new Error(uploadResult.error || uploadResult.details || 'Upload failed');
+      }
+
+      const audioUrl = uploadResult.audioUrl;
+      const cloudinaryPublicId = uploadResult.publicId;
 
       // For demo purposes, we'll use a mock transcript
       // In a real implementation, you'd send the audio to a transcription service
@@ -216,7 +225,7 @@ const SpeakingTest: React.FC<SpeakingTestProps> = ({ test }) => {
       console.log("Calling analyzeSpeakingAudio...");
       // Analyze the transcript
       const analysisResult = await analyzeSpeakingAudio({
-        audioUrl: base64Audio,
+        audioUrl: audioUrl,
         transcript: mockTranscript,
         recordingDuration: 120 // Total duration for the part
       });
@@ -226,27 +235,29 @@ const SpeakingTest: React.FC<SpeakingTestProps> = ({ test }) => {
       if (analysisResult.success) {
         setAnalysis(analysisResult.data);
 
-        // Submit the answer
+        // Submit the answer with Cloudinary URL
         const submissionData = {
           userId: session.user.id,
           testId: test._id,
           testType: test.type,
           questionNumbers: Array.from(answeredQuestions),
-          audioFile: base64Audio,
+          audioFile: audioUrl,
+          cloudinaryPublicId: cloudinaryPublicId,
           feedback: analysisResult.data
         };
 
         console.log("Submitting answer with data:", submissionData);
         
-        // Temporary: Skip database submission for testing
-        // const submitResult = await postSubmitSpeakingTest(submissionData);
-        // console.log("Submit result:", submitResult);
+        // Submit to database
+        const submitResult = await postSubmitSpeakingTest(submissionData);
+        console.log("Submit result:", submitResult);
         
-        // For now, just show the results without saving to database
-        console.log("Skipping database submission for testing");
-        
-        setShowResults(true);
-        toast.success("Test analyzed successfully! (Database save skipped for testing)");
+        if (submitResult.success) {
+          setShowResults(true);
+          toast.success("Test submitted successfully!");
+        } else {
+          toast.error("Failed to save test results");
+        }
       } else {
         console.error("Analysis failed:", analysisResult);
         toast.error("Failed to analyze audio");
@@ -260,8 +271,8 @@ const SpeakingTest: React.FC<SpeakingTestProps> = ({ test }) => {
       });
       
       // Provide more specific error messages
-      if (error.message.includes("Maximum call stack size exceeded")) {
-        toast.error("Audio conversion failed. Please try recording again.");
+      if (error.message.includes("Upload failed")) {
+        toast.error("Failed to upload audio. Please try again.");
       } else if (error.response?.status === 401) {
         toast.error("Authentication failed. Please log in again.");
       } else if (error.response?.status === 400) {
@@ -284,55 +295,6 @@ const SpeakingTest: React.FC<SpeakingTestProps> = ({ test }) => {
             <div className="card-body">
               <h2 className="card-title text-2xl mb-4">Speaking Test Results</h2>
               
-              {/* Transcript */}
-              <div className="mb-6">
-                <h3 className="text-lg font-semibold mb-2">Transcript</h3>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-gray-700">{analysis.transcript}</p>
-                </div>
-              </div>
-
-              {/* Filler Word Analysis */}
-              <div className="mb-6">
-                <h3 className="text-lg font-semibold mb-2">Filler Word Analysis</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="stat bg-base-200 rounded-lg">
-                    <div className="stat-title">Total Filler Words</div>
-                    <div className="stat-value text-primary">{analysis.total_filler_words}</div>
-                  </div>
-                  <div className="stat bg-base-200 rounded-lg">
-                    <div className="stat-title">Fluency Score</div>
-                    <div className="stat-value text-secondary">{analysis.fluency_score}/100</div>
-                  </div>
-                </div>
-                
-                {analysis.filler_words.length > 0 && (
-                  <div className="mt-4">
-                    <h4 className="font-semibold mb-2">Filler Word Breakdown:</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {analysis.filler_words.map((fw: any, index: number) => (
-                        <div key={index} className="badge badge-outline">
-                          "{fw.word}": {fw.count} times
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Feedback Tips */}
-              <div className="mb-6">
-                <h3 className="text-lg font-semibold mb-2">Feedback & Tips</h3>
-                <div className="space-y-2">
-                  {analysis.feedback_tips.map((tip: string, index: number) => (
-                    <div key={index} className="alert alert-info">
-                      <FaCheck className="h-4 w-4" />
-                      <span>{tip}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
               {/* Audio Player */}
               {audioUrl && (
                 <div className="mb-6">
