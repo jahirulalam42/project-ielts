@@ -1,5 +1,6 @@
 import React from "react";
 import { WritingPart } from "./WritingTest";
+import ImageUploader from "../Common/ImageUploader";
 
 type WritingPartFormProps = {
   part: WritingPart;
@@ -66,7 +67,9 @@ const WritingPartForm: React.FC<WritingPartFormProps> = ({
 
         <div className="form-control">
           <label className="label">
-            <span className="label-text font-semibold text-black">Subtitle</span>
+            <span className="label-text font-semibold text-black">
+              Subtitle
+            </span>
           </label>
           <input
             type="text"
@@ -79,7 +82,9 @@ const WritingPartForm: React.FC<WritingPartFormProps> = ({
 
         <div className="form-control">
           <label className="label">
-            <span className="label-text font-semibold text-black">Questions</span>
+            <span className="label-text font-semibold text-black">
+              Questions
+            </span>
           </label>
           {part.Question.map((q, qIdx) => (
             <div key={qIdx} className="flex mb-2">
@@ -114,7 +119,9 @@ const WritingPartForm: React.FC<WritingPartFormProps> = ({
 
         <div className="form-control">
           <label className="label">
-            <span className="label-text font-semibold text-black">Instructions</span>
+            <span className="label-text font-semibold text-black">
+              Instructions
+            </span>
           </label>
           {part.instruction.map((inst, instIdx) => (
             <div key={instIdx} className="flex mb-2">
@@ -149,15 +156,20 @@ const WritingPartForm: React.FC<WritingPartFormProps> = ({
 
         <div className="form-control">
           <label className="label">
-            <span className="label-text font-semibold text-black">Image URL (Optional)</span>
+            <span className="label-text font-semibold text-black">
+              Upload Image (Optional)
+            </span>
           </label>
-          <input
-            type="text"
-            value={part.image}
-            onChange={(e) => handleChange("image", e.target.value)}
-            className="input input-bordered border-black"
-            placeholder="https://example.com/image.png"
-          />
+
+          <ImageUploader onUploaded={(url) => handleChange("image", url)} />
+
+          {/* {part.image && (
+            <img
+              src={part.image}
+              alt="Uploaded"
+              className="w-48 mt-2 border rounded"
+            />
+          )} */}
         </div>
       </div>
     </div>
