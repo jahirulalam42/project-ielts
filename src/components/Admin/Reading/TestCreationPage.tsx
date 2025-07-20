@@ -8,6 +8,7 @@ import {
   updatePassageField,
   updatePassageType,
 } from "./UpdatePassage";
+import ImageUploader from "../Common/ImageUploader";
 
 // Define types for the test structure
 interface Option {
@@ -568,6 +569,19 @@ const TestCreationPage: React.FC = () => {
             }
             className="border p-2 mb-2 w-full"
           />
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text font-semibold text-black">
+                Upload Image (Optional)
+              </span>
+            </label>
+
+            <ImageUploader
+              onUploaded={(url) =>
+                updatePassageField(passageIndex, "image", url, test, setTest)
+              }
+            />
+          </div>
           {/* Passage Type Selection */}
           <div className="mb-4">
             <label className="block mb-2">Select Passage Type</label>
