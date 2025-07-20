@@ -9,7 +9,7 @@ const EditListening = ({
   saveChanges,
 }: any) => {
   const handleAudioUploaded = (audioUrl: string, publicId: string) => {
-    setEditedTest(prev => ({
+    setEditedTest((prev: any) => ({
       ...prev,
       audioUrl: audioUrl,
       cloudinaryPublicId: publicId
