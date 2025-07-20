@@ -5,6 +5,10 @@ export interface ListeningTest {
   type: "academic" | "general";
   duration: number;
   audioUrl: string;
+  cloudinaryPublicId?: string;
+  audioDuration?: number;
+  audioFormat?: string;
+  audioSize?: number;
   parts: TestPart[];
 }
 

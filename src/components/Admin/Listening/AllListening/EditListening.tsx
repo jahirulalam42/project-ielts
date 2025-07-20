@@ -1,4 +1,6 @@
 import React from "react";
+import AudioUploader from "../../Common/AudioUploader";
+import ImageUploader from "../../Common/ImageUploader";
 
 const EditListening = ({
   editedTest,
@@ -6,6 +8,14 @@ const EditListening = ({
   setShowEditModal,
   saveChanges,
 }: any) => {
+  const handleAudioUploaded = (audioUrl: string, publicId: string) => {
+    setEditedTest(prev => ({
+      ...prev,
+      audioUrl: audioUrl,
+      cloudinaryPublicId: publicId
+    }));
+  };
+
   return (
     <div className="modal modal-open">
       <div className="modal-box max-w-5xl max-h-[90vh] overflow-y-auto">
@@ -59,20 +69,38 @@ const EditListening = ({
               className="input input-bordered"
             />
           </div>
+        </div>
 
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text">Audio URL</span>
-            </label>
-            <input
-              type="text"
-              value={editedTest.audioUrl}
-              onChange={(e) =>
-                setEditedTest({ ...editedTest, audioUrl: e.target.value })
-              }
-              className="input input-bordered"
-            />
-          </div>
+        {/* Audio Upload Section */}
+        <div className="mb-8">
+          <AudioUploader 
+            onAudioUploaded={handleAudioUploaded}
+            label="Upload New Audio File (Optional)"
+          />
+          
+          {/* Display current audio info */}
+          {editedTest.audioUrl && (
+            <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <div className="flex items-center space-x-2">
+                <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15.536a5 5 0 001.414 1.414m0-11.314a5 5 0 00-1.414 1.414" />
+                </svg>
+                <span className="text-blue-800 font-medium">Current Audio File</span>
+              </div>
+              <div className="mt-2 text-sm text-blue-700">
+                <p>Audio URL: {editedTest.audioUrl.substring(0, 50)}...</p>
+                {editedTest.audioDuration && (
+                  <p>Duration: {Math.round(editedTest.audioDuration / 60)} minutes {editedTest.audioDuration % 60} seconds</p>
+                )}
+                {editedTest.audioFormat && (
+                  <p>Format: {editedTest.audioFormat.toUpperCase()}</p>
+                )}
+                {editedTest.audioSize && (
+                  <p>Size: {(editedTest.audioSize / 1024 / 1024).toFixed(2)} MB</p>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Parts Section */}
@@ -625,25 +653,32 @@ const EditListening = ({
                                   <div className="form-control mb-3">
                                     <label className="label">
                                       <span className="label-text">
-                                        Image URL
+                                        Upload Map Image
                                       </span>
                                     </label>
-                                    <input
-                                      type="text"
-                                      value={map.image}
-                                      onChange={(e) => {
+                                    <ImageUploader
+                                      onUploaded={(url) => {
                                         const newParts = [...editedTest.parts];
                                         newParts[partIndex].questions[
                                           groupIndex
-                                        ][questionType][mapIndex].image =
-                                          e.target.value;
+                                        ][questionType][mapIndex].image = url;
                                         setEditedTest({
                                           ...editedTest,
                                           parts: newParts,
                                         });
                                       }}
-                                      className="input input-bordered"
                                     />
+                                    {/* Show current image if exists */}
+                                    {map.image && (
+                                      <div className="mt-2">
+                                        <p className="text-sm text-gray-600 mb-2">Current Image:</p>
+                                        <img 
+                                          src={map.image} 
+                                          alt="Map preview" 
+                                          className="w-48 h-32 object-cover border rounded"
+                                        />
+                                      </div>
+                                    )}
                                   </div>
 
                                   <div className="form-control mb-3">

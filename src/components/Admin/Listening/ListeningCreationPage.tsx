@@ -4,6 +4,7 @@ import { ListeningTest, TestPart } from './listeningTest';
 import PartForm from './PartForm';
 import { submitListeningQuestions } from '@/services/data';
 import { toast, ToastContainer } from 'react-toastify';
+import AudioUploader from '../Common/AudioUploader';
 
 const ListeningCreationPage = () => {
     const [test, setTest] = useState<ListeningTest>({
@@ -11,11 +12,23 @@ const ListeningCreationPage = () => {
         type: 'academic',
         duration: 30,
         audioUrl: '',
+        cloudinaryPublicId: '',
+        audioDuration: 0,
+        audioFormat: '',
+        audioSize: 0,
         parts: [{ title: 'Part 1', questions: [] }]
     });
 
     const handleTestChange = (field: keyof ListeningTest, value: string | number) => {
         setTest(prev => ({ ...prev, [field]: value }));
+    };
+
+    const handleAudioUploaded = (audioUrl: string, publicId: string) => {
+        setTest(prev => ({
+            ...prev,
+            audioUrl: audioUrl,
+            cloudinaryPublicId: publicId
+        }));
     };
 
     const addPart = () => {
@@ -42,6 +55,13 @@ const ListeningCreationPage = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        
+        // Validate that audio is uploaded
+        if (!test.audioUrl) {
+            toast.error("Please upload an audio file for the listening test");
+            return;
+        }
+
         console.log('Submitting test:', JSON.stringify(test, null, 2));
 
         try {
@@ -49,15 +69,24 @@ const ListeningCreationPage = () => {
             console.log(data.success);
             if (data.success) {
                 toast.success("Test created successfully!");
-                // Optionally, redirect or reset the form
+                // Reset form after successful creation
+                setTest({
+                    title: '',
+                    type: 'academic',
+                    duration: 30,
+                    audioUrl: '',
+                    cloudinaryPublicId: '',
+                    audioDuration: 0,
+                    audioFormat: '',
+                    audioSize: 0,
+                    parts: [{ title: 'Part 1', questions: [] }]
+                });
             } else {
                 toast.error("Failed to create test. Please try again.");
             }
         } catch (error) {
             toast.error("An error occurred while creating the test.");
         }
-
-        // Submit to API here
     };
 
     return (
@@ -66,19 +95,6 @@ const ListeningCreationPage = () => {
 
             <form onSubmit={handleSubmit} className="space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* <div className="form-control">
-                        <label className="label">
-                            <span className="label-text">Test ID</span>
-                        </label>
-                        <input
-                            type="text"
-                            className="input input-bordered"
-                            value={test.id}
-                            onChange={e => handleTestChange('id', e.target.value)}
-                            required
-                        />
-                    </div> */}
-
                     <div className="form-control">
                         <label className="label">
                             <span className="label-text font-semibold text-black">Title</span>
@@ -119,17 +135,36 @@ const ListeningCreationPage = () => {
                         />
                     </div>
 
-                    <div className="md:col-span-2 form-control">
-                        <label className="label">
-                            <span className="label-text font-semibold text-black">Audio URL</span>
-                        </label>
-                        <input
-                            type="url"
-                            className="input input-bordered border-black"
-                            value={test.audioUrl}
-                            onChange={e => handleTestChange('audioUrl', e.target.value)}
-                            required
+                    {/* Audio Upload Section */}
+                    <div className="md:col-span-2">
+                        <AudioUploader 
+                            onAudioUploaded={handleAudioUploaded}
+                            label="Upload Listening Test Audio"
                         />
+                        
+                        {/* Display uploaded audio info */}
+                        {test.audioUrl && (
+                            <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                                <div className="flex items-center space-x-2">
+                                    <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                    </svg>
+                                    <span className="text-green-800 font-medium">Audio uploaded successfully!</span>
+                                </div>
+                                <div className="mt-2 text-sm text-green-700">
+                                    <p>Audio URL: {test.audioUrl.substring(0, 50)}...</p>
+                                    {test.audioDuration && (
+                                        <p>Duration: {Math.round(test.audioDuration / 60)} minutes {test.audioDuration % 60} seconds</p>
+                                    )}
+                                    {test.audioFormat && (
+                                        <p>Format: {test.audioFormat.toUpperCase()}</p>
+                                    )}
+                                    {test.audioSize && (
+                                        <p>Size: {(test.audioSize / 1024 / 1024).toFixed(2)} MB</p>
+                                    )}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
 

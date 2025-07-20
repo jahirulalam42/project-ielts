@@ -1,10 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { deleteAudioFromCloudinary, listAudioFiles, getAudioInfo } from '@/lib/cloudinaryUtils';
+import { 
+  deleteAudioFromCloudinary, 
+  listAudioFiles, 
+  getAudioInfo,
+  deleteListeningAudio,
+  listListeningAudioFiles
+} from '@/lib/cloudinaryUtils';
 
 export async function DELETE(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const publicId = searchParams.get('publicId');
+    const type = searchParams.get('type') || 'speaking'; // Default to speaking for backward compatibility
     
     if (!publicId) {
       return NextResponse.json(
@@ -13,7 +20,12 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const result = await deleteAudioFromCloudinary(publicId);
+    let result;
+    if (type === 'listening') {
+      result = await deleteListeningAudio(publicId);
+    } else {
+      result = await deleteAudioFromCloudinary(publicId);
+    }
     
     if (result.success) {
       return NextResponse.json({
@@ -40,14 +52,20 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const publicId = searchParams.get('publicId');
     const action = searchParams.get('action');
+    const type = searchParams.get('type') || 'speaking'; // Default to speaking for backward compatibility
     
     if (action === 'list') {
-      const result = await listAudioFiles();
+      let result;
+      if (type === 'listening') {
+        result = await listListeningAudioFiles();
+      } else {
+        result = await listAudioFiles();
+      }
       
       if (result.success) {
         return NextResponse.json({
           success: true,
-          files: result.result.resources
+          result: result.result
         });
       } else {
         return NextResponse.json(

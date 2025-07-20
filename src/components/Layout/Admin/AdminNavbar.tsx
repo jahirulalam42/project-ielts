@@ -208,7 +208,22 @@ const AdminNavbar = () => {
                           onClick={() => setActivePage("audio-management")}
                         >
                           <FaMusic className="text-lg" />
-                          <span>Audio Management</span>
+                          <span>Speaking Audio</span>
+                        </Link>
+                      </li>
+
+                      <li>
+                        <Link
+                          href="/admin/listening-audio-management"
+                          className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
+                            activePage === "listening-audio-management"
+                              ? "bg-purple-700 text-white shadow-md"
+                              : "text-purple-200 hover:bg-purple-800"
+                          }`}
+                          onClick={() => setActivePage("listening-audio-management")}
+                        >
+                          <FaHeadphones className="text-lg" />
+                          <span>Listening Audio</span>
                         </Link>
                       </li>
 

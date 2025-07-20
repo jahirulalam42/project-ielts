@@ -42,6 +42,35 @@ export const listAudioFiles = async () => {
   }
 };
 
+// List all listening audio files
+export const listListeningAudioFiles = async () => {
+  try {
+    const result = await cloudinary.api.resources({
+      type: 'upload',
+      resource_type: 'video',
+      prefix: 'ielts-listening-audio/',
+      max_results: 100
+    });
+    return { success: true, result };
+  } catch (error) {
+    console.error('Error listing listening audio files from Cloudinary:', error);
+    return { success: false, error };
+  }
+};
+
+// Delete listening audio file
+export const deleteListeningAudio = async (publicId: string) => {
+  try {
+    const result = await cloudinary.uploader.destroy(publicId, {
+      resource_type: 'video'
+    });
+    return { success: true, result };
+  } catch (error) {
+    console.error('Error deleting listening audio from Cloudinary:', error);
+    return { success: false, error };
+  }
+};
+
 // Get Cloudinary URL with transformations
 export const getAudioUrl = (publicId: string, options: {
   format?: string;
@@ -50,6 +79,21 @@ export const getAudioUrl = (publicId: string, options: {
 } = {}) => {
   return cloudinary.url(publicId, {
     resource_type: 'video',
+    ...options
+  });
+};
+
+// Get optimized listening audio URL
+export const getListeningAudioUrl = (publicId: string, options: {
+  format?: string;
+  quality?: string;
+  bit_rate?: string;
+} = {}) => {
+  return cloudinary.url(publicId, {
+    resource_type: 'video',
+    format: options.format || 'mp3',
+    quality: options.quality || 'auto',
+    bit_rate: options.bit_rate || '128k',
     ...options
   });
 }; 
