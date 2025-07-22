@@ -297,6 +297,17 @@ export async function getAllReadingAnswers(userId: any) {
   }
 }
 
+export async function getReadingAnswersById(testId: any) {
+  try {
+    const response = await axios.get(
+      `api/submitAnswers/submitReadingAnswers/getReadingAnswers/${testId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export async function getSubmitReadingTest(testId: any, userId: any) {
   try {
     const response = await axios.get(
@@ -345,7 +356,16 @@ export async function getSubmitWritingTest(testId: any, userId: any) {
   }
 }
 
-
+export async function getWritingAnswersById(testId: any) {
+  try {
+    const response = await axios.get(
+      `api/submitAnswers/submitWritingAnswers/getWritingAnswers/${testId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 // Listening Questions
 export async function getListeningTests() {
@@ -450,6 +470,17 @@ export async function getAllListeningAnswers(userId: any) {
   try {
     const response = await axios.get(
       `/api/submitAnswers/submitListeningAnswers/getAllListeningAnswers/${userId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getListeningAnswersById(testId: any) {
+  try {
+    const response = await axios.get(
+      `api/submitAnswers/submitListeningAnswers/getListeningAnswers/${testId}`
     );
     return response.data;
   } catch (error) {

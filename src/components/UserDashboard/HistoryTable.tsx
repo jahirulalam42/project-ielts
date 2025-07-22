@@ -19,6 +19,8 @@ const HistoryTable = ({ selectedSkill, testHistory }: any) => {
     setSelectedTestId(null);
   };
 
+  console.log("Test History", testHistory);
+
   return (
     <div>
       <div className="bg-white rounded-xl shadow-md overflow-hidden">
@@ -103,11 +105,7 @@ const HistoryTable = ({ selectedSkill, testHistory }: any) => {
                     <td className="py-3 px-4 text-center">
                       <button
                         className="btn btn-sm btn-primary"
-                        onClick={() =>
-                          handleShowResult(
-                            selectedSkill === "writing" ? test.testId : test.id
-                          )
-                        }
+                        onClick={() => handleShowResult(test._id)}
                       >
                         Show Result
                       </button>
