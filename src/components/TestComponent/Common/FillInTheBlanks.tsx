@@ -30,7 +30,7 @@ const FillInTheBlanks: React.FC<any> = ({
                     handleAnswerChange(
                       q.question_number,
                       e.target.value,
-                      q.input_type,
+                      "Fill in the Blanks",
                       q.answer,
                       e.target.value === q.answer ? true : false
                     )

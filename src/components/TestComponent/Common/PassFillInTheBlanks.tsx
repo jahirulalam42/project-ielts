@@ -39,7 +39,7 @@ const PassFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
             handleAnswerChange(
               blankNumber,
               e.target.value,
-              "text", // As the input_type is 'text' for this case
+              "Passage Fill in the Blanks", // As the input_type is 'text' for this case
               correctAnswer, // Pass the correct answer for this specific blank
               e.target.value.toLowerCase().trim() ===
                 correctAnswer.toLowerCase().trim()

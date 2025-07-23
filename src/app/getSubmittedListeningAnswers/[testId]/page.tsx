@@ -4,31 +4,22 @@ import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { getSubmitListeningTest } from "@/services/data";
 
-// Define TypeScript interfaces for clarity
+interface AnswerEntry {
+  questionId: number;
+  value: string;
+  answerText: string;
+  isCorrect: boolean;
+  questionType?: string;
+}
+
 interface Submission {
   _id: string;
   userId: string;
   testId: string;
-  answers: AnswerGroup[];
+  answers: AnswerEntry[];
   submittedAt: string;
   totalScore: number;
   __v: number;
-}
-
-interface AnswerEntry {
-  questionId: string;
-  value: string;
-  answerText: string;
-  isCorrect: boolean;
-  numericId: number;
-}
-
-interface AnswerGroup {
-  [key: string]: {
-    value: string;
-    answerText: string;
-    isCorrect: boolean;
-  };
 }
 
 const SubmissionPage = () => {
@@ -47,7 +38,6 @@ const SubmissionPage = () => {
           testId,
           session?.user?.id
         );
-        console.log("Response", response);
 
         if (response.success) {
           const data = Array.isArray(response.data)
@@ -78,23 +68,15 @@ const SubmissionPage = () => {
   if (!submission)
     return <div className="text-center p-4">No submission data available</div>;
 
-  // Convert the single object in `answers` array to a flat list
-  const answersObject = submission.answers[0] || {};
-  const individualAnswers: AnswerEntry[] = Object.entries(answersObject)
-    .map(([key, value]: [string, any]) => ({
-      questionId: key,
-      value: value.value,
-      answerText: value.answerText,
-      isCorrect: value.isCorrect,
-      numericId: parseInt(key.replace(/^\D+/g, "")) || 0,
-    }))
-    .sort((a, b) => a.numericId - b.numericId);
+  // submission.answers is now an array of AnswerEntry
+  const sortedAnswers = [...submission.answers].sort(
+    (a, b) => a.questionId - b.questionId
+  );
 
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Your Submitted Answers</h1>
 
-      {/* Total Score Card */}
       <div className="card bg-base-100 shadow-xl mb-6">
         <div className="card-body">
           <h2 className="card-title">
@@ -106,23 +88,24 @@ const SubmissionPage = () => {
         </div>
       </div>
 
-      {/* Answers Table */}
       <div className="overflow-x-auto">
         <table className="table w-full">
           <thead>
             <tr>
-              <th>Question</th>
+              <th>Question ID</th>
               <th>Your Answer</th>
               <th>Correct Answer</th>
+              <th>Type</th>
               <th>Correct</th>
             </tr>
           </thead>
           <tbody>
-            {individualAnswers.map((answer, index) => (
+            {sortedAnswers.map((answer, index) => (
               <tr key={index}>
                 <td>{answer.questionId}</td>
                 <td>{answer.value || "Not answered"}</td>
                 <td>{answer.answerText}</td>
+                <td>{answer.questionType || "N/A"}</td>
                 <td
                   className={answer.isCorrect ? "text-success" : "text-error"}
                 >

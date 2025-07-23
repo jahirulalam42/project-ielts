@@ -80,7 +80,7 @@ const Map: React.FC<MapProps> = ({
                         handleAnswerChange(
                           q?.question_number,
                           label,
-                          "map",
+                          "Map",
                           q?.answer,
                           label === q?.answer
                         )

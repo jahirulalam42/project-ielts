@@ -11,10 +11,10 @@ const McqMultiple = ({ question, handleAnswerChange }: any) => {
   useEffect(() => {
     const initialSelections: { [key: string]: { [key: number]: string } } = {};
     question.forEach((q: any) => {
-      const groupKey = q.question_numbers.join('-');
+      const groupKey = q.question_numbers.join("-");
       initialSelections[groupKey] = {};
       q.question_numbers.forEach((num: number) => {
-        initialSelections[groupKey][num] = '';
+        initialSelections[groupKey][num] = "";
       });
     });
     setSelectedOptions(initialSelections);
@@ -33,13 +33,15 @@ const McqMultiple = ({ question, handleAnswerChange }: any) => {
     questionNumber: number
   ) => {
     const currentSelections = selectedOptions[groupKey] || {};
-    const selectedCount = Object.values(currentSelections).filter(v => v !== '').length;
+    const selectedCount = Object.values(currentSelections).filter(
+      (v) => v !== ""
+    ).length;
 
     // If the option is already selected for this question, unselect it
     if (currentSelections[questionNumber] === optionLabel) {
       const newSelections = {
         ...currentSelections,
-        [questionNumber]: ''
+        [questionNumber]: "",
       };
       setSelectedOptions({ ...selectedOptions, [groupKey]: newSelections });
 
@@ -47,10 +49,10 @@ const McqMultiple = ({ question, handleAnswerChange }: any) => {
       q.question_numbers.forEach((num: number) => {
         handleAnswerChange(
           num,
-          newSelections[num] || '',
-          q.input_type,
+          newSelections[num] || "",
+          "MCQ Multiple",
           q.correct_mapping[q.question_numbers.indexOf(num)],
-          checkIndividualAnswer(newSelections[num] || '', q.correct_mapping),
+          checkIndividualAnswer(newSelections[num] || "", q.correct_mapping),
           q.question_numbers
         );
       });
@@ -59,7 +61,7 @@ const McqMultiple = ({ question, handleAnswerChange }: any) => {
       if (selectedCount < q.max_selection) {
         const newSelections = {
           ...currentSelections,
-          [questionNumber]: optionLabel
+          [questionNumber]: optionLabel,
         };
         setSelectedOptions({ ...selectedOptions, [groupKey]: newSelections });
 
@@ -67,10 +69,10 @@ const McqMultiple = ({ question, handleAnswerChange }: any) => {
         q.question_numbers.forEach((num: number) => {
           handleAnswerChange(
             num,
-            newSelections[num] || '',
+            newSelections[num] || "",
             q.input_type,
             q.correct_mapping[q.question_numbers.indexOf(num)],
-            checkIndividualAnswer(newSelections[num] || '', q.correct_mapping),
+            checkIndividualAnswer(newSelections[num] || "", q.correct_mapping),
             q.question_numbers
           );
         });
@@ -86,7 +88,7 @@ const McqMultiple = ({ question, handleAnswerChange }: any) => {
     <div>
       <h5 className="font-medium mb-2">Multiple Select Questions</h5>
       {question.map((q: any, idx: number) => {
-        const groupKey = q.question_numbers.join('-');
+        const groupKey = q.question_numbers.join("-");
         const currentSelections = selectedOptions[groupKey] || {};
 
         return (
@@ -104,14 +106,23 @@ const McqMultiple = ({ question, handleAnswerChange }: any) => {
                   <input
                     type="checkbox"
                     className="checkbox checkbox-primary"
-                    checked={Object.values(currentSelections).includes(option.label)}
+                    checked={Object.values(currentSelections).includes(
+                      option.label
+                    )}
                     onChange={() => {
                       // Find which question number this option should be assigned to
                       const availableQuestion = q.question_numbers.find(
-                        (num: number) => !currentSelections[num] || currentSelections[num] === option.label
+                        (num: number) =>
+                          !currentSelections[num] ||
+                          currentSelections[num] === option.label
                       );
                       if (availableQuestion) {
-                        handleCheckboxChange(groupKey, option.label, q, availableQuestion);
+                        handleCheckboxChange(
+                          groupKey,
+                          option.label,
+                          q,
+                          availableQuestion
+                        );
                       }
                     }}
                   />
@@ -122,11 +133,12 @@ const McqMultiple = ({ question, handleAnswerChange }: any) => {
 
             {/* Debug info - remove this in production */}
             <div className="text-xs text-black-500 mt-2">
-              Selected: {Object.entries(currentSelections)
-                .filter(([_, value]) => value !== '')
+              Selected:{" "}
+              {Object.entries(currentSelections)
+                .filter(([_, value]) => value !== "")
                 .map(([key, value]) => `${key}: ${value}`)
-                .join(', ')} |
-              Correct: {q.correct_mapping?.join(', ')}
+                .join(", ")}{" "}
+              | Correct: {q.correct_mapping?.join(", ")}
             </div>
           </div>
         );

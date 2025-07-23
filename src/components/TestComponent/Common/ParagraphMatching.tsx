@@ -25,7 +25,7 @@ const ParagraphMatching = ({
                 handleAnswerChange(
                   q.question_number,
                   e.target.value,
-                  q.input_type,
+                  "Paragraph Matching",
                   q.answer,
                   e.target.value === q.answer ? true : false
                 )

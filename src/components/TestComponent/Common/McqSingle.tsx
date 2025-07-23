@@ -35,7 +35,7 @@ const McqSingle = ({
                         handleAnswerChange(
                           q.question_number,
                           option.label,
-                          q.input_type,
+                          "MCQ Single",
                           q.answer,
                           option.label === q.answer[0] ? true : false
                         )

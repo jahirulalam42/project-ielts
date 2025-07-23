@@ -16,7 +16,7 @@ const SubFillInTheBlanks = ({
           return (
             <div key={idx} className="mb-4">
               {section.subtitle && (
-                <h6 className="font-medium font-semibold mb-2">{section.subtitle}</h6>
+                <h6 className="font-medium mb-2">{section.subtitle}</h6>
               )}
               {section.extra?.map((text: string, i: number) => {
                 return (
@@ -24,14 +24,17 @@ const SubFillInTheBlanks = ({
                     {/* Add bullet point before each sentence */}
                     <span className="mr-2">•</span>
                     {text.split("__________").map((part, j, arr) => {
-                      const currentQuestion = section.questions?.[questionIndex];
+                      const currentQuestion =
+                        section.questions?.[questionIndex];
 
                       return (
                         <React.Fragment key={j}>
                           {part}
                           {j < arr.length - 1 && currentQuestion && (
                             <>
-                              <strong>{currentQuestion.question_number}.</strong>
+                              <strong>
+                                {currentQuestion.question_number}.
+                              </strong>
                               <input
                                 type="text"
                                 placeholder=""
@@ -40,7 +43,7 @@ const SubFillInTheBlanks = ({
                                   handleAnswerChange(
                                     currentQuestion.question_number,
                                     e.target.value,
-                                    currentQuestion.input_type,
+                                    "Fill in the Blanks",
                                     currentQuestion.answer,
                                     e.target.value === currentQuestion.answer
                                       ? true

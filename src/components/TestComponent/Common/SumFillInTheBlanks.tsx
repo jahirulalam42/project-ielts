@@ -45,7 +45,7 @@ const SumFillInTheBlanks = ({
       handleAnswerChange(
         questionNumber,
         selectedLabel,
-        question.input_type,
+        "Summary Fill in the Blanks",
         correctAnswer,
         selectedLabel === correctAnswer
       );

@@ -146,7 +146,26 @@ const ReadingTest = ({ test }: any) => {
               questionsArray.forEach((question) => {
                 allQuestions.push({
                   ...question,
-                  questionType: questionType, // Store the question type
+                  questionType:
+                    questionType === "true_false_not_given"
+                      ? "True False Not Given"
+                      : questionType === "fill_in_the_blanks"
+                      ? "Fill in the Blanks"
+                      : questionType === "matching_headings"
+                      ? "Matching Headings"
+                      : questionType === "paragraph_matching"
+                      ? "Paragraph Matching"
+                      : questionType === "multiple_mcq"
+                      ? "Multiple MCQ"
+                      : questionType === "passage_fill_in_the_blanks"
+                      ? "Passage Fill in the Blanks"
+                      : questionType === "mcq"
+                      ? "MCQ"
+                      : questionType === "summary_fill_in_the_blanks"
+                      ? "Summary Fill in the Blanks"
+                      : questionType === "fill_in_the_blanks_with_subtitle"
+                      ? "Fill in the blanks with Subtitle"
+                      : "",
                   input_type: question.input_type || "text",
                 });
               });
@@ -167,6 +186,7 @@ const ReadingTest = ({ test }: any) => {
         return q.question_numbers.map(
           (questionNumber: number, index: number) => ({
             questionId: questionNumber,
+            questionType: q.questionType,
             value: "", // Will store the selected option
             answerText: q.correct_mapping ? q.correct_mapping[index] : "", // The correct answer
             isCorrect: false,
@@ -179,6 +199,7 @@ const ReadingTest = ({ test }: any) => {
       ) {
         return {
           questionId: q.question_number,
+          questionType: q.questionType,
           answers: [],
           answerText: Array.isArray(q.answer) ? q.answer : [q.answer],
           isCorrect: false,
@@ -186,6 +207,7 @@ const ReadingTest = ({ test }: any) => {
       } else if (q.input_type === "text" && Array.isArray(q.questions)) {
         return q.questions.map((que: any) => ({
           questionId: que.question_number,
+          questionType: q.questionType,
           value: "",
           answerText: que.answer,
           isCorrect: false,
@@ -194,6 +216,7 @@ const ReadingTest = ({ test }: any) => {
         // Handle PassFillInTheBlanks where question_number is an array
         return q.question_number.map((questionNum: number, index: number) => ({
           questionId: questionNum,
+          questionType: q.questionType,
           value: "",
           answerText: q.blanks ? q.blanks[index]?.answer : "", // Get answer from blanks array
           isCorrect: false,
@@ -204,6 +227,7 @@ const ReadingTest = ({ test }: any) => {
       ) {
         return q.question_numbers.map((questionNumber: any, index: number) => ({
           questionId: questionNumber,
+          questionType: q.questionType,
           value: "",
           answerText: q.answers ? q.answers[index] : "",
           isCorrect: false,
@@ -246,6 +270,7 @@ const ReadingTest = ({ test }: any) => {
             // If this is the question being answered
             return {
               ...obj,
+              questionId: questionId,
               value: value, // Store the selected option value
               isCorrect: isCorrect, // Use the isCorrect parameter passed from McqMultiple
             };
@@ -293,6 +318,7 @@ const ReadingTest = ({ test }: any) => {
             index === existingEntryIndex
               ? {
                   ...obj,
+                  questionId: questionId,
                   value: String(value),
                   answerText: answer,
                   isCorrect: isCorrect,

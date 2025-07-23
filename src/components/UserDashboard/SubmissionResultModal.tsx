@@ -53,6 +53,7 @@ interface Answer {
   response?: string;
   instructions?: string[];
   image?: string;
+  questionType?: string;
 }
 
 interface OriginalTestPart {
@@ -406,6 +407,7 @@ const SubmissionResultModal: React.FC<SubmissionResultModalProps> = ({
                             <th className="font-bold text-black">
                               Correct Answer
                             </th>
+                            <th className="font-bold text-black">Type</th>
                             <th className="font-bold text-black">Status</th>
                           </tr>
                         </thead>
@@ -421,6 +423,10 @@ const SubmissionResultModal: React.FC<SubmissionResultModalProps> = ({
                                 .map((a) => a.answerText)
                                 .filter(Boolean)
                                 .join(", ");
+                              const type = answers
+                                .map((a) => a.questionType)
+                                .filter(Boolean)
+                                .join(", ");
                               const isGroupCorrect = answers.every(
                                 (a) => a.isCorrect
                               );
@@ -432,6 +438,7 @@ const SubmissionResultModal: React.FC<SubmissionResultModalProps> = ({
                                   <td>{answers[0].questionGroup.join(", ")}</td>
                                   <td>{selectedAnswers}</td>
                                   <td>{correctAnswers}</td>
+                                  <td>{type}</td>
                                   <td
                                     className={
                                       isGroupCorrect
@@ -450,9 +457,10 @@ const SubmissionResultModal: React.FC<SubmissionResultModalProps> = ({
                             // For individual answers
                             return answers.map((answer, index) => (
                               <tr key={`${groupKey}-${index}`}>
-                                <td>{answer.questionId}</td>
-                                <td>{answer.value || "Not answered"}</td>
-                                <td>{answer.answerText as string}</td>
+                                <td>{answer?.questionId}</td>
+                                <td>{answer?.value || "Not answered"}</td>
+                                <td>{answer?.answerText as string}</td>
+                                <td>{answer?.questionType}</td>
                                 <td
                                   className={
                                     answer.isCorrect

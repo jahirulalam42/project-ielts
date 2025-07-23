@@ -25,7 +25,7 @@ const MatchingHeadings = ({
                 handleAnswerChange(
                   q.question_number,
                   e.target.value,
-                  q.input_type,
+                  "Matching Headings",
                   q.answer,
                   e.target.value === q.answer ? true : false
                 )

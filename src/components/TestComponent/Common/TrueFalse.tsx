@@ -32,7 +32,7 @@ const TrueFalse = ({
                   handleAnswerChange(
                     q.question_number,
                     e.target.value,
-                    q.input_type,
+                    "True False",
                     q.answer,
                     e.target.value === q.answer ? true : false
                   )

@@ -92,6 +92,7 @@ const ListeningTest: React.FC<any> = ({ test }) => {
         value,
         answerText: answer,
         isCorrect: isCorrect,
+        questionType: inputType, // new field
       },
     }));
   };
@@ -116,10 +117,20 @@ const ListeningTest: React.FC<any> = ({ test }) => {
       (answer: any) => answer.isCorrect === true
     ).length;
 
+    const formattedAnswers = Object.entries(answers).map(
+      ([questionId, answer]: any) => ({
+        questionId: parseInt(questionId),
+        value: answer.value,
+        answerText: answer.answerText,
+        isCorrect: answer.isCorrect,
+        questionType: answer.questionType || "fill_in_the_blanks",
+      })
+    );
+
     const testData = {
       userId: session?.user?.id,
       testId: test._id,
-      answers: answers,
+      answers: formattedAnswers,
       totalScore: totalPoint,
       submittedAt: submissionTime.toLocaleString(),
     };
