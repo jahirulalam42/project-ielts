@@ -1,11 +1,12 @@
 // components/Navbar.tsx
 "use client";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import LoginButton from "../Auth/LoginButton";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
+import { getSingleUser } from "@/services/data";
 
 declare module "next-auth" {
   interface Session {
@@ -21,6 +22,7 @@ declare module "next-auth" {
 const Navbar: React.FC = () => {
   const pathName = usePathname();
   const { data } = useSession();
+  const [userData, setUserData]: any = useState();
 
   // Navigation links data
   const navLinks = [
@@ -29,6 +31,17 @@ const Navbar: React.FC = () => {
     { href: "/test/writing", label: "Writing" },
     { href: "/test/speaking", label: "Speaking" },
   ];
+
+  useEffect(() => {
+    const fetchSingleUser = async () => {
+      if (data) {
+        const result = await getSingleUser(data?.user.id);
+        setUserData(result?.data);
+        return result;
+      }
+    };
+    fetchSingleUser();
+  }, [data]);
 
   return (
     <div>
@@ -145,7 +158,11 @@ const Navbar: React.FC = () => {
                       <div className="w-10 rounded-full">
                         <img
                           alt="Tailwind CSS Navbar component"
-                          src="https://img.daisyui.com/images/profile/demo/averagebulk@192.webp"
+                          // src=
+                          src={
+                            userData?.image ||
+                            "https://img.daisyui.com/images/profile/demo/averagebulk@192.webp"
+                          }
                         />
                       </div>
                     </div>

@@ -1,16 +1,17 @@
 "use client";
 import { getSingleUser, updateUser } from "@/services/data";
 import { useSession } from "next-auth/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [userData, setUserData]: any = useState();
+  const [isImageUploading, setIsImageUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isHoveringImage, setIsHoveringImage] = useState(false);
 
   const { data }: any = useSession();
-
-  console.log("Session Data", data);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -24,19 +25,61 @@ const Profile = () => {
     setIsEditing(false);
     try {
       await updateUser(data?.user.id, userData);
-      toast.success("User Updated");
+      toast.success("Profile updated successfully");
     } catch (err) {
       toast.error("Something went wrong");
     }
-    // In a real app, you would submit to your backend here
-    console.log("Profile updated:", userData);
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsImageUploading(true);
+
+    try {
+      // Create form data to send to your API route
+      const formData = new FormData();
+      formData.append("image", file);
+
+      // Upload to your API endpoint
+      const uploadResponse = await fetch("/api/upload/image", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error("Image upload failed");
+      }
+
+      const { url } = await uploadResponse.json();
+
+      // Update user data with new image URL
+      setUserData((prev: any) => ({
+        ...prev,
+        image: url,
+      }));
+
+      // Immediately update the image in the backend
+      await updateUser(data?.user.id, { image: url });
+
+      toast.success("Profile image updated");
+    } catch (error) {
+      toast.error("Image upload failed");
+      console.error("Upload error:", error);
+    } finally {
+      setIsImageUploading(false);
+    }
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
   };
 
   useEffect(() => {
     const fetchSingleUser = async () => {
       if (data) {
         const result = await getSingleUser(data?.user.id);
-        console.log("Single Data information", result);
         setUserData(result?.data);
         return result;
       }
@@ -64,19 +107,84 @@ const Profile = () => {
             <div className="bg-gradient-to-r from-indigo-500 to-purple-600 h-40 relative">
               <div className="absolute -bottom-16 left-8">
                 <div className="avatar">
-                  <div className="w-32 h-32 rounded-full border-4 border-white bg-indigo-100 flex items-center justify-center shadow-lg">
+                  <div
+                    className={`w-32 h-32 rounded-full border-4 border-white bg-indigo-100 flex items-center justify-center shadow-lg relative overflow-hidden transition-all duration-300 ${
+                      isEditing ? "cursor-pointer group" : ""
+                    }`}
+                    onClick={isEditing ? triggerFileInput : undefined}
+                    onMouseEnter={() => setIsHoveringImage(true)}
+                    onMouseLeave={() => setIsHoveringImage(false)}
+                  >
+                    {isImageUploading ? (
+                      <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                        <span className="loading loading-spinner text-white"></span>
+                      </div>
+                    ) : null}
+
                     <img
-                      alt="Tailwind CSS Navbar component"
-                      src="https://img.daisyui.com/images/profile/demo/averagebulk@192.webp"
+                      alt="Profile"
+                      src={
+                        userData.image ||
+                        "https://img.daisyui.com/images/profile/demo/averagebulk@192.webp"
+                      }
+                      className="w-full h-full rounded-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />
+
+                    {/* Camera icon overlay */}
+                    {isEditing && (
+                      <div
+                        className={`
+                        absolute inset-0 bg-black/40 flex items-center justify-center 
+                        transition-opacity duration-300 rounded-full
+                        ${isHoveringImage ? "opacity-100" : "opacity-0"}
+                      `}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-10 w-10 text-white"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                    )}
+
+                    {/* Edit indicator badge */}
+                    {isEditing && (
+                      <div className="absolute top-0 right-0 bg-indigo-600 text-white text-xs px-2 py-1 rounded-bl-lg rounded-tr-lg">
+                        Edit
+                      </div>
+                    )}
                   </div>
                 </div>
+
+                {/* Image change hint text */}
+                {isEditing && (
+                  <p className="text-xs text-center text-indigo-700 mt-2 animate-pulse">
+                    Click on image to change
+                  </p>
+                )}
               </div>
+
+              {/* Hidden file input */}
+              <input
+                type="file"
+                ref={fileInputRef}
+                className="hidden"
+                accept="image/*"
+                onChange={handleImageUpload}
+                disabled={isImageUploading}
+              />
               <div className="absolute right-6 top-6">
                 {!isEditing ? (
                   <button
                     onClick={() => setIsEditing(true)}
-                    className="btn btn-outline btn-light hover:bg-white/20 text-white"
+                    className="btn btn-outline btn-light hover:bg-white/20 text-white transition-all"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -224,15 +332,10 @@ const Profile = () => {
                 </div>
 
                 <div className="flex items-center justify-between border-t pt-6">
-                  {/* <div className="text-sm text-gray-500">
-                  <span className="font-medium">Member since:</span>{" "}
-                  {userData.memberSince}
-                </div> */}
-
                   {isEditing && (
                     <button
                       type="submit"
-                      className="btn btn-primary px-8 py-3 font-medium"
+                      className="btn btn-primary px-8 py-3 font-medium transition-transform hover:scale-105"
                     >
                       Save Changes
                     </button>
@@ -246,26 +349,8 @@ const Profile = () => {
             <span className="loading loading-spinner text-primary"></span>
           </div>
         )}
-
-        {/* Additional Info Section */}
-        {/* {!isEditing && (
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white rounded-xl shadow-md p-6 text-center">
-              <div className="text-3xl font-bold text-indigo-600">8.0</div>
-              <div className="text-gray-600 mt-1">Target Band</div>
-            </div>
-            <div className="bg-white rounded-xl shadow-md p-6 text-center">
-              <div className="text-3xl font-bold text-indigo-600">15</div>
-              <div className="text-gray-600 mt-1">Practice Tests Taken</div>
-            </div>
-            <div className="bg-white rounded-xl shadow-md p-6 text-center">
-              <div className="text-3xl font-bold text-indigo-600">87%</div>
-              <div className="text-gray-600 mt-1">Learning Progress</div>
-            </div>
-          </div>
-        )} */}
       </div>
-      <ToastContainer />
+      <ToastContainer position="bottom-right" />
     </div>
   );
 };

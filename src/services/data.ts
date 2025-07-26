@@ -42,26 +42,24 @@ export async function postUser(formData: any) {
   }
 }
 
+// services/data.ts
 export const updateUser = async (id: string, updates: any) => {
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/users/${id}`,
       {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updates),
       }
     );
 
-    if (!response.ok) {
-      throw new Error("Failed to update user");
-    }
+    if (!response.ok) throw new Error("Failed to update user");
 
+    // Return the parsed JSON response
     return await response.json();
   } catch (error) {
-    console.error("Error in User:", error);
+    console.error("Update error:", error);
     throw error;
   }
 };
