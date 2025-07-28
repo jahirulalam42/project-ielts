@@ -1,7 +1,10 @@
 "use client";
 import LoginButton from "@/components/Auth/LoginButton";
+import { getSingleUser } from "@/services/data";
+import { useSession } from "next-auth/react";
+import userImage from "../../../../public/images/user.jpg";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FaChartBar,
   FaBook,
@@ -23,8 +26,21 @@ import {
 
 const AdminNavbar = () => {
   const [activePage, setActivePage] = useState("dashboard");
+  const { data } = useSession();
+  const [userData, setUserData]: any = useState();
+
+  useEffect(() => {
+    const fetchSingleUser = async () => {
+      if (data) {
+        const result = await getSingleUser(data?.user.id);
+        setUserData(result?.data);
+        return result;
+      }
+    };
+    fetchSingleUser();
+  }, [data]);
   return (
-    <div className="navbar bg-gradient-to-r from-indigo-700 to-purple-700 text-white px-6 py-4 shadow-xl">
+    <div className="navbar bg-indigo-50 px-6 py-4 shadow-xl">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -99,18 +115,15 @@ const AdminNavbar = () => {
               ></label>
 
               <div
-                className={`fixed inset-y-0 left-0 z-40 w-72 bg-gradient-to-b from-indigo-900 to-purple-900 text-white transform transition-transform duration-300 lg:translate-x-0 translate-x-0`}
+                className={`fixed inset-y-0 left-0 z-40 w-72 bg-indigo-50 transform transition-transform duration-300 lg:translate-x-0 translate-x-0`}
               >
                 <div className="flex flex-col h-full">
                   {/* Sidebar header */}
-                  <div className="p-6 border-b border-indigo-700">
+                  <div className="p-6 border-b border-gray-300">
                     <h1 className="text-xl font-bold flex items-center gap-2">
-                      <FaClipboardList className="text-purple-300" />
+                      <FaClipboardList className="text-gray-700" />
                       <span>IELTS Admin</span>
                     </h1>
-                    <p className="text-xs text-purple-300 mt-1">
-                      Dashboard v2.1
-                    </p>
                   </div>
 
                   {/* Sidebar navigation */}
@@ -121,8 +134,8 @@ const AdminNavbar = () => {
                           href="/admin"
                           className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
                             activePage === "dashboard"
-                              ? "bg-purple-700 text-white shadow-md"
-                              : "text-purple-200 hover:bg-purple-800"
+                              ? "bg-indigo-700 text-white shadow-md"
+                              : "text-gray-700 hover:bg-indigo-800 hover:text-white"
                           }`}
                           onClick={() => setActivePage("dashboard")}
                         >
@@ -132,7 +145,7 @@ const AdminNavbar = () => {
                       </li>
 
                       <li className="mt-6 px-3">
-                        <h3 className="text-xs uppercase tracking-wider text-purple-400">
+                        <h3 className="text-xs uppercase tracking-wider text-gray-700">
                           Test Management
                         </h3>
                       </li>
@@ -142,8 +155,8 @@ const AdminNavbar = () => {
                           href="/admin/allReading"
                           className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
                             activePage === "reading"
-                              ? "bg-purple-700 text-white shadow-md"
-                              : "text-purple-200 hover:bg-purple-800"
+                              ? "bg-indigo-700 text-white shadow-md"
+                              : "text-gray-700 hover:bg-indigo-800 hover:text-white"
                           }`}
                           onClick={() => setActivePage("reading")}
                         >
@@ -157,8 +170,8 @@ const AdminNavbar = () => {
                           href="/admin/allListening"
                           className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
                             activePage === "listening"
-                              ? "bg-purple-700 text-white shadow-md"
-                              : "text-purple-200 hover:bg-purple-800"
+                              ? "bg-indigo-700 text-white shadow-md"
+                              : "text-gray-700 hover:bg-indigo-800 hover:text-white"
                           }`}
                           onClick={() => setActivePage("listening")}
                         >
@@ -172,8 +185,8 @@ const AdminNavbar = () => {
                           href="/admin/allWriting"
                           className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
                             activePage === "writing"
-                              ? "bg-purple-700 text-white shadow-md"
-                              : "text-purple-200 hover:bg-purple-800"
+                              ? "bg-indigo-700 text-white shadow-md"
+                              : "text-gray-700 hover:bg-indigo-800 hover:text-white"
                           }`}
                           onClick={() => setActivePage("writing")}
                         >
@@ -187,8 +200,8 @@ const AdminNavbar = () => {
                           href="/admin/speaking"
                           className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
                             activePage === "speaking"
-                              ? "bg-purple-700 text-white shadow-md"
-                              : "text-purple-200 hover:bg-purple-800"
+                              ? "bg-indigo-700 text-white shadow-md"
+                              : "text-gray-700 hover:bg-indigo-800 hover:text-white"
                           }`}
                           onClick={() => setActivePage("speaking")}
                         >
@@ -202,8 +215,8 @@ const AdminNavbar = () => {
                           href="/admin/audio-management"
                           className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
                             activePage === "audio-management"
-                              ? "bg-purple-700 text-white shadow-md"
-                              : "text-purple-200 hover:bg-purple-800"
+                              ? "bg-indigo-700 text-white shadow-md"
+                              : "text-gray-700 hover:bg-indigo-800 hover:text-white"
                           }`}
                           onClick={() => setActivePage("audio-management")}
                         >
@@ -217,10 +230,12 @@ const AdminNavbar = () => {
                           href="/admin/listening-audio-management"
                           className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
                             activePage === "listening-audio-management"
-                              ? "bg-purple-700 text-white shadow-md"
-                              : "text-purple-200 hover:bg-purple-800"
+                              ? "bg-indigo-700 text-white shadow-md"
+                              : "text-gray-700 hover:bg-indigo-800 hover:text-white"
                           }`}
-                          onClick={() => setActivePage("listening-audio-management")}
+                          onClick={() =>
+                            setActivePage("listening-audio-management")
+                          }
                         >
                           <FaHeadphones className="text-lg" />
                           <span>Listening Audio</span>
@@ -228,7 +243,7 @@ const AdminNavbar = () => {
                       </li>
 
                       <li className="mt-6 px-3">
-                        <h3 className="text-xs uppercase tracking-wider text-purple-400">
+                        <h3 className="text-xs uppercase tracking-wider text-gray-700">
                           User Management
                         </h3>
                       </li>
@@ -238,8 +253,8 @@ const AdminNavbar = () => {
                           href="/admin/users"
                           className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
                             activePage === "userManage"
-                              ? "bg-purple-700 text-white shadow-md"
-                              : "text-purple-200 hover:bg-purple-800"
+                              ? "bg-indigo-700 text-white shadow-md"
+                              : "text-gray-700 hover:bg-indigo-800 hover:text-white"
                           }`}
                           onClick={() => setActivePage("userManage")}
                         >
@@ -248,8 +263,8 @@ const AdminNavbar = () => {
                         </Link>
                       </li>
 
-                      <li className="mt-6 px-3">
-                        <h3 className="text-xs uppercase tracking-wider text-purple-400">
+                      {/* <li className="mt-6 px-3">
+                        <h3 className="text-xs uppercase tracking-wider text-gray-700">
                           Settings
                         </h3>
                       </li>
@@ -259,22 +274,22 @@ const AdminNavbar = () => {
                           href="/admin/settings"
                           className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
                             activePage === "settings"
-                              ? "bg-purple-700 text-white shadow-md"
-                              : "text-purple-200 hover:bg-purple-800"
+                              ? "bg-indigo-700 text-white shadow-md"
+                              : "text-gray-700 hover:bg-indigo-800 hover:text-white"
                           }`}
                           onClick={() => setActivePage("settings")}
                         >
                           <FaCog className="text-lg" />
                           <span>System Settings</span>
                         </Link>
-                      </li>
+                      </li> */}
                     </ul>
                   </nav>
 
                   {/* Sidebar footer */}
                   <div className="p-4 border-t border-indigo-700 text-center">
                     <div className="badge badge-success gap-2">Online</div>
-                    <p className="text-xs text-purple-300 mt-2">
+                    <p className="text-xs text-gray-700 mt-2">
                       © 2023 IELTS Admin
                     </p>
                   </div>
@@ -312,7 +327,7 @@ const AdminNavbar = () => {
         {/* Home button */}
         <Link
           href="/"
-          className="btn btn-sm btn-outline btn-accent hidden md:flex"
+          className="btn btn-sm btn-outline btn-primary hidden md:flex"
         >
           <FaHome className="mr-1" /> Main Site
         </Link>
@@ -343,38 +358,48 @@ const AdminNavbar = () => {
           </div>
         </div>
 
-        {/* User profile dropdown */}
-        <div className="dropdown dropdown-end text-black">
-          <div
-            tabIndex={0}
-            role="button"
-            className="btn btn-ghost btn-circle avatar"
-          >
-            <div className="w-10 rounded-full">
-              <img
-                alt="Tailwind CSS Navbar component"
-                src="https://img.daisyui.com/images/profile/demo/averagebulk@192.webp"
-              />
-            </div>
+        {!data ? (
+          <div className="hidden sm:block">
+            <LoginButton />
           </div>
-          <ul
-            tabIndex={0}
-            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
-          >
-            <li>
-              <a className="justify-between">
-                Profile
-                <span className="badge">New</span>
-              </a>
-            </li>
-            <li>
-              <a>Settings</a>
-            </li>
-            <li>
-              <LoginButton />
-            </li>
-          </ul>
-        </div>
+        ) : (
+          <div className="dropdown dropdown-end">
+            <div
+              tabIndex={0}
+              role="button"
+              className="btn btn-ghost btn-circle avatar"
+            >
+              <div className="w-10 rounded-full">
+                <img
+                  alt="User Image"
+                  // src=
+                  src={userData?.image || userImage.src}
+                />
+              </div>
+            </div>
+            <ul
+              tabIndex={0}
+              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+            >
+              <li>
+                <Link href={"/userDashboard"} className="justify-between">
+                  Dashboard
+                </Link>
+              </li>
+              <li>
+                <Link href={"/profile"} className="justify-between">
+                  Profile
+                </Link>
+              </li>
+              <li>
+                <a>Settings</a>
+              </li>
+              <li>
+                <LoginButton />
+              </li>
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   );

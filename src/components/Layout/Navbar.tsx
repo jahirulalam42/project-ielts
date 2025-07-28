@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
 import { getSingleUser } from "@/services/data";
+import userImage from "../../../public/images/user.jpg";
 
 declare module "next-auth" {
   interface Session {
@@ -157,12 +158,9 @@ const Navbar: React.FC = () => {
                     >
                       <div className="w-10 rounded-full">
                         <img
-                          alt="Tailwind CSS Navbar component"
+                          alt="User Image"
                           // src=
-                          src={
-                            userData?.image ||
-                            "https://img.daisyui.com/images/profile/demo/averagebulk@192.webp"
-                          }
+                          src={userData?.image || userImage.src}
                         />
                       </div>
                     </div>
