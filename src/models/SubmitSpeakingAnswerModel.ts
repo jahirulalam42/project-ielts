@@ -24,6 +24,7 @@ export interface SubmitSpeakingAnswer extends mongoose.Document {
   feedback: SpeakingFeedback;
   submittedAt: Date;
   score?: number; // Optional score if implemented later
+  cloudinaryPublicId?: string;
 }
 
 const SubmitSpeakingAnswerSchema = new mongoose.Schema<SubmitSpeakingAnswer>({
@@ -99,5 +100,9 @@ const SubmitSpeakingAnswerSchema = new mongoose.Schema<SubmitSpeakingAnswer>({
   },
 });
 
-export default (mongoose.models.SubmitSpeakingAnswer as Model<SubmitSpeakingAnswer>) ||
-  mongoose.model<SubmitSpeakingAnswer>("SubmitSpeakingAnswer", SubmitSpeakingAnswerSchema); 
+export default (mongoose.models
+  .SubmitSpeakingAnswer as Model<SubmitSpeakingAnswer>) ||
+  mongoose.model<SubmitSpeakingAnswer>(
+    "SubmitSpeakingAnswer",
+    SubmitSpeakingAnswerSchema
+  );
