@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 // The McqMultiple component accepts the question and the answer handler
-const McqMultiple = ({ question, handleAnswerChange }: any) => {
+const McqMultiple = ({ question, handleAnswerChange, handleQuestionFocus }: any) => {
   // Track selected options for each question in the group
   const [selectedOptions, setSelectedOptions] = useState<{
     [key: string]: { [key: number]: string };
@@ -106,6 +106,7 @@ const McqMultiple = ({ question, handleAnswerChange }: any) => {
                   <input
                     type="checkbox"
                     className="checkbox checkbox-primary"
+                    onFocus={() => handleQuestionFocus(q.question_numbers[0])}
                     checked={Object.values(currentSelections).includes(
                       option.label
                     )}

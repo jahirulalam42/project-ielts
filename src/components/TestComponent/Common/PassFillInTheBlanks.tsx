@@ -1,6 +1,6 @@
 import React from "react";
 
-const PassFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
+const PassFillInTheBlanks = ({ question, handleAnswerChange, handleQuestionFocus }: any) => {
   // Function to render text with input fields dynamically
   const renderTextWithBlanks = () => {
     const parts = [];
@@ -35,6 +35,7 @@ const PassFillInTheBlanks = ({ question, handleAnswerChange }: any) => {
         <input
           key={`input-${blankNumber}`}
           type="text"
+          onFocus={() => handleQuestionFocus(blankNumber)}
           onChange={(e) =>
             handleAnswerChange(
               blankNumber,

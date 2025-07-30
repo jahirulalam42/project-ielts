@@ -5,6 +5,7 @@ const FillInTheBlanks: React.FC<any> = ({
   answers,
   setAnswers,
   handleAnswerChange,
+  handleQuestionFocus,
 }: any) => {
   return (
     <div>
@@ -26,6 +27,7 @@ const FillInTheBlanks: React.FC<any> = ({
                     padding: "5px 5px", // Adjusted padding
                     fontSize: "14px", // Font size for better fit
                   }}
+                  onFocus={() => handleQuestionFocus(q.question_number)}
                   onChange={(e) =>
                     handleAnswerChange(
                       q.question_number,

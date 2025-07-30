@@ -5,6 +5,7 @@ const TrueFalse = ({
   answers,
   handleAnswerChange,
   setAnswers,
+  handleQuestionFocus,
 }: any) => {
   console.log("True false question", question);
   return (
@@ -28,6 +29,7 @@ const TrueFalse = ({
               <select
                 className="border border-black px-2 py-1 rounded-md text-sm"
                 id={q.question_number}
+                onFocus={() => handleQuestionFocus(q.question_number)}
                 onChange={(e) =>
                   handleAnswerChange(
                     q.question_number,

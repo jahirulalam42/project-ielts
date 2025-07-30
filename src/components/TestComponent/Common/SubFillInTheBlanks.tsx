@@ -5,6 +5,7 @@ const SubFillInTheBlanks = ({
   answers,
   setAnswers,
   handleAnswerChange,
+  handleQuestionFocus,
 }: any) => {
   return (
     <div>
@@ -14,10 +15,13 @@ const SubFillInTheBlanks = ({
           let questionIndex = 0; // Track the correct question mapping
 
           return (
-            <div key={idx} className="mb-4">
-              {section.subtitle && (
-                <h6 className="font-medium mb-2">{section.subtitle}</h6>
-              )}
+                         <div key={idx} className="mb-4">
+               {section.title && (
+                 <h5 className="text-center font-bold text-lg mb-3">{section.title}</h5>
+               )}
+               {section.subtitle && (
+                 <h6 className="font-bold mb-2">{section.subtitle}</h6>
+               )}
               {section.extra?.map((text: string, i: number) => {
                 const isSubItem = text.trim().startsWith('-');
                 const displayText = isSubItem ? text.trim().substring(1).trim() : text;
@@ -45,6 +49,7 @@ const SubFillInTheBlanks = ({
                                 type="text"
                                 placeholder=""
                                 className="border-b-2 border-black mx-1 w-24 text-center"
+                                onFocus={() => handleQuestionFocus(currentQuestion.question_number)}
                                 onChange={(e) =>
                                   handleAnswerChange(
                                     currentQuestion.question_number,

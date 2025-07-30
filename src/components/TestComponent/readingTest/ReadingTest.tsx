@@ -19,12 +19,86 @@ import { postSubmitReadingTest } from "@/services/data";
 const ReadingTest = ({ test }: any) => {
   const [answers, setAnswers] = useState<any>({});
   const [currentPartIndex, setCurrentPartIndex] = useState(0);
+  const [currentQuestionNumber, setCurrentQuestionNumber] = useState(1);
   const [timeLeft, setTimeLeft] = useState(60 * 60); // 60 minutes in seconds
   const [isTimeUp, setIsTimeUp] = useState(false);
   const [passageHighlights, setPassageHighlights] = useState<any[]>([]);
   const { data: session }: any = useSession();
 
   const currentPart = test.parts[currentPartIndex];
+
+  // Function to get all question numbers for each part
+  const getPartQuestionNumbers = () => {
+    const partQuestions: { [key: number]: number[] } = {};
+    
+    test.parts.forEach((part: any, partIndex: number) => {
+      const questionNumbers: number[] = [];
+      
+      part.questions.forEach((questionSet: any) => {
+        if (questionSet.true_false_not_given) {
+          questionSet.true_false_not_given.forEach((q: any) => {
+            questionNumbers.push(q.question_number);
+          });
+        }
+        if (questionSet.fill_in_the_blanks) {
+          questionSet.fill_in_the_blanks.forEach((q: any) => {
+            questionNumbers.push(q.question_number);
+          });
+        }
+        if (questionSet.matching_headings) {
+          questionSet.matching_headings.forEach((q: any) => {
+            questionNumbers.push(q.question_number);
+          });
+        }
+        if (questionSet.paragraph_matching) {
+          questionSet.paragraph_matching.forEach((q: any) => {
+            questionNumbers.push(q.question_number);
+          });
+        }
+        if (questionSet.mcq) {
+          questionSet.mcq.forEach((q: any) => {
+            questionNumbers.push(q.question_number);
+          });
+        }
+        if (questionSet.multiple_mcq) {
+          questionSet.multiple_mcq.forEach((q: any) => {
+            questionNumbers.push(q.question_number);
+          });
+        }
+        if (questionSet.passage_fill_in_the_blanks) {
+          questionSet.passage_fill_in_the_blanks.forEach((q: any) => {
+            if (Array.isArray(q.question_number)) {
+              q.question_number.forEach((num: number) => questionNumbers.push(num));
+            } else {
+              questionNumbers.push(q.question_number);
+            }
+          });
+        }
+        if (questionSet.summary_fill_in_the_blanks) {
+          questionSet.summary_fill_in_the_blanks.forEach((q: any) => {
+            if (Array.isArray(q.question_number)) {
+              q.question_number.forEach((num: number) => questionNumbers.push(num));
+            } else {
+              questionNumbers.push(q.question_number);
+            }
+          });
+        }
+        if (questionSet.fill_in_the_blanks_with_subtitle) {
+          questionSet.fill_in_the_blanks_with_subtitle.forEach((blankSet: any) => {
+            blankSet.questions?.forEach((q: any) => {
+              questionNumbers.push(q.question_number);
+            });
+          });
+        }
+      });
+      
+      partQuestions[partIndex] = questionNumbers.sort((a, b) => a - b);
+    });
+    
+    return partQuestions;
+  };
+
+  const partQuestions = getPartQuestionNumbers();
 
   console.log("Parts", test.parts);
 
@@ -252,6 +326,10 @@ const ReadingTest = ({ test }: any) => {
     setAnswers(initialAnswers);
   }, [test.parts]);
 
+  const handleQuestionFocus = (questionId: number) => {
+    setCurrentQuestionNumber(questionId);
+  };
+
   const handleAnswerChange = (
     questionId: number,
     value: string,
@@ -348,12 +426,22 @@ const ReadingTest = ({ test }: any) => {
   const handleNextPart = () => {
     if (currentPartIndex < test.parts.length - 1) {
       setCurrentPartIndex((prev) => prev + 1);
+      // Set current question to first question of next part
+      const nextPartQuestions = partQuestions[currentPartIndex + 1];
+      if (nextPartQuestions && nextPartQuestions.length > 0) {
+        setCurrentQuestionNumber(nextPartQuestions[0]);
+      }
     }
   };
 
   const handlePrevPart = () => {
     if (currentPartIndex > 0) {
       setCurrentPartIndex((prev) => prev - 1);
+      // Set current question to first question of previous part
+      const prevPartQuestions = partQuestions[currentPartIndex - 1];
+      if (prevPartQuestions && prevPartQuestions.length > 0) {
+        setCurrentQuestionNumber(prevPartQuestions[0]);
+      }
     }
   };
 
@@ -427,7 +515,7 @@ const ReadingTest = ({ test }: any) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="container mx-auto p-4 min-h-screen">
+      <div className="container mx-auto p-4 min-h-screen pb-32">
         {/* Exam Header */}
         <div className="card bg-base-100 shadow-xl mb-6 ">
           <div className="card-body">
@@ -494,6 +582,7 @@ const ReadingTest = ({ test }: any) => {
                       <TrueFalse
                         question={question.true_false_not_given}
                         handleAnswerChange={handleAnswerChange}
+                        handleQuestionFocus={handleQuestionFocus}
                       />
                     )}
 
@@ -501,6 +590,7 @@ const ReadingTest = ({ test }: any) => {
                       <FillInTheBlanks
                         question={question.fill_in_the_blanks}
                         handleAnswerChange={handleAnswerChange}
+                        handleQuestionFocus={handleQuestionFocus}
                       />
                     )}
 
@@ -508,6 +598,7 @@ const ReadingTest = ({ test }: any) => {
                       <MatchingHeadings
                         question={question.matching_headings}
                         handleAnswerChange={handleAnswerChange}
+                        handleQuestionFocus={handleQuestionFocus}
                       />
                     )}
 
@@ -515,6 +606,7 @@ const ReadingTest = ({ test }: any) => {
                       <ParagraphMatching
                         question={question.paragraph_matching}
                         handleAnswerChange={handleAnswerChange}
+                        handleQuestionFocus={handleQuestionFocus}
                       />
                     )}
 
@@ -522,6 +614,7 @@ const ReadingTest = ({ test }: any) => {
                       <McqSingle
                         question={question.mcq}
                         handleAnswerChange={handleAnswerChange}
+                        handleQuestionFocus={handleQuestionFocus}
                       />
                     )}
 
@@ -529,6 +622,7 @@ const ReadingTest = ({ test }: any) => {
                       <McqMultiple
                         question={question.multiple_mcq}
                         handleAnswerChange={handleAnswerChange}
+                        handleQuestionFocus={handleQuestionFocus}
                       />
                     )}
 
@@ -536,6 +630,7 @@ const ReadingTest = ({ test }: any) => {
                       <PassFillInTheBlanks
                         question={question.passage_fill_in_the_blanks}
                         handleAnswerChange={handleAnswerChange}
+                        handleQuestionFocus={handleQuestionFocus}
                       />
                     )}
 
@@ -543,6 +638,7 @@ const ReadingTest = ({ test }: any) => {
                       <SumFillInTheBlanks
                         question={question.summary_fill_in_the_blanks}
                         handleAnswerChange={handleAnswerChange}
+                        handleQuestionFocus={handleQuestionFocus}
                       />
                     )}
 
@@ -550,6 +646,7 @@ const ReadingTest = ({ test }: any) => {
                       <SubFillInTheBlanks
                         question={question.fill_in_the_blanks_with_subtitle}
                         handleAnswerChange={handleAnswerChange}
+                        handleQuestionFocus={handleQuestionFocus}
                       />
                     )}
                   </div>
@@ -589,6 +686,46 @@ const ReadingTest = ({ test }: any) => {
 
         {/* Toast Notifications */}
         <ToastContainer />
+      </div>
+
+      {/* Fixed Question Navigation Panel at Bottom */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
+        <div className="px-4 py-4">
+          <div className="flex justify-between">
+            {test.parts.map((part: any, partIndex: number) => (
+              <div key={partIndex} className="flex-1 flex justify-center">
+                <div className="border-2 border-gray-300 rounded-lg p-2 flex flex-wrap gap-1 justify-center">
+                  {partQuestions[partIndex]?.map((questionNumber: number) => {
+                    const hasAnswered = Array.isArray(answers) 
+                      ? answers.some((answer: any) => 
+                          String(answer.questionId) === String(questionNumber) && 
+                          answer.value && 
+                          answer.value.trim() !== ''
+                        )
+                      : answers[questionNumber]?.value && answers[questionNumber]?.value.trim() !== '';
+                    
+                    return (
+                      <button
+                        key={`${questionNumber}-${partIndex}`}
+                        type="button"
+                        className={`w-8 h-8 text-xs rounded border transition-colors ${
+                          questionNumber === currentQuestionNumber
+                            ? 'bg-blue-500 text-white border-blue-500'
+                            : hasAnswered
+                              ? 'bg-green-200 text-green-700 border-green-400 hover:bg-green-300'
+                              : 'bg-gray-200 text-gray-700 border-gray-300 hover:bg-gray-300'
+                        }`}
+                        onClick={() => setCurrentPartIndex(partIndex)}
+                      >
+                        {questionNumber}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </form>
   );

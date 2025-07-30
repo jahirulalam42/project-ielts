@@ -11,6 +11,7 @@ const SumFillInTheBlanks = ({
   answers,
   setAnswers,
   handleAnswerChange,
+  handleQuestionFocus,
 }: any) => {
   const [selectedAnswers, setSelectedAnswers] = useState<{
     [key: number]: string;
@@ -77,6 +78,8 @@ const SumFillInTheBlanks = ({
                       <DropZone
                         blankIndex={index}
                         answer={selectedAnswers[index]}
+                        questionNumber={question[0].question_numbers[index]}
+                        handleQuestionFocus={handleQuestionFocus}
                       />
                     </span>
                   );
@@ -137,9 +140,13 @@ const DraggableOption = ({
 const DropZone = ({
   blankIndex,
   answer,
+  questionNumber,
+  handleQuestionFocus,
 }: {
   blankIndex: number;
   answer?: string;
+  questionNumber: number;
+  handleQuestionFocus: (questionId: number) => void;
 }) => {
   const { setNodeRef } = useDroppable({ id: blankIndex.toString() });
 
@@ -147,6 +154,8 @@ const DropZone = ({
     <span
       ref={setNodeRef}
       className="inline-block border-b-2 border-black border-dashed px-2 mx-1 min-w-[50px] text-center"
+      onFocus={() => handleQuestionFocus(questionNumber)}
+      tabIndex={0}
     >
       {answer}
     </span>

@@ -24,12 +24,14 @@ interface MapProps {
     answer: string,
     isCorrect?: boolean
   ) => void;
+  handleQuestionFocus?: (questionId: number) => void;
   answers?: Record<string, any>;
 }
 
 const Map: React.FC<MapProps> = ({
   question,
   handleAnswerChange,
+  handleQuestionFocus,
   answers = {},
 }) => {
   return (
@@ -76,6 +78,7 @@ const Map: React.FC<MapProps> = ({
                         answers &&
                         answers[`${q?.question_number}`]?.value === label
                       }
+                      onFocus={() => handleQuestionFocus?.(q?.question_number)}
                       onChange={() =>
                         handleAnswerChange(
                           q?.question_number,

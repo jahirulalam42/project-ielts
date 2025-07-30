@@ -5,6 +5,7 @@ const ParagraphMatching = ({
   answers,
   setAnswers,
   handleAnswerChange,
+  handleQuestionFocus,
 }: any) => {
   return (
     <div>
@@ -21,6 +22,7 @@ const ParagraphMatching = ({
             {/* Dropdown */}
             <select
               className="border border-black px-2 py-1 rounded-md text-sm w-32"
+              onFocus={() => handleQuestionFocus(q.question_number)}
               onChange={(e) =>
                 handleAnswerChange(
                   q.question_number,
