@@ -35,17 +35,17 @@ const Footer = () => {
     !pathName.startsWith("/test/listening/") &&
     !pathName.startsWith("/admin") &&
     !pathName.startsWith("/user/") && (
-      <footer className="bg-gray-900 text-white py-12">
+      <footer className="bg-violet-950 text-white py-12">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between">
             <div className="mb-8 md:mb-0">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center">
                   <span className="font-bold">I</span>
                 </div>
                 <span className="text-xl font-bold">IELTS Master</span>
               </div>
-              <p className="mt-4 text-gray-400 max-w-xs">
+              <p className="mt-4 text-white max-w-xs">
                 Premium IELTS preparation resources and practice tests for
                 academic and general training.
               </p>
@@ -62,7 +62,7 @@ const Footer = () => {
                       <li key={idx}>
                         <a
                           href="#"
-                          className="text-gray-400 hover:text-white transition-colors"
+                          className="text-white hover:text-gray-400 transition-colors"
                         >
                           {link}
                         </a>
@@ -74,8 +74,8 @@ const Footer = () => {
             </div>
           </div>
 
-          <div className="border-t border-gray-800 mt-10 pt-6 text-center text-gray-400">
-            <p>© 2023 IELTS Master. All rights reserved.</p>
+          <div className="border-t border-gray-800 mt-10 pt-6 text-center text-white">
+            <p>© 2025 IELTS. All rights reserved.</p>
           </div>
         </div>
       </footer>

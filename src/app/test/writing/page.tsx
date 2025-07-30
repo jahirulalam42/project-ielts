@@ -1,23 +1,16 @@
 "use client";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { getWritingTest } from "@/services/data"; // You'll need to create this service
-
-interface WritingTest {
-  _id: string;
-  title: string;
-  type: string;
-  duration: number;
-}
+import { getWritingTest } from "@/services/data";
 
 const WritingPage: React.FC = () => {
-  const [writingData, setWritingData] = useState<WritingTest[]>([]);
+  const [writingData, setWritingData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredTests = writingData.filter((test: any) => {
+  const filteredTests = writingData.filter((test) => {
     const matchesFilter =
       filter === "all" ||
       (filter === "academic" && test.type.toLowerCase().includes("academic")) ||
@@ -33,24 +26,26 @@ const WritingPage: React.FC = () => {
     return matchesFilter && matchesSearch;
   });
 
-  // Function to get difficulty badge
-  const getDifficultyBadge = (difficulty: any) => {
-    switch (difficulty?.toLowerCase()) {
-      case "easy":
-        return <span className="badge badge-success gap-2">Easy</span>;
-      case "medium":
-        return <span className="badge badge-warning gap-2">Medium</span>;
-      case "hard":
-        return <span className="badge badge-error gap-2">Hard</span>;
-      default:
-        return <span className="badge badge-info gap-2">Not Rated</span>;
-    }
-  };
+  // const getDifficultyBadge = (difficulty: string) => {
+  //   const colorMap: Record<string, string> = {
+  //     easy: "badge-success",
+  //     medium: "badge-warning",
+  //     hard: "badge-error",
+  //   };
+  //   return (
+  //     <span
+  //       className={`badge gap-2 ${
+  //         colorMap[difficulty.toLowerCase()] || "badge-info"
+  //       }`}
+  //     >
+  //       {difficulty || "Not Rated"}
+  //     </span>
+  //   );
+  // };
 
-  // Function to determine badge color based on test type
-  const getBadgeClass = (type: any) => {
-    if (type.toLowerCase().includes("academic")) return "badge-primary";
-    if (type.toLowerCase().includes("general")) return "badge-secondary";
+  const getTypeBadgeClass = (type: string) => {
+    if (type.toLowerCase().includes("academic")) return "badge-accent";
+    if (type.toLowerCase().includes("general")) return "badge-info";
     if (type.toLowerCase().includes("task 1")) return "badge-accent";
     if (type.toLowerCase().includes("task 2")) return "badge-info";
     return "badge-neutral";
@@ -62,180 +57,71 @@ const WritingPage: React.FC = () => {
         const data = await getWritingTest();
         setWritingData(data.data);
       } catch (err) {
-        console.error("Error loading data:", err);
         setError(err instanceof Error ? err.message : "Failed to load data");
       } finally {
         setIsLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <span className="loading loading-spinner loading-lg text-primary"></span>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="alert alert-error max-w-md">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="stroke-current shrink-0 h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          <span>Error: {error}</span>
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-red-50">
+      {/* Header Section */}
+      <div className="bg-red-800 text-white py-16 px-4">
+        <div className="max-w-6xl mx-auto text-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            IELTS Writing Practice
+          </h1>
+          <p className="text-xl text-red-200 max-w-3xl mx-auto">
+            Academic and General Training tests with expert evaluation criteria
+          </p>
         </div>
       </div>
-    );
-  }
 
-  return (
-    // <div className="container mx-auto p-4 min-h-screen">
-    //     <h1 className="text-4xl font-bold text-center my-8 text-primary">
-    //         Writing Tests
-    //     </h1>
-
-    //     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
-    //         {writingData?.map((test) => {
-    //             const { _id, title, type, duration } = test;
-    //             return (
-    //                 <div
-    //                     key={_id}
-    //                     className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300"
-    //                 >
-    //                     <div className="card-body">
-    //                         <div className="flex flex-col gap-2">
-    //                             <h2 className="card-title text-2xl">{title}</h2>
-    //                             <div className="flex flex-wrap gap-2">
-    //                                 <div className="badge badge-info">{type}</div>
-    //                                 <div className="badge badge-warning">
-    //                                     {duration} minutes
-    //                                 </div>
-    //                             </div>
-    //                         </div>
-    //                         <div className="card-actions justify-end mt-4">
-    //                             <Link
-    //                                 href={`/test/writing/${_id}`}
-    //                                 className="btn btn-primary btn-sm"
-    //                             >
-    //                                 Start Test
-    //                                 <svg
-    //                                     xmlns="http://www.w3.org/2000/svg"
-    //                                     className="h-4 w-4 ml-2"
-    //                                     fill="none"
-    //                                     viewBox="0 0 24 24"
-    //                                     stroke="currentColor"
-    //                                 >
-    //                                     <path
-    //                                         strokeLinecap="round"
-    //                                         strokeLinejoin="round"
-    //                                         strokeWidth="2"
-    //                                         d="M9 5l7 7-7 7"
-    //                                     />
-    //                                 </svg>
-    //                             </Link>
-    //                         </div>
-    //                     </div>
-    //                 </div>
-    //             );
-    //         })}
-    //     </div>
-    // </div>
-
-    <div className="container mx-auto p-4 min-h-screen bg-gradient-to-b from-blue-50 to-indigo-50">
-      <div className="max-w-4xl mx-auto text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold text-indigo-800 mb-4">
-          IELTS Writing Tests
-        </h1>
-        <p className="text-xl text-gray-600 mb-6">
-          Practice with authentic writing tasks and get expert feedback
-        </p>
-
-        <div className="bg-white p-4 rounded-lg shadow-md inline-flex items-center">
-          <div className="stats shadow">
-            <div className="stat">
-              <div className="stat-title">Total Tests</div>
-              <div className="stat-value text-primary">
-                {writingData.length}
+      {/* Stats & Controls */}
+      <div className="max-w-6xl mx-auto -mt-12 px-4">
+        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+          <div className="flex flex-wrap justify-between items-center gap-4">
+            <div className="stats bg-transparent shadow-none">
+              <div className="stat">
+                <div className="stat-title text-gray-600">Total Tests</div>
+                <div className="stat-value text-red-700">
+                  {writingData.length}
+                </div>
               </div>
             </div>
-            <div className="stat">
-              <div className="stat-title">Task Types</div>
-              <div className="stat-value text-secondary">2</div>
-            </div>
-            <div className="stat">
-              <div className="stat-title">Duration</div>
-              <div className="stat-value text-accent">60 min</div>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Filter and Search Section */}
-      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md p-6 mb-8">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex flex-wrap gap-2">
-            <button
-              className={`btn btn-sm ${filter === "all" ? "btn-active" : ""}`}
-              onClick={() => setFilter("all")}
-            >
-              All Tests
-            </button>
-            <button
-              className={`btn btn-sm ${
-                filter === "academic" ? "btn-active" : ""
-              }`}
-              onClick={() => setFilter("academic")}
-            >
-              Academic
-            </button>
-            <button
-              className={`btn btn-sm ${
-                filter === "general" ? "btn-active" : ""
-              }`}
-              onClick={() => setFilter("general")}
-            >
-              General
-            </button>
-            <button
-              className={`btn btn-sm ${filter === "task1" ? "btn-active" : ""}`}
-              onClick={() => setFilter("task1")}
-            >
-              Task 1
-            </button>
-            <button
-              className={`btn btn-sm ${filter === "task2" ? "btn-active" : ""}`}
-              onClick={() => setFilter("task2")}
-            >
-              Task 2
-            </button>
-          </div>
+            <div className="flex flex-wrap gap-2">
+              {["all", "academic", "general"].map((filterType) => (
+                <button
+                  key={filterType}
+                  className={`btn btn-sm capitalize ${
+                    filter === filterType
+                      ? "btn-active bg-red-800 text-white"
+                      : "btn-ghost"
+                  }`}
+                  onClick={() => setFilter(filterType)}
+                >
+                  {filterType === "all"
+                    ? "All Tests"
+                    : filterType === "task1"
+                    ? "Task 1"
+                    : filterType === "task2"
+                    ? "Task 2"
+                    : filterType}
+                </button>
+              ))}
+            </div>
 
-          <div className="join w-full md:w-auto">
-            <div className="w-full">
+            <div className="join flex-1 max-w-md">
               <input
                 className="input input-bordered join-item w-full"
                 placeholder="Search writing tests..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-            </div>
-            <div className="indicator">
-              <button className="btn join-item">
+              <button className="btn join-item bg-red-800 text-white">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5"
@@ -254,371 +140,321 @@ const WritingPage: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
 
-      {filteredTests.length > 0 ? (
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredTests.map((test: any) => (
-              <div
-                key={test._id}
-                className="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 border border-indigo-100"
+        {/* Content Section */}
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-20">
+            <span className="loading loading-spinner loading-lg text-red-600 mb-4"></span>
+            <p className="text-lg text-gray-600">Loading writing tests...</p>
+          </div>
+        ) : error ? (
+          <div className="alert alert-error shadow-lg my-8">
+            <div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="stroke-current flex-shrink-0 h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
               >
-                <div className="card-body">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className={`badge ${getBadgeClass(test.type)}`}>
-                      {test.type}
-                    </div>
-                    {getDifficultyBadge(test.difficulty)}
-                  </div>
-
-                  <div className="flex items-center mb-4">
-                    <div className="bg-indigo-100 p-3 rounded-lg mr-4">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-8 w-8 text-indigo-600"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span>Error: {error}</span>
+            </div>
+          </div>
+        ) : filteredTests.length > 0 ? (
+          <div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredTests.map((test) => (
+                <div
+                  key={test._id}
+                  className="card bg-base-100 border border-gray-200 shadow-md hover:shadow-xl transition-all"
+                >
+                  <div className="card-body">
+                    <div className="flex mb-3 justify-between items-start">
+                      <div>
+                        <h2 className="card-title text-xl text-gray-800">
+                          {test.title}
+                        </h2>
+                      </div>
+                      <div
+                        className={`badge font-bold ${getTypeBadgeClass(
+                          test.type
+                        )}`}
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
-                        />
-                      </svg>
+                        {test.type}
+                      </div>
                     </div>
-                    <h2 className="card-title text-xl text-gray-800">
-                      {test.title}
-                    </h2>
-                  </div>
 
-                  <p className="text-gray-600 mb-4">
-                    {test.description ||
-                      "Practice your writing skills with this IELTS task"}
-                  </p>
+                    <p className="text-gray-600 mt-2 mb-4">
+                      {test.description ||
+                        "Practice your writing skills with this IELTS task"}
+                    </p>
 
-                  <div className="flex justify-between text-sm text-gray-500 mb-2">
-                    <div className="flex items-center">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 mr-1 text-indigo-500"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+                    <div className="flex justify-between text-sm text-gray-500 mb-2">
+                      <div className="flex items-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-4 w-4 mr-1 text-red-500"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                        {test.duration || 60} min
+                      </div>
+                      <div className="flex items-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-4 w-4 mr-1 text-red-500"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          />
+                        </svg>
+                        {test.type.includes("Task 1")
+                          ? "150 words"
+                          : "250 words"}
+                      </div>
+                    </div>
+
+                    {/* <div className="mt-4">
+                      <div className="flex justify-between text-xs text-gray-600 mb-1">
+                        <span>Your progress</span>
+                        <span>0%</span>
+                      </div>
+                      <progress
+                        className="progress progress-primary w-full"
+                        value="0"
+                        max="100"
+                      ></progress>
+                    </div> */}
+
+                    <div className="card-actions justify-end mt-6">
+                      <Link
+                        href={`/test/writing/${test._id}`}
+                        className="btn bg-red-800 px-8 text-white"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                      {test.duration || 60} min
+                        Start Test
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-4 w-4 ml-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                      </Link>
                     </div>
-                    <div className="flex items-center">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 mr-1 text-indigo-500"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                        />
-                      </svg>
-                      {test.type.includes("Task 1") ? "150 words" : "250 words"}
-                    </div>
-                  </div>
-
-                  <div className="mt-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-gray-600">Completion</span>
-                      <span className="text-sm font-medium text-indigo-600">
-                        0%
-                      </span>
-                    </div>
-                    <progress
-                      className="progress progress-primary w-full"
-                      value="0"
-                      max="100"
-                    ></progress>
-                  </div>
-
-                  <div className="card-actions justify-end mt-6">
-                    <Link
-                      href={`/test/writing/${test._id}`}
-                      className="btn btn-primary px-6 flex items-center"
-                    >
-                      Start Test
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4 ml-2"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </Link>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
 
-          {/* Pagination */}
-          <div className="join grid grid-cols-2 md:flex justify-center mt-12">
-            <button className="join-item btn btn-outline">Previous</button>
-            <button className="join-item btn btn-active">1</button>
-            <button className="join-item btn btn-outline">2</button>
-            <button className="join-item btn btn-outline">3</button>
-            <button className="join-item btn btn-outline">Next</button>
+            <div className="mt-12 flex justify-center">
+              <div className="join">
+                <button className="join-item btn btn-outline">Previous</button>
+                <button className="join-item btn btn-active">1</button>
+                <button className="join-item btn">2</button>
+                <button className="join-item btn">3</button>
+                <button className="join-item btn btn-outline">Next</button>
+              </div>
+            </div>
           </div>
-        </div>
-      ) : (
-        <div className="max-w-2xl mx-auto text-center bg-white rounded-xl shadow-md p-12">
-          <div className="flex justify-center mb-6">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-16 w-16 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+        ) : (
+          <div className="text-center py-16 bg-white rounded-xl shadow-md">
+            <div className="inline-block p-4 bg-red-100 rounded-full mb-6">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-12 w-12 text-red-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <h3 className="text-2xl font-bold text-gray-800 mb-2">
+              No tests found
+            </h3>
+            <p className="text-gray-600 mb-6 max-w-md mx-auto">
+              {searchQuery
+                ? `No tests match "${searchQuery}". Try different keywords.`
+                : "No tests available in this category."}
+            </p>
+            <button
+              className="btn btn-outline border-red-600 text-red-600 hover:bg-red-600 hover:text-white"
+              onClick={() => {
+                setFilter("all");
+                setSearchQuery("");
+              }}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+              Reset Filters
+            </button>
           </div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">
-            No writing tests found
-          </h2>
-          <p className="text-gray-600 mb-6">
-            {searchQuery
-              ? `No tests match your search for "${searchQuery}". Try different keywords.`
-              : "There are currently no writing tests available in this category."}
-          </p>
-          <button
-            className="btn btn-outline text-indigo-600 border-indigo-600"
-            onClick={() => {
-              setFilter("all");
-              setSearchQuery("");
-            }}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 mr-2"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-              />
-            </svg>
-            Reset Filters
-          </button>
-        </div>
-      )}
-
-      {/* Test Preparation Tips */}
-      <div className="max-w-4xl mx-auto mt-16 bg-white rounded-xl shadow-md p-8">
-        <h2 className="text-2xl font-bold text-indigo-800 mb-6">
-          Writing Test Tips
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="flex">
-            <div className="mr-4 mt-1">
-              <div className="bg-indigo-100 p-2 rounded-full">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6 text-indigo-600"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-6m-7 4l5-5m0 0l-5-5m5 5H1"
-                  />
-                </svg>
-              </div>
-            </div>
-            <div>
-              <h3 className="font-bold text-lg text-gray-800">
-                Plan Your Response
-              </h3>
-              <p className="text-gray-600">
-                Spend 5 minutes planning your essay structure before writing.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex">
-            <div className="mr-4 mt-1">
-              <div className="bg-indigo-100 p-2 rounded-full">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6 text-indigo-600"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
-                  />
-                </svg>
-              </div>
-            </div>
-            <div>
-              <h3 className="font-bold text-lg text-gray-800">
-                Use Academic Vocabulary
-              </h3>
-              <p className="text-gray-600">
-                Demonstrate range with formal vocabulary and avoid colloquial
-                language.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex">
-            <div className="mr-4 mt-1">
-              <div className="bg-indigo-100 p-2 rounded-full">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6 text-indigo-600"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
-                  />
-                </svg>
-              </div>
-            </div>
-            <div>
-              <h3 className="font-bold text-lg text-gray-800">
-                Address All Parts
-              </h3>
-              <p className="text-gray-600">
-                Ensure you fully answer all parts of the question to score well
-                on task achievement.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex">
-            <div className="mr-4 mt-1">
-              <div className="bg-indigo-100 p-2 rounded-full">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6 text-indigo-600"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
-                </svg>
-              </div>
-            </div>
-            <div>
-              <h3 className="font-bold text-lg text-gray-800">
-                Time Management
-              </h3>
-              <p className="text-gray-600">
-                Spend 20 minutes on Task 1 and 40 minutes on Task 2.
-              </p>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Writing Task Examples */}
-      <div className="max-w-4xl mx-auto mt-12 bg-indigo-50 rounded-xl shadow-md p-8 border border-indigo-100">
-        <h2 className="text-2xl font-bold text-indigo-800 mb-6">Task Types</h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-white p-6 rounded-lg shadow-sm">
-            <div className="flex items-center mb-4">
-              <div className="bg-indigo-100 p-2 rounded-lg mr-4">
-                <span className="text-xl font-bold text-indigo-600">1</span>
-              </div>
-              <h3 className="text-xl font-bold text-gray-800">Task 1</h3>
-            </div>
-
-            <div className="mb-4">
-              <h4 className="font-semibold text-gray-700 mb-2">Academic</h4>
-              <p className="text-gray-600">
-                Describe visual information (graphs, charts, diagrams, or
-                processes) in your own words.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-gray-700 mb-2">
-                General Training
-              </h4>
-              <p className="text-gray-600">
-                Write a letter responding to a given situation (formal,
-                semi-formal, or informal).
-              </p>
-            </div>
+      <div className="max-w-6xl mx-auto mt-8 px-4 pb-16">
+        <div className="bg-white rounded-xl shadow-md overflow-hidden">
+          <div className="bg-red-700 text-white p-6">
+            <h2 className="text-2xl font-bold flex items-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+              Writing Task Types
+            </h2>
           </div>
-
-          <div className="bg-white p-6 rounded-lg shadow-sm">
-            <div className="flex items-center mb-4">
-              <div className="bg-indigo-100 p-2 rounded-lg mr-4">
-                <span className="text-xl font-bold text-indigo-600">2</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
+            <div className="border-l-4 border-red-500 pl-4">
+              <div className="flex items-center mb-3">
+                <div className="bg-red-100 p-2 rounded-lg mr-3">
+                  <span className="text-xl font-bold text-red-600">1</span>
+                </div>
+                <h3 className="text-xl font-bold text-gray-800">Task 1</h3>
               </div>
-              <h3 className="text-xl font-bold text-gray-800">Task 2</h3>
+
+              <div className="mb-4">
+                <h4 className="font-semibold text-gray-700 mb-2 flex items-center">
+                  <span className="badge badge-accent mr-2">Academic</span>
+                  Visual Information
+                </h4>
+                <p className="text-gray-600 pl-10">
+                  Describe visual information (graphs, charts, diagrams, or
+                  processes) in your own words.
+                </p>
+              </div>
+
+              <div>
+                <h4 className="font-semibold text-gray-700 mb-2 flex items-center">
+                  <span className="badge badge-info mr-2">General</span>
+                  Letter Writing
+                </h4>
+                <p className="text-gray-600 pl-10">
+                  Write a letter responding to a given situation (formal,
+                  semi-formal, or informal).
+                </p>
+              </div>
             </div>
 
-            <p className="text-gray-600 mb-4">
-              Write an essay in response to a point of view, argument, or
-              problem.
-            </p>
+            <div className="border-l-4 border-red-500 pl-4">
+              <div className="flex items-center mb-3">
+                <div className="bg-red-100 p-2 rounded-lg mr-3">
+                  <span className="text-xl font-bold text-red-600">2</span>
+                </div>
+                <h3 className="text-xl font-bold text-gray-800">Task 2</h3>
+              </div>
 
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <p className="text-sm text-blue-700">
-                "Some people believe that unpaid community service should be a
-                compulsory part of high school programs. To what extent do you
-                agree or disagree?"
+              <p className="text-gray-600 mb-4">
+                Write an essay in response to a point of view, argument, or
+                problem (both Academic and General Training).
               </p>
+
+              <div className="bg-red-50 p-4 rounded-lg border border-red-100">
+                <p className="text-sm text-red-700 italic">
+                  "Some people believe that unpaid community service should be a
+                  compulsory part of high school programs. To what extent do you
+                  agree or disagree?"
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Test Tips Section */}
+      {/* <div className="max-w-6xl mx-auto mt-8 px-4 pb-16">
+        <div className="bg-white rounded-xl shadow-md overflow-hidden">
+          <div className="bg-red-700 text-white p-6">
+            <h2 className="text-2xl font-bold flex items-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                />
+              </svg>
+              IELTS Writing Tips
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
+            {[
+              "Spend 5 minutes planning your essay structure before writing",
+              "Use formal vocabulary and avoid colloquial expressions",
+              "Address all parts of the question to score well on task achievement",
+              "Allocate 20 minutes for Task 1 and 40 minutes for Task 2",
+              "Include clear topic sentences in each paragraph",
+              "Proofread for grammar and spelling errors in the last 5 minutes",
+            ].map((tip, index) => (
+              <div key={index} className="flex items-start">
+                <div className="bg-red-100 p-2 rounded-lg mr-4">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 text-red-600"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </div>
+                <p className="text-gray-700">{tip}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div> */}
     </div>
   );
 };

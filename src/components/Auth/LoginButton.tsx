@@ -14,13 +14,15 @@ export default function LoginButton() {
   return (
     <div className="flex gap-2">
       <button
-        className="btn btn-sm btn-soft text-primary font-bold"
+        className="text-red-700 font-medium hover:text-red-900 transition-colors"
         onClick={() => signIn()}
       >
-        Sign in
+        Sign In
       </button>
       <Link href={"/user/signup"}>
-        <button className="btn btn-sm btn-primary">Sign Up</button>
+        <button className="btn bg-red-600 text-white hover:bg-red-700 px-5 py-2 rounded-lg transition-colors shadow-md">
+          Get Started
+        </button>
       </Link>
     </div>
   );
