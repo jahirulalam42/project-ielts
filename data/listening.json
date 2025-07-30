@@ -37,10 +37,9 @@
                   "subtitle": "Subjects studied in educational visits include",
                   "extra": [
                     "Science: Children look at __________ about plants, etc.",
-                    "Geography: includes learning to use a 4 ... and compass",
+                    "Geography: includes learning to use a and compass",
                     "History: changes in land use",
-                    "Leisure and tourism: mostly concentrates on the park's __________",
-                    "Music: Children make __________ with natural materials, and experiment with rhythm and speed."
+                    "Leisure and tourism: mostly concentrates on the park's __________"
                   ],
                   "questions": [
                     {
@@ -50,11 +49,6 @@
                     },
                     {
                       "question_number": 4,
-                      "answer": "workshops",
-                      "input_type": "text"
-                    },
-                    {
-                      "question_number": 5,
                       "answer": "workshops",
                       "input_type": "text"
                     }
@@ -68,12 +62,12 @@
                   ],
                   "questions": [
                     {
-                      "question_number": 4,
+                      "question_number": 5,
                       "answer": "quality",
                       "input_type": "text"
                     },
                     {
-                      "question_number": 5,
+                      "question_number": 6,
                       "answer": "railways",
                       "input_type": "text"
                     }
@@ -87,12 +81,12 @@
                   ],
                   "questions": [
                     {
-                      "question_number": 6,
+                      "question_number": 7,
                       "answer": "sanitation",
                       "input_type": "text"
                     },
                     {
-                      "question_number": 7,
+                      "question_number": 8,
                       "answer": "sanitation",
                       "input_type": "text"
                     }
@@ -106,12 +100,12 @@
                   ],
                   "questions": [
                     {
-                      "question_number": 6,
+                      "question_number": 9,
                       "answer": "sanitation",
                       "input_type": "text"
                     },
                     {
-                      "question_number": 7,
+                      "question_number": 10,
                       "answer": "sanitation",
                       "input_type": "text"
                     }

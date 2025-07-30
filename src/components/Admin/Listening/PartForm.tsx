@@ -28,45 +28,7 @@ const PartForm = ({ part, partIndex, updatePart, removePart, isLast }: PartFormP
         }, 0);
     };
 
-    // Helper function to renumber all questions globally across all question groups
-    const renumberAllQuestions = (questions: QuestionGroup[]) => {
-        let globalQuestionNumber = 1;
-        
-        return questions.map(group => {
-            if ('fill_in_the_blanks_with_subtitle' in group) {
-                return {
-                    ...group,
-                    fill_in_the_blanks_with_subtitle: group.fill_in_the_blanks_with_subtitle.map(section => ({
-                        ...section,
-                        questions: section.questions.map(question => ({
-                            ...question,
-                            question_number: globalQuestionNumber++
-                        }))
-                    }))
-                };
-            } else if ('mcq' in group) {
-                return {
-                    ...group,
-                    mcq: group.mcq.map(question => ({
-                        ...question,
-                        question_number: globalQuestionNumber++
-                    }))
-                };
-            } else if ('map' in group) {
-                return {
-                    ...group,
-                    map: group.map.map(mapItem => ({
-                        ...mapItem,
-                        questions: mapItem.questions.map(question => ({
-                            ...question,
-                            question_number: globalQuestionNumber++
-                        }))
-                    }))
-                };
-            }
-            return group;
-        });
-    };
+
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         updatePart(partIndex, { ...part, title: e.target.value });
@@ -127,18 +89,12 @@ const PartForm = ({ part, partIndex, updatePart, removePart, isLast }: PartFormP
     const updateQuestionGroup = (index: number, group: QuestionGroup) => {
         const updatedQuestions = [...part.questions];
         updatedQuestions[index] = group;
-        
-        // Renumber all questions globally after any update
-        const renumberedQuestions = renumberAllQuestions(updatedQuestions);
-        updatePart(partIndex, { ...part, questions: renumberedQuestions });
+        updatePart(partIndex, { ...part, questions: updatedQuestions });
     };
 
     const removeQuestionGroup = (index: number) => {
         const updatedQuestions = part.questions.filter((_, i) => i !== index);
-        
-        // Renumber all questions globally after removal
-        const renumberedQuestions = renumberAllQuestions(updatedQuestions);
-        updatePart(partIndex, { ...part, questions: renumberedQuestions });
+        updatePart(partIndex, { ...part, questions: updatedQuestions });
     };
 
     return (

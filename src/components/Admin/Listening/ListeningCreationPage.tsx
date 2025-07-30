@@ -38,19 +38,66 @@ const ListeningCreationPage = () => {
         }));
     };
 
+    // Helper function to renumber all questions globally across all parts
+    const renumberAllQuestionsGlobally = (parts: TestPart[]) => {
+        let globalQuestionNumber = 1;
+        
+        return parts.map(part => ({
+            ...part,
+            questions: part.questions.map(group => {
+                if ('fill_in_the_blanks_with_subtitle' in group) {
+                    return {
+                        ...group,
+                        fill_in_the_blanks_with_subtitle: group.fill_in_the_blanks_with_subtitle.map(section => ({
+                            ...section,
+                            questions: section.questions.map(question => ({
+                                ...question,
+                                question_number: globalQuestionNumber++
+                            }))
+                        }))
+                    };
+                } else if ('mcq' in group) {
+                    return {
+                        ...group,
+                        mcq: group.mcq.map(question => ({
+                            ...question,
+                            question_number: globalQuestionNumber++
+                        }))
+                    };
+                } else if ('map' in group) {
+                    return {
+                        ...group,
+                        map: group.map.map(mapItem => ({
+                            ...mapItem,
+                            questions: mapItem.questions.map(question => ({
+                                ...question,
+                                question_number: globalQuestionNumber++
+                            }))
+                        }))
+                    };
+                }
+                return group;
+            })
+        }));
+    };
+
     const updatePart = (index: number, part: TestPart) => {
         setTest(prev => {
             const parts = [...prev.parts];
             parts[index] = part;
-            return { ...prev, parts };
+            // Renumber all questions globally after updating any part
+            const renumberedParts = renumberAllQuestionsGlobally(parts);
+            return { ...prev, parts: renumberedParts };
         });
     };
 
     const removePart = (index: number) => {
-        setTest(prev => ({
-            ...prev,
-            parts: prev.parts.filter((_, i) => i !== index)
-        }));
+        setTest(prev => {
+            const filteredParts = prev.parts.filter((_, i) => i !== index);
+            // Renumber all questions globally after removing a part
+            const renumberedParts = renumberAllQuestionsGlobally(filteredParts);
+            return { ...prev, parts: renumberedParts };
+        });
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -150,18 +197,6 @@ const ListeningCreationPage = () => {
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                     </svg>
                                     <span className="text-green-800 font-medium">Audio uploaded successfully!</span>
-                                </div>
-                                <div className="mt-2 text-sm text-green-700">
-                                    <p>Audio URL: {test.audioUrl.substring(0, 50)}...</p>
-                                    {test.audioDuration && (
-                                        <p>Duration: {Math.round(test.audioDuration / 60)} minutes {test.audioDuration % 60} seconds</p>
-                                    )}
-                                    {test.audioFormat && (
-                                        <p>Format: {test.audioFormat.toUpperCase()}</p>
-                                    )}
-                                    {test.audioSize && (
-                                        <p>Size: {(test.audioSize / 1024 / 1024).toFixed(2)} MB</p>
-                                    )}
                                 </div>
                             </div>
                         )}
