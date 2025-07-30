@@ -19,11 +19,17 @@ const SubFillInTheBlanks = ({
                 <h6 className="font-medium mb-2">{section.subtitle}</h6>
               )}
               {section.extra?.map((text: string, i: number) => {
+                const isSubItem = text.trim().startsWith('-');
+                const displayText = isSubItem ? text.trim().substring(1).trim() : text;
+                
                 return (
-                  <p key={i} className="text-sm mb-2">
-                    {/* Add bullet point before each sentence */}
-                    <span className="mr-2">•</span>
-                    {text.split("__________").map((part, j, arr) => {
+                  <div key={i} className={`text-sm mb-2 ${isSubItem ? 'ml-6' : ''}`}>
+                    {isSubItem ? (
+                      <span className="mr-2">-</span>
+                    ) : (
+                      <span className="mr-2">•</span>
+                    )}
+                    {displayText.split("__________").map((part, j, arr) => {
                       const currentQuestion =
                         section.questions?.[questionIndex];
 
@@ -61,7 +67,7 @@ const SubFillInTheBlanks = ({
                         </React.Fragment>
                       );
                     })}
-                  </p>
+                  </div>
                 );
               })}
             </div>
