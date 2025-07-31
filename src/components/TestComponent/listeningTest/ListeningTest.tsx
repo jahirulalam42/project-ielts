@@ -161,6 +161,13 @@ const ListeningTest: React.FC<any> = ({ test }) => {
     }
   };
 
+  // Scroll to top whenever the part changes
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [currentPartIndex]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const submissionTime = new Date();

@@ -425,7 +425,7 @@ const ReadingTest = ({ test }: any) => {
 
   const handleNextPart = () => {
     if (currentPartIndex < test.parts.length - 1) {
-      setCurrentPartIndex((prev) => prev + 1);
+      setCurrentPartIndex((prev: number) => prev + 1);
       // Set current question to first question of next part
       const nextPartQuestions = partQuestions[currentPartIndex + 1];
       if (nextPartQuestions && nextPartQuestions.length > 0) {
@@ -436,7 +436,7 @@ const ReadingTest = ({ test }: any) => {
 
   const handlePrevPart = () => {
     if (currentPartIndex > 0) {
-      setCurrentPartIndex((prev) => prev - 1);
+      setCurrentPartIndex((prev: number) => prev - 1);
       // Set current question to first question of previous part
       const prevPartQuestions = partQuestions[currentPartIndex - 1];
       if (prevPartQuestions && prevPartQuestions.length > 0) {
@@ -444,6 +444,13 @@ const ReadingTest = ({ test }: any) => {
       }
     }
   };
+
+  // Scroll to top whenever the part changes
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [currentPartIndex]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Prevent default form submission behavior
