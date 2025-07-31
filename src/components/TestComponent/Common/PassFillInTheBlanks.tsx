@@ -28,20 +28,27 @@ const PassFillInTheBlanks = ({ question, handleAnswerChange, handleQuestionFocus
       const correctAnswer = currentBlank.answer;
 
       // Add the number before the input box
-      parts.push(<span key={`number-${blankNumber}`}>{blankNumber}.</span>);
+      parts.push(<span key={`number-${blankNumber}`} className="font-bold">{blankNumber}. </span>);
 
       // Add the input field for the blank
       parts.push(
         <input
           key={`input-${blankNumber}`}
           type="text"
+          placeholder=""
+          className="border-b-2 border-black mx-1 w-24 text-center"
+          style={{
+            height: "20px",
+            padding: "5px 5px",
+            fontSize: "14px",
+          }}
           onFocus={() => handleQuestionFocus(blankNumber)}
           onChange={(e) =>
             handleAnswerChange(
               blankNumber,
               e.target.value,
-              "Passage Fill in the Blanks", // As the input_type is 'text' for this case
-              correctAnswer, // Pass the correct answer for this specific blank
+              "text",
+              correctAnswer,
               e.target.value.toLowerCase().trim() ===
                 correctAnswer.toLowerCase().trim()
             )
@@ -65,16 +72,12 @@ const PassFillInTheBlanks = ({ question, handleAnswerChange, handleQuestionFocus
 
   return (
     <div>
-      <div>
-        <h3>Passage Fill in the Blanks</h3>
-      </div>
-
-      <div>
-        <p>{question[0]?.instruction}</p>
-      </div>
-
-      <div>
-        <div>{renderTextWithBlanks()}</div>
+      <h5 className="font-medium mb-2">Passage Fill in the Blanks</h5>
+      <div className="p-4 border border-black rounded-lg mb-2">
+        <p className="mb-2">{question[0]?.instruction}</p>
+        <div className="text-justify leading-relaxed">
+          {renderTextWithBlanks()}
+        </div>
       </div>
     </div>
   );

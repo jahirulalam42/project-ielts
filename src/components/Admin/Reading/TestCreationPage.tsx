@@ -1,6 +1,6 @@
 "use client";
 import { submitReadingQuestions } from "@/services/data";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { RenderQuestionInput } from "./RenderQuestionInput";
 import {
@@ -434,6 +434,27 @@ const TestCreationPage: React.FC = () => {
     setQuestions([]);
   };
 
+  // Scroll to top whenever the part changes
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [currentPassageIndex]);
+
+  // Add remove question group function
+  const removeQuestionGroup = (passageIndex: number, groupIndex: number) => {
+    const updatedParts = [...test.parts];
+    updatedParts[passageIndex].questions.splice(groupIndex, 1);
+    setTest({ ...test, parts: updatedParts });
+  };
+
+  // Add remove passage function
+  const removePassage = (passageIndex: number) => {
+    const updatedParts = [...test.parts];
+    updatedParts.splice(passageIndex, 1);
+    setTest({ ...test, parts: updatedParts });
+  };
+
   // Render question inputs based on question type
 
   const handleReadingTestSubmit = async (formData: any) => {
@@ -695,9 +716,21 @@ const TestCreationPage: React.FC = () => {
                   setAnswers,
                   setOptions
                 )}
+                <button
+                  onClick={() => removeQuestionGroup(passageIndex, groupIndex)}
+                  className="bg-red-500 text-white p-2 rounded mt-2"
+                >
+                  Remove Question Group
+                </button>
               </div>
             );
           })}
+          <button
+            onClick={() => removePassage(passageIndex)}
+            className="bg-red-500 text-white p-2 rounded mt-2"
+          >
+            Remove Passage
+          </button>
         </div>
       ))}
       <button
@@ -728,6 +761,26 @@ const TestCreationPage: React.FC = () => {
           );
           if (!hasQuestions) {
             toast.error("Please add at least one question to a passage");
+            return;
+          }
+
+          // Validate summary_fill_in_the_blanks answers
+          const hasUnansweredSummaryBlanks = test.parts.some((part) =>
+            part.questions.some((questionGroup) => {
+              const questionType = Object.keys(questionGroup)[0];
+              if (questionType === "summary_fill_in_the_blanks") {
+                return questionGroup[questionType].some((question: any) => {
+                  // Check if any answer is empty or "Select an option"
+                  return !question.answers || 
+                         question.answers.some((answer: string) => !answer || answer === "");
+                });
+              }
+              return false;
+            })
+          );
+
+          if (hasUnansweredSummaryBlanks) {
+            toast.error("Please select answers for all summary fill-in-the-blanks questions");
             return;
           }
 

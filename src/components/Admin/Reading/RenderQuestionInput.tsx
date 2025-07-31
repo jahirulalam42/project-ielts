@@ -41,16 +41,23 @@ export const RenderQuestionInput = (
     console.log(`Updated ${field} for question ${qIndex}:`, value);
   };
 
+  // Add remove question function
+  const removeQuestion = (qIndex: number) => {
+    const updatedParts = [...test.parts];
+    updatedParts[passageIndex].questions[groupIndex][questionType].splice(qIndex, 1);
+    setTest({ ...test, parts: updatedParts });
+  };
+
   switch (questionType) {
     case "true_false_not_given":
       return questions.map((q, idx) => (
-        <div key={idx} className="mb-2">
+        <div key={idx} className="mb-2 flex items-center gap-2">
           <input
             type="text"
             placeholder="Question"
             value={q.question}
             onChange={(e) => updateQuestion("question", e.target.value, idx)}
-            className="border p-2 mr-2"
+            className="border p-2 mr-2 flex-1"
           />
           <select
             value={q.answer as string}
@@ -61,17 +68,24 @@ export const RenderQuestionInput = (
             <option>False</option>
             <option>Not Given</option>
           </select>
+          <button
+            onClick={() => removeQuestion(idx)}
+            className="bg-red-500 text-white p-2 rounded text-sm"
+            title="Remove this question"
+          >
+            ×
+          </button>
         </div>
       ));
     case "fill_in_the_blanks":
       return questions.map((q, idx) => (
-        <div key={idx} className="mb-2">
+        <div key={idx} className="mb-2 flex items-center gap-2">
           <input
             type="text"
             placeholder="Question with blank (e.g., The ___ is red)"
             value={q.question}
             onChange={(e) => updateQuestion("question", e.target.value, idx)}
-            className="border p-2 mr-2"
+            className="border p-2 mr-2 flex-1"
           />
           <input
             type="text"
@@ -80,19 +94,35 @@ export const RenderQuestionInput = (
             onChange={(e) => updateQuestion("answer", e.target.value, idx)}
             className="border p-2"
           />
+          <button
+            onClick={() => removeQuestion(idx)}
+            className="bg-red-500 text-white p-2 rounded text-sm"
+            title="Remove this question"
+          >
+            ×
+          </button>
         </div>
       ));
     case "matching_headings":
       return questions.map((q, idx) => (
         <div key={idx} className="mb-2">
           {/* Question input box */}
-          <input
-            type="text"
-            placeholder="Question reference (e.g., reference to two chemical compounds which impact on performance)"
-            value={q.question}
-            onChange={(e) => updateQuestion("question", e.target.value, idx)}
-            className="border p-2 mb-2 w-full"
-          />
+          <div className="flex items-center gap-2 mb-2">
+            <input
+              type="text"
+              placeholder="Question reference (e.g., reference to two chemical compounds which impact on performance)"
+              value={q.question}
+              onChange={(e) => updateQuestion("question", e.target.value, idx)}
+              className="border p-2 flex-1"
+            />
+            <button
+              onClick={() => removeQuestion(idx)}
+              className="bg-red-500 text-white p-2 rounded text-sm"
+              title="Remove this question"
+            >
+              ×
+            </button>
+          </div>
           {/* Dropdown to select the matching heading */}
           <select
             value={(q.answer as string) || "A"} // Ensure there's always a default value
@@ -115,13 +145,22 @@ export const RenderQuestionInput = (
       return questions.map((q, idx) => (
         <div key={idx} className="mb-2">
           {/* Question input box */}
-          <input
-            type="text"
-            placeholder="Question reference (e.g., Which paragraph discusses piracy?)"
-            value={q.question}
-            onChange={(e) => updateQuestion("question", e.target.value, idx)}
-            className="border p-2 mb-2 w-full"
-          />
+          <div className="flex items-center gap-2 mb-2">
+            <input
+              type="text"
+              placeholder="Question reference (e.g., Which paragraph discusses piracy?)"
+              value={q.question}
+              onChange={(e) => updateQuestion("question", e.target.value, idx)}
+              className="border p-2 flex-1"
+            />
+            <button
+              onClick={() => removeQuestion(idx)}
+              className="bg-red-500 text-white p-2 rounded text-sm"
+              title="Remove this question"
+            >
+              ×
+            </button>
+          </div>
           {/* Dropdown to select the matching paragraph */}
           <select
             value={(q.answer as string) || "A"} // Ensure there's always a default value
@@ -194,6 +233,13 @@ export const RenderQuestionInput = (
               </div>
             ))}
           </div>
+          <button
+            onClick={() => removeQuestion(idx)}
+            className="bg-red-500 text-white p-2 rounded text-sm"
+            title="Remove this question"
+          >
+            ×
+          </button>
         </div>
       ));
 
@@ -232,14 +278,20 @@ export const RenderQuestionInput = (
             onChange={(e) => updateQuestion("answer", [e.target.value], idx)} // Ensure answer is an array of labels
             className="border p-2 mb-2 w-full"
           >
+            <option value="">Select correct answer</option>
             {q.options?.map((opt: any) => (
               <option key={opt.label} value={opt.label}>
-                {" "}
-                {/* Use label for answer selection */}
                 {opt.label}: {opt.value}
               </option>
             ))}
           </select>
+          <button
+            onClick={() => removeQuestion(idx)}
+            className="bg-red-500 text-white p-2 rounded text-sm"
+            title="Remove this question"
+          >
+            ×
+          </button>
         </div>
       ));
 
@@ -391,6 +443,13 @@ export const RenderQuestionInput = (
             <strong>Debug Info:</strong>
             <pre>{JSON.stringify(q.blanks, null, 2)}</pre>
           </div>
+          <button
+            onClick={() => removeQuestion(idx)}
+            className="bg-red-500 text-white p-2 rounded text-sm"
+            title="Remove this question"
+          >
+            ×
+          </button>
         </div>
       ));
 
@@ -634,6 +693,13 @@ export const RenderQuestionInput = (
               </button>
             </div>
           )}
+          <button
+            onClick={() => removeQuestion(sectionIdx)}
+            className="bg-red-500 text-white p-2 rounded text-sm"
+            title="Remove this section"
+          >
+            ×
+          </button>
         </div>
       ));
 
@@ -721,6 +787,13 @@ export const RenderQuestionInput = (
               />
             </div>
           ))}
+          <button
+            onClick={() => removeQuestion(idx)}
+            className="bg-red-500 text-white p-2 rounded text-sm"
+            title="Remove this question"
+          >
+            ×
+          </button>
         </div>
       ));
 

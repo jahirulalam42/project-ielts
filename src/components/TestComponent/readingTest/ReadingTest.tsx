@@ -34,7 +34,8 @@ const ReadingTest = ({ test }: any) => {
     test.parts.forEach((part: any, partIndex: number) => {
       const questionNumbers: number[] = [];
       
-      part.questions.forEach((questionSet: any) => {
+      part.questions.forEach((questionSet: any, questionSetIndex: number) => {
+        console.log(`Processing question set ${questionSetIndex} in part ${partIndex + 1}:`, Object.keys(questionSet));
         if (questionSet.true_false_not_given) {
           questionSet.true_false_not_given.forEach((q: any) => {
             questionNumbers.push(q.question_number);
@@ -62,7 +63,11 @@ const ReadingTest = ({ test }: any) => {
         }
         if (questionSet.multiple_mcq) {
           questionSet.multiple_mcq.forEach((q: any) => {
-            questionNumbers.push(q.question_number);
+            if (Array.isArray(q.question_numbers)) {
+              q.question_numbers.forEach((num: number) => questionNumbers.push(num));
+            } else {
+              questionNumbers.push(q.question_number);
+            }
           });
         }
         if (questionSet.passage_fill_in_the_blanks) {
@@ -75,11 +80,14 @@ const ReadingTest = ({ test }: any) => {
           });
         }
         if (questionSet.summary_fill_in_the_blanks) {
+          console.log(`Found summary_fill_in_the_blanks in part ${partIndex + 1}:`, questionSet.summary_fill_in_the_blanks);
           questionSet.summary_fill_in_the_blanks.forEach((q: any) => {
-            if (Array.isArray(q.question_number)) {
-              q.question_number.forEach((num: number) => questionNumbers.push(num));
-            } else {
+            if (Array.isArray(q.question_numbers)) {
+              q.question_numbers.forEach((num: number) => questionNumbers.push(num));
+              console.log(`Added question numbers:`, q.question_numbers);
+            } else if (q.question_number) {
               questionNumbers.push(q.question_number);
+              console.log(`Added question number:`, q.question_number);
             }
           });
         }
@@ -93,6 +101,7 @@ const ReadingTest = ({ test }: any) => {
       });
       
       partQuestions[partIndex] = questionNumbers.sort((a, b) => a - b);
+      console.log(`Part ${partIndex + 1} question numbers:`, partQuestions[partIndex]);
     });
     
     return partQuestions;
@@ -241,6 +250,15 @@ const ReadingTest = ({ test }: any) => {
                       ? "Fill in the blanks with Subtitle"
                       : "",
                   input_type: question.input_type || "text",
+                });
+              });
+            } else if (questionType === "summary_fill_in_the_blanks" && questionsArray) {
+              // Handle summary_fill_in_the_blanks as an array
+              questionsArray.forEach((question: any) => {
+                allQuestions.push({
+                  ...question,
+                  questionType: "Summary Fill in the Blanks",
+                  input_type: question.input_type || "drag_and_drop",
                 });
               });
             }
@@ -522,7 +540,7 @@ const ReadingTest = ({ test }: any) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="container mx-auto p-4 min-h-screen pb-32">
+      <div className="container mx-auto p-4 min-h-screen pb-16">
         {/* Exam Header */}
         <div className="card bg-base-100 shadow-xl mb-6 ">
           <div className="card-body">
@@ -701,7 +719,7 @@ const ReadingTest = ({ test }: any) => {
           <div className="flex justify-between">
             {test.parts.map((part: any, partIndex: number) => (
               <div key={partIndex} className="flex-1 flex justify-center">
-                <div className="border-2 border-gray-300 rounded-lg p-2 flex flex-wrap gap-1 justify-center">
+                <div className="border-2 border-gray-300 rounded-lg p-1 flex gap-0.5 justify-center">
                   {partQuestions[partIndex]?.map((questionNumber: number) => {
                     const hasAnswered = Array.isArray(answers) 
                       ? answers.some((answer: any) => 
@@ -715,7 +733,7 @@ const ReadingTest = ({ test }: any) => {
                       <button
                         key={`${questionNumber}-${partIndex}`}
                         type="button"
-                        className={`w-8 h-8 text-xs rounded border transition-colors ${
+                        className={`w-6 h-6 text-xs rounded border transition-colors ${
                           questionNumber === currentQuestionNumber
                             ? 'bg-blue-500 text-white border-blue-500'
                             : hasAnswered
