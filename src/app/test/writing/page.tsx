@@ -89,28 +89,26 @@ const WritingPage: React.FC = () => {
               </div>
 
               <div className="flex flex-wrap gap-2">
-                {["all", "academic", "general", "task1", "task2"].map(
-                  (filterType) => (
-                    <button
-                      key={filterType}
-                      className={`px-4 py-2 text-sm rounded-lg border transition-colors ${
-                        filter === filterType
-                          ? "bg-red-700 text-white border-red-800"
-                          : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
-                      }`}
-                      onClick={() => setFilter(filterType)}
-                    >
-                      {filterType === "all"
-                        ? "All Tests"
-                        : filterType === "task1"
-                        ? "Task 1"
-                        : filterType === "task2"
-                        ? "Task 2"
-                        : filterType.charAt(0).toUpperCase() +
-                          filterType.slice(1)}
-                    </button>
-                  )
-                )}
+                {["all", "academic", "general"].map((filterType) => (
+                  <button
+                    key={filterType}
+                    className={`px-4 py-2 text-sm rounded-lg border transition-colors ${
+                      filter === filterType
+                        ? "bg-red-700 text-white border-red-800"
+                        : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                    }`}
+                    onClick={() => setFilter(filterType)}
+                  >
+                    {filterType === "all"
+                      ? "All Tests"
+                      : filterType === "academic"
+                      ? "Academic"
+                      : filterType === "general"
+                      ? "General"
+                      : filterType.charAt(0).toUpperCase() +
+                        filterType.slice(1)}
+                  </button>
+                ))}
               </div>
             </div>
 

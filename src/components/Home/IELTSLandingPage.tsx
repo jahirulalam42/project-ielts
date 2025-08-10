@@ -1,152 +1,186 @@
-// components/IELTSLandingPage.tsx
+"use client";
+import Link from "next/link";
 import React from "react";
+import {
+  FaCheckCircle,
+  FaHeadphones,
+  FaBookOpen,
+  FaPencilAlt,
+  FaMicrophone,
+  FaChartLine,
+  FaUserFriends,
+  FaGraduationCap,
+} from "react-icons/fa";
 
-const IELTSLandingPage = () => {
+export default function IELTSLandingPage(): any {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50">
-      {/* Navigation */}
-      {/* <nav className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-xl">I</span>
-            </div>
-            <span className="text-2xl font-bold text-red-800 tracking-tight">
-              IELTS MASTERY
-            </span>
-          </div>
-          <div className="hidden md:flex space-x-8">
-            <a
-              href="#features"
-              className="text-red-700 font-medium hover:text-red-900 transition-colors"
-            >
-              Features
-            </a>
-            <a
-              href="#modules"
-              className="text-gray-700 font-medium hover:text-red-700 transition-colors"
-            >
-              Test Modules
-            </a>
-            <a
-              href="#testimonials"
-              className="text-gray-700 font-medium hover:text-red-700 transition-colors"
-            >
-              Success Stories
-            </a>
-            <a
-              href="#faq"
-              className="text-gray-700 font-medium hover:text-red-700 transition-colors"
-            >
-              FAQ
-            </a>
-          </div>
-          <div className="flex items-center space-x-4">
-            <button className="text-red-700 font-medium hover:text-red-900 transition-colors">
-              Sign In
-            </button>
-            <button className="btn bg-red-600 text-white hover:bg-red-700 px-5 py-2 rounded-lg transition-colors shadow-md">
-              Get Started
-            </button>
-          </div>
-        </div>
-      </nav> */}
-
-      {/* Hero Section */}
-      <section className="container mx-auto px-4 py-16 md:py-24 flex flex-col md:flex-row items-center">
-        <div className="md:w-1/2 mb-10 md:mb-0">
-          <div className="inline-block bg-red-100 text-red-800 px-4 py-1 rounded-full mb-4 font-medium">
-            Trusted by 50,000+ Students
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-800 leading-tight">
-            Achieve Your <span className="text-red-600">IELTS</span> Dream Score
-          </h1>
-          <p className="mt-6 text-xl text-gray-700 max-w-lg">
-            Authentic practice tests, personalized feedback, and proven
-            strategies to help you excel in your IELTS exam.
-          </p>
-          <div className="mt-10 flex flex-wrap gap-4">
-            <button className="btn bg-red-600 text-white px-8 py-4 hover:bg-red-700 shadow-lg transition-all rounded-lg font-medium">
-              Start Free Practice Test
-            </button>
-            <button className="btn border-2 border-red-600 text-red-600 px-8 py-4 hover:bg-red-50 rounded-lg">
-              How It Works
-            </button>
-          </div>
-
-          <div className="mt-12 bg-white p-6 rounded-xl shadow-md border border-red-100">
-            <h3 className="text-lg font-semibold text-gray-800 mb-3">
-              Quick Access to Test Sections
-            </h3>
-            <div className="grid grid-cols-2 gap-3">
-              {["listening", "reading", "writing", "speaking"].map(
-                (section) => (
-                  <a
-                    key={section}
-                    href={`#${section}`}
-                    className="btn bg-red-50 text-red-700 hover:bg-red-100 flex items-center justify-center py-3 rounded-lg transition-colors"
-                  >
-                    <span className="capitalize font-medium">{section}</span>
-                  </a>
-                )
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div className="md:w-1/2 flex justify-center">
-          <div className="relative">
-            <div className="w-80 h-80 bg-red-500 rounded-full absolute -top-6 -left-6 opacity-10"></div>
-            <div className="card w-96 bg-white shadow-xl border border-red-100 transform transition-transform hover:scale-[1.02]">
-              <figure className="px-10 pt-10">
-                <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-xl p-8 w-full">
-                  <div className="flex justify-center">
-                    <div className="relative">
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="text-center">
-                          <div className="text-3xl font-bold text-red-700">
-                            7.5
-                          </div>
-                          <div className="text-gray-600 mt-2">Band Score</div>
-                        </div>
-                      </div>
-                      <svg width="200" height="200" viewBox="0 0 100 100">
-                        <circle
-                          cx="50"
-                          cy="50"
-                          r="45"
-                          fill="none"
-                          stroke="#fee2e2"
-                          strokeWidth="10"
-                        />
-                        <circle
-                          cx="50"
-                          cy="50"
-                          r="45"
-                          fill="none"
-                          stroke="#dc2626"
-                          strokeWidth="10"
-                          strokeDasharray="283"
-                          strokeDashoffset="42.45" // 85% of 283
-                          strokeLinecap="round"
-                          transform="rotate(-90 50 50)"
-                        />
-                      </svg>
-                    </div>
+    <div className="min-h-screen bg-base-100 text-base-content">
+      {/* Top Navbar */}
+      {/* <header className="sticky top-0 z-50 backdrop-blur bg-white/90 border-b border-gray-200 shadow-sm">
+        <div className="container mx-auto px-4 lg:px-8">
+          <nav className="navbar py-3">
+            <div className="navbar-start">
+              <Link href="/" className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center">
+                  <span className="text-white font-semibold text-xl">I</span>
+                </div>
+                <div className="hidden sm:block">
+                  <span className="text-lg font-bold text-red-700">
+                    IELTS Pro
+                  </span>
+                  <div className="text-xs text-gray-500">
+                    Practice • Track • Improve
                   </div>
                 </div>
-              </figure>
-              <div className="card-body items-center text-center">
-                <h2 className="card-title text-red-700">
-                  Take a Diagnostic Test
-                </h2>
-                <p className="text-gray-600">
-                  Get your predicted band score in just 30 minutes
-                </p>
-                <div className="card-actions mt-4">
-                  <button className="btn bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700">
-                    Start Now
-                  </button>
+              </Link>
+            </div>
+
+            <div className="navbar-center hidden lg:flex">
+              <ul className="menu menu-horizontal px-1 gap-1">
+                <li>
+                  <Link
+                    href="#features"
+                    className="btn btn-ghost rounded-btn font-medium"
+                  >
+                    Features
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#how-it-works"
+                    className="btn btn-ghost rounded-btn font-medium"
+                  >
+                    How It Works
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#pricing"
+                    className="btn btn-ghost rounded-btn font-medium"
+                  >
+                    Pricing
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#testimonials"
+                    className="btn btn-ghost rounded-btn font-medium"
+                  >
+                    Testimonials
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            <div className="navbar-end flex items-center gap-3">
+              <Link
+                href="/auth/signin"
+                className="btn btn-sm btn-outline btn-neutral hidden sm:inline-flex"
+              >
+                Sign in
+              </Link>
+              <Link
+                href="/auth/signup"
+                className="btn btn-sm btn-primary bg-red-600 hover:bg-red-700 border-0"
+              >
+                Get Started
+              </Link>
+            </div>
+          </nav>
+        </div>
+      </header> */}
+
+      {/* Hero Section */}
+      <section className="pt-16 pb-24 px-4">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="order-2 lg:order-1">
+              <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-5">
+                Prepare with <span className="text-red-600">Confidence</span> —
+                <br />
+                Master the <span className="text-red-600">IELTS</span>
+              </h1>
+              <p className="text-lg text-gray-600 mb-8 max-w-xl">
+                Realistic practice tests, detailed analytics, and expert-led
+                lessons to boost your Listening, Reading, Writing, and Speaking
+                scores. Designed for learners who want a clear, measurable path
+                to success.
+              </p>
+
+              <div className="flex flex-wrap gap-4 mb-10">
+                <Link
+                  href="/test/reading"
+                  className="btn btn-primary btn-lg bg-red-600 hover:bg-red-700 border-0"
+                >
+                  Start a Practice Test
+                </Link>
+                <Link href="#features" className="btn btn-outline btn-lg">
+                  See Features
+                </Link>
+              </div>
+
+              <div className="stats stats-vertical lg:stats-horizontal gap-2">
+                <div className="stat bg-base-200 rounded-lg p-4 text-center">
+                  <div className="stat-value text-red-600 text-xl md:text-2xl">
+                    98%
+                  </div>
+                  <div className="stat-desc text-sm">Student satisfaction</div>
+                </div>
+
+                <div className="stat bg-base-200 rounded-lg p-4 text-center">
+                  <div className="stat-value text-xl md:text-2xl">3×</div>
+                  <div className="stat-desc text-sm">Faster improvement</div>
+                </div>
+
+                <div className="stat bg-base-200 rounded-lg p-4 text-center">
+                  <div className="stat-value text-xl md:text-2xl">
+                    4 Sections
+                  </div>
+                  <div className="stat-desc text-sm">
+                    Complete exam coverage
+                  </div>
+                </div>
+
+                <div className="stat bg-base-200 rounded-lg p-4 text-center">
+                  <div className="stat-value text-xl md:text-2xl">24/7</div>
+                  <div className="stat-desc text-sm">Practice anytime</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="order-1 lg:order-2 flex justify-center">
+              <div className="relative">
+                <div className="bg-gradient-to-r from-red-600 to-red-800 rounded-2xl p-8 shadow-2xl max-w-md">
+                  <div className="grid grid-cols-2 gap-6">
+                    {[
+                      {
+                        icon: <FaHeadphones className="text-white text-3xl" />,
+                        label: "Listening",
+                      },
+                      {
+                        icon: <FaBookOpen className="text-white text-3xl" />,
+                        label: "Reading",
+                      },
+                      {
+                        icon: <FaPencilAlt className="text-white text-3xl" />,
+                        label: "Writing",
+                      },
+                      {
+                        icon: <FaMicrophone className="text-white text-3xl" />,
+                        label: "Speaking",
+                      },
+                    ].map((item, index) => (
+                      <div
+                        key={index}
+                        className="bg-white/10 backdrop-blur-sm p-5 rounded-xl border border-white/20 flex flex-col items-center justify-center"
+                      >
+                        {item.icon}
+                        <h3 className="text-white font-semibold mt-3">
+                          {item.label}
+                        </h3>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -154,52 +188,51 @@ const IELTSLandingPage = () => {
         </div>
       </section>
 
-      {/* Test Modules Section */}
-      <section id="modules" className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center max-w-3xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800">
-              Comprehensive Test Modules
+      {/* Features Section */}
+      <section id="features" className="py-16 bg-base-200">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Comprehensive Preparation Features
             </h2>
-            <p className="mt-4 text-xl text-gray-700">
-              Master each IELTS section with realistic simulations and expert
-              guidance
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Everything you need to achieve your target band score
             </p>
           </div>
 
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {testModules.map((module, index) => (
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                icon: <FaCheckCircle className="text-red-600 text-2xl" />,
+                title: "Realistic Mock Tests",
+                desc: "Timed full-length tests that mirror the real exam",
+              },
+              {
+                icon: <FaChartLine className="text-red-600 text-2xl" />,
+                title: "Detailed Analytics",
+                desc: "Track strengths and weaknesses with visual reports",
+              },
+              {
+                icon: <FaUserFriends className="text-red-600 text-2xl" />,
+                title: "Expert Feedback",
+                desc: "Personalized evaluations from certified instructors",
+              },
+              {
+                icon: <FaGraduationCap className="text-red-600 text-2xl" />,
+                title: "Video Lessons",
+                desc: "Comprehensive tutorials for each test section",
+              },
+            ].map((feature, index) => (
               <div
                 key={index}
-                id={module.id}
-                className="card bg-white shadow-lg border border-red-100 hover:shadow-xl transition-all rounded-xl overflow-hidden"
+                className="card bg-base-100 shadow-md p-6 rounded-xl hover:shadow-lg transition-all duration-300"
               >
-                <div className="h-2 bg-gradient-to-r from-red-500 to-orange-500"></div>
-                <div className="card-body items-center text-center pt-10">
-                  <div
-                    className={`w-16 h-16 rounded-xl mb-4 flex items-center justify-center ${module.color}`}
-                  >
-                    {module.icon}
+                <div className="flex flex-col items-center text-center">
+                  <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mb-4">
+                    {feature.icon}
                   </div>
-                  <h3 className="card-title text-xl text-gray-800">
-                    {module.title}
-                  </h3>
-                  <p className="mt-2 text-gray-700">{module.description}</p>
-                  <div className="mt-6 w-full">
-                    <div className="flex justify-between text-sm text-gray-600 mb-1">
-                      <span>Duration</span>
-                      <span>{module.duration}</span>
-                    </div>
-                    <div className="flex justify-between text-sm text-gray-600">
-                      <span>Questions</span>
-                      <span>{module.questions}</span>
-                    </div>
-                  </div>
-                  <div className="card-actions mt-6 w-full">
-                    <button className="btn w-full bg-red-600 text-white hover:bg-red-700 py-3 rounded-lg">
-                      Start {module.title}
-                    </button>
-                  </div>
+                  <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
+                  <p className="text-gray-600">{feature.desc}</p>
                 </div>
               </div>
             ))}
@@ -207,42 +240,216 @@ const IELTSLandingPage = () => {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section
-        id="features"
-        className="py-16 bg-gradient-to-r from-red-50 to-orange-50"
-      >
-        <div className="container mx-auto px-4">
-          <div className="text-center max-w-3xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800">
-              Why Choose IELTS Mastery
+      {/* How It Works */}
+      <section id="how-it-works" className="py-16 bg-base-100">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="flex justify-center">
+              <div className="relative max-w-md">
+                <div className="bg-gradient-to-br from-blue-50 to-base-100 rounded-2xl p-8 border border-gray-200 shadow-md">
+                  <div className="flex justify-center mb-6">
+                    <div className="bg-white border rounded-xl p-6 shadow-md w-full">
+                      <div className="flex justify-between items-center mb-4 gap-2">
+                        <div className="text-lg font-bold">Progress Report</div>
+                        <div className="badge badge-success">Band 7.5</div>
+                      </div>
+                      <div className="space-y-4">
+                        <div>
+                          <div className="flex justify-between mb-1">
+                            <span>Listening</span>
+                            <span>8.0</span>
+                          </div>
+                          <progress
+                            className="progress progress-success w-full"
+                            value="80"
+                            max="100"
+                          ></progress>
+                        </div>
+                        <div>
+                          <div className="flex justify-between mb-1">
+                            <span>Reading</span>
+                            <span>7.5</span>
+                          </div>
+                          <progress
+                            className="progress progress-primary w-full"
+                            value="75"
+                            max="100"
+                          ></progress>
+                        </div>
+                        <div>
+                          <div className="flex justify-between mb-1">
+                            <span>Writing</span>
+                            <span>6.5</span>
+                          </div>
+                          <progress
+                            className="progress progress-warning w-full"
+                            value="65"
+                            max="100"
+                          ></progress>
+                        </div>
+                        <div>
+                          <div className="flex justify-between mb-1">
+                            <span>Speaking</span>
+                            <span>7.0</span>
+                          </div>
+                          <progress
+                            className="progress progress-info w-full"
+                            value="70"
+                            max="100"
+                          ></progress>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-center text-gray-600 text-sm">
+                    Track your progress with detailed analytics
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-2xl font-bold mb-4">How it works</h3>
+              <p className="text-lg text-gray-600 mb-6">
+                A simple three-step path to improve your band score.
+              </p>
+
+              <ol className="space-y-6">
+                {[
+                  {
+                    step: "1",
+                    title: "Take a diagnostic test",
+                    desc: "Understand your baseline with a full-length mock exam",
+                  },
+                  {
+                    step: "2",
+                    title: "Study focused lessons",
+                    desc: "Targeted exercises and model answers to close gaps",
+                  },
+                  {
+                    step: "3",
+                    title: "Track progress & retake",
+                    desc: "Charts show improvements and guide your next steps",
+                  },
+                ].map((item, index) => (
+                  <li key={index} className="flex gap-5">
+                    <div className="flex flex-col items-center">
+                      <div className="w-10 h-10 rounded-full bg-red-600 text-white flex items-center justify-center text-lg font-bold">
+                        {item.step}
+                      </div>
+                      {index < 2 && (
+                        <div className="w-1 h-full bg-gray-200 mt-1"></div>
+                      )}
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-semibold">{item.title}</h4>
+                      <p className="text-gray-600 mt-1">{item.desc}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+
+              <div className="mt-8">
+                <Link href="#pricing" className="btn btn-outline btn-lg">
+                  View Plans
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section id="pricing" className="py-16 bg-base-200">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Choose Your Plan
             </h2>
-            <p className="mt-4 text-xl text-gray-700">
-              Everything you need for IELTS success in one platform
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Flexible options to fit your study needs and budget
             </p>
           </div>
 
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {[
+              {
+                name: "Basic",
+                price: "Free",
+                period: "Forever",
+                features: [
+                  "2 practice tests",
+                  "Basic analytics",
+                  "Limited feedback",
+                  "Community support",
+                ],
+                highlight: false,
+              },
+              {
+                name: "Premium",
+                price: "$19",
+                period: "per month",
+                features: [
+                  "Unlimited tests",
+                  "Advanced analytics",
+                  "Expert feedback",
+                  "Video lessons",
+                  "Priority support",
+                ],
+                highlight: true,
+              },
+              {
+                name: "Intensive",
+                price: "$149",
+                period: "for 6 months",
+                features: [
+                  "All Premium features",
+                  "1-on-1 coaching",
+                  "Score guarantee",
+                  "Study planner",
+                  "24/7 support",
+                ],
+                highlight: false,
+              },
+            ].map((plan, index) => (
               <div
                 key={index}
-                className="bg-white p-8 rounded-xl shadow-md border border-red-100"
+                className={`card rounded-xl overflow-hidden ${
+                  plan.highlight
+                    ? "ring-2 ring-red-600 transform -translate-y-2 shadow-xl"
+                    : "shadow-md"
+                }`}
               >
                 <div
-                  className={`w-12 h-12 rounded-lg mb-6 flex items-center justify-center ${
-                    index === 0
-                      ? "bg-red-100"
-                      : index === 1
-                      ? "bg-orange-100"
-                      : "bg-amber-100"
+                  className={`p-6 ${
+                    plan.highlight ? "bg-red-600 text-white" : "bg-base-100"
                   }`}
                 >
-                  {feature.icon}
+                  <h3 className="text-2xl font-bold">{plan.name}</h3>
+                  <div className="mt-4">
+                    <span className="text-3xl font-bold">{plan.price}</span>
+                    <span className="text-gray-500 ml-2">{plan.period}</span>
+                  </div>
                 </div>
-                <h3 className="text-xl font-bold text-gray-800">
-                  {feature.title}
-                </h3>
-                <p className="mt-3 text-gray-700">{feature.description}</p>
+                <div className="card-body bg-base-100">
+                  <ul className="space-y-3 mb-6">
+                    {plan.features.map((feature, fIndex) => (
+                      <li key={fIndex} className="flex items-start">
+                        <div className="text-green-500 mr-2 mt-1">✓</div>
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <button
+                    className={`btn btn-block ${
+                      plan.highlight
+                        ? "btn-primary bg-red-600 hover:bg-red-700 border-0"
+                        : "btn-outline"
+                    }`}
+                  >
+                    Get Started
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -250,338 +457,190 @@ const IELTSLandingPage = () => {
       </section>
 
       {/* Testimonials */}
-      <section id="testimonials" className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center max-w-3xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800">
+      <section id="testimonials" className="py-16 bg-base-100">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Success Stories
             </h2>
-            <p className="mt-4 text-xl text-gray-700">
-              Hear from students who achieved their target scores
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Hear from students who achieved their dream scores
             </p>
           </div>
 
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                name: "Sarah K.",
+                score: "7.5",
+                text: "The practice tests mirrored the actual exam perfectly. I improved my writing score by 1.5 bands!",
+              },
+              {
+                name: "David M.",
+                score: "8.0",
+                text: "The personalized feedback on my speaking practice was invaluable. I finally overcame my hesitation.",
+              },
+              {
+                name: "Priya T.",
+                score: "8.5",
+                text: "The vocabulary builder helped me tremendously in the reading section. Highly recommended!",
+              },
+            ].map((testimonial, index) => (
               <div
                 key={index}
-                className="card bg-white shadow-lg border border-red-100 rounded-xl"
+                className="card bg-base-200 border border-gray-200"
               >
                 <div className="card-body">
-                  <div className="flex items-center">
-                    <div className="avatar">
-                      <div className="w-16 rounded-full">
-                        <img src={testimonial.avatar} alt="avatar" />
+                  <div className="flex items-center mb-4">
+                    <div className="avatar placeholder">
+                      <div className="bg-red-100 text-red-800 rounded-full w-12">
+                        <span className="text-lg font-bold">
+                          {testimonial.name.charAt(0)}
+                        </span>
                       </div>
                     </div>
                     <div className="ml-4">
-                      <h4 className="font-bold text-gray-800">
-                        {testimonial.name}
-                      </h4>
-                      <p className="text-red-700 font-medium">
-                        {testimonial.score}
-                      </p>
+                      <h4 className="font-bold text-lg">{testimonial.name}</h4>
+                      <div className="badge badge-primary bg-red-600 border-0 text-white">
+                        Band {testimonial.score}
+                      </div>
                     </div>
                   </div>
-                  <p className="mt-4 text-gray-700 italic">
-                    "{testimonial.quote}"
-                  </p>
-                  <div className="mt-4 flex">
-                    {[...Array(5)].map((_, i) => (
-                      <svg
-                        key={i}
-                        xmlns="http://www.w3.org/2000/svg"
-                        className={`h-5 w-5 ${
-                          i < testimonial.rating
-                            ? "text-amber-400"
-                            : "text-gray-300"
-                        }`}
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
-                    ))}
+                  <p className="text-gray-700 italic">"{testimonial.text}"</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-16 bg-gradient-to-r from-red-600 to-red-800 text-white">
+        <div className="container mx-auto px-4 max-w-4xl text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            Ready to Achieve Your IELTS Goals?
+          </h2>
+          <p className="text-xl mb-8 max-w-2xl mx-auto">
+            Join thousands of successful test-takers and start your journey to a
+            higher band score today.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link
+              href="/auth/signup"
+              className="btn btn-primary btn-lg bg-white text-red-700 hover:bg-gray-100 border-0"
+            >
+              Start 7-Day Free Trial
+            </Link>
+            <Link
+              href="#features"
+              className="btn btn-outline btn-lg text-white hover:bg-white/10"
+            >
+              Learn More
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      {/* <footer className="bg-base-200 border-t border-gray-200 py-12">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center">
+                  <span className="text-white font-semibold text-lg">I</span>
+                </div>
+                <div>
+                  <div className="font-bold text-lg">IELTS Pro</div>
+                  <div className="text-sm text-gray-600">
+                    Practice • Track • Improve
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-r from-red-600 to-orange-600">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white">
-            Ready to achieve your IELTS goals?
-          </h2>
-          <p className="mt-4 text-xl text-red-100 max-w-2xl mx-auto">
-            Join thousands of successful test-takers who've improved their
-            scores with our platform
-          </p>
-          <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
-            <button className="btn bg-white text-red-600 px-10 py-4 hover:bg-red-50 shadow-lg font-bold rounded-lg">
-              Start Free Practice Test
-            </button>
-            <button className="btn border-2 border-white text-red-600 hover:bg-white/10 hover:text-white px-10 py-4 rounded-lg">
-              View Pricing Plans
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section id="faq" className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center max-w-3xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800">
-              Frequently Asked Questions
-            </h2>
-            <p className="mt-4 text-xl text-gray-700">
-              Everything you need to know about our IELTS preparation platform
-            </p>
-          </div>
-
-          <div className="mt-16 max-w-3xl mx-auto">
-            {faqs.map((faq, index) => (
-              <div
-                key={index}
-                className="collapse collapse-arrow border border-gray-200 mb-4 rounded-lg"
-              >
-                <input type="checkbox" className="peer" />
-                <div className="collapse-title text-xl font-medium text-gray-800">
-                  {faq.question}
-                </div>
-                <div className="collapse-content">
-                  <p className="text-gray-700">{faq.answer}</p>
-                </div>
+              <p className="text-gray-600 mb-4">
+                Professional IELTS preparation for ambitious test-takers
+                worldwide.
+              </p>
+              <div className="flex gap-3">
+                {[1, 2, 3, 4].map((i) => (
+                  <button
+                    key={i}
+                    className="btn btn-circle btn-sm bg-base-300 border-0"
+                  >
+                    <span className="text-gray-600">f{i}</span>
+                  </button>
+                ))}
               </div>
-            ))}
+            </div>
+
+            <div>
+              <h3 className="text-lg font-bold mb-4">Resources</h3>
+              <ul className="space-y-2">
+                {[
+                  "Study Guides",
+                  "Practice Tests",
+                  "Vocabulary Lists",
+                  "Writing Samples",
+                  "Speaking Tips",
+                ].map((item, i) => (
+                  <li key={i}>
+                    <Link
+                      href="#"
+                      className="text-gray-600 hover:text-red-600 transition-colors"
+                    >
+                      {item}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-bold mb-4">Company</h3>
+              <ul className="space-y-2">
+                {[
+                  "About Us",
+                  "Careers",
+                  "Contact",
+                  "Blog",
+                  "Success Stories",
+                ].map((item, i) => (
+                  <li key={i}>
+                    <Link
+                      href="#"
+                      className="text-gray-600 hover:text-red-600 transition-colors"
+                    >
+                      {item}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-bold mb-4">Contact</h3>
+              <ul className="space-y-2 text-gray-600">
+                <li className="flex items-start">
+                  <span className="mr-2">📍</span>
+                  <span>123 Education Street, London, UK</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2">📞</span>
+                  <span>+44 20 7123 4567</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2">✉️</span>
+                  <span>support@ieltsprep.com</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-300 mt-12 pt-8 text-center text-gray-500">
+            <p>© {new Date().getFullYear()} IELTS Pro. All rights reserved.</p>
           </div>
         </div>
-      </section>
+      </footer> */}
     </div>
   );
-};
-
-// Test Modules Data
-const testModules = [
-  {
-    id: "listening",
-    title: "Listening",
-    description: "Practice with authentic recordings and various accents",
-    duration: "30 minutes",
-    questions: "40 questions",
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-8 w-8 text-red-600"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15.536a5 5 0 001.414 1.414m0-11.314a5 5 0 00-1.414 1.414"
-        />
-      </svg>
-    ),
-    color: "bg-red-100",
-  },
-  {
-    id: "reading",
-    title: "Reading",
-    description: "Improve comprehension with academic and general texts",
-    duration: "60 minutes",
-    questions: "40 questions",
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-8 w-8 text-red-600"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-        />
-      </svg>
-    ),
-    color: "bg-red-100",
-  },
-  {
-    id: "writing",
-    title: "Writing",
-    description: "Develop skills for both Task 1 and Task 2 responses",
-    duration: "60 minutes",
-    questions: "2 tasks",
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-8 w-8 text-red-600"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-        />
-      </svg>
-    ),
-    color: "bg-red-100",
-  },
-  {
-    id: "speaking",
-    title: "Speaking",
-    description: "Practice with AI feedback and mock interviews",
-    duration: "11-14 minutes",
-    questions: "3 parts",
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-8 w-8 text-red-600"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
-        />
-      </svg>
-    ),
-    color: "bg-red-100",
-  },
-];
-
-// Features Data
-const features = [
-  {
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-6 w-6 text-red-600"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
-        />
-      </svg>
-    ),
-    title: "Authentic Test Simulations",
-    description:
-      "IELTS-accurate practice tests that mirror the actual exam format and difficulty level.",
-  },
-  {
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-6 w-6 text-orange-600"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-        />
-      </svg>
-    ),
-    title: "Detailed Performance Analytics",
-    description:
-      "Get actionable insights into your strengths and weaknesses with comprehensive reports.",
-  },
-  {
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-6 w-6 text-amber-600"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-        />
-      </svg>
-    ),
-    title: "Expert Examiner Feedback",
-    description:
-      "Receive personalized evaluation from certified IELTS examiners.",
-  },
-];
-
-// Testimonials Data
-const testimonials = [
-  {
-    name: "Sarah Johnson",
-    score: "Scored 8.0 Overall",
-    quote:
-      "The practice tests were incredibly realistic. I felt fully prepared on exam day thanks to this platform!",
-    avatar: "https://randomuser.me/api/portraits/women/44.jpg",
-    rating: 5,
-  },
-  {
-    name: "David Chen",
-    score: "Scored 7.5 Overall",
-    quote:
-      "The detailed feedback on my writing tasks helped me improve from 6.5 to 7.0 in just two weeks!",
-    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-    rating: 5,
-  },
-  {
-    name: "Maria Rodriguez",
-    score: "Scored 8.5 Overall",
-    quote:
-      "The speaking practice with AI feedback was revolutionary. I finally overcame my nervousness.",
-    avatar: "https://randomuser.me/api/portraits/women/68.jpg",
-    rating: 5,
-  },
-];
-
-// FAQ Data
-const faqs = [
-  {
-    question: "How accurate are the practice tests?",
-    answer:
-      "Our practice tests are developed by IELTS experts and former examiners to precisely match the format, difficulty level, and question types of the actual IELTS exam.",
-  },
-  {
-    question: "Can I get feedback on my writing and speaking?",
-    answer:
-      "Yes! Our premium plans include detailed feedback from certified IELTS instructors for both writing tasks and speaking practice sessions.",
-  },
-  {
-    question: "How long does it take to see improvement?",
-    answer:
-      "Most students see significant improvement within 4-6 weeks of regular practice. We recommend practicing at least 30 minutes per day for best results.",
-  },
-  {
-    question: "Do you offer academic and general training?",
-    answer:
-      "Yes, we provide preparation materials for both IELTS Academic and IELTS General Training modules.",
-  },
-];
-
-export default IELTSLandingPage;
+}

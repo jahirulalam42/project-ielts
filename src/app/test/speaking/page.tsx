@@ -86,21 +86,27 @@ const SpeakingPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-red-50">
       {/* Header Section */}
-      <div className="bg-red-800 text-white py-16 px-4">
-        <div className="max-w-6xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            IELTS Speaking Practice
-          </h1>
-          <p className="text-xl text-red-200 max-w-3xl mx-auto">
-            Practice with authentic IELTS-style questions and get feedback on
-            your responses
-          </p>
+
+      <div className="bg-gradient-to-r from-red-800 to-red-900 text-white py-16 px-4 border-b border-gray-300">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl md:text-4xl font-serif font-bold mb-2">
+                IELTS Speaking Practice
+              </h1>
+              <p className="text-gray-300 max-w-2xl">
+                Practice with authentic IELTS-style questions and get feedback
+                on your responses
+              </p>
+            </div>
+            {/* <div className="hidden md:block bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16" /> */}
+          </div>
         </div>
       </div>
 
       {/* Stats & Controls */}
-      <div className="max-w-6xl mx-auto -mt-12 px-4">
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
           <div className="stats stats-vertical md:stats-horizontal w-full">
             <div className="stat">
               <div className="stat-title">Total Tests</div>
@@ -130,9 +136,9 @@ const SpeakingPage: React.FC = () => {
             ].map((tab) => (
               <button
                 key={tab.key}
-                className={`btn capitalize ${
+                className={`px-4 py-2 text-sm rounded-lg border transition-colors ${
                   activeTab === tab.key
-                    ? "btn-active bg-red-800 text-white"
+                    ? "btn-active bg-red-700 text-white"
                     : "btn-ghost"
                 }`}
                 onClick={() => setActiveTab(tab.key as any)}
@@ -230,10 +236,21 @@ const SpeakingPage: React.FC = () => {
                   <div className="card-actions justify-end mt-6">
                     <Link
                       href={`/test/speaking/${test._id}`}
-                      className="btn bg-red-800 px-8 text-white"
+                      className="px-5 py-2.5 bg-red-700 hover:bg-red-800 text-white text-sm font-medium rounded-lg flex items-center transition-colors"
                     >
                       Start Test
-                      <FaPlay className="h-4 w-4 ml-2" />
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4 ml-2"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
                     </Link>
                   </div>
                 </div>
