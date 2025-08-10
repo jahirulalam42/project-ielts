@@ -22,6 +22,7 @@ interface Answer {
   answerText: string | any[];
   isCorrect: boolean;
   questionGroup?: number[];
+  questionType?: string;
 }
 
 const SubmissionPage = () => {
@@ -133,29 +134,31 @@ const SubmissionPage = () => {
               <th className="font-bold text-black">Question</th>
               <th className="font-bold text-black">Your Answer</th>
               <th className="font-bold text-black">Correct Answer</th>
+              <th className="font-bold text-black">Type</th>
               <th className="font-bold text-black">Status</th>
             </tr>
           </thead>
           <tbody>
-            {sortedGroups.map(([groupKey, answers]) => {
+            {sortedGroups.map(([groupKey, answers]: any) => {
               // For grouped answers (multiple MCQ)
               if (answers[0].questionGroup) {
                 const selectedAnswers = answers
-                  .map((a) => a.value)
+                  .map((a: any) => a.value)
                   .filter(Boolean)
                   .join(", ");
                 const correctAnswers = answers
-                  .map((a) => a.answerText)
+                  .map((a: any) => a.answerText)
                   .filter(Boolean)
                   .join(", ");
-                const isGroupCorrect = answers.every((a) => a.isCorrect);
+                const isGroupCorrect = answers.every((a: any) => a.isCorrect);
                 const partialCorrectness = getPartialCorrectness(answers);
 
                 return (
-                  <tr key={groupKey} className="bg-base-200">
+                  <tr key={groupKey}>
                     <td>{answers[0].questionGroup.join(", ")}</td>
-                    <td>{selectedAnswers}</td>
+                    <td>{selectedAnswers || "Not answered"}</td>
                     <td>{correctAnswers}</td>
+                    <td>{answers[0].questionType || " "}</td>
                     <td
                       className={
                         isGroupCorrect ? "text-success" : "text-warning"
@@ -168,11 +171,12 @@ const SubmissionPage = () => {
               }
 
               // For individual answers
-              return answers.map((answer, index) => (
+              return answers.map((answer: any, index: any) => (
                 <tr key={`${groupKey}-${index}`}>
                   <td>{answer.questionId}</td>
                   <td>{answer.value || "Not answered"}</td>
                   <td>{answer.answerText as string}</td>
+                  <td>{answer.questionType || " "}</td>
                   <td
                     className={answer.isCorrect ? "text-success" : "text-error"}
                   >

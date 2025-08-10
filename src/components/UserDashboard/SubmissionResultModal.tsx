@@ -434,9 +434,9 @@ const SubmissionResultModal: React.FC<SubmissionResultModalProps> = ({
                                 getPartialCorrectness(answers);
 
                               return (
-                                <tr key={groupKey} className="bg-base-200">
+                                <tr key={groupKey}>
                                   <td>{answers[0].questionGroup.join(", ")}</td>
-                                  <td>{selectedAnswers}</td>
+                                  <td>{selectedAnswers || "Not Answered"}</td>
                                   <td>{correctAnswers}</td>
                                   <td>{type}</td>
                                   <td
