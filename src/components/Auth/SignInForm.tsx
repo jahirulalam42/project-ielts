@@ -35,7 +35,7 @@ const SignInForm = () => {
   };
   return (
     <div>
-      <div className="min-h-screen flex items-center justify-center bg-indigo-50 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-red-50 p-4">
         <div className="card w-full max-w-md shadow-lg bg-base-100">
           <div className="card-body">
             <h1 className="card-title text-2xl">Sign In</h1>
@@ -77,7 +77,9 @@ const SignInForm = () => {
 
               <button
                 type="submit"
-                className={`btn btn-primary w-full ${loading ? "loading" : ""}`}
+                className={`btn bg-red-700 text-white w-full ${
+                  loading ? "loading" : ""
+                }`}
                 disabled={loading}
               >
                 {loading ? "Signing in…" : "Sign In"}

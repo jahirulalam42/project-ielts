@@ -72,7 +72,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-indigo-50 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-red-50 p-4">
       <div className="card w-full max-w-lg shadow-xl bg-base-100">
         <div className="card-body">
           <h2 className="card-title text-2xl">Create your account</h2>
@@ -199,7 +199,9 @@ const SignUp = () => {
             <div className="mt-6">
               <button
                 type="submit"
-                className={`btn btn-primary w-full ${loading ? "loading" : ""}`}
+                className={`btn bg-red-700 text-white w-full ${
+                  loading ? "loading" : ""
+                }`}
                 disabled={loading}
               >
                 {loading ? "Signing up..." : "Sign Up"}
@@ -210,7 +212,7 @@ const SignUp = () => {
           <p className="text-center text-sm text-base-content/60 mt-4">
             Already have an account?{" "}
             <a onClick={() => signIn()} className="link link-primary">
-              Log in
+              Sign in
             </a>
           </p>
         </div>

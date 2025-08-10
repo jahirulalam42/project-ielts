@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 
 // The McqMultiple component accepts the question and the answer handler
-const McqMultiple = ({ question, handleAnswerChange, handleQuestionFocus }: any) => {
+const McqMultiple = ({
+  question,
+  handleAnswerChange,
+  handleQuestionFocus,
+}: any) => {
   // Track selected options for each question in the group
   const [selectedOptions, setSelectedOptions] = useState<{
     [key: string]: { [key: number]: string };
@@ -133,14 +137,14 @@ const McqMultiple = ({ question, handleAnswerChange, handleQuestionFocus }: any)
             </div>
 
             {/* Debug info - remove this in production */}
-            <div className="text-xs text-black-500 mt-2">
+            {/* <div className="text-xs text-black-500 mt-2">
               Selected:{" "}
               {Object.entries(currentSelections)
                 .filter(([_, value]) => value !== "")
                 .map(([key, value]) => `${key}: ${value}`)
                 .join(", ")}{" "}
               | Correct: {q.correct_mapping?.join(", ")}
-            </div>
+            </div> */}
           </div>
         );
       })}

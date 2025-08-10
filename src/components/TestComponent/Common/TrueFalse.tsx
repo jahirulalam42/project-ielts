@@ -42,7 +42,7 @@ const TrueFalse = ({
                 // value={currentValue}
                 defaultValue={""}
               >
-                <option disabled value=""></option>
+                {/* <option disabled value=""></option> */}
                 <option value="True">True</option>
                 <option value="False">False</option>
                 <option value="Not Given">Not Given</option>
