@@ -10,6 +10,7 @@ const AddUser = () => {
     email: "",
     password: "",
     role: "admin", // Set default value
+    type: "free",
   });
 
   const handleChange = (
@@ -28,6 +29,7 @@ const AddUser = () => {
       email: "",
       password: "",
       role: "admin",
+      type: "free",
     });
     try {
       await postUser(formData);
@@ -44,6 +46,7 @@ const AddUser = () => {
       email: "",
       password: "",
       role: "admin",
+      type: "free",
     });
   };
 
@@ -124,6 +127,23 @@ const AddUser = () => {
                   <option value="admin">Admin</option>
                   <option value="user">User</option>
                   <option value="others">Others</option>
+                </select>
+              </div>
+
+              {/* Type Selection */}
+              <div className="md:col-span-2 form-control">
+                <label className="label">
+                  <span className="label-text font-semibold">User Type</span>
+                </label>
+                <select
+                  name="type"
+                  value={formData.type}
+                  onChange={handleChange}
+                  className="select select-bordered w-full bg-base-100"
+                >
+                  <option value="paid">Paid</option>
+                  <option value="free">Free</option>
+                  <option value="others">Other Plan</option>
                 </select>
               </div>
             </div>
