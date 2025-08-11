@@ -9,6 +9,7 @@ export interface User extends mongoose.Document {
   location: string;
   bio: string;
   role: string;
+  type: string;
 }
 
 const userSchema = new mongoose.Schema<User>({
@@ -37,6 +38,9 @@ const userSchema = new mongoose.Schema<User>({
     type: String,
   },
   role: {
+    type: String,
+  },
+  type: {
     type: String,
   },
 });

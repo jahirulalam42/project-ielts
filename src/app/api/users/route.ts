@@ -31,6 +31,7 @@ export async function POST(request: Request) {
       location,
       bio,
       role = "user", // default role
+      type = "free",
     } = body;
 
     // ✅ Basic field validation
@@ -64,6 +65,7 @@ export async function POST(request: Request) {
       location,
       bio,
       role,
+      type,
     });
 
     // ✅ Strip password from response

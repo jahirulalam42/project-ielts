@@ -20,6 +20,7 @@ import {
 } from "react-icons/fi";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { CiUser } from "react-icons/ci";
 
 // User type definition
 type User = {
@@ -29,6 +30,7 @@ type User = {
   role: "admin" | "user";
   lastActive: string;
   testAttempts: number;
+  type: string;
 };
 
 const UserDashboard = () => {
@@ -36,6 +38,7 @@ const UserDashboard = () => {
   const [currentUser, setCurrentUser] = useState<any>();
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [newRole, setNewRole] = useState<"admin" | "user">("user");
+  const [newType, setNewType] = useState<"paid" | "free">("free");
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const { data }: any = useSession();
@@ -68,11 +71,11 @@ const UserDashboard = () => {
 
     try {
       setLoading(true);
-      await updateUser(userId, { role: newRole });
+      await updateUser(userId, { role: newRole, type: newType });
 
       setUsers(
         users.map((user) =>
-          user._id === userId ? { ...user, role: newRole } : user
+          user._id === userId ? { ...user, role: newRole, type: newType } : user
         )
       );
 
@@ -166,6 +169,7 @@ const UserDashboard = () => {
                   <th className="py-4 pl-6">User</th>
                   <th>Email</th>
                   <th>Role</th>
+                  <th>Type</th>
                   <th>Last Active</th>
                   <th>Tests</th>
                   <th className="pr-6 text-right">Actions</th>
@@ -231,6 +235,43 @@ const UserDashboard = () => {
                             }`}
                           >
                             {user.role}
+                          </span>
+                        </div>
+                      )}
+                    </td>
+
+                    <td className="py-4">
+                      {editingUser?._id === user._id ? (
+                        <div className="flex items-center gap-2">
+                          <FiShield className="text-gray-400" />
+                          <select
+                            className="select select-bordered select-sm w-32"
+                            value={newType}
+                            onChange={(e) =>
+                              setNewType(e.target.value as "paid" | "free")
+                            }
+                          >
+                            <option value="free">Free</option>
+                            <option value="paid">Paid</option>
+                          </select>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <CiUser
+                            className={
+                              user.type === "paid"
+                                ? "text-green-500 text-lg font-bold"
+                                : "text-gray-400 text-lg font-bold"
+                            }
+                          />
+                          <span
+                            className={`px-3 py-1 rounded-full text-xs font-medium ${
+                              user.type === "paid"
+                                ? "bg-green-100 text-green-800"
+                                : "bg-gray-100 text-gray-800"
+                            }`}
+                          >
+                            {user?.type}
                           </span>
                         </div>
                       )}
