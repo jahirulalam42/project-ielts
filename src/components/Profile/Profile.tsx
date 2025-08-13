@@ -104,11 +104,11 @@ const Profile = () => {
         {userData ? (
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
             {/* Profile Header */}
-            <div className="bg-gradient-to-r from-indigo-500 to-purple-600 h-40 relative">
+            <div className="bg-gradient-to-r from-red-600 to-red-800 h-40 relative">
               <div className="absolute -bottom-16 left-8">
                 <div className="avatar">
                   <div
-                    className={`w-32 h-32 rounded-full border-4 border-white bg-indigo-100 flex items-center justify-center shadow-lg relative overflow-hidden transition-all duration-300 ${
+                    className={`w-32 h-32 rounded-full border-4 border-white bg-red-100 flex items-center justify-center shadow-lg relative overflow-hidden transition-all duration-300 ${
                       isEditing ? "cursor-pointer group" : ""
                     }`}
                     onClick={isEditing ? triggerFileInput : undefined}
@@ -156,7 +156,7 @@ const Profile = () => {
 
                     {/* Edit indicator badge */}
                     {isEditing && (
-                      <div className="absolute top-0 right-0 bg-indigo-600 text-white text-xs px-2 py-1 rounded-bl-lg rounded-tr-lg">
+                      <div className="absolute top-0 right-0 bg-red-600 text-white text-xs px-2 py-1 rounded-bl-lg rounded-tr-lg">
                         Edit
                       </div>
                     )}
@@ -165,7 +165,7 @@ const Profile = () => {
 
                 {/* Image change hint text */}
                 {isEditing && (
-                  <p className="text-xs text-center text-indigo-700 mt-2 animate-pulse">
+                  <p className="text-xs text-center text-red-700 mt-2 animate-pulse">
                     Click on image to change
                   </p>
                 )}
@@ -221,7 +221,7 @@ const Profile = () => {
                         name="username"
                         value={userData.username}
                         onChange={handleInputChange}
-                        className="input input-bordered w-full focus:ring-indigo-500 focus:border-indigo-500"
+                        className="input input-bordered w-full focus:ring-red-500 focus:border-red-500"
                       />
                     ) : (
                       <div className="text-lg font-semibold text-gray-900">
@@ -240,7 +240,7 @@ const Profile = () => {
                         name="email"
                         value={userData.email}
                         onChange={handleInputChange}
-                        className="input input-bordered w-full focus:ring-indigo-500 focus:border-indigo-500"
+                        className="input input-bordered w-full focus:ring-red-500 focus:border-red-500"
                       />
                     ) : (
                       <div className="text-gray-600 flex items-center">
@@ -267,7 +267,7 @@ const Profile = () => {
                         name="phone"
                         value={userData.phone}
                         onChange={handleInputChange}
-                        className="input input-bordered w-full focus:ring-indigo-500 focus:border-indigo-500"
+                        className="input input-bordered w-full focus:ring-red-500 focus:border-red-500"
                       />
                     ) : (
                       <div className="text-gray-600 flex items-center">
@@ -293,7 +293,7 @@ const Profile = () => {
                         name="location"
                         value={userData.location}
                         onChange={handleInputChange}
-                        className="input input-bordered w-full focus:ring-indigo-500 focus:border-indigo-500"
+                        className="input input-bordered w-full focus:ring-red-500 focus:border-red-500"
                       />
                     ) : (
                       <div className="text-gray-600 flex items-center">
@@ -324,7 +324,7 @@ const Profile = () => {
                       value={userData.bio}
                       onChange={handleInputChange}
                       rows={3}
-                      className="textarea textarea-bordered w-full focus:ring-indigo-500 focus:border-indigo-500"
+                      className="textarea textarea-bordered w-full focus:ring-red-500 focus:border-red-500"
                     />
                   ) : (
                     <p className="text-gray-700">{userData.bio}</p>
@@ -346,7 +346,7 @@ const Profile = () => {
           </div>
         ) : (
           <div className="w-full h-full flex justify-center items-center">
-            <span className="loading loading-spinner text-primary"></span>
+            <span className="loading loading-spinner text-red-800"></span>
           </div>
         )}
       </div>

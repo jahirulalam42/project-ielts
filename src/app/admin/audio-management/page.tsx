@@ -1,8 +1,8 @@
 "use client";
-import React, { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { FaTrash, FaPlay, FaDownload, FaInfo } from 'react-icons/fa';
+import React, { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { FaTrash, FaPlay, FaDownload, FaInfo } from "react-icons/fa";
 
 interface AudioFile {
   public_id: string;
@@ -21,8 +21,8 @@ const AudioManagementPage = () => {
   const [deleting, setDeleting] = useState<string | null>(null);
 
   useEffect(() => {
-    if (session?.user?.role !== 'admin') {
-      router.push('/admin');
+    if (session?.user?.role !== "admin") {
+      router.push("/admin");
       return;
     }
     fetchAudioFiles();
@@ -30,59 +30,64 @@ const AudioManagementPage = () => {
 
   const fetchAudioFiles = async () => {
     try {
-      const response = await fetch('/api/audio/management?action=list');
+      const response = await fetch("/api/audio/management?action=list");
       const data = await response.json();
-      
+
       if (data.success) {
         setAudioFiles(data.files);
       } else {
-        console.error('Failed to fetch audio files:', data.error);
+        console.error("Failed to fetch audio files:", data.error);
       }
     } catch (error) {
-      console.error('Error fetching audio files:', error);
+      console.error("Error fetching audio files:", error);
     } finally {
       setLoading(false);
     }
   };
 
   const deleteAudioFile = async (publicId: string) => {
-    if (!confirm('Are you sure you want to delete this audio file?')) {
+    if (!confirm("Are you sure you want to delete this audio file?")) {
       return;
     }
 
     setDeleting(publicId);
     try {
-      const response = await fetch(`/api/audio/management?publicId=${publicId}`, {
-        method: 'DELETE',
-      });
+      const response = await fetch(
+        `/api/audio/management?publicId=${publicId}`,
+        {
+          method: "DELETE",
+        }
+      );
       const data = await response.json();
-      
+
       if (data.success) {
-        setAudioFiles(prev => prev.filter(file => file.public_id !== publicId));
-        alert('Audio file deleted successfully');
+        setAudioFiles((prev) =>
+          prev.filter((file) => file.public_id !== publicId)
+        );
+        alert("Audio file deleted successfully");
       } else {
-        alert('Failed to delete audio file');
+        alert("Failed to delete audio file");
       }
     } catch (error) {
-      console.error('Error deleting audio file:', error);
-      alert('Error deleting audio file');
+      console.error("Error deleting audio file:", error);
+      alert("Error deleting audio file");
     } finally {
       setDeleting(null);
     }
   };
 
   const formatBytes = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return "0 Bytes";
     const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
 
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
   if (loading) {
@@ -101,23 +106,23 @@ const AudioManagementPage = () => {
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
             <h1 className="card-title text-3xl mb-6">Audio File Management</h1>
-            
+
             <div className="flex justify-between items-center mb-6">
               <div>
-                <p className="text-lg">Total Files: {audioFiles.length}</p>
+                <p className="text-lg">Total Files: {audioFiles?.length}</p>
                 <p className="text-sm text-gray-600">
-                  Total Size: {formatBytes(audioFiles.reduce((sum, file) => sum + file.bytes, 0))}
+                  Total Size:{" "}
+                  {formatBytes(
+                    audioFiles?.reduce((sum, file) => sum + file.bytes, 0)
+                  )}
                 </p>
               </div>
-              <button
-                onClick={fetchAudioFiles}
-                className="btn btn-primary"
-              >
+              <button onClick={fetchAudioFiles} className="btn btn-primary">
                 Refresh
               </button>
             </div>
 
-            {audioFiles.length === 0 ? (
+            {audioFiles?.length === 0 ? (
               <div className="text-center py-8">
                 <p className="text-gray-500">No audio files found</p>
               </div>
@@ -135,13 +140,13 @@ const AudioManagementPage = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {audioFiles.map((file) => (
+                    {audioFiles?.map((file) => (
                       <tr key={file.public_id}>
                         <td>
                           <div className="flex items-center gap-2">
                             <FaPlay className="text-primary" />
                             <span className="font-mono text-sm">
-                              {file.public_id.split('/').pop()}
+                              {file.public_id.split("/").pop()}
                             </span>
                           </div>
                         </td>
@@ -154,7 +159,9 @@ const AudioManagementPage = () => {
                         <td>
                           <div className="flex gap-2">
                             <button
-                              onClick={() => window.open(file.secure_url, '_blank')}
+                              onClick={() =>
+                                window.open(file.secure_url, "_blank")
+                              }
                               className="btn btn-sm btn-outline"
                               title="Play"
                             >
@@ -195,4 +202,4 @@ const AudioManagementPage = () => {
   );
 };
 
-export default AudioManagementPage; 
+export default AudioManagementPage;
