@@ -19,8 +19,8 @@ const BoxMatchingGroupForm = ({ questions, onUpdate }: BoxMatchingGroupFormProps
     const addQuestion = () => {
         const newQuestion: BoxMatchingItem = {
             instructions: '',
-            options_title: 'Opinions',
-            question_title: 'Food trends',
+            options_title: '',
+            question_title: '',
             options: [
                 { label: 'A', value: '' },
                 { label: 'B', value: '' },

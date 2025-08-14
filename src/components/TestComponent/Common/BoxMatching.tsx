@@ -48,11 +48,11 @@ const BoxMatching: React.FC<BoxMatchingProps> = ({
 
           {/* Box Options */}
           <div className="mb-4">
-            <h6 className="font-semibold mb-2">{q.options_title || 'Options'}:</h6>
+            <h6 className="font-semibold mb-2 text-center">{q.options_title || 'Options'}</h6>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               {q.options.map((option: any) => (
                 <div key={option.label} className="flex items-center space-x-2">
-                  <span className="font-medium w-6">{option.label}.</span>
+                  <span className="font-medium w-6 font-semibold">{option.label}.</span>
                   <span className="text-sm">{option.value}</span>
                 </div>
               ))}
@@ -61,7 +61,7 @@ const BoxMatching: React.FC<BoxMatchingProps> = ({
 
           {/* Questions */}
           <div>
-            <h6 className="font-semibold mb-2">{q.question_title || 'Questions'}:</h6>
+            <h6 className="font-semibold mb-2 text-center">{q.question_title || 'Questions'}</h6>
             <div className="space-y-2">
               {q.questions.map((boxQuestion: any) => (
                 <div key={boxQuestion.question_number} className="flex items-center space-x-2">
