@@ -182,6 +182,26 @@ const EditListening = ({
                       >
                         Add Map
                       </button>
+                      <button
+                        className="btn btn-xs btn-warning"
+                        onClick={() => {
+                          const newParts = [...editedTest.parts];
+                          newParts[partIndex].questions.push({ multiple_mcq: [] });
+                          setEditedTest({ ...editedTest, parts: newParts });
+                        }}
+                      >
+                        Add Multiple MCQ
+                      </button>
+                      <button
+                        className="btn btn-xs btn-info"
+                        onClick={() => {
+                          const newParts = [...editedTest.parts];
+                          newParts[partIndex].questions.push({ box_matching: [] });
+                          setEditedTest({ ...editedTest, parts: newParts });
+                        }}
+                      >
+                        Add Box Matching
+                      </button>
                     </div>
                   </div>
 
@@ -865,6 +885,631 @@ const EditListening = ({
                                 }}
                               >
                                 Add New Map
+                              </button>
+                            </div>
+                          )}
+
+                          {/* Multiple MCQ Editor */}
+                          {questionType === "multiple_mcq" && (
+                            <div className="space-y-4">
+                              {questions.map((multipleMcq: any, mcqIndex: number) => (
+                                <div
+                                  key={mcqIndex}
+                                  className="border rounded-lg p-4"
+                                >
+                                  <div className="form-control mb-3">
+                                    <label className="label">
+                                      <span className="label-text">
+                                        Question Numbers (comma separated)
+                                      </span>
+                                    </label>
+                                    <input
+                                      type="text"
+                                      value={multipleMcq.question_numbers.join(", ")}
+                                      onChange={(e) => {
+                                        const newParts = [...editedTest.parts];
+                                        newParts[partIndex].questions[
+                                          groupIndex
+                                        ][questionType][mcqIndex].question_numbers =
+                                          e.target.value
+                                            .split(",")
+                                            .map((num: string) => parseInt(num.trim()));
+                                        setEditedTest({
+                                          ...editedTest,
+                                          parts: newParts,
+                                        });
+                                      }}
+                                      className="input input-bordered"
+                                    />
+                                  </div>
+
+                                  <div className="form-control mb-3">
+                                    <label className="label">
+                                      <span className="label-text">
+                                        Question Text
+                                      </span>
+                                    </label>
+                                    <input
+                                      type="text"
+                                      value={multipleMcq.question}
+                                      onChange={(e) => {
+                                        const newParts = [...editedTest.parts];
+                                        newParts[partIndex].questions[
+                                          groupIndex
+                                        ][questionType][mcqIndex].question =
+                                          e.target.value;
+                                        setEditedTest({
+                                          ...editedTest,
+                                          parts: newParts,
+                                        });
+                                      }}
+                                      className="input input-bordered"
+                                    />
+                                  </div>
+
+                                  <div className="grid grid-cols-2 gap-4 mb-3">
+                                    <div className="form-control">
+                                      <label className="label">
+                                        <span className="label-text">
+                                          Min Selection
+                                        </span>
+                                      </label>
+                                      <input
+                                        type="number"
+                                        value={multipleMcq.min_selection}
+                                        onChange={(e) => {
+                                          const newParts = [...editedTest.parts];
+                                          newParts[partIndex].questions[
+                                            groupIndex
+                                          ][questionType][mcqIndex].min_selection =
+                                            parseInt(e.target.value);
+                                          setEditedTest({
+                                            ...editedTest,
+                                            parts: newParts,
+                                          });
+                                        }}
+                                        className="input input-bordered input-sm"
+                                      />
+                                    </div>
+
+                                    <div className="form-control">
+                                      <label className="label">
+                                        <span className="label-text">
+                                          Max Selection
+                                        </span>
+                                      </label>
+                                      <input
+                                        type="number"
+                                        value={multipleMcq.max_selection}
+                                        onChange={(e) => {
+                                          const newParts = [...editedTest.parts];
+                                          newParts[partIndex].questions[
+                                            groupIndex
+                                          ][questionType][mcqIndex].max_selection =
+                                            parseInt(e.target.value);
+                                          setEditedTest({
+                                            ...editedTest,
+                                            parts: newParts,
+                                          });
+                                        }}
+                                        className="input input-bordered input-sm"
+                                      />
+                                    </div>
+                                  </div>
+
+                                  <div className="form-control mb-3">
+                                    <label className="label">
+                                      <span className="label-text">
+                                        Correct Mapping (comma separated)
+                                      </span>
+                                    </label>
+                                    <input
+                                      type="text"
+                                      value={multipleMcq.correct_mapping.join(", ")}
+                                      onChange={(e) => {
+                                        const newParts = [...editedTest.parts];
+                                        newParts[partIndex].questions[
+                                          groupIndex
+                                        ][questionType][mcqIndex].correct_mapping =
+                                          e.target.value
+                                            .split(",")
+                                            .map((val: string) => val.trim());
+                                        setEditedTest({
+                                          ...editedTest,
+                                          parts: newParts,
+                                        });
+                                      }}
+                                      className="input input-bordered"
+                                    />
+                                  </div>
+
+                                  <div className="mt-4">
+                                    <h6 className="font-medium mb-2">
+                                      Options
+                                    </h6>
+                                    {multipleMcq.options.map(
+                                      (option: any, optIndex: number) => (
+                                        <div
+                                          key={optIndex}
+                                          className="flex items-center gap-3 mb-2"
+                                        >
+                                          <input
+                                            type="text"
+                                            placeholder="Label"
+                                            value={option.label}
+                                            onChange={(e) => {
+                                              const newParts = [
+                                                ...editedTest.parts,
+                                              ];
+                                              newParts[partIndex].questions[
+                                                groupIndex
+                                              ][questionType][mcqIndex].options[
+                                                optIndex
+                                              ].label = e.target.value;
+                                              setEditedTest({
+                                                ...editedTest,
+                                                parts: newParts,
+                                              });
+                                            }}
+                                            className="input input-bordered input-sm w-16"
+                                          />
+                                          <input
+                                            type="text"
+                                            placeholder="Value"
+                                            value={option.value}
+                                            onChange={(e) => {
+                                              const newParts = [
+                                                ...editedTest.parts,
+                                              ];
+                                              newParts[partIndex].questions[
+                                                groupIndex
+                                              ][questionType][mcqIndex].options[
+                                                optIndex
+                                              ].value = e.target.value;
+                                              setEditedTest({
+                                                ...editedTest,
+                                                parts: newParts,
+                                              });
+                                            }}
+                                            className="input input-bordered input-sm"
+                                          />
+                                          <button
+                                            className="btn btn-xs btn-error"
+                                            onClick={() => {
+                                              const newParts = [
+                                                ...editedTest.parts,
+                                              ];
+                                              newParts[partIndex].questions[
+                                                groupIndex
+                                              ][questionType][
+                                                mcqIndex
+                                              ].options.splice(optIndex, 1);
+                                              setEditedTest({
+                                                ...editedTest,
+                                                parts: newParts,
+                                              });
+                                            }}
+                                          >
+                                            Remove
+                                          </button>
+                                        </div>
+                                      )
+                                    )}
+
+                                    <button
+                                      className="btn btn-xs btn-primary mt-2"
+                                      onClick={() => {
+                                        const newParts = [...editedTest.parts];
+                                        newParts[partIndex].questions[
+                                          groupIndex
+                                        ][questionType][mcqIndex].options.push({
+                                          label: "New",
+                                          value: "new",
+                                        });
+                                        setEditedTest({
+                                          ...editedTest,
+                                          parts: newParts,
+                                        });
+                                      }}
+                                    >
+                                      Add Option
+                                    </button>
+                                  </div>
+                                </div>
+                              ))}
+
+                              <button
+                                className="btn btn-xs btn-primary mt-2"
+                                onClick={() => {
+                                  const newParts = [...editedTest.parts];
+                                  newParts[partIndex].questions[groupIndex][
+                                    questionType
+                                  ].push({
+                                    question_numbers: [1, 2],
+                                    question: "",
+                                    options: [
+                                      { label: "A", value: "a" },
+                                      { label: "B", value: "b" },
+                                      { label: "C", value: "c" },
+                                    ],
+                                    input_type: "checkbox",
+                                    min_selection: 2,
+                                    max_selection: 2,
+                                    correct_mapping: ["A", "B"],
+                                  });
+                                  setEditedTest({
+                                    ...editedTest,
+                                    parts: newParts,
+                                  });
+                                }}
+                              >
+                                Add New Multiple MCQ
+                              </button>
+                            </div>
+                          )}
+
+                          {/* Box Matching Editor */}
+                          {questionType === "box_matching" && (
+                            <div className="space-y-4">
+                              {questions.map((boxMatch: any, boxIndex: number) => (
+                                <div
+                                  key={boxIndex}
+                                  className="border rounded-lg p-4"
+                                >
+                                  <div className="form-control mb-3">
+                                    <label className="label">
+                                      <span className="label-text">
+                                        Instructions
+                                      </span>
+                                    </label>
+                                    <textarea
+                                      value={boxMatch.instructions}
+                                      onChange={(e) => {
+                                        const newParts = [...editedTest.parts];
+                                        newParts[partIndex].questions[
+                                          groupIndex
+                                        ][questionType][boxIndex].instructions =
+                                          e.target.value;
+                                        setEditedTest({
+                                          ...editedTest,
+                                          parts: newParts,
+                                        });
+                                      }}
+                                      className="textarea textarea-bordered h-20"
+                                    />
+                                  </div>
+
+                                  <div className="grid grid-cols-2 gap-4 mb-3">
+                                    <div className="form-control">
+                                      <label className="label">
+                                        <span className="label-text">
+                                          Options Title
+                                        </span>
+                                      </label>
+                                      <input
+                                        type="text"
+                                        value={boxMatch.options_title || ""}
+                                        onChange={(e) => {
+                                          const newParts = [...editedTest.parts];
+                                          newParts[partIndex].questions[
+                                            groupIndex
+                                          ][questionType][boxIndex].options_title =
+                                            e.target.value;
+                                          setEditedTest({
+                                            ...editedTest,
+                                            parts: newParts,
+                                          });
+                                        }}
+                                        className="input input-bordered input-sm"
+                                      />
+                                    </div>
+
+                                    <div className="form-control">
+                                      <label className="label">
+                                        <span className="label-text">
+                                          Question Title
+                                        </span>
+                                      </label>
+                                      <input
+                                        type="text"
+                                        value={boxMatch.question_title || ""}
+                                        onChange={(e) => {
+                                          const newParts = [...editedTest.parts];
+                                          newParts[partIndex].questions[
+                                            groupIndex
+                                          ][questionType][boxIndex].question_title =
+                                            e.target.value;
+                                          setEditedTest({
+                                            ...editedTest,
+                                            parts: newParts,
+                                          });
+                                        }}
+                                        className="input input-bordered input-sm"
+                                      />
+                                    </div>
+                                  </div>
+
+                                  <div className="mt-4">
+                                    <h6 className="font-medium mb-2">
+                                      Box Options
+                                    </h6>
+                                    {boxMatch.options.map(
+                                      (option: any, optIndex: number) => (
+                                        <div
+                                          key={optIndex}
+                                          className="flex items-center gap-3 mb-2"
+                                        >
+                                          <input
+                                            type="text"
+                                            placeholder="Label"
+                                            value={option.label}
+                                            onChange={(e) => {
+                                              const newParts = [
+                                                ...editedTest.parts,
+                                              ];
+                                              newParts[partIndex].questions[
+                                                groupIndex
+                                              ][questionType][boxIndex].options[
+                                                optIndex
+                                              ].label = e.target.value;
+                                              setEditedTest({
+                                                ...editedTest,
+                                                parts: newParts,
+                                              });
+                                            }}
+                                            className="input input-bordered input-sm w-16"
+                                          />
+                                          <input
+                                            type="text"
+                                            placeholder="Value"
+                                            value={option.value}
+                                            onChange={(e) => {
+                                              const newParts = [
+                                                ...editedTest.parts,
+                                              ];
+                                              newParts[partIndex].questions[
+                                                groupIndex
+                                              ][questionType][boxIndex].options[
+                                                optIndex
+                                              ].value = e.target.value;
+                                              setEditedTest({
+                                                ...editedTest,
+                                                parts: newParts,
+                                              });
+                                            }}
+                                            className="input input-bordered input-sm"
+                                          />
+                                          <button
+                                            className="btn btn-xs btn-error"
+                                            onClick={() => {
+                                              const newParts = [
+                                                ...editedTest.parts,
+                                              ];
+                                              newParts[partIndex].questions[
+                                                groupIndex
+                                              ][questionType][
+                                                boxIndex
+                                              ].options.splice(optIndex, 1);
+                                              setEditedTest({
+                                                ...editedTest,
+                                                parts: newParts,
+                                              });
+                                            }}
+                                          >
+                                            Remove
+                                          </button>
+                                        </div>
+                                      )
+                                    )}
+
+                                    <button
+                                      className="btn btn-xs btn-primary mt-2"
+                                      onClick={() => {
+                                        const newParts = [...editedTest.parts];
+                                        const newLabel = String.fromCharCode(65 + boxMatch.options.length);
+                                        newParts[partIndex].questions[
+                                          groupIndex
+                                        ][questionType][boxIndex].options.push({
+                                          label: newLabel,
+                                          value: "",
+                                        });
+                                        setEditedTest({
+                                          ...editedTest,
+                                          parts: newParts,
+                                        });
+                                      }}
+                                    >
+                                      Add Option
+                                    </button>
+                                  </div>
+
+                                  <div className="mt-4">
+                                    <h6 className="font-medium mb-2">
+                                      Questions to Match
+                                    </h6>
+                                    {boxMatch.questions.map(
+                                      (q: any, qIndex: number) => (
+                                        <div
+                                          key={qIndex}
+                                          className="border rounded p-3 mb-3"
+                                        >
+                                          <div className="grid grid-cols-3 gap-3">
+                                            <div className="form-control">
+                                              <label className="label">
+                                                <span className="label-text">
+                                                  Question Number
+                                                </span>
+                                              </label>
+                                              <input
+                                                type="number"
+                                                value={q.question_number}
+                                                onChange={(e) => {
+                                                  const newParts = [
+                                                    ...editedTest.parts,
+                                                  ];
+                                                  newParts[partIndex].questions[
+                                                    groupIndex
+                                                  ][questionType][
+                                                    boxIndex
+                                                  ].questions[
+                                                    qIndex
+                                                  ].question_number = parseInt(
+                                                    e.target.value
+                                                  );
+                                                  setEditedTest({
+                                                    ...editedTest,
+                                                    parts: newParts,
+                                                  });
+                                                }}
+                                                className="input input-bordered input-sm"
+                                              />
+                                            </div>
+
+                                            <div className="form-control">
+                                              <label className="label">
+                                                <span className="label-text">
+                                                  Topic
+                                                </span>
+                                              </label>
+                                              <input
+                                                type="text"
+                                                value={q.topic}
+                                                onChange={(e) => {
+                                                  const newParts = [
+                                                    ...editedTest.parts,
+                                                  ];
+                                                  newParts[partIndex].questions[
+                                                    groupIndex
+                                                  ][questionType][
+                                                    boxIndex
+                                                  ].questions[qIndex].topic =
+                                                    e.target.value;
+                                                  setEditedTest({
+                                                    ...editedTest,
+                                                    parts: newParts,
+                                                  });
+                                                }}
+                                                className="input input-bordered input-sm"
+                                              />
+                                            </div>
+
+                                            <div className="form-control">
+                                              <label className="label">
+                                                <span className="label-text">
+                                                  Correct Answer
+                                                </span>
+                                              </label>
+                                              <select
+                                                value={q.answer}
+                                                onChange={(e) => {
+                                                  const newParts = [
+                                                    ...editedTest.parts,
+                                                  ];
+                                                  newParts[partIndex].questions[
+                                                    groupIndex
+                                                  ][questionType][
+                                                    boxIndex
+                                                  ].questions[qIndex].answer =
+                                                    e.target.value;
+                                                  setEditedTest({
+                                                    ...editedTest,
+                                                    parts: newParts,
+                                                  });
+                                                }}
+                                                className="select select-bordered select-sm"
+                                              >
+                                                <option value="">Select</option>
+                                                {boxMatch.options.map(
+                                                  (option: any) => (
+                                                    <option
+                                                      key={option.label}
+                                                      value={option.label}
+                                                    >
+                                                      {option.label}
+                                                    </option>
+                                                  )
+                                                )}
+                                              </select>
+                                            </div>
+                                          </div>
+
+                                          <button
+                                            className="btn btn-xs btn-error mt-2"
+                                            onClick={() => {
+                                              const newParts = [
+                                                ...editedTest.parts,
+                                              ];
+                                              newParts[partIndex].questions[
+                                                groupIndex
+                                              ][questionType][
+                                                boxIndex
+                                              ].questions.splice(qIndex, 1);
+                                              setEditedTest({
+                                                ...editedTest,
+                                                parts: newParts,
+                                              });
+                                            }}
+                                          >
+                                            Remove Question
+                                          </button>
+                                        </div>
+                                      )
+                                    )}
+
+                                    <button
+                                      className="btn btn-xs btn-primary mt-2"
+                                      onClick={() => {
+                                        const newParts = [...editedTest.parts];
+                                        newParts[partIndex].questions[
+                                          groupIndex
+                                        ][questionType][
+                                          boxIndex
+                                        ].questions.push({
+                                          question_number:
+                                            boxMatch.questions.length + 1,
+                                          topic: "",
+                                          answer: "",
+                                        });
+                                        setEditedTest({
+                                          ...editedTest,
+                                          parts: newParts,
+                                        });
+                                      }}
+                                    >
+                                      Add Question
+                                    </button>
+                                  </div>
+                                </div>
+                              ))}
+
+                              <button
+                                className="btn btn-xs btn-primary mt-2"
+                                onClick={() => {
+                                  const newParts = [...editedTest.parts];
+                                  newParts[partIndex].questions[groupIndex][
+                                    questionType
+                                  ].push({
+                                    instructions: "",
+                                    options_title: "",
+                                    question_title: "",
+                                    options: [
+                                      { label: "A", value: "" },
+                                      { label: "B", value: "" },
+                                      { label: "C", value: "" },
+                                      { label: "D", value: "" },
+                                    ],
+                                    questions: [
+                                      { question_number: 1, topic: "", answer: "" },
+                                      { question_number: 2, topic: "", answer: "" },
+                                    ],
+                                  });
+                                  setEditedTest({
+                                    ...editedTest,
+                                    parts: newParts,
+                                  });
+                                }}
+                              >
+                                Add New Box Matching
                               </button>
                             </div>
                           )}
