@@ -1,4 +1,4 @@
-export type QuestionGroup = FillBlanksGroup | MCQGroup | MapGroup;
+export type QuestionGroup = FillBlanksGroup | MCQGroup | MultipleMCQGroup | MapGroup;
 
 export interface ListeningTest {
   title: string;
@@ -53,6 +53,24 @@ export interface MCQItem {
   input_type: string;
   min_selection: number;
   max_selection: number;
+}
+
+// Multiple MCQ Type
+export interface MultipleMCQGroup {
+  multiple_mcq: MultipleMCQItem[];
+}
+
+export interface MultipleMCQItem {
+  question_numbers: number[];
+  question: string;
+  options: {
+    label: string;
+    value: string;
+  }[];
+  input_type: string;
+  min_selection: number;
+  max_selection: number;
+  correct_mapping: string[];
 }
 
 // Map Type

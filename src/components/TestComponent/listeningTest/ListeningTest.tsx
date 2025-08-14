@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { ToastContainer, toast } from "react-toastify";
 import SubFillInTheBlanks from "../Common/SubFillInTheBlanks";
 import McqSingle from "../Common/McqSingle";
+import McqMultiple from "../Common/McqMultiple";
 import Map from "../Common/Map";
 import { postSubmitListeningTest } from "@/services/data";
 import { useRouter } from "next/navigation";
@@ -57,6 +58,13 @@ const ListeningTest: React.FC<any> = ({ test }) => {
             questionNumbers.push(q.question_number);
           });
         }
+        if (questionSet.multiple_mcq) {
+          questionSet.multiple_mcq.forEach((q: any) => {
+            q.question_numbers.forEach((num: number) => {
+              questionNumbers.push(num);
+            });
+          });
+        }
         if (questionSet.map) {
           questionSet.map.forEach((mapSet: any) => {
             mapSet.questions.forEach((q: any) => {
@@ -101,6 +109,18 @@ const ListeningTest: React.FC<any> = ({ test }) => {
             };
           });
         }
+        if (questionSet.multiple_mcq) {
+          questionSet.multiple_mcq.forEach((q: any) => {
+            q.question_numbers.forEach((num: number) => {
+              initialAnswers[`${num}`] = {
+                value: "",
+                answerText: q.correct_mapping[q.question_numbers.indexOf(num)],
+                isCorrect: false,
+                questionGroup: q.question_numbers, // Add questionGroup for multiple MCQ
+              };
+            });
+          });
+        }
         if (questionSet.map) {
           questionSet.map.forEach((mapSet: any) => {
             mapSet.questions.forEach((q: any) => {
@@ -122,7 +142,8 @@ const ListeningTest: React.FC<any> = ({ test }) => {
     value: string,
     inputType: string,
     answer: string,
-    isCorrect?: boolean
+    isCorrect?: boolean,
+    questionGroup?: number[]
   ) => {
     setAnswers((prev: any) => ({
       ...prev,
@@ -130,7 +151,8 @@ const ListeningTest: React.FC<any> = ({ test }) => {
         value,
         answerText: answer,
         isCorrect: isCorrect,
-        questionType: inputType, // new field
+        questionType: inputType,
+        questionGroup: questionGroup, // Add questionGroup for multiple MCQ
       },
     }));
   };
@@ -183,6 +205,7 @@ const ListeningTest: React.FC<any> = ({ test }) => {
         answerText: answer.answerText,
         isCorrect: answer.isCorrect,
         questionType: answer.questionType || "fill_in_the_blanks",
+        questionGroup: answer.questionGroup, // Include questionGroup for multiple MCQ
       })
     );
 
@@ -289,6 +312,13 @@ const ListeningTest: React.FC<any> = ({ test }) => {
                    {questionSet.mcq && (
                      <McqSingle
                        question={questionSet.mcq}
+                       handleAnswerChange={handleAnswerChange}
+                       handleQuestionFocus={handleQuestionFocus}
+                     />
+                   )}
+                   {questionSet.multiple_mcq && (
+                     <McqMultiple
+                       question={questionSet.multiple_mcq}
                        handleAnswerChange={handleAnswerChange}
                        handleQuestionFocus={handleQuestionFocus}
                      />

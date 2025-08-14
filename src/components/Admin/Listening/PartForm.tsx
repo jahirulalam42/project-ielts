@@ -19,6 +19,10 @@ const PartForm = ({ part, partIndex, updatePart, removePart, isLast }: PartFormP
                 }, 0);
             } else if ('mcq' in group) {
                 return total + group.mcq.length;
+            } else if ('multiple_mcq' in group) {
+                return total + group.multiple_mcq.reduce((multipleTotal, multipleItem) => {
+                    return multipleTotal + multipleItem.question_numbers.length;
+                }, 0);
             } else if ('map' in group) {
                 return total + group.map.reduce((mapTotal, mapItem) => {
                     return mapTotal + mapItem.questions.length;
@@ -34,7 +38,7 @@ const PartForm = ({ part, partIndex, updatePart, removePart, isLast }: PartFormP
         updatePart(partIndex, { ...part, title: e.target.value });
     };
 
-    const addQuestionGroup = (type: 'fill' | 'mcq' | 'map') => {
+    const addQuestionGroup = (type: 'fill' | 'mcq' | 'multiple_mcq' | 'map') => {
         const nextQuestionNumber = getTotalQuestionCount() + 1;
         let newGroup;
 
@@ -63,6 +67,25 @@ const PartForm = ({ part, partIndex, updatePart, removePart, isLast }: PartFormP
                         input_type: 'radio',
                         min_selection: 1,
                         max_selection: 1
+                    }]
+                };
+                break;
+            case 'multiple_mcq':
+                newGroup = {
+                    multiple_mcq: [{
+                        question_numbers: [nextQuestionNumber, nextQuestionNumber + 1],
+                        question: '',
+                        options: [
+                            { label: 'A', value: '' },
+                            { label: 'B', value: '' },
+                            { label: 'C', value: '' },
+                            { label: 'D', value: '' },
+                            { label: 'E', value: '' }
+                        ],
+                        input_type: 'checkbox',
+                        min_selection: 2,
+                        max_selection: 2,
+                        correct_mapping: ['A', 'B']
                     }]
                 };
                 break;
@@ -151,6 +174,13 @@ const PartForm = ({ part, partIndex, updatePart, removePart, isLast }: PartFormP
                     className="btn btn-outline"
                 >
                     Add MCQ
+                </button>
+                <button
+                    type="button"
+                    onClick={() => addQuestionGroup('multiple_mcq')}
+                    className="btn btn-outline"
+                >
+                    Add Multiple MCQ
                 </button>
                 <button
                     type="button"

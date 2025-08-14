@@ -64,6 +64,21 @@ const ListeningCreationPage = () => {
                             question_number: globalQuestionNumber++
                         }))
                     };
+                } else if ('multiple_mcq' in group) {
+                    return {
+                        ...group,
+                        multiple_mcq: group.multiple_mcq.map(question => {
+                            const questionCount = question.question_numbers.length;
+                            const newQuestionNumbers = [];
+                            for (let i = 0; i < questionCount; i++) {
+                                newQuestionNumbers.push(globalQuestionNumber++);
+                            }
+                            return {
+                                ...question,
+                                question_numbers: newQuestionNumbers
+                            };
+                        })
+                    };
                 } else if ('map' in group) {
                     return {
                         ...group,

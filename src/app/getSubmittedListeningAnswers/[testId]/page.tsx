@@ -5,10 +5,12 @@ import { useSession } from "next-auth/react";
 import { getSubmitListeningTest } from "@/services/data";
 
 interface AnswerEntry {
-  questionId: number;
-  value: string;
-  answerText: string;
+  questionId: number | any[];
+  value?: string;
+  answers?: any[];
+  answerText: string | any[];
   isCorrect: boolean;
+  questionGroup?: number[];
   questionType?: string;
 }
 
@@ -68,10 +70,40 @@ const SubmissionPage = () => {
   if (!submission)
     return <div className="text-center p-4">No submission data available</div>;
 
-  // submission.answers is now an array of AnswerEntry
-  const sortedAnswers = [...submission.answers].sort(
-    (a, b) => a.questionId - b.questionId
+  // Group answers by questionGroup and maintain order
+  const groupedAnswers = submission.answers.reduce(
+    (acc: { [key: string]: AnswerEntry[] }, answer) => {
+      if (answer.questionGroup) {
+        const groupKey = answer.questionGroup.join("-");
+        if (!acc[groupKey]) {
+          acc[groupKey] = [];
+        }
+        acc[groupKey].push(answer);
+      } else {
+        const key = answer?.questionId?.toString();
+        if (!acc[key]) {
+          acc[key] = [];
+        }
+        acc[key].push(answer);
+      }
+      return acc;
+    },
+    {}
   );
+
+  // Sort groups by their first question number
+  const sortedGroups = Object.entries(groupedAnswers).sort(([keyA], [keyB]) => {
+    const numA = parseInt(keyA.split("-")[0]);
+    const numB = parseInt(keyB.split("-")[0]);
+    return numA - numB;
+  });
+
+  // Function to calculate partial correctness
+  const getPartialCorrectness = (answers: AnswerEntry[]) => {
+    const correctCount = answers.filter((a) => a.isCorrect).length;
+    const totalCount = answers.length;
+    return `${correctCount}/${totalCount}`;
+  };
 
   return (
     <div className="container mx-auto p-4">
@@ -92,27 +124,60 @@ const SubmissionPage = () => {
         <table className="table w-full">
           <thead>
             <tr>
-              <th>Question ID</th>
-              <th>Your Answer</th>
-              <th>Correct Answer</th>
-              <th>Type</th>
-              <th>Correct</th>
+              <th className="font-bold text-black">Question</th>
+              <th className="font-bold text-black">Your Answer</th>
+              <th className="font-bold text-black">Correct Answer</th>
+              <th className="font-bold text-black">Type</th>
+              <th className="font-bold text-black">Status</th>
             </tr>
           </thead>
           <tbody>
-            {sortedAnswers.map((answer, index) => (
-              <tr key={index}>
-                <td>{answer.questionId}</td>
-                <td>{answer.value || "Not answered"}</td>
-                <td>{answer.answerText}</td>
-                <td>{answer.questionType || "N/A"}</td>
-                <td
-                  className={answer.isCorrect ? "text-success" : "text-error"}
-                >
-                  {answer.isCorrect ? "✅" : "❌"}
-                </td>
-              </tr>
-            ))}
+            {sortedGroups.map(([groupKey, answers]: any) => {
+              // For grouped answers (multiple MCQ)
+              if (answers[0].questionGroup) {
+                const selectedAnswers = answers
+                  .map((a: any) => a.value)
+                  .filter(Boolean)
+                  .join(", ");
+                const correctAnswers = answers
+                  .map((a: any) => a.answerText)
+                  .filter(Boolean)
+                  .join(", ");
+                const isGroupCorrect = answers.every((a: any) => a.isCorrect);
+                const partialCorrectness = getPartialCorrectness(answers);
+
+                return (
+                  <tr key={groupKey}>
+                    <td>{answers[0].questionGroup.join(", ")}</td>
+                    <td>{selectedAnswers || "Not answered"}</td>
+                    <td>{correctAnswers}</td>
+                    <td>{answers[0].questionType || " "}</td>
+                    <td
+                      className={
+                        isGroupCorrect ? "text-success" : "text-warning"
+                      }
+                    >
+                      {isGroupCorrect ? "✅" : `⚠️ (${partialCorrectness})`}
+                    </td>
+                  </tr>
+                );
+              }
+
+              // For individual answers
+              return answers.map((answer: any, index: any) => (
+                <tr key={`${groupKey}-${index}`}>
+                  <td>{answer.questionId}</td>
+                  <td>{answer.value || "Not answered"}</td>
+                  <td>{answer.answerText as string}</td>
+                  <td>{answer.questionType || " "}</td>
+                  <td
+                    className={answer.isCorrect ? "text-success" : "text-error"}
+                  >
+                    {answer.isCorrect ? "✅" : "❌"}
+                  </td>
+                </tr>
+              ));
+            })}
           </tbody>
         </table>
       </div>
