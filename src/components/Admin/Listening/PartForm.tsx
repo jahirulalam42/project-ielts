@@ -23,6 +23,10 @@ const PartForm = ({ part, partIndex, updatePart, removePart, isLast }: PartFormP
                 return total + group.multiple_mcq.reduce((multipleTotal, multipleItem) => {
                     return multipleTotal + multipleItem.question_numbers.length;
                 }, 0);
+            } else if ('box_matching' in group) {
+                return total + group.box_matching.reduce((boxTotal, boxItem) => {
+                    return boxTotal + boxItem.questions.length;
+                }, 0);
             } else if ('map' in group) {
                 return total + group.map.reduce((mapTotal, mapItem) => {
                     return mapTotal + mapItem.questions.length;
@@ -38,7 +42,7 @@ const PartForm = ({ part, partIndex, updatePart, removePart, isLast }: PartFormP
         updatePart(partIndex, { ...part, title: e.target.value });
     };
 
-    const addQuestionGroup = (type: 'fill' | 'mcq' | 'multiple_mcq' | 'map') => {
+    const addQuestionGroup = (type: 'fill' | 'mcq' | 'multiple_mcq' | 'box_matching' | 'map') => {
         const nextQuestionNumber = getTotalQuestionCount() + 1;
         let newGroup;
 
@@ -86,6 +90,57 @@ const PartForm = ({ part, partIndex, updatePart, removePart, isLast }: PartFormP
                         min_selection: 2,
                         max_selection: 2,
                         correct_mapping: ['A', 'B']
+                    }]
+                };
+                break;
+            case 'box_matching':
+                newGroup = {
+                    box_matching: [{
+                        instructions: '',
+                        options_title: 'Opinions',
+                        question_title: 'Food trends',
+                        options: [
+                            { label: 'A', value: '' },
+                            { label: 'B', value: '' },
+                            { label: 'C', value: '' },
+                            { label: 'D', value: '' },
+                            { label: 'E', value: '' },
+                            { label: 'F', value: '' },
+                            { label: 'G', value: '' },
+                            { label: 'H', value: '' }
+                        ],
+                        questions: [
+                            {
+                                question_number: nextQuestionNumber,
+                                topic: '',
+                                answer: ''
+                            },
+                            {
+                                question_number: nextQuestionNumber + 1,
+                                topic: '',
+                                answer: ''
+                            },
+                            {
+                                question_number: nextQuestionNumber + 2,
+                                topic: '',
+                                answer: ''
+                            },
+                            {
+                                question_number: nextQuestionNumber + 3,
+                                topic: '',
+                                answer: ''
+                            },
+                            {
+                                question_number: nextQuestionNumber + 4,
+                                topic: '',
+                                answer: ''
+                            },
+                            {
+                                question_number: nextQuestionNumber + 5,
+                                topic: '',
+                                answer: ''
+                            }
+                        ]
                     }]
                 };
                 break;
@@ -181,6 +236,13 @@ const PartForm = ({ part, partIndex, updatePart, removePart, isLast }: PartFormP
                     className="btn btn-outline"
                 >
                     Add Multiple MCQ
+                </button>
+                <button
+                    type="button"
+                    onClick={() => addQuestionGroup('box_matching')}
+                    className="btn btn-outline"
+                >
+                    Add Box Matching
                 </button>
                 <button
                     type="button"

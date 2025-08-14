@@ -1,7 +1,8 @@
-import { QuestionGroup, FillBlanksGroup, MCQGroup, MultipleMCQGroup, MapGroup, MCQItem } from './listeningTest';
+import { QuestionGroup, FillBlanksGroup, MCQGroup, MultipleMCQGroup, BoxMatchingGroup, MapGroup, MCQItem } from './listeningTest';
 import FillBlanksGroupForm from './FillBlanksGroupForm';
 import MCQGroupForm from './MCQGroupForm';
 import MultipleMCQGroupForm from './MultipleMCQGroupForm';
+import BoxMatchingGroupForm from './BoxMatchingGroupForm';
 import MapGroupForm from './MapGroupForm';
 
 interface QuestionGroupEditorProps {
@@ -37,6 +38,14 @@ const QuestionGroupEditor = ({
         updateGroup(groupIndex, updatedGroup);
     };
 
+    const handleBoxMatchingUpdate = (questions: any[]) => {
+        // Format the Box Matching questions to match listening.json structure exactly
+        const updatedGroup = {
+            box_matching: questions
+        };
+        updateGroup(groupIndex, updatedGroup);
+    };
+
     const renderForm = () => {
         if ('mcq' in group) {
             return (
@@ -52,6 +61,15 @@ const QuestionGroupEditor = ({
                 <MultipleMCQGroupForm
                     questions={group.multiple_mcq || []}
                     onUpdate={handleMultipleMCQUpdate}
+                />
+            );
+        }
+        
+        if ('box_matching' in group) {
+            return (
+                <BoxMatchingGroupForm
+                    questions={group.box_matching || []}
+                    onUpdate={handleBoxMatchingUpdate}
                 />
             );
         }
@@ -83,6 +101,7 @@ const QuestionGroupEditor = ({
                 <h3 className="text-lg font-medium">
                     {'mcq' in group && 'Multiple Choice Questions'}
                     {'multiple_mcq' in group && 'Multiple MCQ Questions'}
+                    {'box_matching' in group && 'Box Matching Questions'}
                     {'map' in group && 'Map Questions'}
                     {'fill_in_the_blanks_with_subtitle' in group && 'Fill in the Blanks'}
                 </h3>

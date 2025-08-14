@@ -79,6 +79,19 @@ const ListeningCreationPage = () => {
                             };
                         })
                     };
+                } else if ('box_matching' in group) {
+                    return {
+                        ...group,
+                        box_matching: group.box_matching.map(question => {
+                            return {
+                                ...question,
+                                questions: question.questions.map(q => ({
+                                    ...q,
+                                    question_number: globalQuestionNumber++
+                                }))
+                            };
+                        })
+                    };
                 } else if ('map' in group) {
                     return {
                         ...group,

@@ -1,4 +1,4 @@
-export type QuestionGroup = FillBlanksGroup | MCQGroup | MultipleMCQGroup | MapGroup;
+export type QuestionGroup = FillBlanksGroup | MCQGroup | MultipleMCQGroup | MapGroup | BoxMatchingGroup;
 
 export interface ListeningTest {
   title: string;
@@ -99,6 +99,26 @@ export interface MapQuestion {
   input_type: string;
   min_selection: number;
   max_selection: number;
+}
+
+// Box Matching Type
+export interface BoxMatchingGroup {
+  box_matching: BoxMatchingItem[];
+}
+
+export interface BoxMatchingItem {
+  instructions: string;
+  options_title?: string;
+  question_title?: string;
+  options: {
+    label: string;
+    value: string;
+  }[];
+  questions: {
+    question_number: number;
+    topic: string;
+    answer: string;
+  }[];
 }
 
 // Fill in the Blanks Type

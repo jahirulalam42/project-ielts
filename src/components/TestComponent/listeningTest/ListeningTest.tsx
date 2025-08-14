@@ -5,6 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import SubFillInTheBlanks from "../Common/SubFillInTheBlanks";
 import McqSingle from "../Common/McqSingle";
 import McqMultiple from "../Common/McqMultiple";
+import BoxMatching from "../Common/BoxMatching";
 import Map from "../Common/Map";
 import { postSubmitListeningTest } from "@/services/data";
 import { useRouter } from "next/navigation";
@@ -65,6 +66,13 @@ const ListeningTest: React.FC<any> = ({ test }) => {
             });
           });
         }
+        if (questionSet.box_matching) {
+          questionSet.box_matching.forEach((q: any) => {
+            q.questions.forEach((boxQuestion: any) => {
+              questionNumbers.push(boxQuestion.question_number);
+            });
+          });
+        }
         if (questionSet.map) {
           questionSet.map.forEach((mapSet: any) => {
             mapSet.questions.forEach((q: any) => {
@@ -117,6 +125,17 @@ const ListeningTest: React.FC<any> = ({ test }) => {
                 answerText: q.correct_mapping[q.question_numbers.indexOf(num)],
                 isCorrect: false,
                 questionGroup: q.question_numbers, // Add questionGroup for multiple MCQ
+              };
+            });
+          });
+        }
+        if (questionSet.box_matching) {
+          questionSet.box_matching.forEach((q: any) => {
+            q.questions.forEach((boxQuestion: any) => {
+              initialAnswers[`${boxQuestion.question_number}`] = {
+                value: "",
+                answerText: boxQuestion.answer,
+                isCorrect: false,
               };
             });
           });
@@ -316,14 +335,21 @@ const ListeningTest: React.FC<any> = ({ test }) => {
                        handleQuestionFocus={handleQuestionFocus}
                      />
                    )}
-                   {questionSet.multiple_mcq && (
-                     <McqMultiple
-                       question={questionSet.multiple_mcq}
-                       handleAnswerChange={handleAnswerChange}
-                       handleQuestionFocus={handleQuestionFocus}
-                     />
-                   )}
-                   {questionSet.map && (
+                                       {questionSet.multiple_mcq && (
+                      <McqMultiple
+                        question={questionSet.multiple_mcq}
+                        handleAnswerChange={handleAnswerChange}
+                        handleQuestionFocus={handleQuestionFocus}
+                      />
+                    )}
+                    {questionSet.box_matching && (
+                      <BoxMatching
+                        question={questionSet.box_matching}
+                        handleAnswerChange={handleAnswerChange}
+                        handleQuestionFocus={handleQuestionFocus}
+                      />
+                    )}
+                    {questionSet.map && (
                      <Map
                        question={questionSet.map[0]}
                        handleAnswerChange={handleAnswerChange}
