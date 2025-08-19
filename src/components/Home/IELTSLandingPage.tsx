@@ -10,7 +10,11 @@ import {
   FaChartLine,
   FaUserFriends,
   FaGraduationCap,
+  FaChartBar
 } from "react-icons/fa";
+import { TbTargetArrow } from "react-icons/tb";
+import { IoMdTimer } from "react-icons/io";
+import { GiProgression } from "react-icons/gi";
 
 export default function IELTSLandingPage(): any {
   return (
@@ -352,6 +356,102 @@ export default function IELTSLandingPage(): any {
               <div className="mt-8">
                 <Link href="#pricing" className="btn btn-outline btn-lg">
                   View Plans
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* New How It Works - 4 Step Process */}
+      <section id="how-it-works-new" className="py-16 bg-base-200">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">How It Works - 4 Step Process</h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Your complete journey to IELTS success in 4 simple steps
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+            {[
+              {
+                step: "1",
+                icon: <TbTargetArrow className="text-blue-600 text-2xl" />,
+                title: "Choose a Module",
+                desc: "Select from Listening, Reading, Writing, or Speaking. Each module mirrors the real IELTS exam format.",
+                color: "bg-blue-50"
+              },
+              {
+                step: "2",
+                icon: <IoMdTimer className="text-green-600 text-2xl" />,
+                title: "Take the Test",
+                desc: "Experience the real exam interface with built-in timers, progress tracking, and interactive questions.",
+                color: "bg-green-50"
+              },
+              {
+                step: "3",
+                icon: <FaChartBar className="text-purple-600 text-2xl" />,
+                title: "Track Your Progress",
+                desc: "Review your answers, listen to speaking recordings, and analyze detailed performance reports.",
+                color: "bg-purple-50"
+              },
+              {
+                step: "4",
+                icon: <GiProgression className="text-orange-600 text-2xl" />,
+                title: "Improve Over Time",
+                desc: "Self-evaluate your performance, identify weak areas, and watch your band score improve.",
+                color: "bg-orange-50"
+              },
+            ].map((item, index) => (
+              <div key={index} className="relative group">
+                {/* Step Number Badge */}
+                <div className="absolute -top-3 -left-3 z-10">
+                  <div className="w-12 h-12 rounded-full bg-red-600 text-white flex items-center justify-center text-xl font-bold shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    {item.step}
+                  </div>
+                </div>
+                
+                {/* Main Card */}
+                <div className="card bg-base-100 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 p-6 h-full">
+                  <div className="flex flex-col items-center text-center">
+                    <div className={`w-16 h-16 rounded-full ${item.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                      {item.icon}
+                    </div>
+                    <h4 className="text-xl font-bold mb-3 text-gray-800">{item.title}</h4>
+                    <p className="text-gray-600 mb-6 leading-relaxed">{item.desc}</p>
+                  </div>
+                </div>
+                
+                {/* Connecting Arrow */}
+                {index < 3 && (
+                  <div className="hidden lg:block absolute top-1/2 -right-4 w-8 h-0.5 bg-gradient-to-r from-black to-transparent">
+                    <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-0 h-0 border-l-4 border-l-black border-t-2 border-t-transparent border-b-2 border-b-transparent"></div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Call to Action */}
+          <div className="text-center">
+            <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-2xl p-8 border border-red-100 max-w-4xl mx-auto">
+              <h4 className="text-2xl font-bold text-gray-800 mb-4">Ready to Start Your IELTS Journey?</h4>
+              <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
+                Join thousands of successful test-takers who have improved their band scores with our comprehensive practice platform.
+              </p>
+              <div className="flex flex-wrap justify-center gap-4">
+                <Link
+                  href="/test/reading"
+                  className="btn btn-primary btn-lg bg-red-600 hover:bg-red-700 border-0"
+                >
+                  Start Free Test
+                </Link>
+                <Link
+                  href="/user/signup"
+                  className="btn btn-outline btn-lg"
+                >
+                  Create Account
                 </Link>
               </div>
             </div>

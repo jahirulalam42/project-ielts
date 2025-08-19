@@ -14,6 +14,7 @@ interface MapProps {
   question: {
     title: string;
     image: string;
+    instructions: string;
     labels: string[];
     questions: MapQuestion[];
   };
@@ -37,6 +38,14 @@ const Map: React.FC<MapProps> = ({
   return (
     <div className="space-y-4 mb-6">
       <h3 className="text-xl font-semibold mb-2">{question?.title}</h3>
+      
+      {question?.instructions && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+          <p className="text-blue-800 font-medium mb-1">Instructions:</p>
+          <p className="text-blue-700 italic">{question.instructions}</p>
+        </div>
+      )}
+      
       <div className="w-full flex justify-center mb-4">
         <Image
           src={question?.image}

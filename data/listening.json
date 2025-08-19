@@ -12,6 +12,7 @@
             {
               "fill_in_the_blanks_with_subtitle": [
                 {
+                  "instructions": "Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
                   "title": "Hinchingbrooke Country Park",
                   "subtitle": "The park",
                   "extra": [
@@ -233,6 +234,7 @@
               ],
               "map": [
                 {
+                  "instructions": "Label the map below. Write the correct letter, A–H, next to Questions 16–20",
                   "title": "Title of the map",
                   "image": "/images/map.png",
                   "labels": [

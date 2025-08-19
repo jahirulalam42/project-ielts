@@ -81,6 +81,7 @@ export interface MapGroup {
 export interface MapItem {
   title: string;
   image: string;
+  instructions: string;
   labels: string[];
   questions: {
     question_number: number;

@@ -149,6 +149,7 @@ const PartForm = ({ part, partIndex, updatePart, removePart, isLast }: PartFormP
                     map: [{
                         title: '',
                         image: '',
+                        instructions: '',
                         labels: ['A', 'B', 'C'],
                         questions: []
                     }]

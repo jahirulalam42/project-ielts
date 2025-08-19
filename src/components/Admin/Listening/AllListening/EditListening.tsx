@@ -176,7 +176,15 @@ const EditListening = ({
                         className="btn btn-xs btn-accent"
                         onClick={() => {
                           const newParts = [...editedTest.parts];
-                          newParts[partIndex].questions.push({ map: [] });
+                          newParts[partIndex].questions.push({ 
+                            map: [{
+                              title: '',
+                              image: '',
+                              instructions: '',
+                              labels: ['A', 'B', 'C'],
+                              questions: []
+                            }]
+                          });
                           setEditedTest({ ...editedTest, parts: newParts });
                         }}
                       >
@@ -667,6 +675,29 @@ const EditListening = ({
                                         });
                                       }}
                                       className="input input-bordered"
+                                    />
+                                  </div>
+
+                                  <div className="form-control mb-3">
+                                    <label className="label">
+                                      <span className="label-text">Instructions</span>
+                                    </label>
+                                    <textarea
+                                      value={map.instructions || ""}
+                                      onChange={(e) => {
+                                        const newParts = [...editedTest.parts];
+                                        newParts[partIndex].questions[
+                                          groupIndex
+                                        ][questionType][mapIndex].instructions =
+                                          e.target.value;
+                                        setEditedTest({
+                                          ...editedTest,
+                                          parts: newParts,
+                                        });
+                                      }}
+                                      className="textarea textarea-bordered"
+                                      placeholder="Enter instructions for the map (e.g., 'Label the map below. Write the correct letter, A–H, next to Questions 16–20')"
+                                      rows={3}
                                     />
                                   </div>
 

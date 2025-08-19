@@ -111,6 +111,7 @@ const MapGroupForm = ({ group, updateGroup }: MapGroupFormProps) => {
         {
           title: "",
           image: "",
+          instructions: "",
           labels: ["A", "B", "C"],
           questions: [],
         },
@@ -194,18 +195,6 @@ const MapGroupForm = ({ group, updateGroup }: MapGroupFormProps) => {
               />
             </div>
 
-            {/* <div className="form-control">
-                            <label className="label">
-                                <span className="label-text font-semibold text-black">Image URL</span>
-                            </label>
-                            <input
-                                type="text"
-                                className="input input-bordered border-black"
-                                value={mapItem.image}
-                                onChange={e => handleMapItemChange(mapIndex, 'image', e.target.value)}
-                            />
-                        </div> */}
-
             <div className="form-control">
               <label className="label">
                 <span className="label-text font-semibold text-black">
@@ -219,6 +208,23 @@ const MapGroupForm = ({ group, updateGroup }: MapGroupFormProps) => {
                 }
               />
             </div>
+          </div>
+
+          <div className="form-control mb-4">
+            <label className="label">
+              <span className="label-text font-semibold text-black">
+                Instructions
+              </span>
+            </label>
+            <textarea
+              className="textarea textarea-bordered border-black"
+              placeholder="Enter instructions for the map (e.g., 'Label the map below. Write the correct letter, A–H, next to Questions 16–20')"
+              value={mapItem.instructions || ""}
+              onChange={(e) =>
+                handleMapItemChange(mapIndex, "instructions", e.target.value)
+              }
+              rows={3}
+            />
           </div>
 
           <div className="form-control mb-4">
