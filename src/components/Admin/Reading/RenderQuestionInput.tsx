@@ -44,7 +44,10 @@ export const RenderQuestionInput = (
   // Add remove question function
   const removeQuestion = (qIndex: number) => {
     const updatedParts = [...test.parts];
-    updatedParts[passageIndex].questions[groupIndex][questionType].splice(qIndex, 1);
+    updatedParts[passageIndex].questions[groupIndex][questionType].splice(
+      qIndex,
+      1
+    );
     setTest({ ...test, parts: updatedParts });
   };
 

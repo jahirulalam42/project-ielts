@@ -15,13 +15,11 @@ interface Option {
   label: string;
   value: string;
 }
-
 interface Blank {
   blank_number: number;
   input_type: string;
   answer: string;
 }
-
 interface Question {
   question_number?: any;
   question_numbers?: number[];
@@ -42,7 +40,6 @@ interface Question {
   subtitle: string;
   extra: any;
 }
-
 // Define a new structure for fill_in_the_blanks_with_subtitle
 interface FillInTheBlanksWithSubtitle {
   title: string;
@@ -50,7 +47,6 @@ interface FillInTheBlanksWithSubtitle {
   extra: string[];
   questions: Question[];
 }
-
 interface Passage {
   title: string;
   instructions: string;
@@ -61,7 +57,6 @@ interface Passage {
   questions: Record<string, Question[]>[];
   passageType: "type1" | "type2"; // Added to specify passage type
 }
-
 interface Test {
   title: string;
   type: "academic" | "general";
@@ -81,6 +76,25 @@ const questionTypes = [
   "fill_in_the_blanks_with_subtitle",
 ];
 
+// Default instructions for each question type (used as placeholders)
+const DEFAULT_INSTRUCTIONS: Record<string, string> = {
+  true_false_not_given:
+    "Do the following statements agree with the information given in the passage? Write TRUE, FALSE or NOT GIVEN.",
+  fill_in_the_blanks:
+    "Complete the sentences below. Write NO MORE THAN THREE WORDS for each answer.",
+  matching_headings:
+    "Choose the correct heading for each paragraph from the list of headings below.",
+  paragraph_matching: "Which paragraph contains the following information?",
+  multiple_mcq: "Choose the correct letter, A, B, C, D or E.",
+  passage_fill_in_the_blanks:
+    "Complete the summary below. Choose ONE WORD ONLY from the passage for each answer.",
+  mcq: "Choose the correct letter, A, B, C or D.",
+  summary_fill_in_the_blanks:
+    "Complete the summary below. Choose your answers from the list of words below.",
+  fill_in_the_blanks_with_subtitle:
+    "Complete the sentences below. Write NO MORE THAN THREE WORDS for each answer.",
+};
+
 const TestCreationPage: React.FC = () => {
   const [test, setTest] = useState<Test>({
     title: "",
@@ -93,17 +107,23 @@ const TestCreationPage: React.FC = () => {
   );
   const [currentQuestionType, setCurrentQuestionType] = useState<string>("");
   const [questionCount, setQuestionCount] = useState<number>(1);
-  const [summaryPassage, setSummaryPassage] = useState<string>(""); // Passage input
-  const [blanks, setBlanks] = useState<number[]>([]); // Track the blanks in the passage
+  const [summaryPassage, setSummaryPassage] = useState<string>("");
+  const [blanks, setBlanks] = useState<number[]>([]);
   const [options, setOptions] = useState<{ label: string; value: string }[]>(
     []
-  ); // Dynamic options
-  const [answers, setAnswers] = useState<string[]>([]); // Answers as an array
-  // State for fill_in_the_blanks_with_subtitle inputs
+  );
+  const [answers, setAnswers] = useState<string[]>([]);
   const [title, setTitle] = useState<string>("");
   const [subtitle, setSubtitle] = useState<string>("");
   const [extra, setExtra] = useState<string[]>([]);
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [currentInstruction, setCurrentInstruction] = useState<string>("");
+  const [editingInstruction, setEditingInstruction] = useState<{
+    passageIndex: number;
+    groupIndex: number;
+  } | null>(null);
+  const [editingInstructionText, setEditingInstructionText] =
+    useState<string>("");
 
   const addPassage = () => {
     setTest({
@@ -118,28 +138,16 @@ const TestCreationPage: React.FC = () => {
           passage: [],
           image: "",
           questions: [],
-          passageType: "type1", // Default to type1
+          passageType: "type1",
         },
       ],
     });
-    setCurrentPassageIndex(test.parts.length - 1); // Set index to the newly added passage
+    setCurrentPassageIndex(test.parts.length - 1);
   };
 
-  // Function to dynamically generate blanks based on the passage text
-  // const getBlanksFromText = (text: string) => {
-  //   const regex = /__________/g; // Match all occurrences of "__________"
-  //   const matches = [...text.matchAll(regex)]; // Find all occurrences of "__________"
-
-  //   return matches.map((match, index) => ({
-  //     blank_number: index + 1, // Start numbering blanks from 1
-  //     input_type: "text", // Use text input for each blank
-  //     answer: "", // Empty answer initially, to be filled by admin
-  //   }));
-  // };
-
   const addOption = () => {
-    const label = String.fromCharCode(65 + options.length); // Auto-increment label (A, B, C, ...)
-    const newOption = { label, value: "" }; // Initially empty value for the new option
+    const label = String.fromCharCode(65 + options.length);
+    const newOption = { label, value: "" };
     setOptions([...options, newOption]);
   };
 
@@ -155,59 +163,69 @@ const TestCreationPage: React.FC = () => {
 
   const handleAnswerChange = (index: number, value: string) => {
     const updatedAnswers = [...answers];
-    updatedAnswers[index] = value; // Set the answer for the current blank
+    updatedAnswers[index] = value;
     setAnswers(updatedAnswers);
   };
 
-  // Add a new paragraph based on passage type
   const addParagraph = (passageIndex: number) => {
     const updatedParts = [...test.parts];
     const passage = updatedParts[passageIndex].passage;
-
     if (Array.isArray(passage)) {
-      passage.push(""); // Type 1: Array of paragraphs
+      passage.push("");
     } else {
       const paragraphKey = String.fromCharCode(
         65 + Object.keys(passage).length
-      ); // 'A', 'B', 'C'...
-      passage[paragraphKey] = ""; // Type 2: Object with keys
+      );
+      passage[paragraphKey] = "";
     }
-
     setTest({ ...test, parts: updatedParts });
   };
 
-  // UI for adding new question groups
-  // Fixed question numbering logic - replace the addQuestionGroup function
+  const updateGroupInstruction = (
+    passageIndex: number,
+    groupIndex: number,
+    newInstruction: string
+  ) => {
+    const updatedParts = [...test.parts];
+    const group = updatedParts[passageIndex].questions[groupIndex];
+    const questionType = Object.keys(group)[0];
+    const questions = group[questionType];
+
+    // Update the instruction for every question in the group
+    const updatedQuestions = questions.map((q: any) => ({
+      ...q,
+      instruction: newInstruction,
+    }));
+
+    updatedParts[passageIndex].questions[groupIndex] = {
+      [questionType]: updatedQuestions,
+    };
+
+    setTest({ ...test, parts: updatedParts });
+  };
 
   const addQuestionGroup = (passageIndex: number) => {
     if (!currentQuestionType || questionCount < 1) return;
     const updatedParts = [...test.parts];
     const newQuestions: any = [];
 
-    // FIXED: Get the highest question number across ALL parts, not just current part
     const getGlobalMaxQuestionNumber = () => {
       let maxNumber = 0;
-
       test.parts.forEach((part) => {
         part.questions.forEach((questionGroup) => {
           Object.values(questionGroup).forEach((questionsArray: any) => {
             questionsArray.forEach((q: any) => {
-              // Handle single question_number
               if (q.question_number && typeof q.question_number === "number") {
                 maxNumber = Math.max(maxNumber, q.question_number);
               }
-              // Handle question_numbers array
               if (q.question_numbers && Array.isArray(q.question_numbers)) {
                 const arrayMax = Math.max(...q.question_numbers);
                 maxNumber = Math.max(maxNumber, arrayMax);
               }
-              // Handle question_number as array (for passage_fill_in_the_blanks)
               if (q.question_number && Array.isArray(q.question_number)) {
                 const arrayMax = Math.max(...q.question_number);
                 maxNumber = Math.max(maxNumber, arrayMax);
               }
-
-              // Handle nested questions structure (for fill_in_the_blanks_with_subtitle)
               if (q.questions && Array.isArray(q.questions)) {
                 q.questions.forEach((nestedQ: any) => {
                   if (
@@ -222,33 +240,30 @@ const TestCreationPage: React.FC = () => {
           });
         });
       });
-
       return maxNumber;
     };
 
     const globalMaxQuestionNumber = getGlobalMaxQuestionNumber();
     let nextQuestionNumber = globalMaxQuestionNumber + 1;
 
-    // Handle different question types with corrected numbering
     switch (currentQuestionType) {
       case "fill_in_the_blanks_with_subtitle":
-        // Create multiple separate question groups, each with its own subtitle
         for (let i = 0; i < questionCount; i++) {
           newQuestions.push({
-            title: i === 0 ? title : undefined, // Only first question gets title, others get undefined
+            title: i === 0 ? title : undefined,
             subtitle: subtitle,
-            extra: extra.length > 0 ? extra : [""], // Ensure at least one empty extra field
+            extra: extra.length > 0 ? extra : [""],
             questions: [
               {
                 question_number: nextQuestionNumber + i,
                 answer: "",
                 input_type: "text",
+                instruction: currentInstruction,
               },
             ],
           });
         }
         break;
-
       case "true_false_not_given":
       case "fill_in_the_blanks":
       case "mcq":
@@ -256,6 +271,7 @@ const TestCreationPage: React.FC = () => {
           const questionData: any = {
             question_number: nextQuestionNumber + i,
             question: "",
+            instruction: currentInstruction,
             input_type:
               currentQuestionType === "fill_in_the_blanks"
                 ? "text"
@@ -263,7 +279,6 @@ const TestCreationPage: React.FC = () => {
                 ? "dropdown"
                 : "radio",
           };
-
           if (currentQuestionType === "true_false_not_given") {
             questionData.answer = "True";
           } else if (currentQuestionType === "fill_in_the_blanks") {
@@ -279,52 +294,45 @@ const TestCreationPage: React.FC = () => {
             questionData.min_selection = 1;
             questionData.max_selection = 1;
           }
-
           newQuestions.push(questionData);
         }
         break;
-
       case "matching_headings":
       case "paragraph_matching":
         const passage = updatedParts[passageIndex].passage;
         let optionsList;
-
         if (Array.isArray(passage)) {
-          // For type1 passages (array), create options A, B, C based on array indices
           optionsList = passage.map((_, index) => ({
-            label: String.fromCharCode(65 + index), // A, B, C, etc.
-            value: String.fromCharCode(65 + index), // A, B, C, etc.
+            label: String.fromCharCode(65 + index),
+            value: String.fromCharCode(65 + index),
           }));
         } else {
-          // For type2 passages (object), use the existing keys
           optionsList = Object.keys(passage).map((key) => ({
-            label: key, // A, B, C, etc.
-            value: key, // A, B, C, etc.
+            label: key,
+            value: key,
           }));
         }
-
         for (let i = 0; i < questionCount; i++) {
           newQuestions.push({
             question_number: nextQuestionNumber + i,
             question: "",
-            answer: optionsList[0]?.value || "A", // Default to first option, never empty or 0
+            instruction: currentInstruction,
+            answer: optionsList[0]?.value || "A",
             options: optionsList,
             input_type: "dropdown",
           });
         }
         break;
-
       case "multiple_mcq":
         for (let i = 0; i < questionCount; i++) {
-          // FIXED: Each multiple_mcq question gets 2 consecutive numbers
           const questionNumbers = [
             nextQuestionNumber + i * 2,
             nextQuestionNumber + i * 2 + 1,
           ];
-
           newQuestions.push({
             question_numbers: questionNumbers,
             question: "",
+            instruction: currentInstruction,
             options: [
               { label: "A", value: "" },
               { label: "B", value: "" },
@@ -338,64 +346,50 @@ const TestCreationPage: React.FC = () => {
             correct_mapping: [],
           });
         }
-        // Update nextQuestionNumber for next question type
         nextQuestionNumber += questionCount * 2;
         break;
-
       case "summary_fill_in_the_blanks":
-        // For summary_fill_in_the_blanks, we create one question but need to account for multiple blanks
-        // The actual number of blanks will be determined when the user enters the passage text in the UI
-        // So we use the questionCount from the input field
         const summaryQuestionNumbers = Array.from(
           { length: questionCount },
           (_, idx) => nextQuestionNumber + idx
         );
-
         newQuestions.push({
           question_numbers: summaryQuestionNumbers,
-          passage: summaryPassage || "", // Use current summaryPassage or empty string
-          answers: Array(questionCount).fill(""), // Initialize answers array with empty strings
+          passage: summaryPassage || "",
+          answers: Array(questionCount).fill(""),
           options: [...options],
+          instruction: currentInstruction,
           input_type: "drag_and_drop",
           question: "",
         });
         break;
-
       case "passage_fill_in_the_blanks":
         const passageQuestionNumbers = Array.from(
           { length: questionCount },
           (_, idx) => nextQuestionNumber + idx
         );
-
         newQuestions.push({
-          question_number: passageQuestionNumbers, // This should be an array
-          instruction:
-            "Complete the summary below. Choose ONE WORD ONLY from the passage for each answer.",
+          question_number: passageQuestionNumbers,
+          instruction: currentInstruction,
           text: "",
           blanks: [],
         });
         break;
-
       default:
         return;
     }
 
-    // Special handling for fill_in_the_blanks_with_subtitle - merge into existing group if it exists
     if (currentQuestionType === "fill_in_the_blanks_with_subtitle") {
       const existingQuestions = updatedParts[passageIndex].questions;
       const existingFillBlanksGroup = existingQuestions.find(
         (group) => Object.keys(group)[0] === "fill_in_the_blanks_with_subtitle"
       );
-
       if (existingFillBlanksGroup) {
-        // Merge new questions into existing group
         const existingGroup = existingFillBlanksGroup as Record<string, any[]>;
         const allSections = [
           ...existingGroup["fill_in_the_blanks_with_subtitle"],
           ...newQuestions,
         ];
-
-        // Recalculate question numbers across all sections to ensure sequential numbering
         let questionCounter = 1;
         allSections.forEach((section: any) => {
           if (section.questions && Array.isArray(section.questions)) {
@@ -404,16 +398,13 @@ const TestCreationPage: React.FC = () => {
             });
           }
         });
-
         existingGroup["fill_in_the_blanks_with_subtitle"] = allSections;
       } else {
-        // Create new group
         updatedParts[passageIndex].questions.push({
           [currentQuestionType]: newQuestions,
         });
       }
     } else {
-      // For other question types, add normally
       updatedParts[passageIndex].questions.push({
         [currentQuestionType]: newQuestions,
       });
@@ -422,8 +413,6 @@ const TestCreationPage: React.FC = () => {
     setTest({ ...test, parts: updatedParts });
     setCurrentQuestionType("");
     setQuestionCount(1);
-
-    // Clear state
     setSummaryPassage("");
     setOptions([]);
     setAnswers([]);
@@ -432,38 +421,32 @@ const TestCreationPage: React.FC = () => {
     setSubtitle("");
     setExtra([]);
     setQuestions([]);
+    setCurrentInstruction("");
   };
 
-  // Scroll to top whenever the part changes
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }, [currentPassageIndex]);
 
-  // Add remove question group function
   const removeQuestionGroup = (passageIndex: number, groupIndex: number) => {
     const updatedParts = [...test.parts];
     updatedParts[passageIndex].questions.splice(groupIndex, 1);
     setTest({ ...test, parts: updatedParts });
   };
 
-  // Add remove passage function
   const removePassage = (passageIndex: number) => {
     const updatedParts = [...test.parts];
     updatedParts.splice(passageIndex, 1);
     setTest({ ...test, parts: updatedParts });
   };
 
-  // Render question inputs based on question type
-
   const handleReadingTestSubmit = async (formData: any) => {
     try {
       const data = await submitReadingQuestions(formData);
-      console.log(data.success);
       if (data.success) {
         toast.success("Test created successfully!");
-        // Optionally, redirect or reset the form
       } else {
         toast.error("Failed to create test. Please try again.");
       }
@@ -472,7 +455,6 @@ const TestCreationPage: React.FC = () => {
     }
   };
 
-  // Function to clean test data before submission
   const cleanTestData = (testData: any) => {
     const cleaned = {
       title: testData.title,
@@ -596,14 +578,12 @@ const TestCreationPage: React.FC = () => {
                 Upload Image (Optional)
               </span>
             </label>
-
             <ImageUploader
               onUploaded={(url) =>
                 updatePassageField(passageIndex, "image", url, test, setTest)
               }
             />
           </div>
-          {/* Passage Type Selection */}
           <div className="mb-4">
             <label className="block mb-2">Select Passage Type</label>
             <select
@@ -667,11 +647,16 @@ const TestCreationPage: React.FC = () => {
               Add Paragraph
             </button>
           </div>
-          selector:
           <div className="mb-2">
             <select
               value={currentQuestionType}
-              onChange={(e) => setCurrentQuestionType(e.target.value)}
+              onChange={(e) => {
+                setCurrentQuestionType(e.target.value);
+                // Set default instruction when question type changes
+                setCurrentInstruction(
+                  DEFAULT_INSTRUCTIONS[e.target.value] || ""
+                );
+              }}
               className="border p-2 mr-2"
             >
               <option value="">Select Question Type</option>
@@ -682,30 +667,107 @@ const TestCreationPage: React.FC = () => {
               ))}
             </select>
             {currentQuestionType && (
-              <input
-                type="number"
-                min="1"
-                value={questionCount}
-                onChange={(e) => setQuestionCount(parseInt(e.target.value))}
-                className="border p-2 mr-2"
-                placeholder="Number of questions"
-              />
+              <>
+                <textarea
+                  value={currentInstruction}
+                  onChange={(e) => setCurrentInstruction(e.target.value)}
+                  placeholder="Enter instruction for this question group"
+                  className="border p-2 mr-2 w-full mb-2"
+                  rows={2}
+                />
+                <input
+                  type="number"
+                  min="1"
+                  value={questionCount}
+                  onChange={(e) => setQuestionCount(parseInt(e.target.value))}
+                  className="border p-2 mr-2"
+                  placeholder="Number of questions"
+                />
+              </>
             )}
             <button
               onClick={() => addQuestionGroup(passageIndex)}
               className="bg-blue-500 text-white p-2 rounded"
+              disabled={!currentQuestionType}
             >
               Add Questions
             </button>
           </div>
           {passage.questions.map((questionGroup, groupIndex) => {
             const questionType = Object.keys(questionGroup)[0];
+            const questions = questionGroup[questionType];
+            const instruction = questions[0]?.instruction || "";
+
             return (
               <div key={groupIndex} className="border p-2 mb-2">
                 <h3 className="font-semibold">{questionType}</h3>
+
+                {editingInstruction?.passageIndex === passageIndex &&
+                editingInstruction?.groupIndex === groupIndex ? (
+                  <div className="mb-2">
+                    <textarea
+                      value={editingInstructionText}
+                      onChange={(e) =>
+                        setEditingInstructionText(e.target.value)
+                      }
+                      placeholder="Enter instruction for this question group"
+                      className="border p-2 w-full mb-2"
+                      rows={3}
+                    />
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => {
+                          updateGroupInstruction(
+                            passageIndex,
+                            groupIndex,
+                            editingInstructionText
+                          );
+                          setEditingInstruction(null);
+                        }}
+                        className="bg-green-500 text-white p-1 rounded"
+                      >
+                        Save
+                      </button>
+                      <button
+                        onClick={() => setEditingInstruction(null)}
+                        className="bg-gray-500 text-white p-1 rounded"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    {instruction ? (
+                      <div className="mb-2 p-3 bg-blue-50 rounded-md border border-blue-200 text-sm font-medium text-blue-800">
+                        {instruction}
+                        <button
+                          onClick={() => {
+                            setEditingInstruction({ passageIndex, groupIndex });
+                            setEditingInstructionText(instruction);
+                          }}
+                          className="ml-2 text-xs text-blue-600 hover:text-blue-800"
+                        >
+                          Edit
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          setEditingInstruction({ passageIndex, groupIndex });
+                          setEditingInstructionText("");
+                        }}
+                        className="mb-2 text-sm text-blue-600 hover:text-blue-800"
+                      >
+                        + Add Instruction
+                      </button>
+                    )}
+                  </>
+                )}
+
                 {RenderQuestionInput(
                   questionType,
-                  questionGroup[questionType],
+                  questions,
                   passageIndex,
                   groupIndex,
                   test,
@@ -740,8 +802,6 @@ const TestCreationPage: React.FC = () => {
             "Test object before submission:",
             JSON.stringify(test, null, 2)
           );
-
-          // Validate test object before submission
           if (
             !test.title ||
             !test.type ||
@@ -754,8 +814,6 @@ const TestCreationPage: React.FC = () => {
             );
             return;
           }
-
-          // Check if any passage has questions
           const hasQuestions = test.parts.some(
             (part) => part.questions && part.questions.length > 0
           );
@@ -763,30 +821,31 @@ const TestCreationPage: React.FC = () => {
             toast.error("Please add at least one question to a passage");
             return;
           }
-
-          // Validate summary_fill_in_the_blanks answers
           const hasUnansweredSummaryBlanks = test.parts.some((part) =>
             part.questions.some((questionGroup) => {
               const questionType = Object.keys(questionGroup)[0];
               if (questionType === "summary_fill_in_the_blanks") {
                 return questionGroup[questionType].some((question: any) => {
-                  // Check if any answer is empty or "Select an option"
-                  return !question.answers || 
-                         question.answers.some((answer: string) => !answer || answer === "");
+                  return (
+                    !question.answers ||
+                    question.answers.some(
+                      (answer: string) => !answer || answer === ""
+                    )
+                  );
                 });
               }
               return false;
             })
           );
-
           if (hasUnansweredSummaryBlanks) {
-            toast.error("Please select answers for all summary fill-in-the-blanks questions");
+            toast.error(
+              "Please select answers for all summary fill-in-the-blanks questions"
+            );
             return;
           }
-
           handleReadingTestSubmit(cleanTestData(test));
         }}
-        className=" btn btn-success btn-md text-white "
+        className="btn btn-success btn-md text-white"
       >
         Submit
       </button>
