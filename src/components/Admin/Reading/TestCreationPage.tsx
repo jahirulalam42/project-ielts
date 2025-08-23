@@ -386,19 +386,30 @@ const TestCreationPage: React.FC = () => {
       );
       if (existingFillBlanksGroup) {
         const existingGroup = existingFillBlanksGroup as Record<string, any[]>;
-        const allSections = [
-          ...existingGroup["fill_in_the_blanks_with_subtitle"],
-          ...newQuestions,
-        ];
-        let questionCounter = 1;
-        allSections.forEach((section: any) => {
+        // Find the highest question number in existing questions
+        let maxQuestionNumber = 0;
+        existingGroup["fill_in_the_blanks_with_subtitle"].forEach((section: any) => {
           if (section.questions && Array.isArray(section.questions)) {
             section.questions.forEach((q: any) => {
+              if (q.question_number && typeof q.question_number === 'number') {
+                maxQuestionNumber = Math.max(maxQuestionNumber, q.question_number);
+              }
+            });
+          }
+        });
+        
+        // Assign new numbers starting from maxQuestionNumber + 1
+        let questionCounter = maxQuestionNumber + 1;
+        newQuestions.forEach((newQuestion: any) => {
+          if (newQuestion.questions && Array.isArray(newQuestion.questions)) {
+            newQuestion.questions.forEach((q: any) => {
               q.question_number = questionCounter++;
             });
           }
         });
-        existingGroup["fill_in_the_blanks_with_subtitle"] = allSections;
+        
+        // Merge with existing questions without renumbering existing ones
+        existingGroup["fill_in_the_blanks_with_subtitle"].push(...newQuestions);
       } else {
         updatedParts[passageIndex].questions.push({
           [currentQuestionType]: newQuestions,

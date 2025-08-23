@@ -91,6 +91,9 @@ const McqMultiple = ({
   return (
     <div>
       <h5 className="font-medium mb-2">Multiple Select Questions</h5>
+      <div className="text-gray-700 text-sm mb-2">
+        {question[0].instruction}
+      </div>
       {question.map((q: any, idx: number) => {
         const groupKey = q.question_numbers.join("-");
         const currentSelections = selectedOptions[groupKey] || {};
