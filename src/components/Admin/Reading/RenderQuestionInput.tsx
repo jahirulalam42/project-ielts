@@ -545,7 +545,9 @@ export const RenderQuestionInput = (
 
           {/* Questions/Answers */}
           <div className="mb-2">
-            <label className="block mb-1 font-medium">Answers:</label>
+            <label className="block mb-1 font-medium">
+              Answers for Questions:
+            </label>
             {section.questions?.map((question: any, qIdx: number) => (
               <div key={qIdx} className="mb-2 flex items-center">
                 <span className="mr-2">

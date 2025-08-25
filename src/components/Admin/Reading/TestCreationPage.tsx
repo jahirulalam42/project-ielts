@@ -191,11 +191,23 @@ const TestCreationPage: React.FC = () => {
     const questionType = Object.keys(group)[0];
     const questions = group[questionType];
 
-    // Update the instruction for every question in the group
-    const updatedQuestions = questions.map((q: any) => ({
-      ...q,
-      instruction: newInstruction,
-    }));
+    let updatedQuestions;
+    if (questionType === "fill_in_the_blanks_with_subtitle") {
+      // Handle nested questions structure
+      updatedQuestions = questions.map((section: any) => ({
+        ...section,
+        questions: section.questions.map((q: any) => ({
+          ...q,
+          instruction: newInstruction,
+        })),
+      }));
+    } else {
+      // Original logic for other question types
+      updatedQuestions = questions.map((q: any) => ({
+        ...q,
+        instruction: newInstruction,
+      }));
+    }
 
     updatedParts[passageIndex].questions[groupIndex] = {
       [questionType]: updatedQuestions,
@@ -247,6 +259,7 @@ const TestCreationPage: React.FC = () => {
     let nextQuestionNumber = globalMaxQuestionNumber + 1;
 
     switch (currentQuestionType) {
+      // Inside addQuestionGroup function, update the case for fill_in_the_blanks_with_subtitle
       case "fill_in_the_blanks_with_subtitle":
         for (let i = 0; i < questionCount; i++) {
           newQuestions.push({
@@ -258,7 +271,7 @@ const TestCreationPage: React.FC = () => {
                 question_number: nextQuestionNumber + i,
                 answer: "",
                 input_type: "text",
-                instruction: currentInstruction,
+                instruction: currentInstruction, // Ensure instruction is set here
               },
             ],
           });
@@ -696,7 +709,10 @@ const TestCreationPage: React.FC = () => {
           {passage.questions.map((questionGroup, groupIndex) => {
             const questionType = Object.keys(questionGroup)[0];
             const questions = questionGroup[questionType];
-            const instruction = questions[0]?.instruction || "";
+            const instruction =
+              questionType === "fill_in_the_blanks_with_subtitle"
+                ? questions[0]?.questions?.[0]?.instruction || ""
+                : questions[0]?.instruction || "";
 
             return (
               <div key={groupIndex} className="border p-2 mb-2">
