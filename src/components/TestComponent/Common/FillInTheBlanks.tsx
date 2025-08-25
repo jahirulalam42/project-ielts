@@ -10,6 +10,10 @@ const FillInTheBlanks: React.FC<any> = ({
   return (
     <div>
       <h5 className="font-medium mb-2">Fill in the Blanks</h5>
+      <div className="text-gray-700 text-sm mb-2">
+        {question[0].instruction}
+      </div>
+
       <div className="p-4 border border-black rounded-lg mb-2">
         {question.map((q: any) => {
           return (

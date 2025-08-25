@@ -1,6 +1,10 @@
 import React from "react";
 
-const PassFillInTheBlanks = ({ question, handleAnswerChange, handleQuestionFocus }: any) => {
+const PassFillInTheBlanks = ({
+  question,
+  handleAnswerChange,
+  handleQuestionFocus,
+}: any) => {
   // Function to render text with input fields dynamically
   const renderTextWithBlanks = () => {
     const parts = [];
@@ -28,7 +32,11 @@ const PassFillInTheBlanks = ({ question, handleAnswerChange, handleQuestionFocus
       const correctAnswer = currentBlank.answer;
 
       // Add the number before the input box
-      parts.push(<span key={`number-${blankNumber}`} className="font-bold">{blankNumber}. </span>);
+      parts.push(
+        <span key={`number-${blankNumber}`} className="font-bold">
+          {blankNumber}.{" "}
+        </span>
+      );
 
       // Add the input field for the blank
       parts.push(
@@ -73,6 +81,9 @@ const PassFillInTheBlanks = ({ question, handleAnswerChange, handleQuestionFocus
   return (
     <div>
       <h5 className="font-medium mb-2">Passage Fill in the Blanks</h5>
+      <div className="text-gray-700 text-sm mb-2">
+        {question[0].instruction}
+      </div>
       <div className="p-4 border border-black rounded-lg mb-2">
         <p className="mb-2">{question[0]?.instruction}</p>
         <div className="text-justify leading-relaxed">
