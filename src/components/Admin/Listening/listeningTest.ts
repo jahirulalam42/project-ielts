@@ -1,4 +1,9 @@
-export type QuestionGroup = FillBlanksGroup | MCQGroup | MultipleMCQGroup | MapGroup | BoxMatchingGroup;
+export type QuestionGroup =
+  | FillBlanksGroup
+  | MCQGroup
+  | MultipleMCQGroup
+  | MapGroup
+  | BoxMatchingGroup;
 
 export interface ListeningTest {
   title: string;
