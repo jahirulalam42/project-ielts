@@ -122,6 +122,9 @@
             {
               "mcq": [
                 {
+                  "instructions": "Choose the correct letter, A, B or C."
+                },
+                {
                   "question_number": 11,
                   "question": "During the visit to Malatte, in France, members especially enjoyed",
                   "answer": "C",
