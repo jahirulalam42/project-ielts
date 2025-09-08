@@ -1,6 +1,7 @@
 import React from "react";
 
 const ParagraphMatching = ({
+  instructions,
   question,
   answers,
   setAnswers,
@@ -10,9 +11,7 @@ const ParagraphMatching = ({
   return (
     <div>
       <h5 className="font-medium mb-2">Paragraph Matching</h5>
-      <div className="text-gray-700 text-sm mb-2">
-        {question[0].instruction}
-      </div>
+      <div className="text-gray-700 text-sm mb-2">{instructions}</div>
       {question.map((q: any) => {
         return (
           <div

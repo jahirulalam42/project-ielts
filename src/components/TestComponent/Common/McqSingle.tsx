@@ -1,6 +1,7 @@
 import React from "react";
 
 const McqSingle = ({
+  instructions,
   question,
   answers,
   setAnswers,
@@ -10,9 +11,7 @@ const McqSingle = ({
   return (
     <div>
       <h5 className="font-medium mb-2">Multiple Choice Questions</h5>
-      <div className="text-gray-700 text-sm mb-2">
-        {question[0].instruction}
-      </div>
+      <div className="text-gray-700 text-sm mb-2">{instructions}</div>
       <div className="p-4 border border-black rounded-lg mb-2">
         {question.map((q: any, idx: number) => {
           const answerObj = answers?.find(

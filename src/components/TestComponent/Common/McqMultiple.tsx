@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 // The McqMultiple component accepts the question and the answer handler
 const McqMultiple = ({
+  instructions,
   question,
   handleAnswerChange,
   handleQuestionFocus,
@@ -91,9 +92,7 @@ const McqMultiple = ({
   return (
     <div>
       <h5 className="font-medium mb-2">Multiple Select Questions</h5>
-      <div className="text-gray-700 text-sm mb-2">
-        {question[0].instruction}
-      </div>
+      <div className="text-gray-700 text-sm mb-2">{instructions}</div>
       {question.map((q: any, idx: number) => {
         const groupKey = q.question_numbers.join("-");
         const currentSelections = selectedOptions[groupKey] || {};
