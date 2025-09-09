@@ -30,12 +30,17 @@ const ReadingTest = ({ test }: any) => {
   // Function to get all question numbers for each part
   const getPartQuestionNumbers = () => {
     const partQuestions: { [key: number]: number[] } = {};
-    
+
     test.parts.forEach((part: any, partIndex: number) => {
       const questionNumbers: number[] = [];
-      
+
       part.questions.forEach((questionSet: any, questionSetIndex: number) => {
-        console.log(`Processing question set ${questionSetIndex} in part ${partIndex + 1}:`, Object.keys(questionSet));
+        console.log(
+          `Processing question set ${questionSetIndex} in part ${
+            partIndex + 1
+          }:`,
+          Object.keys(questionSet)
+        );
         if (questionSet.true_false_not_given) {
           questionSet.true_false_not_given.forEach((q: any) => {
             questionNumbers.push(q.question_number);
@@ -64,7 +69,9 @@ const ReadingTest = ({ test }: any) => {
         if (questionSet.multiple_mcq) {
           questionSet.multiple_mcq.forEach((q: any) => {
             if (Array.isArray(q.question_numbers)) {
-              q.question_numbers.forEach((num: number) => questionNumbers.push(num));
+              q.question_numbers.forEach((num: number) =>
+                questionNumbers.push(num)
+              );
             } else {
               questionNumbers.push(q.question_number);
             }
@@ -73,17 +80,24 @@ const ReadingTest = ({ test }: any) => {
         if (questionSet.passage_fill_in_the_blanks) {
           questionSet.passage_fill_in_the_blanks.forEach((q: any) => {
             if (Array.isArray(q.question_number)) {
-              q.question_number.forEach((num: number) => questionNumbers.push(num));
+              q.question_number.forEach((num: number) =>
+                questionNumbers.push(num)
+              );
             } else {
               questionNumbers.push(q.question_number);
             }
           });
         }
         if (questionSet.summary_fill_in_the_blanks) {
-          console.log(`Found summary_fill_in_the_blanks in part ${partIndex + 1}:`, questionSet.summary_fill_in_the_blanks);
+          console.log(
+            `Found summary_fill_in_the_blanks in part ${partIndex + 1}:`,
+            questionSet.summary_fill_in_the_blanks
+          );
           questionSet.summary_fill_in_the_blanks.forEach((q: any) => {
             if (Array.isArray(q.question_numbers)) {
-              q.question_numbers.forEach((num: number) => questionNumbers.push(num));
+              q.question_numbers.forEach((num: number) =>
+                questionNumbers.push(num)
+              );
               console.log(`Added question numbers:`, q.question_numbers);
             } else if (q.question_number) {
               questionNumbers.push(q.question_number);
@@ -92,18 +106,23 @@ const ReadingTest = ({ test }: any) => {
           });
         }
         if (questionSet.fill_in_the_blanks_with_subtitle) {
-          questionSet.fill_in_the_blanks_with_subtitle.forEach((blankSet: any) => {
-            blankSet.questions?.forEach((q: any) => {
-              questionNumbers.push(q.question_number);
-            });
-          });
+          questionSet.fill_in_the_blanks_with_subtitle.forEach(
+            (blankSet: any) => {
+              blankSet.questions?.forEach((q: any) => {
+                questionNumbers.push(q.question_number);
+              });
+            }
+          );
         }
       });
-      
+
       partQuestions[partIndex] = questionNumbers.sort((a, b) => a - b);
-      console.log(`Part ${partIndex + 1} question numbers:`, partQuestions[partIndex]);
+      console.log(
+        `Part ${partIndex + 1} question numbers:`,
+        partQuestions[partIndex]
+      );
     });
-    
+
     return partQuestions;
   };
 
@@ -252,7 +271,10 @@ const ReadingTest = ({ test }: any) => {
                   input_type: question.input_type || "text",
                 });
               });
-            } else if (questionType === "summary_fill_in_the_blanks" && questionsArray) {
+            } else if (
+              questionType === "summary_fill_in_the_blanks" &&
+              questionsArray
+            ) {
               // Handle summary_fill_in_the_blanks as an array
               questionsArray.forEach((question: any) => {
                 allQuestions.push({
@@ -465,8 +487,8 @@ const ReadingTest = ({ test }: any) => {
 
   // Scroll to top whenever the part changes
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }, [currentPartIndex]);
 
@@ -605,6 +627,9 @@ const ReadingTest = ({ test }: any) => {
                   <div key={index}>
                     {question.true_false_not_given && (
                       <TrueFalse
+                        instructions={
+                          currentPart.questions[index]?.instructions || ""
+                        }
                         question={question.true_false_not_given}
                         handleAnswerChange={handleAnswerChange}
                         handleQuestionFocus={handleQuestionFocus}
@@ -613,6 +638,9 @@ const ReadingTest = ({ test }: any) => {
 
                     {question.fill_in_the_blanks && (
                       <FillInTheBlanks
+                        instructions={
+                          currentPart.questions[index]?.instructions || ""
+                        }
                         question={question.fill_in_the_blanks}
                         handleAnswerChange={handleAnswerChange}
                         handleQuestionFocus={handleQuestionFocus}
@@ -621,6 +649,9 @@ const ReadingTest = ({ test }: any) => {
 
                     {question.matching_headings && (
                       <MatchingHeadings
+                        instructions={
+                          currentPart.questions[index]?.instructions || ""
+                        }
                         question={question.matching_headings}
                         handleAnswerChange={handleAnswerChange}
                         handleQuestionFocus={handleQuestionFocus}
@@ -629,6 +660,9 @@ const ReadingTest = ({ test }: any) => {
 
                     {question.paragraph_matching && (
                       <ParagraphMatching
+                        instructions={
+                          currentPart.questions[index]?.instructions || ""
+                        }
                         question={question.paragraph_matching}
                         handleAnswerChange={handleAnswerChange}
                         handleQuestionFocus={handleQuestionFocus}
@@ -637,6 +671,9 @@ const ReadingTest = ({ test }: any) => {
 
                     {question.mcq && (
                       <McqSingle
+                        instructions={
+                          currentPart.questions[index]?.instructions || ""
+                        }
                         question={question.mcq}
                         handleAnswerChange={handleAnswerChange}
                         handleQuestionFocus={handleQuestionFocus}
@@ -645,6 +682,9 @@ const ReadingTest = ({ test }: any) => {
 
                     {question.multiple_mcq && (
                       <McqMultiple
+                        instructions={
+                          currentPart.questions[index]?.instructions || ""
+                        }
                         question={question.multiple_mcq}
                         handleAnswerChange={handleAnswerChange}
                         handleQuestionFocus={handleQuestionFocus}
@@ -653,6 +693,9 @@ const ReadingTest = ({ test }: any) => {
 
                     {question.passage_fill_in_the_blanks && (
                       <PassFillInTheBlanks
+                        instructions={
+                          currentPart.questions[index]?.instructions || ""
+                        }
                         question={question.passage_fill_in_the_blanks}
                         handleAnswerChange={handleAnswerChange}
                         handleQuestionFocus={handleQuestionFocus}
@@ -661,6 +704,9 @@ const ReadingTest = ({ test }: any) => {
 
                     {question.summary_fill_in_the_blanks && (
                       <SumFillInTheBlanks
+                        instructions={
+                          currentPart.questions[index]?.instructions || ""
+                        }
                         question={question.summary_fill_in_the_blanks}
                         handleAnswerChange={handleAnswerChange}
                         handleQuestionFocus={handleQuestionFocus}
@@ -669,6 +715,9 @@ const ReadingTest = ({ test }: any) => {
 
                     {question.fill_in_the_blanks_with_subtitle && (
                       <SubFillInTheBlanks
+                        instructions={
+                          currentPart.questions[index]?.instructions || ""
+                        }
                         question={question.fill_in_the_blanks_with_subtitle}
                         handleAnswerChange={handleAnswerChange}
                         handleQuestionFocus={handleQuestionFocus}
@@ -721,24 +770,27 @@ const ReadingTest = ({ test }: any) => {
               <div key={partIndex} className="flex-1 flex justify-center">
                 <div className="border-2 border-gray-300 rounded-lg p-1 flex gap-0.5 justify-center">
                   {partQuestions[partIndex]?.map((questionNumber: number) => {
-                    const hasAnswered = Array.isArray(answers) 
-                      ? answers.some((answer: any) => 
-                          String(answer.questionId) === String(questionNumber) && 
-                          answer.value && 
-                          answer.value.trim() !== ''
+                    const hasAnswered = Array.isArray(answers)
+                      ? answers.some(
+                          (answer: any) =>
+                            String(answer.questionId) ===
+                              String(questionNumber) &&
+                            answer.value &&
+                            answer.value.trim() !== ""
                         )
-                      : answers[questionNumber]?.value && answers[questionNumber]?.value.trim() !== '';
-                    
+                      : answers[questionNumber]?.value &&
+                        answers[questionNumber]?.value.trim() !== "";
+
                     return (
                       <button
                         key={`${questionNumber}-${partIndex}`}
                         type="button"
                         className={`w-6 h-6 text-xs rounded border transition-colors ${
                           questionNumber === currentQuestionNumber
-                            ? 'bg-blue-500 text-white border-blue-500'
+                            ? "bg-blue-500 text-white border-blue-500"
                             : hasAnswered
-                              ? 'bg-green-200 text-green-700 border-green-400 hover:bg-green-300'
-                              : 'bg-gray-200 text-gray-700 border-gray-300 hover:bg-gray-300'
+                            ? "bg-green-200 text-green-700 border-green-400 hover:bg-green-300"
+                            : "bg-gray-200 text-gray-700 border-gray-300 hover:bg-gray-300"
                         }`}
                         onClick={() => setCurrentPartIndex(partIndex)}
                       >

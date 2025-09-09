@@ -15,11 +15,13 @@ interface Option {
   label: string;
   value: string;
 }
+
 interface Blank {
   blank_number: number;
   input_type: string;
   answer: string;
 }
+
 interface Question {
   question_number?: any;
   question_numbers?: number[];
@@ -31,7 +33,7 @@ interface Question {
   min_selection?: number;
   max_selection?: number;
   correct_mapping?: string[];
-  instruction?: string;
+  // Removed instruction from individual questions
   text?: string;
   blanks?: Blank[];
   passage?: string;
@@ -40,6 +42,7 @@ interface Question {
   subtitle: string;
   extra: any;
 }
+
 // Define a new structure for fill_in_the_blanks_with_subtitle
 interface FillInTheBlanksWithSubtitle {
   title: string;
@@ -47,6 +50,12 @@ interface FillInTheBlanksWithSubtitle {
   extra: string[];
   questions: Question[];
 }
+
+interface QuestionGroup {
+  instructions: string; // Instructions at the group level
+  [key: string]: Question[] | string; // The actual question type with its questions
+}
+
 interface Passage {
   title: string;
   instructions: string;
@@ -54,9 +63,10 @@ interface Passage {
   passage_subtitle: string;
   passage: any;
   image: string;
-  questions: Record<string, Question[]>[];
-  passageType: "type1" | "type2"; // Added to specify passage type
+  questions: QuestionGroup[]; // Updated type
+  passageType: "type1" | "type2";
 }
+
 interface Test {
   title: string;
   type: "academic" | "general";
@@ -102,6 +112,7 @@ const TestCreationPage: React.FC = () => {
     duration: 60,
     parts: [],
   });
+
   const [currentPassageIndex, setCurrentPassageIndex] = useState<number | null>(
     null
   );
@@ -188,36 +199,16 @@ const TestCreationPage: React.FC = () => {
   ) => {
     const updatedParts = [...test.parts];
     const group = updatedParts[passageIndex].questions[groupIndex];
-    const questionType = Object.keys(group)[0];
-    const questions = group[questionType];
 
-    let updatedQuestions;
-    if (questionType === "fill_in_the_blanks_with_subtitle") {
-      // Handle nested questions structure
-      updatedQuestions = questions.map((section: any) => ({
-        ...section,
-        questions: section.questions.map((q: any) => ({
-          ...q,
-          instruction: newInstruction,
-        })),
-      }));
-    } else {
-      // Original logic for other question types
-      updatedQuestions = questions.map((q: any) => ({
-        ...q,
-        instruction: newInstruction,
-      }));
-    }
-
-    updatedParts[passageIndex].questions[groupIndex] = {
-      [questionType]: updatedQuestions,
-    };
+    // Update the instructions at the group level
+    group.instructions = newInstruction;
 
     setTest({ ...test, parts: updatedParts });
   };
 
   const addQuestionGroup = (passageIndex: number) => {
     if (!currentQuestionType || questionCount < 1) return;
+
     const updatedParts = [...test.parts];
     const newQuestions: any = [];
 
@@ -225,7 +216,12 @@ const TestCreationPage: React.FC = () => {
       let maxNumber = 0;
       test.parts.forEach((part) => {
         part.questions.forEach((questionGroup) => {
-          Object.values(questionGroup).forEach((questionsArray: any) => {
+          // Get the question type key (exclude 'instructions')
+          const questionTypeKey = Object.keys(questionGroup).find(
+            (key) => key !== "instructions"
+          );
+          if (questionTypeKey) {
+            const questionsArray = questionGroup[questionTypeKey] as Question[];
             questionsArray.forEach((q: any) => {
               if (q.question_number && typeof q.question_number === "number") {
                 maxNumber = Math.max(maxNumber, q.question_number);
@@ -249,7 +245,7 @@ const TestCreationPage: React.FC = () => {
                 });
               }
             });
-          });
+          }
         });
       });
       return maxNumber;
@@ -259,7 +255,6 @@ const TestCreationPage: React.FC = () => {
     let nextQuestionNumber = globalMaxQuestionNumber + 1;
 
     switch (currentQuestionType) {
-      // Inside addQuestionGroup function, update the case for fill_in_the_blanks_with_subtitle
       case "fill_in_the_blanks_with_subtitle":
         for (let i = 0; i < questionCount; i++) {
           newQuestions.push({
@@ -271,12 +266,13 @@ const TestCreationPage: React.FC = () => {
                 question_number: nextQuestionNumber + i,
                 answer: "",
                 input_type: "text",
-                instruction: currentInstruction, // Ensure instruction is set here
+                // Removed instruction from individual question
               },
             ],
           });
         }
         break;
+
       case "true_false_not_given":
       case "fill_in_the_blanks":
       case "mcq":
@@ -284,7 +280,7 @@ const TestCreationPage: React.FC = () => {
           const questionData: any = {
             question_number: nextQuestionNumber + i,
             question: "",
-            instruction: currentInstruction,
+            // Removed instruction from individual question
             input_type:
               currentQuestionType === "fill_in_the_blanks"
                 ? "text"
@@ -292,6 +288,7 @@ const TestCreationPage: React.FC = () => {
                 ? "dropdown"
                 : "radio",
           };
+
           if (currentQuestionType === "true_false_not_given") {
             questionData.answer = "True";
           } else if (currentQuestionType === "fill_in_the_blanks") {
@@ -307,9 +304,11 @@ const TestCreationPage: React.FC = () => {
             questionData.min_selection = 1;
             questionData.max_selection = 1;
           }
+
           newQuestions.push(questionData);
         }
         break;
+
       case "matching_headings":
       case "paragraph_matching":
         const passage = updatedParts[passageIndex].passage;
@@ -325,17 +324,19 @@ const TestCreationPage: React.FC = () => {
             value: key,
           }));
         }
+
         for (let i = 0; i < questionCount; i++) {
           newQuestions.push({
             question_number: nextQuestionNumber + i,
             question: "",
-            instruction: currentInstruction,
+            // Removed instruction from individual question
             answer: optionsList[0]?.value || "A",
             options: optionsList,
             input_type: "dropdown",
           });
         }
         break;
+
       case "multiple_mcq":
         for (let i = 0; i < questionCount; i++) {
           const questionNumbers = [
@@ -345,7 +346,7 @@ const TestCreationPage: React.FC = () => {
           newQuestions.push({
             question_numbers: questionNumbers,
             question: "",
-            instruction: currentInstruction,
+            // Removed instruction from individual question
             options: [
               { label: "A", value: "" },
               { label: "B", value: "" },
@@ -361,6 +362,7 @@ const TestCreationPage: React.FC = () => {
         }
         nextQuestionNumber += questionCount * 2;
         break;
+
       case "summary_fill_in_the_blanks":
         const summaryQuestionNumbers = Array.from(
           { length: questionCount },
@@ -371,11 +373,12 @@ const TestCreationPage: React.FC = () => {
           passage: summaryPassage || "",
           answers: Array(questionCount).fill(""),
           options: [...options],
-          instruction: currentInstruction,
+          // Removed instruction from individual question
           input_type: "drag_and_drop",
           question: "",
         });
         break;
+
       case "passage_fill_in_the_blanks":
         const passageQuestionNumbers = Array.from(
           { length: questionCount },
@@ -383,34 +386,44 @@ const TestCreationPage: React.FC = () => {
         );
         newQuestions.push({
           question_number: passageQuestionNumbers,
-          instruction: currentInstruction,
+          // Removed instruction from individual question
           text: "",
           blanks: [],
         });
         break;
+
       default:
         return;
     }
 
     if (currentQuestionType === "fill_in_the_blanks_with_subtitle") {
       const existingQuestions = updatedParts[passageIndex].questions;
-      const existingFillBlanksGroup = existingQuestions.find(
-        (group) => Object.keys(group)[0] === "fill_in_the_blanks_with_subtitle"
-      );
+      const existingFillBlanksGroup = existingQuestions.find((group) => {
+        const questionTypeKey = Object.keys(group).find(
+          (key) => key !== "instructions"
+        );
+        return questionTypeKey === "fill_in_the_blanks_with_subtitle";
+      });
+
       if (existingFillBlanksGroup) {
-        const existingGroup = existingFillBlanksGroup as Record<string, any[]>;
         // Find the highest question number in existing questions
         let maxQuestionNumber = 0;
-        existingGroup["fill_in_the_blanks_with_subtitle"].forEach((section: any) => {
+        const questionsArray = existingFillBlanksGroup[
+          "fill_in_the_blanks_with_subtitle"
+        ] as any[];
+        questionsArray.forEach((section: any) => {
           if (section.questions && Array.isArray(section.questions)) {
             section.questions.forEach((q: any) => {
-              if (q.question_number && typeof q.question_number === 'number') {
-                maxQuestionNumber = Math.max(maxQuestionNumber, q.question_number);
+              if (q.question_number && typeof q.question_number === "number") {
+                maxQuestionNumber = Math.max(
+                  maxQuestionNumber,
+                  q.question_number
+                );
               }
             });
           }
         });
-        
+
         // Assign new numbers starting from maxQuestionNumber + 1
         let questionCounter = maxQuestionNumber + 1;
         newQuestions.forEach((newQuestion: any) => {
@@ -420,16 +433,20 @@ const TestCreationPage: React.FC = () => {
             });
           }
         });
-        
+
         // Merge with existing questions without renumbering existing ones
-        existingGroup["fill_in_the_blanks_with_subtitle"].push(...newQuestions);
+        questionsArray.push(...newQuestions);
       } else {
+        // Create new question group with instructions at group level
         updatedParts[passageIndex].questions.push({
+          instructions: currentInstruction,
           [currentQuestionType]: newQuestions,
         });
       }
     } else {
+      // Create new question group with instructions at group level
       updatedParts[passageIndex].questions.push({
+        instructions: currentInstruction,
         [currentQuestionType]: newQuestions,
       });
     }
@@ -528,12 +545,14 @@ const TestCreationPage: React.FC = () => {
           className="border p-2"
         />
       </div>
+
       <button
         onClick={addPassage}
         className="bg-blue-500 text-white p-2 rounded mb-4 mx-2"
       >
         Add Passage
       </button>
+
       {test.parts.map((passage, passageIndex) => (
         <div key={passageIndex} className="border p-4 mb-4">
           <h2 className="text-xl font-semibold">Passage {passageIndex + 1}</h2>
@@ -596,6 +615,7 @@ const TestCreationPage: React.FC = () => {
             }
             className="border p-2 mb-2 w-full"
           />
+
           <div className="form-control">
             <label className="label">
               <span className="label-text font-semibold text-black">
@@ -608,6 +628,7 @@ const TestCreationPage: React.FC = () => {
               }
             />
           </div>
+
           <div className="mb-4">
             <label className="block mb-2">Select Passage Type</label>
             <select
@@ -626,6 +647,7 @@ const TestCreationPage: React.FC = () => {
               <option value="type2">Type 2 (Object)</option>
             </select>
           </div>
+
           <div className="mb-2">
             {Array.isArray(passage.passage)
               ? passage.passage.map((para, paraIndex) => (
@@ -671,6 +693,7 @@ const TestCreationPage: React.FC = () => {
               Add Paragraph
             </button>
           </div>
+
           <div className="mb-2">
             <select
               value={currentQuestionType}
@@ -717,18 +740,19 @@ const TestCreationPage: React.FC = () => {
               Add Questions
             </button>
           </div>
+
           {passage.questions.map((questionGroup, groupIndex) => {
-            const questionType = Object.keys(questionGroup)[0];
-            const questions = questionGroup[questionType];
-            const instruction =
-              questionType === "fill_in_the_blanks_with_subtitle"
-                ? questions[0]?.questions?.[0]?.instruction || ""
-                : questions[0]?.instruction || "";
+            const questionTypeKey = Object.keys(questionGroup).find(
+              (key) => key !== "instructions"
+            );
+            const questions = questionTypeKey
+              ? (questionGroup[questionTypeKey] as Question[])
+              : [];
+            const instruction = questionGroup.instructions || "";
 
             return (
               <div key={groupIndex} className="border p-2 mb-2">
-                <h3 className="font-semibold">{questionType}</h3>
-
+                <h3 className="font-semibold">{questionTypeKey}</h3>
                 {editingInstruction?.passageIndex === passageIndex &&
                 editingInstruction?.groupIndex === groupIndex ? (
                   <div className="mb-2">
@@ -791,9 +815,8 @@ const TestCreationPage: React.FC = () => {
                     )}
                   </>
                 )}
-
                 {RenderQuestionInput(
-                  questionType,
+                  questionTypeKey || "",
                   questions,
                   passageIndex,
                   groupIndex,
@@ -814,6 +837,7 @@ const TestCreationPage: React.FC = () => {
               </div>
             );
           })}
+
           <button
             onClick={() => removePassage(passageIndex)}
             className="bg-red-500 text-white p-2 rounded mt-2"
@@ -822,6 +846,7 @@ const TestCreationPage: React.FC = () => {
           </button>
         </div>
       ))}
+
       <button
         onClick={(e) => {
           e.preventDefault();
@@ -841,6 +866,7 @@ const TestCreationPage: React.FC = () => {
             );
             return;
           }
+
           const hasQuestions = test.parts.some(
             (part) => part.questions && part.questions.length > 0
           );
@@ -848,11 +874,15 @@ const TestCreationPage: React.FC = () => {
             toast.error("Please add at least one question to a passage");
             return;
           }
+
           const hasUnansweredSummaryBlanks = test.parts.some((part) =>
             part.questions.some((questionGroup) => {
-              const questionType = Object.keys(questionGroup)[0];
-              if (questionType === "summary_fill_in_the_blanks") {
-                return questionGroup[questionType].some((question: any) => {
+              const questionTypeKey = Object.keys(questionGroup).find(
+                (key) => key !== "instructions"
+              );
+              if (questionTypeKey === "summary_fill_in_the_blanks") {
+                const questions = questionGroup[questionTypeKey] as any[];
+                return questions.some((question: any) => {
                   return (
                     !question.answers ||
                     question.answers.some(
@@ -864,12 +894,14 @@ const TestCreationPage: React.FC = () => {
               return false;
             })
           );
+
           if (hasUnansweredSummaryBlanks) {
             toast.error(
               "Please select answers for all summary fill-in-the-blanks questions"
             );
             return;
           }
+
           handleReadingTestSubmit(cleanTestData(test));
         }}
         className="btn btn-success btn-md text-white"

@@ -26,6 +26,7 @@
           "image": "/images/reading/passage1.png",
           "questions": [
             {
+               "instructions": "Do the following statements agree with the information given in Reading Passage 1? In boxes 1-7 on your answer sheet, write",
               "true_false_not_given": [
                 {
                   "question_number": 1,

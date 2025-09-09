@@ -1,6 +1,7 @@
 import React from "react";
 
 const MatchingHeadings = ({
+  instructions,
   question,
   answers,
   setAnswers,
@@ -10,7 +11,7 @@ const MatchingHeadings = ({
   return (
     <div>
       <h5 className="font-medium mb-2">Heading Matching</h5>
-      <div className="text-gray-700 text-sm mb-2">{question[0].instruction}</div>
+      <div className="text-gray-700 text-sm mb-2">{instructions}</div>
 
       {question.map((q: any) => {
         return (

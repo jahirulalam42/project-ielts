@@ -1,6 +1,7 @@
 import React from "react";
 
 const PassFillInTheBlanks = ({
+  instructions,
   question,
   handleAnswerChange,
   handleQuestionFocus,
@@ -81,9 +82,7 @@ const PassFillInTheBlanks = ({
   return (
     <div>
       <h5 className="font-medium mb-2">Passage Fill in the Blanks</h5>
-      <div className="text-gray-700 text-sm mb-2">
-        {question[0].instruction}
-      </div>
+      <div className="text-gray-700 text-sm mb-2">{instructions}</div>
       <div className="p-4 border border-black rounded-lg mb-2">
         <p className="mb-2">{question[0]?.instruction}</p>
         <div className="text-justify leading-relaxed">
