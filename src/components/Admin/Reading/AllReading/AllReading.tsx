@@ -96,15 +96,21 @@ const AllReading: React.FC<any> = ({ readingData, setReadingData }) => {
       // Create a deep copy of the test
       const newTest = JSON.parse(JSON.stringify(prev));
 
-      // Get the question type key for this group
-      const questionType = Object.keys(
-        newTest.parts[partIndex].questions[groupIndex]
-      )[0];
+      // Get the question type key for this group (skip 'instructions')
+      const group = newTest.parts?.[partIndex]?.questions?.[groupIndex] || {};
+      const questionType = Object.keys(group).find((k) => k !== "instructions");
+      if (!questionType) {
+        console.error("No question type found in group", { partIndex, groupIndex, group });
+        return prev;
+      }
 
       // Update the specific question field
-      newTest.parts[partIndex].questions[groupIndex][questionType][qIndex][
-        field
-      ] = value;
+      const target = newTest.parts[partIndex].questions[groupIndex][questionType][qIndex];
+      if (typeof target !== "object" || target === null) {
+        console.error("Target question is not an object", target);
+        return prev;
+      }
+      target[field] = value;
 
       return newTest;
     });
@@ -142,6 +148,24 @@ const AllReading: React.FC<any> = ({ readingData, setReadingData }) => {
         passage: [...newTest.parts[partIndex].passage],
       };
       newTest.parts[partIndex].passage[paraIndex] = value;
+      return newTest;
+    });
+  };
+
+  // Update fields that belong to a question group object itself (e.g., instructions)
+  const handleQuestionGroupFieldChange = (
+    partIndex: number,
+    groupIndex: number,
+    field: string,
+    value: any
+  ) => {
+    setEditedTest((prev: any) => {
+      const newTest = JSON.parse(JSON.stringify(prev));
+      if (!newTest.parts?.[partIndex]?.questions?.[groupIndex]) {
+        console.error("Invalid group indices", { partIndex, groupIndex });
+        return prev;
+      }
+      newTest.parts[partIndex].questions[groupIndex][field] = value;
       return newTest;
     });
   };
@@ -211,6 +235,7 @@ const AllReading: React.FC<any> = ({ readingData, setReadingData }) => {
           handleTestFieldChange={handleTestFieldChange}
           handlePartFieldChange={handlePartFieldChange}
           handlePassageParagraphChange={handlePassageParagraphChange}
+          handleQuestionGroupFieldChange={handleQuestionGroupFieldChange}
           handleQuestionChange={handleQuestionChange}
           setShowEditModal={setShowEditModal}
           saveChanges={saveChanges}

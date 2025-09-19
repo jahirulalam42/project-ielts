@@ -6,6 +6,7 @@ const EditReading = ({
   handleTestFieldChange,
   handlePartFieldChange,
   handlePassageParagraphChange,
+  handleQuestionGroupFieldChange,
   handleQuestionChange,
   setShowEditModal,
   saveChanges,
@@ -214,8 +215,12 @@ const EditReading = ({
                       <div className="space-y-4">
                         {part.questions.map(
                           (questionGroup: any, groupIndex: any) => {
-                            const questionType = Object.keys(questionGroup)[0];
-                            const questions = questionGroup[questionType];
+                            // Pick the first key that is not 'instructions'
+                            const groupKeys = Object.keys(questionGroup).filter(
+                              (k) => k !== "instructions"
+                            );
+                            const questionType = groupKeys[0];
+                            const questions = questionGroup[questionType] || [];
 
                             return (
                               <div
@@ -228,6 +233,26 @@ const EditReading = ({
                                   {questions.length} questions)
                                 </div>
                                 <div className="collapse-content pt-4">
+                                  {/* Group-level instructions editor */}
+                                  {typeof questionGroup.instructions === 'string' && (
+                                    <div className="form-control mb-4">
+                                      <label className="label">
+                                        <span className="label-text">Instructions</span>
+                                      </label>
+                                      <textarea
+                                        value={questionGroup.instructions}
+                                        onChange={(e) =>
+                                          handleQuestionGroupFieldChange(
+                                            partIndex,
+                                            groupIndex,
+                                            "instructions",
+                                            e.target.value
+                                          )
+                                        }
+                                        className="textarea textarea-bordered w-full"
+                                      />
+                                    </div>
+                                  )}
                                   <div className="space-y-6">
                                     {questions.map(
                                       (question: any, qIndex: any) => (
