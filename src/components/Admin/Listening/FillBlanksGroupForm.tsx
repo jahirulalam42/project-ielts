@@ -20,6 +20,13 @@ const FillBlanksGroupForm = ({
     updateGroup(localGroup);
   };
 
+  const handleInstructionChange = (value: string) => {
+    setLocalGroup((prev) => ({
+      ...prev,
+      instruction: value,
+    }));
+  };
+
   const handleSectionChange = (
     sectionIndex: number,
     field: string,
@@ -156,6 +163,23 @@ const FillBlanksGroupForm = ({
 
   return (
     <div className="space-y-6" onBlur={handleBlur}>
+      {/* Instruction Field - Only one for the entire component */}
+      <div className="bg-base-100 p-4 rounded-lg">
+        <div className="form-control">
+          <label className="label">
+            <span className="label-text font-semibold text-black">
+              Instruction
+            </span>
+          </label>
+          <textarea
+            className="textarea textarea-bordered border-black h-24"
+            value={localGroup.instruction || ""}
+            onChange={(e) => handleInstructionChange(e.target.value)}
+            placeholder="Enter instruction for the entire fill-in-the-blanks component (e.g., 'Fill in the blanks with the correct words from the audio')"
+          />
+        </div>
+      </div>
+
       {localGroup.fill_in_the_blanks_with_subtitle.map(
         (section, sectionIndex) => (
           <div key={sectionIndex} className="bg-base-100 p-4 rounded-lg">

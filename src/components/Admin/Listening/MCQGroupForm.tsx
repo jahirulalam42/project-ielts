@@ -3,15 +3,33 @@ import { MCQItem } from "./listeningTest";
 
 interface MCQGroupFormProps {
   questions?: MCQItem[];
-  onUpdate: (questions: MCQItem[]) => void;
+  instruction?: string;
+  onUpdate: (data: { questions: MCQItem[]; instruction: string }) => void;
 }
 
-const MCQGroupForm = ({ questions = [], onUpdate }: MCQGroupFormProps) => {
+const MCQGroupForm = ({
+  questions = [],
+  instruction = "",
+  onUpdate,
+}: MCQGroupFormProps) => {
   const [localQuestions, setLocalQuestions] = useState<MCQItem[]>(questions);
+  const [localInstruction, setLocalInstruction] = useState<string>(instruction);
+
+  const updateParent = (
+    newQuestions: MCQItem[] = localQuestions,
+    newInstruction: string = localInstruction
+  ) => {
+    onUpdate({ questions: newQuestions, instruction: newInstruction });
+  };
+
+  const handleInstructionChange = (value: string) => {
+    setLocalInstruction(value);
+    updateParent(localQuestions, value);
+  };
 
   const addQuestion = () => {
     const newQuestion: MCQItem = {
-      question_number: 0,
+      question_number: localQuestions.length + 1,
       question: "",
       answer: "",
       options: [
@@ -24,14 +42,16 @@ const MCQGroupForm = ({ questions = [], onUpdate }: MCQGroupFormProps) => {
       max_selection: 1,
     };
 
-    setLocalQuestions((prev) => [...prev, newQuestion]);
+    const updatedQuestions = [...localQuestions, newQuestion];
+    setLocalQuestions(updatedQuestions);
+    updateParent(updatedQuestions);
   };
 
   const updateQuestion = (index: number, field: keyof MCQItem, value: any) => {
     const updatedQuestions = [...localQuestions];
     updatedQuestions[index] = { ...updatedQuestions[index], [field]: value };
     setLocalQuestions(updatedQuestions);
-    onUpdate(updatedQuestions);
+    updateParent(updatedQuestions);
   };
 
   const updateOption = (qIndex: number, optIndex: number, value: string) => {
@@ -40,13 +60,13 @@ const MCQGroupForm = ({ questions = [], onUpdate }: MCQGroupFormProps) => {
     updatedOptions[optIndex] = { ...updatedOptions[optIndex], value };
     updatedQuestions[qIndex].options = updatedOptions;
     setLocalQuestions(updatedQuestions);
-    onUpdate(updatedQuestions);
+    updateParent(updatedQuestions);
   };
 
   const addOption = (qIndex: number) => {
     const updatedQuestions = [...localQuestions];
     const options = updatedQuestions[qIndex].options;
-    const newLabel = String.fromCharCode(65 + options.length); // A, B, C, ...
+    const newLabel = String.fromCharCode(65 + options.length);
 
     updatedQuestions[qIndex].options = [
       ...options,
@@ -54,7 +74,7 @@ const MCQGroupForm = ({ questions = [], onUpdate }: MCQGroupFormProps) => {
     ];
 
     setLocalQuestions(updatedQuestions);
-    onUpdate(updatedQuestions);
+    updateParent(updatedQuestions);
   };
 
   const removeOption = (qIndex: number, optIndex: number) => {
@@ -63,17 +83,45 @@ const MCQGroupForm = ({ questions = [], onUpdate }: MCQGroupFormProps) => {
       (_, i) => i !== optIndex
     );
     setLocalQuestions(updatedQuestions);
-    onUpdate(updatedQuestions);
+    updateParent(updatedQuestions);
   };
 
   const removeQuestion = (index: number) => {
     const updatedQuestions = localQuestions.filter((_, i) => i !== index);
-    setLocalQuestions(updatedQuestions);
-    onUpdate(updatedQuestions);
+    // Update question numbers after removal
+    const renumberedQuestions = updatedQuestions.map((q, i) => ({
+      ...q,
+      question_number: i + 1,
+    }));
+    setLocalQuestions(renumberedQuestions);
+    updateParent(renumberedQuestions);
   };
 
   return (
     <div className="space-y-6">
+      {/* Instruction Section - Only show if there are questions */}
+      {localQuestions.length > 0 && (
+        <div className="bg-base-100 p-4 rounded-lg">
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text font-semibold text-black">
+                Group Instruction
+                <span className="text-gray-500 text-sm ml-2">
+                  (This instruction will apply to all questions below)
+                </span>
+              </span>
+            </label>
+            <textarea
+              className="textarea textarea-bordered border-black h-24"
+              value={localInstruction}
+              onChange={(e) => handleInstructionChange(e.target.value)}
+              placeholder="Enter instructions for this group of questions..."
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Questions List */}
       {localQuestions.map((question, qIndex) => (
         <div key={qIndex} className="bg-base-100 p-4 rounded-lg">
           <div className="flex justify-between items-center mb-3">

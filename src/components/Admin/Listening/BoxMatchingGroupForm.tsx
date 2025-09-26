@@ -3,26 +3,44 @@ import { BoxMatchingGroup, BoxMatchingItem } from "./listeningTest";
 
 interface BoxMatchingGroupFormProps {
   questions: BoxMatchingItem[];
-  onUpdate: (questions: BoxMatchingItem[]) => void;
+  instruction?: string;
+  onUpdate: (data: {
+    questions: BoxMatchingItem[];
+    instruction: string;
+  }) => void;
 }
 
 const BoxMatchingGroupForm = ({
   questions,
+  instruction = "",
   onUpdate,
 }: BoxMatchingGroupFormProps) => {
   const [localQuestions, setLocalQuestions] =
     useState<BoxMatchingItem[]>(questions);
+  const [localInstruction, setLocalInstruction] = useState<string>(instruction);
+
+  const updateParent = (
+    newQuestions: BoxMatchingItem[] = localQuestions,
+    newInstruction: string = localInstruction
+  ) => {
+    onUpdate({ questions: newQuestions, instruction: newInstruction });
+  };
+
+  const handleInstructionChange = (value: string) => {
+    setLocalInstruction(value);
+    updateParent(localQuestions, value);
+  };
 
   const updateQuestion = (index: number, updatedQuestion: BoxMatchingItem) => {
     const newQuestions = [...localQuestions];
     newQuestions[index] = updatedQuestion;
     setLocalQuestions(newQuestions);
-    onUpdate(newQuestions);
+    updateParent(newQuestions);
   };
 
   const addQuestion = () => {
     const newQuestion: BoxMatchingItem = {
-      instructions: "",
+      instructions: "", // This is now for individual question instructions if needed
       options_title: "",
       question_title: "",
       options: [
@@ -46,13 +64,13 @@ const BoxMatchingGroupForm = ({
     };
     const newQuestions = [...localQuestions, newQuestion];
     setLocalQuestions(newQuestions);
-    onUpdate(newQuestions);
+    updateParent(newQuestions);
   };
 
   const removeQuestion = (index: number) => {
     const newQuestions = localQuestions.filter((_, i) => i !== index);
     setLocalQuestions(newQuestions);
-    onUpdate(newQuestions);
+    updateParent(newQuestions);
   };
 
   const updateQuestionField = (
@@ -133,6 +151,31 @@ const BoxMatchingGroupForm = ({
 
   return (
     <div className="space-y-6">
+      {/* Group Instruction - Only show if there are questions */}
+      {localQuestions.length > 0 && (
+        <div className="card bg-base-100 p-4 border">
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text font-semibold">
+                Group Instruction
+                <span className="text-gray-500 text-sm ml-2">
+                  (This instruction will apply to all box matching questions
+                  below)
+                </span>
+              </span>
+            </label>
+            <textarea
+              className="textarea textarea-bordered h-24"
+              value={localInstruction}
+              onChange={(e) => handleInstructionChange(e.target.value)}
+              placeholder="Enter instructions for this group of box matching questions..."
+              rows={3}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Questions List */}
       {localQuestions.map((question, questionIndex) => (
         <div key={questionIndex} className="card bg-base-100 p-4 border">
           <div className="flex justify-between items-center mb-4">
@@ -149,9 +192,16 @@ const BoxMatchingGroupForm = ({
           </div>
 
           <div className="space-y-4">
+            {/* Individual Question Instructions (Optional) */}
             <div className="form-control">
               <label className="label">
-                <span className="label-text font-semibold">Instructions</span>
+                <span className="label-text font-semibold">
+                  Question-specific Instructions
+                  <span className="text-gray-500 text-sm ml-2">
+                    (Optional - overrides group instruction for this question
+                    only)
+                  </span>
+                </span>
               </label>
               <textarea
                 className="textarea textarea-bordered"
@@ -163,8 +213,8 @@ const BoxMatchingGroupForm = ({
                     e.target.value
                   )
                 }
-                placeholder="Enter the instructions for the box matching question..."
-                rows={3}
+                placeholder="Enter question-specific instructions (optional)..."
+                rows={2}
               />
             </div>
 

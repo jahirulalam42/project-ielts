@@ -63,41 +63,48 @@ const ListeningCreationPage = () => {
                 })),
               })),
           };
-        } else if ("mcq" in group) {
+        } else if ("questions" in group && "instruction" in group) {
+          // Updated for new MCQ structure with instruction
           return {
             ...group,
-            mcq: group.mcq.map((question) => ({
+            questions: group.questions?.map((question) => ({
               ...question,
               question_number: globalQuestionNumber++,
             })),
           };
-        } else if ("multiple_mcq" in group) {
+        } else if ("multiple_mcq" in group && "instruction" in group) {
+          // Updated for new Multiple MCQ structure with instruction
           return {
             ...group,
-            multiple_mcq: group.multiple_mcq.map((question) => {
-              const questionCount = question.question_numbers.length;
-              const newQuestionNumbers = [];
-              for (let i = 0; i < questionCount; i++) {
-                newQuestionNumbers.push(globalQuestionNumber++);
-              }
-              return {
-                ...question,
-                question_numbers: newQuestionNumbers,
-              };
-            }),
+            multiple_mcq: Array.isArray(group.multiple_mcq)
+              ? group.multiple_mcq.map((question) => {
+                  const questionCount = question.question_numbers.length;
+                  const newQuestionNumbers = [];
+                  for (let i = 0; i < questionCount; i++) {
+                    newQuestionNumbers.push(globalQuestionNumber++);
+                  }
+                  return {
+                    ...question,
+                    question_numbers: newQuestionNumbers,
+                  };
+                })
+              : [],
           };
-        } else if ("box_matching" in group) {
+        } else if ("box_matching" in group && "instruction" in group) {
+          // Updated for new Box Matching structure with instruction
           return {
             ...group,
-            box_matching: group.box_matching.map((question) => {
-              return {
-                ...question,
-                questions: question.questions.map((q) => ({
-                  ...q,
-                  question_number: globalQuestionNumber++,
-                })),
-              };
-            }),
+            box_matching: Array.isArray(group.box_matching)
+              ? group.box_matching.map((question) => {
+                  return {
+                    ...question,
+                    questions: question.questions.map((q) => ({
+                      ...q,
+                      question_number: globalQuestionNumber++,
+                    })),
+                  };
+                })
+              : [],
           };
         } else if ("map" in group) {
           return {
