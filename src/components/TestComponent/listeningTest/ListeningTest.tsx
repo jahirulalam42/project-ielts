@@ -42,32 +42,34 @@ const ListeningTest: React.FC<any> = ({ test }) => {
   // Function to get all question numbers for each part
   const getPartQuestionNumbers = () => {
     const partQuestions: { [key: number]: number[] } = {};
-    
+
     test.parts.forEach((part: any, partIndex: number) => {
       const questionNumbers: number[] = [];
-      
+
       part.questions.forEach((questionSet: any) => {
         if (questionSet.fill_in_the_blanks_with_subtitle) {
-          questionSet.fill_in_the_blanks_with_subtitle.forEach((blankSet: any) => {
-            blankSet.questions?.forEach((q: any) => {
-              questionNumbers.push(q.question_number);
-            });
-          });
+          questionSet.fill_in_the_blanks_with_subtitle.forEach(
+            (blankSet: any) => {
+              blankSet.questions?.forEach((q: any) => {
+                questionNumbers.push(q.question_number);
+              });
+            }
+          );
         }
         if (questionSet.mcq) {
-          questionSet.mcq.forEach((q: any) => {
+          questionSet.mcq.questions.forEach((q: any) => {
             questionNumbers.push(q.question_number);
           });
         }
         if (questionSet.multiple_mcq) {
-          questionSet.multiple_mcq.forEach((q: any) => {
+          questionSet.multiple_mcq.questions.forEach((q: any) => {
             q.question_numbers.forEach((num: number) => {
               questionNumbers.push(num);
             });
           });
         }
         if (questionSet.box_matching) {
-          questionSet.box_matching.forEach((q: any) => {
+          questionSet.box_matching.questions.forEach((q: any) => {
             q.questions.forEach((boxQuestion: any) => {
               questionNumbers.push(boxQuestion.question_number);
             });
@@ -81,10 +83,10 @@ const ListeningTest: React.FC<any> = ({ test }) => {
           });
         }
       });
-      
+
       partQuestions[partIndex] = questionNumbers.sort((a, b) => a - b);
     });
-    
+
     return partQuestions;
   };
 
@@ -109,7 +111,7 @@ const ListeningTest: React.FC<any> = ({ test }) => {
           );
         }
         if (questionSet.mcq) {
-          questionSet.mcq.forEach((q: any) => {
+          questionSet.mcq.quesions.forEach((q: any) => {
             initialAnswers[`${q.question_number}`] = {
               value: "",
               answerText: q.answer,
@@ -118,7 +120,7 @@ const ListeningTest: React.FC<any> = ({ test }) => {
           });
         }
         if (questionSet.multiple_mcq) {
-          questionSet.multiple_mcq.forEach((q: any) => {
+          questionSet.multiple_mcq.questions.forEach((q: any) => {
             q.question_numbers.forEach((num: number) => {
               initialAnswers[`${num}`] = {
                 value: "",
@@ -130,7 +132,7 @@ const ListeningTest: React.FC<any> = ({ test }) => {
           });
         }
         if (questionSet.box_matching) {
-          questionSet.box_matching.forEach((q: any) => {
+          questionSet.box_matching.questions.forEach((q: any) => {
             q.questions.forEach((boxQuestion: any) => {
               initialAnswers[`${boxQuestion.question_number}`] = {
                 value: "",
@@ -204,8 +206,8 @@ const ListeningTest: React.FC<any> = ({ test }) => {
 
   // Scroll to top whenever the part changes
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }, [currentPartIndex]);
 
@@ -312,8 +314,6 @@ const ListeningTest: React.FC<any> = ({ test }) => {
           </div>
         </div>
 
-
-
         {/* Questions Section */}
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
@@ -321,42 +321,42 @@ const ListeningTest: React.FC<any> = ({ test }) => {
             <div className="space-y-6">
               {currentPart.questions?.map((questionSet: any, index: any) => (
                 <div key={index}>
-                                     {questionSet.fill_in_the_blanks_with_subtitle && (
-                     <SubFillInTheBlanks
-                       question={questionSet.fill_in_the_blanks_with_subtitle}
-                       handleAnswerChange={handleAnswerChange}
-                       handleQuestionFocus={handleQuestionFocus}
-                     />
-                   )}
-                   {questionSet.mcq && (
-                     <McqSingle
-                       question={questionSet.mcq}
-                       handleAnswerChange={handleAnswerChange}
-                       handleQuestionFocus={handleQuestionFocus}
-                     />
-                   )}
-                                       {questionSet.multiple_mcq && (
-                      <McqMultiple
-                        question={questionSet.multiple_mcq}
-                        handleAnswerChange={handleAnswerChange}
-                        handleQuestionFocus={handleQuestionFocus}
-                      />
-                    )}
-                    {questionSet.box_matching && (
-                      <BoxMatching
-                        question={questionSet.box_matching}
-                        handleAnswerChange={handleAnswerChange}
-                        handleQuestionFocus={handleQuestionFocus}
-                      />
-                    )}
-                    {questionSet.map && (
-                     <Map
-                       question={questionSet.map[0]}
-                       handleAnswerChange={handleAnswerChange}
-                       handleQuestionFocus={handleQuestionFocus}
-                       answers={answers}
-                     />
-                   )}
+                  {questionSet.fill_in_the_blanks_with_subtitle && (
+                    <SubFillInTheBlanks
+                      question={questionSet.fill_in_the_blanks_with_subtitle}
+                      handleAnswerChange={handleAnswerChange}
+                      handleQuestionFocus={handleQuestionFocus}
+                    />
+                  )}
+                  {questionSet.mcq && (
+                    <McqSingle
+                      question={questionSet.mcq.questions}
+                      handleAnswerChange={handleAnswerChange}
+                      handleQuestionFocus={handleQuestionFocus}
+                    />
+                  )}
+                  {questionSet.multiple_mcq && (
+                    <McqMultiple
+                      question={questionSet.multiple_mcq.questions}
+                      handleAnswerChange={handleAnswerChange}
+                      handleQuestionFocus={handleQuestionFocus}
+                    />
+                  )}
+                  {questionSet.box_matching && (
+                    <BoxMatching
+                      question={questionSet.box_matching.questions}
+                      handleAnswerChange={handleAnswerChange}
+                      handleQuestionFocus={handleQuestionFocus}
+                    />
+                  )}
+                  {questionSet.map && (
+                    <Map
+                      question={questionSet.map[0]}
+                      handleAnswerChange={handleAnswerChange}
+                      handleQuestionFocus={handleQuestionFocus}
+                      answers={answers}
+                    />
+                  )}
                 </div>
               ))}
             </div>
@@ -392,39 +392,41 @@ const ListeningTest: React.FC<any> = ({ test }) => {
         <ToastContainer />
       </div>
 
-                                                       {/* Fixed Question Navigation Panel at Bottom */}
-         <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
-           <div className="px-4 py-2">
-                                                       <div className="flex justify-between">
-                 {test.parts.map((part: any, partIndex: number) => (
-                   <div key={partIndex} className="flex-1 flex justify-center">
-                     <div className="border-2 border-gray-300 rounded-lg p-2 flex flex-wrap gap-1 justify-center">
-                                               {partQuestions[partIndex]?.map((questionNumber: number) => {
-                          const hasAnswered = answers[questionNumber]?.value && answers[questionNumber]?.value.trim() !== '';
-                          
-                          return (
-                            <button
-                              key={`${questionNumber}-${partIndex}`}
-                              type="button"
-                              className={`w-8 h-8 text-xs rounded border transition-colors ${
-                                questionNumber === currentQuestionNumber
-                                  ? 'bg-blue-500 text-white border-blue-500'
-                                  : hasAnswered
-                                    ? 'bg-green-200 text-green-700 border-green-400 hover:bg-green-300'
-                                    : 'bg-gray-200 text-gray-700 border-gray-300 hover:bg-gray-300'
-                              }`}
-                              onClick={() => setCurrentPartIndex(partIndex)}
-                            >
-                              {questionNumber}
-                            </button>
-                          );
-                        })}
-                     </div>
-                   </div>
-                 ))}
-               </div>
-           </div>
-         </div>
+      {/* Fixed Question Navigation Panel at Bottom */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
+        <div className="px-4 py-2">
+          <div className="flex justify-between">
+            {test.parts.map((part: any, partIndex: number) => (
+              <div key={partIndex} className="flex-1 flex justify-center">
+                <div className="border-2 border-gray-300 rounded-lg p-2 flex flex-wrap gap-1 justify-center">
+                  {partQuestions[partIndex]?.map((questionNumber: number) => {
+                    const hasAnswered =
+                      answers[questionNumber]?.value &&
+                      answers[questionNumber]?.value.trim() !== "";
+
+                    return (
+                      <button
+                        key={`${questionNumber}-${partIndex}`}
+                        type="button"
+                        className={`w-8 h-8 text-xs rounded border transition-colors ${
+                          questionNumber === currentQuestionNumber
+                            ? "bg-blue-500 text-white border-blue-500"
+                            : hasAnswered
+                            ? "bg-green-200 text-green-700 border-green-400 hover:bg-green-300"
+                            : "bg-gray-200 text-gray-700 border-gray-300 hover:bg-gray-300"
+                        }`}
+                        onClick={() => setCurrentPartIndex(partIndex)}
+                      >
+                        {questionNumber}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </form>
   );
 };

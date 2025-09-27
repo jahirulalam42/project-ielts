@@ -29,21 +29,30 @@ const PartForm = ({
             0
           )
         );
-      } else if ("mcq" in group) {
-        return total + group.mcq.length;
-      } else if ("multiple_mcq" in group) {
+      } else if ("questions" in group && "instruction" in group) {
+        // Updated for new MCQ structure
         return (
-          total +
-          group.multiple_mcq.reduce((multipleTotal, multipleItem) => {
-            return multipleTotal + multipleItem.question_numbers.length;
-          }, 0)
+          total + (Array.isArray(group.questions) ? group.questions.length : 0)
         );
-      } else if ("box_matching" in group) {
+      } else if ("multiple_mcq" in group && "instruction" in group) {
+        // Updated for new Multiple MCQ structure
         return (
           total +
-          group.box_matching.reduce((boxTotal, boxItem) => {
-            return boxTotal + boxItem.questions.length;
-          }, 0)
+          (Array.isArray(group.multiple_mcq)
+            ? group.multiple_mcq.reduce((multipleTotal, multipleItem) => {
+                return multipleTotal + multipleItem.question_numbers.length;
+              }, 0)
+            : 0)
+        );
+      } else if ("box_matching" in group && "instruction" in group) {
+        // Updated for new Box Matching structure
+        return (
+          total +
+          (Array.isArray(group.box_matching)
+            ? group.box_matching.reduce((boxTotal, boxItem) => {
+                return boxTotal + boxItem.questions.length;
+              }, 0)
+            : 0)
         );
       } else if ("map" in group) {
         return (
@@ -81,8 +90,10 @@ const PartForm = ({
         };
         break;
       case "mcq":
+        // New structure with instruction
         newGroup = {
-          mcq: [
+          instruction: "",
+          questions: [
             {
               question_number: nextQuestionNumber,
               question: "",
@@ -100,7 +111,9 @@ const PartForm = ({
         };
         break;
       case "multiple_mcq":
+        // New structure with instruction
         newGroup = {
+          instruction: "",
           multiple_mcq: [
             {
               question_numbers: [nextQuestionNumber, nextQuestionNumber + 1],
@@ -121,10 +134,12 @@ const PartForm = ({
         };
         break;
       case "box_matching":
+        // New structure with instruction
         newGroup = {
+          instruction: "",
           box_matching: [
             {
-              instructions: "",
+              instructions: "", // This is now for individual question instructions
               options_title: "",
               question_title: "",
               options: [
@@ -190,10 +205,11 @@ const PartForm = ({
         return;
     }
 
-    updatePart(partIndex, {
+    const updatedPart = {
       ...part,
       questions: [...part.questions, newGroup],
-    });
+    };
+    updatePart(partIndex, updatedPart);
   };
 
   const updateQuestionGroup = (index: number, group: QuestionGroup) => {

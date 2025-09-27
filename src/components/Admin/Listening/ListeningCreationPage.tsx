@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ListeningTest, TestPart } from "./listeningTest";
 import PartForm from "./PartForm";
 import { submitListeningQuestions } from "@/services/data";
@@ -123,14 +123,15 @@ const ListeningCreationPage = () => {
     }));
   };
 
+  const updateTestWithRenumbering = (updatedTest: ListeningTest) => {
+    const renumberedParts = renumberAllQuestionsGlobally(updatedTest.parts);
+    setTest({ ...updatedTest, parts: renumberedParts });
+  };
+
   const updatePart = (index: number, part: TestPart) => {
-    setTest((prev) => {
-      const parts = [...prev.parts];
-      parts[index] = part;
-      // Renumber all questions globally after updating any part
-      const renumberedParts = renumberAllQuestionsGlobally(parts);
-      return { ...prev, parts: renumberedParts };
-    });
+    const parts = [...test.parts];
+    parts[index] = part;
+    updateTestWithRenumbering({ ...test, parts });
   };
 
   const removePart = (index: number) => {
@@ -177,6 +178,13 @@ const ListeningCreationPage = () => {
       toast.error("An error occurred while creating the test.");
     }
   };
+
+  useEffect(() => {
+    setTest((prev) => ({
+      ...prev,
+      parts: renumberAllQuestionsGlobally(prev.parts),
+    }));
+  }, [test.parts.length, test.parts.map((p) => p.questions.length).join(",")]);
 
   return (
     <div className="max-w-6xl mx-auto p-6">
