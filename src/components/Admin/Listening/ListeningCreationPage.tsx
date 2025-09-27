@@ -34,16 +34,6 @@ const ListeningCreationPage = () => {
     }));
   };
 
-  const addPart = () => {
-    setTest((prev) => ({
-      ...prev,
-      parts: [
-        ...prev.parts,
-        { title: `Part ${prev.parts.length + 1}`, questions: [] },
-      ],
-    }));
-  };
-
   // Helper function to renumber all questions globally across all parts
   const renumberAllQuestionsGlobally = (parts: TestPart[]) => {
     let globalQuestionNumber = 1;
@@ -64,21 +54,20 @@ const ListeningCreationPage = () => {
               })),
           };
         } else if ("questions" in group && "instruction" in group) {
-          // Updated for new MCQ structure with instruction
           return {
             ...group,
-            questions: group.questions?.map((question) => ({
-              ...question,
-              question_number: globalQuestionNumber++,
-            })),
+            questions:
+              group.questions?.map((question) => ({
+                ...question,
+                question_number: globalQuestionNumber++,
+              })) || [],
           };
         } else if ("multiple_mcq" in group && "instruction" in group) {
-          // Updated for new Multiple MCQ structure with instruction
           return {
             ...group,
             multiple_mcq: Array.isArray(group.multiple_mcq)
               ? group.multiple_mcq.map((question) => {
-                  const questionCount = question.question_numbers.length;
+                  const questionCount = question.question_numbers?.length || 0;
                   const newQuestionNumbers = [];
                   for (let i = 0; i < questionCount; i++) {
                     newQuestionNumbers.push(globalQuestionNumber++);
@@ -91,19 +80,17 @@ const ListeningCreationPage = () => {
               : [],
           };
         } else if ("box_matching" in group && "instruction" in group) {
-          // Updated for new Box Matching structure with instruction
           return {
             ...group,
             box_matching: Array.isArray(group.box_matching)
-              ? group.box_matching.map((question) => {
-                  return {
-                    ...question,
-                    questions: question.questions.map((q) => ({
+              ? group.box_matching.map((question) => ({
+                  ...question,
+                  questions:
+                    question.questions?.map((q) => ({
                       ...q,
                       question_number: globalQuestionNumber++,
-                    })),
-                  };
-                })
+                    })) || [],
+                }))
               : [],
           };
         } else if ("map" in group) {
@@ -111,10 +98,11 @@ const ListeningCreationPage = () => {
             ...group,
             map: group.map.map((mapItem) => ({
               ...mapItem,
-              questions: mapItem.questions.map((question) => ({
-                ...question,
-                question_number: globalQuestionNumber++,
-              })),
+              questions:
+                mapItem.questions?.map((question) => ({
+                  ...question,
+                  question_number: globalQuestionNumber++,
+                })) || [],
             })),
           };
         }
@@ -135,14 +123,17 @@ const ListeningCreationPage = () => {
   };
 
   const removePart = (index: number) => {
-    setTest((prev) => {
-      const filteredParts = prev.parts.filter((_, i) => i !== index);
-      // Renumber all questions globally after removing a part
-      const renumberedParts = renumberAllQuestionsGlobally(filteredParts);
-      return { ...prev, parts: renumberedParts };
-    });
+    const filteredParts = test.parts.filter((_, i) => i !== index);
+    updateTestWithRenumbering({ ...test, parts: filteredParts });
   };
 
+  const addPart = () => {
+    const newParts = [
+      ...test.parts,
+      { title: `Part ${test.parts.length + 1}`, questions: [] },
+    ];
+    updateTestWithRenumbering({ ...test, parts: newParts });
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -178,13 +169,6 @@ const ListeningCreationPage = () => {
       toast.error("An error occurred while creating the test.");
     }
   };
-
-  useEffect(() => {
-    setTest((prev) => ({
-      ...prev,
-      parts: renumberAllQuestionsGlobally(prev.parts),
-    }));
-  }, [test.parts.length, test.parts.map((p) => p.questions.length).join(",")]);
 
   return (
     <div className="max-w-6xl mx-auto p-6">
@@ -279,6 +263,7 @@ const ListeningCreationPage = () => {
               key={partIndex}
               part={part}
               partIndex={partIndex}
+              allParts={test.parts} // Add this line
               updatePart={updatePart}
               removePart={removePart}
               isLast={partIndex === test.parts.length - 1}

@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { MapGroup } from "./listeningTest";
 import ImageUploader from "../Common/ImageUploader";
 
@@ -8,78 +7,61 @@ interface MapGroupFormProps {
 }
 
 const MapGroupForm = ({ group, updateGroup }: MapGroupFormProps) => {
-  const [localGroup, setLocalGroup] = useState<MapGroup>(group);
-
-  useEffect(() => {
-    setLocalGroup(group);
-  }, [group]);
-
-  const handleBlur = () => {
-    updateGroup(localGroup);
-  };
-
+  // Remove local state - work directly with props
   const handleMapItemChange = (
     mapIndex: number,
     field: string,
     value: string
   ) => {
-    setLocalGroup((prev) => {
-      const updatedMap = [...prev.map];
-      updatedMap[mapIndex] = {
-        ...updatedMap[mapIndex],
-        [field]: value,
-      };
-      return { ...prev, map: updatedMap };
-    });
+    const updatedMap = [...group.map];
+    updatedMap[mapIndex] = {
+      ...updatedMap[mapIndex],
+      [field]: value,
+    };
+    updateGroup({ ...group, map: updatedMap });
   };
 
   const handleLabelsChange = (mapIndex: number, labels: string[]) => {
-    setLocalGroup((prev) => {
-      const updatedMap = [...prev.map];
-      updatedMap[mapIndex] = {
-        ...updatedMap[mapIndex],
-        labels,
-      };
-      return { ...prev, map: updatedMap };
-    });
+    const updatedMap = [...group.map];
+    updatedMap[mapIndex] = {
+      ...updatedMap[mapIndex],
+      labels,
+    };
+    updateGroup({ ...group, map: updatedMap });
   };
 
   const addLabel = (mapIndex: number) => {
-    setLocalGroup((prev) => {
-      const updatedMap = [...prev.map];
-      const currentLabels = updatedMap[mapIndex].labels;
-      const lastLabel = currentLabels[currentLabels.length - 1];
-      const nextLabel = String.fromCharCode(lastLabel.charCodeAt(0) + 1);
+    const updatedMap = [...group.map];
+    const currentLabels = updatedMap[mapIndex].labels;
+    const lastLabel = currentLabels[currentLabels.length - 1];
+    const nextLabel = String.fromCharCode(lastLabel.charCodeAt(0) + 1);
 
-      updatedMap[mapIndex] = {
-        ...updatedMap[mapIndex],
-        labels: [...currentLabels, nextLabel],
-      };
-      return { ...prev, map: updatedMap };
-    });
+    updatedMap[mapIndex] = {
+      ...updatedMap[mapIndex],
+      labels: [...currentLabels, nextLabel],
+    };
+    updateGroup({ ...group, map: updatedMap });
   };
 
   const removeLabel = (mapIndex: number, labelIndex: number) => {
-    setLocalGroup((prev) => {
-      const updatedMap = [...prev.map];
-      const updatedLabels = updatedMap[mapIndex].labels.filter(
-        (_, index) => index !== labelIndex
-      );
+    const updatedMap = [...group.map];
+    const labelToRemove = updatedMap[mapIndex].labels[labelIndex];
+    const updatedLabels = updatedMap[mapIndex].labels.filter(
+      (_, index) => index !== labelIndex
+    );
 
-      // Update any questions that were using the removed label
-      const updatedQuestions = updatedMap[mapIndex].questions.map((q) => ({
-        ...q,
-        answer:
-          q.answer === updatedMap[mapIndex].labels[labelIndex] ? "" : q.answer,
-      }));
+    // Update any questions that were using the removed label
+    const updatedQuestions = updatedMap[mapIndex].questions.map((q) => ({
+      ...q,
+      answer: q.answer === labelToRemove ? "" : q.answer,
+    }));
 
-      updatedMap[mapIndex] = {
-        ...updatedMap[mapIndex],
-        labels: updatedLabels,
-        questions: updatedQuestions,
-      };
-      return { ...prev, map: updatedMap };
-    });
+    updatedMap[mapIndex] = {
+      ...updatedMap[mapIndex],
+      labels: updatedLabels,
+      questions: updatedQuestions,
+    };
+    updateGroup({ ...group, map: updatedMap });
   };
 
   const handleQuestionChange = (
@@ -88,26 +70,24 @@ const MapGroupForm = ({ group, updateGroup }: MapGroupFormProps) => {
     field: string,
     value: string
   ) => {
-    setLocalGroup((prev) => {
-      const updatedMap = [...prev.map];
-      const updatedQuestions = [...updatedMap[mapIndex].questions];
-      updatedQuestions[questionIndex] = {
-        ...updatedQuestions[questionIndex],
-        [field]: value,
-      };
-      updatedMap[mapIndex] = {
-        ...updatedMap[mapIndex],
-        questions: updatedQuestions,
-      };
-      return { ...prev, map: updatedMap };
-    });
+    const updatedMap = [...group.map];
+    const updatedQuestions = [...updatedMap[mapIndex].questions];
+    updatedQuestions[questionIndex] = {
+      ...updatedQuestions[questionIndex],
+      [field]: value,
+    };
+    updatedMap[mapIndex] = {
+      ...updatedMap[mapIndex],
+      questions: updatedQuestions,
+    };
+    updateGroup({ ...group, map: updatedMap });
   };
 
   const addMapItem = () => {
-    setLocalGroup((prev) => ({
-      ...prev,
+    const updatedGroup = {
+      ...group,
       map: [
-        ...prev.map,
+        ...group.map,
         {
           title: "",
           image: "",
@@ -116,56 +96,54 @@ const MapGroupForm = ({ group, updateGroup }: MapGroupFormProps) => {
           questions: [],
         },
       ],
-    }));
+    };
+    updateGroup(updatedGroup);
   };
 
   const removeMapItem = (mapIndex: number) => {
-    setLocalGroup((prev) => ({
-      ...prev,
-      map: prev.map.filter((_, index) => index !== mapIndex),
-    }));
+    const updatedGroup = {
+      ...group,
+      map: group.map.filter((_, index) => index !== mapIndex),
+    };
+    updateGroup(updatedGroup);
   };
 
   const addQuestion = (mapIndex: number) => {
-    setLocalGroup((prev) => {
-      const updatedMap = [...prev.map];
-      const currentQuestions = updatedMap[mapIndex].questions;
+    const updatedMap = [...group.map];
+    const currentQuestions = updatedMap[mapIndex].questions;
 
-      updatedMap[mapIndex] = {
-        ...updatedMap[mapIndex],
-        questions: [
-          ...currentQuestions,
-          {
-            question_number: 0, // Will be set globally by PartForm
-            question: "",
-            answer: "",
-            input_type: "radio",
-            min_selection: 1,
-            max_selection: 1,
-          },
-        ],
-      };
-      return { ...prev, map: updatedMap };
-    });
+    updatedMap[mapIndex] = {
+      ...updatedMap[mapIndex],
+      questions: [
+        ...currentQuestions,
+        {
+          question_number: 1, // Temporary number - will be renumbered globally
+          question: "",
+          answer: "",
+          input_type: "radio",
+          min_selection: 1,
+          max_selection: 1,
+        },
+      ],
+    };
+    updateGroup({ ...group, map: updatedMap });
   };
 
   const removeQuestion = (mapIndex: number, questionIndex: number) => {
-    setLocalGroup((prev) => {
-      const updatedMap = [...prev.map];
-      const updatedQuestions = updatedMap[mapIndex].questions.filter(
-        (_, index) => index !== questionIndex
-      );
-      updatedMap[mapIndex] = {
-        ...updatedMap[mapIndex],
-        questions: updatedQuestions,
-      };
-      return { ...prev, map: updatedMap };
-    });
+    const updatedMap = [...group.map];
+    const updatedQuestions = updatedMap[mapIndex].questions.filter(
+      (_, index) => index !== questionIndex
+    );
+    updatedMap[mapIndex] = {
+      ...updatedMap[mapIndex],
+      questions: updatedQuestions,
+    };
+    updateGroup({ ...group, map: updatedMap });
   };
 
   return (
-    <div className="space-y-6" onBlur={handleBlur}>
-      {localGroup.map.map((mapItem, mapIndex) => (
+    <div className="space-y-6">
+      {group.map.map((mapItem, mapIndex) => (
         <div key={mapIndex} className="bg-base-100 p-4 rounded-lg">
           <div className="flex justify-between items-center mb-3">
             <h4 className="font-medium">Map Section {mapIndex + 1}</h4>
@@ -201,7 +179,6 @@ const MapGroupForm = ({ group, updateGroup }: MapGroupFormProps) => {
                   Upload Image (Optional)
                 </span>
               </label>
-
               <ImageUploader
                 onUploaded={(url) =>
                   handleMapItemChange(mapIndex, "image", url)
@@ -218,7 +195,7 @@ const MapGroupForm = ({ group, updateGroup }: MapGroupFormProps) => {
             </label>
             <textarea
               className="textarea textarea-bordered border-black"
-              placeholder="Enter instructions for the map (e.g., 'Label the map below. Write the correct letter, A–H, next to Questions 16–20')"
+              placeholder="Enter instructions for the map"
               value={mapItem.instructions || ""}
               onChange={(e) =>
                 handleMapItemChange(mapIndex, "instructions", e.target.value)
@@ -245,7 +222,7 @@ const MapGroupForm = ({ group, updateGroup }: MapGroupFormProps) => {
             <div className="flex flex-wrap gap-2">
               {mapItem.labels.map((label, labelIndex) => (
                 <div
-                  key={label}
+                  key={`${label}-${labelIndex}`}
                   className="flex items-center gap-2 bg-base-200 px-3 py-1 rounded"
                 >
                   <span>{label}</span>
@@ -277,7 +254,7 @@ const MapGroupForm = ({ group, updateGroup }: MapGroupFormProps) => {
               <div key={questionIndex} className="bg-base-200 p-4 rounded-lg">
                 <div className="flex justify-between items-center mb-3">
                   <h6 className="font-medium">
-                    Question {question.question_number}
+                    Question {question.question_number || questionIndex + 1}
                   </h6>
                   <button
                     type="button"

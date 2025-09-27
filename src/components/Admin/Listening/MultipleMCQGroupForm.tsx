@@ -3,48 +3,35 @@ import { MultipleMCQGroup, MultipleMCQItem } from "./listeningTest";
 
 interface MultipleMCQGroupFormProps {
   questions: MultipleMCQItem[];
-  instruction?: string;
-  onUpdate: (data: {
-    questions: MultipleMCQItem[];
-    instruction: string;
-  }) => void;
+  onUpdate: (questions: MultipleMCQItem[]) => void;
 }
 
 const MultipleMCQGroupForm = ({
   questions,
-  instruction = "",
   onUpdate,
 }: MultipleMCQGroupFormProps) => {
   const [localQuestions, setLocalQuestions] =
     useState<MultipleMCQItem[]>(questions);
-  const [localInstruction, setLocalInstruction] = useState<string>(instruction);
 
-  const updateParent = (
-    newQuestions: MultipleMCQItem[] = localQuestions,
-    newInstruction: string = localInstruction
-  ) => {
-    onUpdate({ questions: newQuestions, instruction: newInstruction });
-  };
+  // Sync local state when props change
+  React.useEffect(() => {
+    setLocalQuestions(questions);
+  }, [questions]);
 
-  const handleInstructionChange = (value: string) => {
-    setLocalInstruction(value);
-    updateParent(localQuestions, value);
+  const updateParent = (newQuestions: MultipleMCQItem[]) => {
+    setLocalQuestions(newQuestions);
+    onUpdate(newQuestions);
   };
 
   const updateQuestion = (index: number, updatedQuestion: MultipleMCQItem) => {
     const newQuestions = [...localQuestions];
     newQuestions[index] = updatedQuestion;
-    setLocalQuestions(newQuestions);
     updateParent(newQuestions);
   };
 
   const addQuestion = () => {
     const newQuestion: MultipleMCQItem = {
-      question_numbers: [
-        localQuestions.length > 0
-          ? Math.max(...localQuestions.flatMap((q) => q.question_numbers)) + 1
-          : 1,
-      ],
+      question_numbers: [1, 2], // Temporary - will be renumbered globally
       question: "",
       options: [
         { label: "A", value: "" },
@@ -59,13 +46,11 @@ const MultipleMCQGroupForm = ({
       correct_mapping: ["A", "B"],
     };
     const newQuestions = [...localQuestions, newQuestion];
-    setLocalQuestions(newQuestions);
     updateParent(newQuestions);
   };
 
   const removeQuestion = (index: number) => {
     const newQuestions = localQuestions.filter((_, i) => i !== index);
-    setLocalQuestions(newQuestions);
     updateParent(newQuestions);
   };
 
@@ -133,31 +118,25 @@ const MultipleMCQGroupForm = ({
     updateQuestion(questionIndex, updatedQuestion);
   };
 
+  const addQuestionNumber = (questionIndex: number) => {
+    const updatedQuestion = { ...localQuestions[questionIndex] };
+    const newQuestionNumbers = [...updatedQuestion.question_numbers, 1]; // Temporary - will be renumbered globally
+    updatedQuestion.question_numbers = newQuestionNumbers;
+    // Add corresponding correct mapping
+    updatedQuestion.correct_mapping.push("A");
+    updateQuestion(questionIndex, updatedQuestion);
+  };
+
+  const removeQuestionNumber = (questionIndex: number, numberIndex: number) => {
+    const updatedQuestion = { ...localQuestions[questionIndex] };
+    updatedQuestion.question_numbers.splice(numberIndex, 1);
+    // Remove corresponding correct mapping
+    updatedQuestion.correct_mapping.splice(numberIndex, 1);
+    updateQuestion(questionIndex, updatedQuestion);
+  };
+
   return (
     <div className="space-y-6">
-      {/* Group Instruction - Only show if there are questions */}
-      {localQuestions.length > 0 && (
-        <div className="card bg-base-100 p-4 border">
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text font-semibold">
-                Group Instruction
-                <span className="text-gray-500 text-sm ml-2">
-                  (This instruction will apply to all questions below)
-                </span>
-              </span>
-            </label>
-            <textarea
-              className="textarea textarea-bordered h-24"
-              value={localInstruction}
-              onChange={(e) => handleInstructionChange(e.target.value)}
-              placeholder="Enter instructions for this group of multiple MCQ questions..."
-              rows={3}
-            />
-          </div>
-        </div>
-      )}
-
       {/* Questions List */}
       {localQuestions.map((question, questionIndex) => (
         <div key={questionIndex} className="card bg-base-100 p-4 border">
@@ -191,49 +170,40 @@ const MultipleMCQGroupForm = ({
               />
             </div>
 
-            {/* Question Numbers */}
+            {/* Question Numbers - Display Only */}
             <div className="form-control">
               <label className="label">
                 <span className="label-text font-semibold">
-                  Question Numbers
+                  Question Numbers (Auto-assigned)
                 </span>
               </label>
-              <div className="flex gap-2 flex-wrap">
+              <div className="flex gap-2 flex-wrap items-center">
                 {question.question_numbers.map((num, numIndex) => (
-                  <input
-                    key={numIndex}
-                    type="number"
-                    className="input input-bordered w-20"
-                    value={num}
-                    onChange={(e) => {
-                      const newNumbers = [...question.question_numbers];
-                      newNumbers[numIndex] = parseInt(e.target.value);
-                      updateQuestionField(
-                        questionIndex,
-                        "question_numbers",
-                        newNumbers
-                      );
-                    }}
-                  />
+                  <div key={numIndex} className="flex items-center gap-2">
+                    <div className="bg-base-200 rounded px-3 py-1">
+                      <span className="font-medium">
+                        Q{num || numIndex + 1}
+                      </span>
+                    </div>
+                    {question.question_numbers.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          removeQuestionNumber(questionIndex, numIndex)
+                        }
+                        className="btn btn-error btn-xs"
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
                 ))}
                 <button
                   type="button"
-                  onClick={() => {
-                    const newNumbers = [
-                      ...question.question_numbers,
-                      question.question_numbers.length > 0
-                        ? Math.max(...question.question_numbers) + 1
-                        : 1,
-                    ];
-                    updateQuestionField(
-                      questionIndex,
-                      "question_numbers",
-                      newNumbers
-                    );
-                  }}
+                  onClick={() => addQuestionNumber(questionIndex)}
                   className="btn btn-sm btn-outline"
                 >
-                  +
+                  Add Question Number
                 </button>
               </div>
             </div>
@@ -358,24 +328,8 @@ const MultipleMCQGroupForm = ({
                         </option>
                       ))}
                     </select>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        removeCorrectMapping(questionIndex, mappingIndex)
-                      }
-                      className="btn btn-error btn-sm"
-                    >
-                      Remove
-                    </button>
                   </div>
                 ))}
-                <button
-                  type="button"
-                  onClick={() => addCorrectMapping(questionIndex)}
-                  className="btn btn-outline btn-sm"
-                >
-                  Add Correct Answer
-                </button>
               </div>
             </div>
           </div>

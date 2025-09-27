@@ -3,44 +3,35 @@ import { BoxMatchingGroup, BoxMatchingItem } from "./listeningTest";
 
 interface BoxMatchingGroupFormProps {
   questions: BoxMatchingItem[];
-  instruction?: string;
-  onUpdate: (data: {
-    questions: BoxMatchingItem[];
-    instruction: string;
-  }) => void;
+  onUpdate: (questions: BoxMatchingItem[]) => void;
 }
 
 const BoxMatchingGroupForm = ({
   questions,
-  instruction = "",
   onUpdate,
 }: BoxMatchingGroupFormProps) => {
   const [localQuestions, setLocalQuestions] =
     useState<BoxMatchingItem[]>(questions);
-  const [localInstruction, setLocalInstruction] = useState<string>(instruction);
 
-  const updateParent = (
-    newQuestions: BoxMatchingItem[] = localQuestions,
-    newInstruction: string = localInstruction
-  ) => {
-    onUpdate({ questions: newQuestions, instruction: newInstruction });
-  };
+  // Sync local state when props change
+  React.useEffect(() => {
+    setLocalQuestions(questions);
+  }, [questions]);
 
-  const handleInstructionChange = (value: string) => {
-    setLocalInstruction(value);
-    updateParent(localQuestions, value);
+  const updateParent = (newQuestions: BoxMatchingItem[]) => {
+    setLocalQuestions(newQuestions);
+    onUpdate(newQuestions);
   };
 
   const updateQuestion = (index: number, updatedQuestion: BoxMatchingItem) => {
     const newQuestions = [...localQuestions];
     newQuestions[index] = updatedQuestion;
-    setLocalQuestions(newQuestions);
     updateParent(newQuestions);
   };
 
   const addQuestion = () => {
     const newQuestion: BoxMatchingItem = {
-      instructions: "", // This is now for individual question instructions if needed
+      instructions: "",
       options_title: "",
       question_title: "",
       options: [
@@ -54,7 +45,7 @@ const BoxMatchingGroupForm = ({
         { label: "H", value: "" },
       ],
       questions: [
-        { question_number: 1, topic: "", answer: "" },
+        { question_number: 1, topic: "", answer: "" }, // Temporary - will be renumbered globally
         { question_number: 2, topic: "", answer: "" },
         { question_number: 3, topic: "", answer: "" },
         { question_number: 4, topic: "", answer: "" },
@@ -63,13 +54,11 @@ const BoxMatchingGroupForm = ({
       ],
     };
     const newQuestions = [...localQuestions, newQuestion];
-    setLocalQuestions(newQuestions);
     updateParent(newQuestions);
   };
 
   const removeQuestion = (index: number) => {
     const newQuestions = localQuestions.filter((_, i) => i !== index);
-    setLocalQuestions(newQuestions);
     updateParent(newQuestions);
   };
 
@@ -128,9 +117,9 @@ const BoxMatchingGroupForm = ({
 
   const addBoxQuestion = (questionIndex: number) => {
     const updatedQuestion = { ...localQuestions[questionIndex] };
-    const nextNumber = updatedQuestion.questions.length + 1;
+    // Don't set a specific question number - let the global system handle it
     updatedQuestion.questions.push({
-      question_number: nextNumber,
+      question_number: 1, // Temporary - will be renumbered globally
       topic: "",
       answer: "",
     });
@@ -143,38 +132,12 @@ const BoxMatchingGroupForm = ({
   ) => {
     const updatedQuestion = { ...localQuestions[questionIndex] };
     updatedQuestion.questions.splice(boxQuestionIndex, 1);
-    updatedQuestion.questions.forEach((q, index) => {
-      q.question_number = index + 1;
-    });
+    // Don't renumber locally - let the global system handle it
     updateQuestion(questionIndex, updatedQuestion);
   };
 
   return (
     <div className="space-y-6">
-      {/* Group Instruction - Only show if there are questions */}
-      {localQuestions.length > 0 && (
-        <div className="card bg-base-100 p-4 border">
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text font-semibold">
-                Group Instruction
-                <span className="text-gray-500 text-sm ml-2">
-                  (This instruction will apply to all box matching questions
-                  below)
-                </span>
-              </span>
-            </label>
-            <textarea
-              className="textarea textarea-bordered h-24"
-              value={localInstruction}
-              onChange={(e) => handleInstructionChange(e.target.value)}
-              placeholder="Enter instructions for this group of box matching questions..."
-              rows={3}
-            />
-          </div>
-        </div>
-      )}
-
       {/* Questions List */}
       {localQuestions.map((question, questionIndex) => (
         <div key={questionIndex} className="card bg-base-100 p-4 border">
@@ -198,8 +161,7 @@ const BoxMatchingGroupForm = ({
                 <span className="label-text font-semibold">
                   Question-specific Instructions
                   <span className="text-gray-500 text-sm ml-2">
-                    (Optional - overrides group instruction for this question
-                    only)
+                    (Optional - additional instructions for this question only)
                   </span>
                 </span>
               </label>
@@ -316,19 +278,11 @@ const BoxMatchingGroupForm = ({
                     key={boxQuestionIndex}
                     className="flex gap-2 items-center"
                   >
-                    <input
-                      type="number"
-                      className="input input-bordered w-20"
-                      value={boxQuestion.question_number}
-                      onChange={(e) =>
-                        updateBoxQuestion(
-                          questionIndex,
-                          boxQuestionIndex,
-                          "question_number",
-                          parseInt(e.target.value)
-                        )
-                      }
-                    />
+                    <div className="w-20 flex items-center justify-center bg-base-200 rounded px-2 py-1">
+                      <span className="font-medium">
+                        Q{boxQuestion.question_number || boxQuestionIndex + 1}
+                      </span>
+                    </div>
                     <input
                       type="text"
                       className="input input-bordered flex-1"

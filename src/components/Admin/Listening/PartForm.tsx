@@ -4,6 +4,7 @@ import QuestionGroupEditor from "./QuestionGroupEditor";
 interface PartFormProps {
   part: TestPart;
   partIndex: number;
+  allParts: TestPart[]; // Add this to get global context
   updatePart: (index: number, part: TestPart) => void;
   removePart: (index: number) => void;
   isLast: boolean;
@@ -12,58 +13,61 @@ interface PartFormProps {
 const PartForm = ({
   part,
   partIndex,
+  allParts,
   updatePart,
   removePart,
   isLast,
 }: PartFormProps) => {
-  // Helper function to get total question count across all question groups
-  const getTotalQuestionCount = () => {
-    return part.questions.reduce((total, group) => {
+  // Get the next question number across ALL parts
+  const getNextGlobalQuestionNumber = () => {
+    let maxQuestionNumber = 0;
+
+    // Find the highest question number across all parts
+    part.questions.forEach((group) => {
       if ("fill_in_the_blanks_with_subtitle" in group) {
-        return (
-          total +
-          group.fill_in_the_blanks_with_subtitle.reduce(
-            (sectionTotal, section) => {
-              return sectionTotal + section.questions.length;
-            },
-            0
-          )
-        );
+        group.fill_in_the_blanks_with_subtitle.forEach((section) => {
+          section.questions.forEach((question) => {
+            maxQuestionNumber = Math.max(
+              maxQuestionNumber,
+              question.question_number || 0
+            );
+          });
+        });
       } else if ("questions" in group && "instruction" in group) {
-        // Updated for new MCQ structure
-        return (
-          total + (Array.isArray(group.questions) ? group.questions.length : 0)
-        );
+        group.questions?.forEach((question) => {
+          maxQuestionNumber = Math.max(
+            maxQuestionNumber,
+            question.question_number || 0
+          );
+        });
       } else if ("multiple_mcq" in group && "instruction" in group) {
-        // Updated for new Multiple MCQ structure
-        return (
-          total +
-          (Array.isArray(group.multiple_mcq)
-            ? group.multiple_mcq.reduce((multipleTotal, multipleItem) => {
-                return multipleTotal + multipleItem.question_numbers.length;
-              }, 0)
-            : 0)
-        );
+        group.multiple_mcq?.forEach((question) => {
+          question.question_numbers?.forEach((num) => {
+            maxQuestionNumber = Math.max(maxQuestionNumber, num || 0);
+          });
+        });
       } else if ("box_matching" in group && "instruction" in group) {
-        // Updated for new Box Matching structure
-        return (
-          total +
-          (Array.isArray(group.box_matching)
-            ? group.box_matching.reduce((boxTotal, boxItem) => {
-                return boxTotal + boxItem.questions.length;
-              }, 0)
-            : 0)
-        );
+        group.box_matching?.forEach((question) => {
+          question.questions?.forEach((q) => {
+            maxQuestionNumber = Math.max(
+              maxQuestionNumber,
+              q.question_number || 0
+            );
+          });
+        });
       } else if ("map" in group) {
-        return (
-          total +
-          group.map.reduce((mapTotal, mapItem) => {
-            return mapTotal + mapItem.questions.length;
-          }, 0)
-        );
+        group.map.forEach((mapItem) => {
+          mapItem.questions?.forEach((question) => {
+            maxQuestionNumber = Math.max(
+              maxQuestionNumber,
+              question.question_number || 0
+            );
+          });
+        });
       }
-      return total;
-    }, 0);
+    });
+
+    return maxQuestionNumber + 1;
   };
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,7 +77,7 @@ const PartForm = ({
   const addQuestionGroup = (
     type: "fill" | "mcq" | "multiple_mcq" | "box_matching" | "map"
   ) => {
-    const nextQuestionNumber = getTotalQuestionCount() + 1;
+    const nextQuestionNumber = getNextGlobalQuestionNumber();
     let newGroup;
 
     switch (type) {
@@ -90,7 +94,6 @@ const PartForm = ({
         };
         break;
       case "mcq":
-        // New structure with instruction
         newGroup = {
           instruction: "",
           questions: [
@@ -111,7 +114,6 @@ const PartForm = ({
         };
         break;
       case "multiple_mcq":
-        // New structure with instruction
         newGroup = {
           instruction: "",
           multiple_mcq: [
@@ -134,12 +136,11 @@ const PartForm = ({
         };
         break;
       case "box_matching":
-        // New structure with instruction
         newGroup = {
           instruction: "",
           box_matching: [
             {
-              instructions: "", // This is now for individual question instructions
+              instructions: "",
               options_title: "",
               question_title: "",
               options: [
@@ -152,38 +153,11 @@ const PartForm = ({
                 { label: "G", value: "" },
                 { label: "H", value: "" },
               ],
-              questions: [
-                {
-                  question_number: nextQuestionNumber,
-                  topic: "",
-                  answer: "",
-                },
-                {
-                  question_number: nextQuestionNumber + 1,
-                  topic: "",
-                  answer: "",
-                },
-                {
-                  question_number: nextQuestionNumber + 2,
-                  topic: "",
-                  answer: "",
-                },
-                {
-                  question_number: nextQuestionNumber + 3,
-                  topic: "",
-                  answer: "",
-                },
-                {
-                  question_number: nextQuestionNumber + 4,
-                  topic: "",
-                  answer: "",
-                },
-                {
-                  question_number: nextQuestionNumber + 5,
-                  topic: "",
-                  answer: "",
-                },
-              ],
+              questions: Array.from({ length: 6 }, (_, i) => ({
+                question_number: nextQuestionNumber + i,
+                topic: "",
+                answer: "",
+              })),
             },
           ],
         };
