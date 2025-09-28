@@ -41,6 +41,7 @@ const ListeningCreationPage = () => {
     return parts.map((part) => ({
       ...part,
       questions: part.questions.map((group) => {
+        // Handle FillBlanksGroup
         if ("fill_in_the_blanks_with_subtitle" in group) {
           return {
             ...group,
@@ -53,16 +54,23 @@ const ListeningCreationPage = () => {
                 })),
               })),
           };
-        } else if ("questions" in group && "instruction" in group) {
+        }
+        // Handle McqGroup
+        else if ("questions" in group && "instruction" in group) {
+          // Ensure questions is an array before mapping
+          const questionsArray = Array.isArray(group.questions)
+            ? group.questions
+            : [];
           return {
             ...group,
-            questions:
-              group.questions?.map((question) => ({
-                ...question,
-                question_number: globalQuestionNumber++,
-              })) || [],
+            questions: questionsArray.map((question) => ({
+              ...question,
+              question_number: globalQuestionNumber++,
+            })),
           };
-        } else if ("multiple_mcq" in group && "instruction" in group) {
+        }
+        // Handle MultipleMcqGroup
+        else if ("multiple_mcq" in group && "instruction" in group) {
           return {
             ...group,
             multiple_mcq: Array.isArray(group.multiple_mcq)
@@ -79,33 +87,42 @@ const ListeningCreationPage = () => {
                 })
               : [],
           };
-        } else if ("box_matching" in group && "instruction" in group) {
+        }
+        // Handle BoxMatchingGroup
+        else if ("box_matching" in group && "instruction" in group) {
           return {
             ...group,
             box_matching: Array.isArray(group.box_matching)
               ? group.box_matching.map((question) => ({
                   ...question,
-                  questions:
-                    question.questions?.map((q) => ({
-                      ...q,
-                      question_number: globalQuestionNumber++,
-                    })) || [],
+                  questions: Array.isArray(question.questions)
+                    ? question.questions.map((q) => ({
+                        ...q,
+                        question_number: globalQuestionNumber++,
+                      }))
+                    : [],
                 }))
               : [],
           };
-        } else if ("map" in group) {
+        }
+        // Handle MapGroup
+        else if ("map" in group) {
           return {
             ...group,
-            map: group.map.map((mapItem) => ({
-              ...mapItem,
-              questions:
-                mapItem.questions?.map((question) => ({
-                  ...question,
-                  question_number: globalQuestionNumber++,
-                })) || [],
-            })),
+            map: Array.isArray(group.map)
+              ? group.map.map((mapItem) => ({
+                  ...mapItem,
+                  questions: Array.isArray(mapItem.questions)
+                    ? mapItem.questions.map((question) => ({
+                        ...question,
+                        question_number: globalQuestionNumber++,
+                      }))
+                    : [],
+                }))
+              : [],
           };
         }
+        // Return group as-is if no recognized type
         return group;
       }),
     }));
@@ -134,6 +151,7 @@ const ListeningCreationPage = () => {
     ];
     updateTestWithRenumbering({ ...test, parts: newParts });
   };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -263,7 +281,7 @@ const ListeningCreationPage = () => {
               key={partIndex}
               part={part}
               partIndex={partIndex}
-              allParts={test.parts} // Add this line
+              allParts={test.parts}
               updatePart={updatePart}
               removePart={removePart}
               isLast={partIndex === test.parts.length - 1}

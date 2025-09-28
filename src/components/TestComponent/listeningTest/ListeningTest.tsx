@@ -62,14 +62,14 @@ const ListeningTest: React.FC<any> = ({ test }) => {
           });
         }
         if (questionSet.multiple_mcq) {
-          questionSet.multiple_mcq.questions.forEach((q: any) => {
+          questionSet.multiple_mcq.forEach((q: any) => {
             q.question_numbers.forEach((num: number) => {
               questionNumbers.push(num);
             });
           });
         }
         if (questionSet.box_matching) {
-          questionSet.box_matching.questions.forEach((q: any) => {
+          questionSet.box_matching.forEach((q: any) => {
             q.questions.forEach((boxQuestion: any) => {
               questionNumbers.push(boxQuestion.question_number);
             });
@@ -120,7 +120,7 @@ const ListeningTest: React.FC<any> = ({ test }) => {
           });
         }
         if (questionSet.multiple_mcq) {
-          questionSet.multiple_mcq.questions.forEach((q: any) => {
+          questionSet.multiple_mcq.forEach((q: any) => {
             q.question_numbers.forEach((num: number) => {
               initialAnswers[`${num}`] = {
                 value: "",
@@ -132,7 +132,7 @@ const ListeningTest: React.FC<any> = ({ test }) => {
           });
         }
         if (questionSet.box_matching) {
-          questionSet.box_matching.questions.forEach((q: any) => {
+          questionSet.box_matching.forEach((q: any) => {
             q.questions.forEach((boxQuestion: any) => {
               initialAnswers[`${boxQuestion.question_number}`] = {
                 value: "",
@@ -323,6 +323,7 @@ const ListeningTest: React.FC<any> = ({ test }) => {
                 <div key={index}>
                   {questionSet.fill_in_the_blanks_with_subtitle && (
                     <SubFillInTheBlanks
+                      instructions={questionSet.instruction}
                       question={questionSet.fill_in_the_blanks_with_subtitle}
                       handleAnswerChange={handleAnswerChange}
                       handleQuestionFocus={handleQuestionFocus}
@@ -330,6 +331,7 @@ const ListeningTest: React.FC<any> = ({ test }) => {
                   )}
                   {questionSet.mcq && (
                     <McqSingle
+                      instructions={questionSet.instruction}
                       question={questionSet.mcq.questions}
                       handleAnswerChange={handleAnswerChange}
                       handleQuestionFocus={handleQuestionFocus}
@@ -337,14 +339,16 @@ const ListeningTest: React.FC<any> = ({ test }) => {
                   )}
                   {questionSet.multiple_mcq && (
                     <McqMultiple
-                      question={questionSet.multiple_mcq.questions}
+                      instructions={questionSet.instruction}
+                      question={questionSet.multiple_mcq}
                       handleAnswerChange={handleAnswerChange}
                       handleQuestionFocus={handleQuestionFocus}
                     />
                   )}
                   {questionSet.box_matching && (
                     <BoxMatching
-                      question={questionSet.box_matching.questions}
+                      instructions={questionSet.instruction}
+                      question={questionSet.box_matching}
                       handleAnswerChange={handleAnswerChange}
                       handleQuestionFocus={handleQuestionFocus}
                     />
