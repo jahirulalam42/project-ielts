@@ -155,30 +155,7 @@ const BoxMatchingGroupForm = ({
           </div>
 
           <div className="space-y-4">
-            {/* Individual Question Instructions (Optional) */}
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text font-semibold">
-                  Question-specific Instructions
-                  <span className="text-gray-500 text-sm ml-2">
-                    (Optional - additional instructions for this question only)
-                  </span>
-                </span>
-              </label>
-              <textarea
-                className="textarea textarea-bordered"
-                value={question.instructions}
-                onChange={(e) =>
-                  updateQuestionField(
-                    questionIndex,
-                    "instructions",
-                    e.target.value
-                  )
-                }
-                placeholder="Enter question-specific instructions (optional)..."
-                rows={2}
-              />
-            </div>
+            {/* Group-level instruction is handled in the parent; per-item instructions removed to avoid duplication */}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="form-control">

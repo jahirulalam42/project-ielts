@@ -1,6 +1,7 @@
 export type QuestionGroup =
   | FillBlanksGroup
   | MCQGroup
+  | MCQGroupWithInstruction
   | MultipleMCQGroup
   | MapGroup
   | BoxMatchingGroup;
@@ -45,6 +46,12 @@ export interface FillQuestion {
 // MCQ Type
 export interface MCQGroup {
   mcq: MCQItem[];
+}
+
+// New MCQ structure with instruction
+export interface MCQGroupWithInstruction {
+  instruction: string;
+  questions: MCQItem[];
 }
 
 export interface MCQItem {
@@ -113,7 +120,7 @@ export interface BoxMatchingGroup {
 }
 
 export interface BoxMatchingItem {
-  instructions: string;
+  instructions?: string;
   options_title?: string;
   question_title?: string;
   options: {

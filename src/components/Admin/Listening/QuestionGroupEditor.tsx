@@ -31,11 +31,11 @@ const QuestionGroupEditor = ({
   };
 
   // Handle MCQ updates with new structure (instruction + questions)
-  const handleMCQUpdate = (questions: MCQItem[], instruction?: string) => {
+  const handleMCQUpdate = (data: { questions: MCQItem[]; instruction: string }) => {
     const updatedGroup = {
-      instruction: instruction || (group as any).instruction || "",
-      questions: questions,
-    };
+      instruction: data?.instruction ?? (group as any).instruction ?? "",
+      questions: data?.questions ?? [],
+    } as QuestionGroup;
     updateGroup(groupIndex, updatedGroup);
   };
 
@@ -50,9 +50,18 @@ const QuestionGroupEditor = ({
 
   // Handle Box Matching updates with new structure (instruction + box_matching)
   const handleBoxMatchingUpdate = (questions: any[], instruction?: string) => {
+    // Remove per-item 'instructions' to avoid duplicate instructions
+    const cleaned = questions.map((item: any) => {
+      if (item && typeof item === "object" && "instructions" in item) {
+        const { instructions, ...rest } = item as any;
+        return rest;
+      }
+      return item;
+    });
+
     const updatedGroup = {
       instruction: instruction || (group as any).instruction || "",
-      box_matching: questions,
+      box_matching: cleaned,
     };
     updateGroup(groupIndex, updatedGroup);
   };
@@ -84,9 +93,7 @@ const QuestionGroupEditor = ({
           </div>
           <MCQGroupForm
             questions={(group as any).questions || []}
-            onUpdate={(questions) =>
-              handleMCQUpdate(questions, (group as any).instruction)
-            }
+            onUpdate={handleMCQUpdate}
           />
         </div>
       );
@@ -165,7 +172,7 @@ const QuestionGroupEditor = ({
       return (
         <MCQGroupForm
           questions={(group as any).mcq || []}
-          onUpdate={handleMCQUpdate}
+          onUpdate={(data) => handleMCQUpdate(data)}
         />
       );
     }
