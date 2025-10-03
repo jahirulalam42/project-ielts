@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { MCQItem } from "./listeningTest";
 
 interface MCQGroupFormProps {
@@ -14,6 +14,11 @@ const MCQGroupForm = ({
 }: MCQGroupFormProps) => {
   const [localQuestions, setLocalQuestions] = useState<MCQItem[]>(questions);
   const [localInstruction, setLocalInstruction] = useState<string>(instruction);
+
+  // Sync local instruction when prop changes
+  React.useEffect(() => {
+    setLocalInstruction(instruction);
+  }, [instruction]);
 
   const updateParent = (
     newQuestions: MCQItem[] = localQuestions,
@@ -44,14 +49,14 @@ const MCQGroupForm = ({
 
     const updatedQuestions = [...localQuestions, newQuestion];
     setLocalQuestions(updatedQuestions);
-    updateParent(updatedQuestions);
+    updateParent(updatedQuestions, localInstruction);
   };
 
   const updateQuestion = (index: number, field: keyof MCQItem, value: any) => {
     const updatedQuestions = [...localQuestions];
     updatedQuestions[index] = { ...updatedQuestions[index], [field]: value };
     setLocalQuestions(updatedQuestions);
-    updateParent(updatedQuestions);
+    updateParent(updatedQuestions, localInstruction);
   };
 
   const updateOption = (qIndex: number, optIndex: number, value: string) => {
@@ -60,7 +65,7 @@ const MCQGroupForm = ({
     updatedOptions[optIndex] = { ...updatedOptions[optIndex], value };
     updatedQuestions[qIndex].options = updatedOptions;
     setLocalQuestions(updatedQuestions);
-    updateParent(updatedQuestions);
+    updateParent(updatedQuestions, localInstruction);
   };
 
   const addOption = (qIndex: number) => {
@@ -74,7 +79,7 @@ const MCQGroupForm = ({
     ];
 
     setLocalQuestions(updatedQuestions);
-    updateParent(updatedQuestions);
+    updateParent(updatedQuestions, localInstruction);
   };
 
   const removeOption = (qIndex: number, optIndex: number) => {
@@ -83,7 +88,7 @@ const MCQGroupForm = ({
       (_, i) => i !== optIndex
     );
     setLocalQuestions(updatedQuestions);
-    updateParent(updatedQuestions);
+    updateParent(updatedQuestions, localInstruction);
   };
 
   const removeQuestion = (index: number) => {
@@ -94,33 +99,11 @@ const MCQGroupForm = ({
       question_number: i + 1,
     }));
     setLocalQuestions(renumberedQuestions);
-    updateParent(renumberedQuestions);
+    updateParent(renumberedQuestions, localInstruction);
   };
 
   return (
     <div className="space-y-6">
-      {/* Instruction Section - Only show if there are questions */}
-      {localQuestions.length > 0 && (
-        <div className="bg-base-100 p-4 rounded-lg">
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text font-semibold text-black">
-                Group Instruction
-                <span className="text-gray-500 text-sm ml-2">
-                  (This instruction will apply to all questions below)
-                </span>
-              </span>
-            </label>
-            <textarea
-              className="textarea textarea-bordered border-black h-24"
-              value={localInstruction}
-              onChange={(e) => handleInstructionChange(e.target.value)}
-              placeholder="Enter instructions for this group of questions..."
-            />
-          </div>
-        </div>
-      )}
-
       {/* Questions List */}
       {localQuestions.map((question, qIndex) => (
         <div key={qIndex} className="bg-base-100 p-4 rounded-lg">

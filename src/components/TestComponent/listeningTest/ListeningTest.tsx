@@ -57,7 +57,7 @@ const ListeningTest: React.FC<any> = ({ test }) => {
           );
         }
         if (questionSet.mcq) {
-          questionSet.mcq.questions.forEach((q: any) => {
+          questionSet.mcq.forEach((q: any) => {
             questionNumbers.push(q.question_number);
           });
         }
@@ -111,7 +111,7 @@ const ListeningTest: React.FC<any> = ({ test }) => {
           );
         }
         if (questionSet.mcq) {
-          questionSet.mcq.quesions.forEach((q: any) => {
+          questionSet.mcq.forEach((q: any) => {
             initialAnswers[`${q.question_number}`] = {
               value: "",
               answerText: q.answer,
@@ -332,7 +332,7 @@ const ListeningTest: React.FC<any> = ({ test }) => {
                   {questionSet.mcq && (
                     <McqSingle
                       instructions={questionSet.instruction}
-                      question={questionSet.mcq.questions}
+                      question={questionSet.mcq}
                       handleAnswerChange={handleAnswerChange}
                       handleQuestionFocus={handleQuestionFocus}
                     />

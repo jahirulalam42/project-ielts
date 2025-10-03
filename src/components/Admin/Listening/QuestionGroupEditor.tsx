@@ -30,11 +30,11 @@ const QuestionGroupEditor = ({
     updateGroup(groupIndex, updatedGroup);
   };
 
-  // Handle MCQ updates with new structure (instruction + questions)
+  // Handle MCQ updates with new structure (instruction + mcq)
   const handleMCQUpdate = (data: { questions: MCQItem[]; instruction: string }) => {
     const updatedGroup = {
       instruction: data?.instruction ?? (group as any).instruction ?? "",
-      questions: data?.questions ?? [],
+      mcq: data?.questions ?? [],
     } as QuestionGroup;
     updateGroup(groupIndex, updatedGroup);
   };
@@ -93,6 +93,7 @@ const QuestionGroupEditor = ({
           </div>
           <MCQGroupForm
             questions={(group as any).questions || []}
+            instruction={(group as any).instruction || ""}
             onUpdate={handleMCQUpdate}
           />
         </div>
@@ -172,6 +173,7 @@ const QuestionGroupEditor = ({
       return (
         <MCQGroupForm
           questions={(group as any).mcq || []}
+          instruction={(group as any).instruction || ""}
           onUpdate={(data) => handleMCQUpdate(data)}
         />
       );

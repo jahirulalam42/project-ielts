@@ -25,6 +25,7 @@ export interface TestPart {
 
 // Fill in the Blanks Type
 export interface FillBlanksGroup {
+  instruction?: string;
   fill_in_the_blanks_with_subtitle: {
     title?: string;
     subtitle?: string;
