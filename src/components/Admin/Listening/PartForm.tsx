@@ -23,48 +23,50 @@ const PartForm = ({
     let maxQuestionNumber = 0;
 
     // Find the highest question number across all parts
-    part.questions.forEach((group) => {
-      if ("fill_in_the_blanks_with_subtitle" in group) {
-        group.fill_in_the_blanks_with_subtitle.forEach((section) => {
-          section.questions.forEach((question) => {
+    allParts.forEach((currentPart) => {
+      currentPart.questions.forEach((group) => {
+        if ("fill_in_the_blanks_with_subtitle" in group) {
+          group.fill_in_the_blanks_with_subtitle.forEach((section) => {
+            section.questions.forEach((question) => {
+              maxQuestionNumber = Math.max(
+                maxQuestionNumber,
+                question.question_number || 0
+              );
+            });
+          });
+        } else if ("questions" in group && "instruction" in group) {
+          group.questions?.forEach((question) => {
             maxQuestionNumber = Math.max(
               maxQuestionNumber,
               question.question_number || 0
             );
           });
-        });
-      } else if ("questions" in group && "instruction" in group) {
-        group.questions?.forEach((question) => {
-          maxQuestionNumber = Math.max(
-            maxQuestionNumber,
-            question.question_number || 0
-          );
-        });
-      } else if ("multiple_mcq" in group && "instruction" in group) {
-        group.multiple_mcq?.forEach((question) => {
-          question.question_numbers?.forEach((num) => {
-            maxQuestionNumber = Math.max(maxQuestionNumber, num || 0);
+        } else if ("multiple_mcq" in group && "instruction" in group) {
+          group.multiple_mcq?.forEach((question) => {
+            question.question_numbers?.forEach((num) => {
+              maxQuestionNumber = Math.max(maxQuestionNumber, num || 0);
+            });
           });
-        });
-      } else if ("box_matching" in group && "instruction" in group) {
-        group.box_matching?.forEach((question) => {
-          question.questions?.forEach((q) => {
-            maxQuestionNumber = Math.max(
-              maxQuestionNumber,
-              q.question_number || 0
-            );
+        } else if ("box_matching" in group && "instruction" in group) {
+          group.box_matching?.forEach((question) => {
+            question.questions?.forEach((q) => {
+              maxQuestionNumber = Math.max(
+                maxQuestionNumber,
+                q.question_number || 0
+              );
+            });
           });
-        });
-      } else if ("map" in group) {
-        group.map.forEach((mapItem) => {
-          mapItem.questions?.forEach((question) => {
-            maxQuestionNumber = Math.max(
-              maxQuestionNumber,
-              question.question_number || 0
-            );
+        } else if ("map" in group) {
+          group.map.forEach((mapItem) => {
+            mapItem.questions?.forEach((question) => {
+              maxQuestionNumber = Math.max(
+                maxQuestionNumber,
+                question.question_number || 0
+              );
+            });
           });
-        });
-      }
+        }
+      });
     });
 
     return maxQuestionNumber + 1;
