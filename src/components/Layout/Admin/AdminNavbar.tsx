@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import userImage from "../../../../public/images/user.jpg";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { useSidebar } from "@/contexts/SidebarContext";
 import {
   FaChartBar,
   FaBook,
@@ -33,7 +34,7 @@ const AdminNavbar = () => {
   const { data } = useSession();
   const [userData, setUserData]: any = useState();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true);
+  const { desktopSidebarOpen, setDesktopSidebarOpen } = useSidebar();
 
   useEffect(() => {
     const fetchSingleUser = async () => {
@@ -422,13 +423,6 @@ const AdminNavbar = () => {
       >
         <Sidebar isDesktop={true} isCollapsed={!desktopSidebarOpen} />
       </div>
-
-      {/* Main Content Spacer */}
-      <div
-        className={`hidden lg:block transition-all duration-300 ${
-          desktopSidebarOpen ? "w-72" : "w-16"
-        }`}
-      ></div>
     </>
   );
 };
