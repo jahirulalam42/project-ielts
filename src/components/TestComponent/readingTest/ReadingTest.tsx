@@ -24,6 +24,7 @@ const ReadingTest = ({ test }: any) => {
   const [isTimeUp, setIsTimeUp] = useState(false);
   const [passageHighlights, setPassageHighlights] = useState<any[]>([]);
   const { data: session }: any = useSession();
+  const [hasStarted, setHasStarted] = useState(false);
 
   const currentPart = test.parts[currentPartIndex];
 
@@ -814,6 +815,7 @@ const ReadingTest = ({ test }: any) => {
   };
 
   useEffect(() => {
+    if (!hasStarted) return;
     if (timeLeft === 0) {
       setIsTimeUp(true);
       // handleSubmit(); // Automatically submit the test when time runs out
@@ -825,7 +827,7 @@ const ReadingTest = ({ test }: any) => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [timeLeft]);
+  }, [timeLeft, hasStarted]);
 
   const formatTime = (timeInSeconds: number) => {
     const minutes = Math.floor(timeInSeconds / 60);
@@ -839,6 +841,72 @@ const ReadingTest = ({ test }: any) => {
   return (
     <form onSubmit={handleSubmit}>
       <div className="container mx-auto p-4 min-h-screen pb-16">
+        {!hasStarted && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-neutral-900/60 backdrop-blur-sm">
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="reading-start-title"
+              className="bg-base-100 w-full max-w-lg rounded-2xl shadow-2xl border border-base-200 overflow-hidden"
+            >
+              <div className="p-6 sm:p-8">
+                <div className="flex items-start gap-4">
+                  <div className="rounded-xl bg-primary/10 text-primary p-3">
+                    {/* play icon */}
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M8 5v14l11-7L8 5z" fill="currentColor"/>
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <h2 id="reading-start-title" className="text-xl font-semibold leading-tight">
+                      Ready to begin your Reading test?
+                    </h2>
+                    <p className="mt-1 text-sm text-base-content/70">
+                      The timer will start as soon as you click <strong>Start Test</strong>.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="rounded-lg border border-base-200 p-3">
+                    <div className="text-xs uppercase tracking-wide text-base-content/60">Duration</div>
+                    <div className="text-sm font-medium">{(test && (test.duration as number)) || 60} min</div>
+                  </div>
+                  <div className="rounded-lg border border-base-200 p-3">
+                    <div className="text-xs uppercase tracking-wide text-base-content/60">Parts</div>
+                    <div className="text-sm font-medium">{test?.parts?.length || 3}</div>
+                  </div>
+                  <div className="rounded-lg border border-base-200 p-3">
+                    <div className="text-xs uppercase tracking-wide text-base-content/60">Questions</div>
+                    <div className="text-sm font-medium">{Object.values(partQuestions || {}).reduce((a: number, v: any) => a + (Array.isArray(v) ? v.length : 0), 0)}</div>
+                  </div>
+                </div>
+
+                <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-end gap-2">
+                  <button
+                    type="button"
+                    className="btn btn-ghost"
+                    onClick={() => { if (typeof window !== 'undefined') window.history.back(); }}
+                  >
+                    Back
+                  </button>
+                  <button
+                    autoFocus
+                    type="button"
+                    className="btn btn-primary shadow-md"
+                    onClick={() => {
+                      const durationMin = (test && (test.duration as number)) || 60;
+                      setTimeLeft(durationMin * 60);
+                      setHasStarted(true);
+                    }}
+                  >
+                    Start Test
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
         {/* Exam Header */}
         <div className="card bg-base-100 shadow-xl mb-6 ">
           <div className="card-body">
