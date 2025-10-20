@@ -4,7 +4,6 @@ const McqSingle = ({
   instructions,
   question,
   answers,
-  setAnswers,
   handleAnswerChange,
   handleQuestionFocus,
 }: any) => {
@@ -32,7 +31,7 @@ const McqSingle = ({
                   >
                     <input
                       type={q.input_type === "checkbox" ? "checkbox" : "radio"}
-                      name={`mcq-${idx}`}
+                      name={`mcq-${q.question_number}`}
                       className="checkbox checkbox-primary"
                       onFocus={() => handleQuestionFocus(q.question_number)}
                       onChange={(e) =>
@@ -44,7 +43,7 @@ const McqSingle = ({
                           option.label === q.answer[0] ? true : false
                         )
                       }
-                      value={currentValue}
+                      checked={currentValue === option.label}
                     />
                     <span>{option.value}</span>
                   </label>

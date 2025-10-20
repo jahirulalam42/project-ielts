@@ -370,6 +370,282 @@ const ReadingTest = ({ test }: any) => {
     setCurrentQuestionNumber(questionId);
   };
 
+  const handleQuestionNavigation = (questionNumber: number, partIndex: number) => {
+    console.log(`Navigating to question ${questionNumber} in part ${partIndex}`);
+    
+    // First, change to the correct part
+    setCurrentPartIndex(partIndex);
+    // Then set the current question number
+    setCurrentQuestionNumber(questionNumber);
+    
+    // Wait for the part to change and then scroll to the specific question
+    setTimeout(() => {
+      // Find the questions container (the RIGHT side scrollable area)
+      // Look specifically for the right side container that contains questions
+      let questionsContainer = null;
+      
+      // First, try to find the right side container by looking for the questions section
+      const questionsSection = document.querySelector('.space-y-6');
+      if (questionsSection) {
+        questionsContainer = questionsSection.parentElement;
+        console.log('Found questions container via parent of .space-y-6');
+      }
+      
+      // If not found, look for the RIGHT side container specifically
+      if (!questionsContainer) {
+        // Look for the container that has the questions content (right side)
+        const allContainers = document.querySelectorAll('.lg\\:h-\\[80vh\\].lg\\:overflow-y-auto');
+        for (let container of allContainers) {
+          // Check if this container has questions (look for question elements)
+          if (container.querySelector('[id^="question-"]') || 
+              container.querySelector('.space-y-6') ||
+              container.textContent?.includes('Question') ||
+              container.textContent?.includes('instructions')) {
+            questionsContainer = container;
+            console.log('Found RIGHT side questions container by content check');
+            break;
+          }
+        }
+      }
+      
+      // If still not found, try alternative approach
+      if (!questionsContainer) {
+        // Look for the container that has border-l (right side has border-l)
+        questionsContainer = document.querySelector('.lg\\:h-\\[80vh\\].lg\\:overflow-y-auto.border-l');
+        if (questionsContainer) {
+          console.log('Found questions container via border-l class');
+        }
+      }
+      
+      if (!questionsContainer) {
+        console.log('No questions container found');
+        return;
+      }
+      
+      console.log('Using questions container:', questionsContainer);
+      
+      // Find the question element - first try direct ID, then look in groups
+      let questionElement = document.getElementById(`question-${questionNumber}`);
+      console.log(`Looking for question-${questionNumber}:`, questionElement);
+      
+      // If not found by direct ID, look for the container that contains this question number
+      if (!questionElement) {
+        console.log('Direct ID not found, looking for container with this question number');
+        const allQuestionContainers = questionsContainer.querySelectorAll('[data-question-numbers]');
+        for (let container of allQuestionContainers) {
+          const questionNumbers = container.getAttribute('data-question-numbers')?.split(',') || [];
+          if (questionNumbers.includes(questionNumber.toString())) {
+            questionElement = container as HTMLElement;
+            console.log('Found question container with question number:', questionNumber);
+            break;
+          }
+        }
+      }
+      
+      if (questionElement) {
+        console.log('Found question element, scrolling to it');
+        // Calculate the position of the question within the container
+        const containerRect = questionsContainer.getBoundingClientRect();
+        const questionRect = questionElement.getBoundingClientRect();
+        const relativeTop = questionRect.top - containerRect.top;
+        
+        // Defer scrolling until we locate the exact target (avoid double scroll jitter)
+        
+        // Try to find the specific question within the group and scroll to it
+        setTimeout(() => {
+          console.log('Looking for specific question', questionNumber, 'within container:', questionElement);
+          
+          // Check if this is a grouped question (multiple question numbers in one container)
+          const questionNumbers = questionElement.getAttribute('data-question-numbers')?.split(',') || [];
+          const questionIndex = questionNumbers.indexOf(questionNumber.toString());
+          
+          console.log('Question numbers in container:', questionNumbers);
+          console.log('Target question index:', questionIndex, 'for question', questionNumber);
+          
+          if (questionNumbers.length > 1 && questionIndex >= 0) {
+            console.log('This is a grouped question, trying to find specific question within group');
+            
+            // Calculate the position of the specific question within the group
+            const specificQuestionIndex = questionNumbers.indexOf(questionNumber.toString());
+            console.log('Question index within group:', specificQuestionIndex, 'for question', questionNumber);
+            
+            if (specificQuestionIndex >= 0) {
+              console.log('Looking for specific question within grouped container');
+              
+              // Try a different approach: look for elements with specific question numbers
+              const allElements = questionElement.querySelectorAll('*');
+              let targetElement = null;
+              
+              // Look for elements that contain the specific question number
+              for (let element of allElements) {
+                const text = element.textContent || '';
+                // Look for the exact question number pattern
+                const questionPattern = new RegExp(`Question\\s+${questionNumber}\\b`);
+                if (questionPattern.test(text)) {
+                  // Check if this element is likely to be the question container
+                  const hasInputs = element.querySelector('input, textarea, select, button');
+                  const hasQuestionText = text.includes('Question') && text.includes(questionNumber.toString());
+                  
+                  console.log('Found element with question', questionNumber, ':', {
+                    hasInputs: !!hasInputs,
+                    hasQuestionText,
+                    textLength: text.length,
+                    element: element.tagName
+                  });
+                  
+                  if (hasInputs && hasQuestionText) {
+                    targetElement = element;
+                    console.log('Found specific question element with inputs');
+                    break;
+                  }
+                }
+              }
+              
+              if (targetElement) {
+                console.log('Scrolling to specific question element within container');
+                const containerRect2 = questionsContainer.getBoundingClientRect();
+                const targetRect = (targetElement as HTMLElement).getBoundingClientRect();
+                const targetRelativeTop = targetRect.top - containerRect2.top;
+                questionsContainer.scrollTo({
+                  top: questionsContainer.scrollTop + targetRelativeTop - 50,
+                  behavior: 'smooth'
+                });
+                
+                // For MCQ questions, don't focus any input to avoid auto-selection
+                const hasRadioButtons = targetElement.querySelector('input[type="radio"]');
+                const hasCheckboxes = targetElement.querySelector('input[type="checkbox"]');
+                
+                if (hasRadioButtons || hasCheckboxes) {
+                  console.log('MCQ question detected, not focusing any input to avoid auto-selection');
+                  return;
+                }
+                
+                // For other question types, focus the first input
+                const allInputs = targetElement.querySelectorAll('input, textarea, select, button');
+                if (allInputs.length > 0) {
+                  const targetInput = allInputs[0];
+                  console.log('Focusing input for question', questionNumber, ':', targetInput);
+                  (targetInput as HTMLElement).focus();
+                  
+                  // For text inputs, also select the text if it exists
+                  if (targetInput.tagName === 'INPUT' && 
+                      (targetInput as HTMLInputElement).type === 'text') {
+                    (targetInput as HTMLInputElement).select();
+                  }
+                }
+                return;
+              } else {
+                console.log('Specific question element not found, using fallback approach');
+                // Fallback: compute a proportional offset within the group and do a single container scroll
+                const containerRect3 = questionsContainer.getBoundingClientRect();
+                const groupRect = (questionElement as HTMLElement).getBoundingClientRect();
+                const groupRelativeTop = groupRect.top - containerRect3.top;
+                const groupHeight = (questionElement as HTMLElement).offsetHeight;
+                const ratio = specificQuestionIndex / Math.max(1, questionNumbers.length);
+                const targetOffset = groupRelativeTop + ratio * groupHeight;
+                questionsContainer.scrollTo({
+                  top: questionsContainer.scrollTop + targetOffset - 50,
+                  behavior: 'smooth'
+                });
+                return;
+              }
+            }
+          }
+          
+          // Fallback: focus the first input in the container
+          const allInputs = questionElement.querySelectorAll('input, textarea, select, button');
+          console.log('All inputs found for question', questionNumber, ':', allInputs.length);
+          
+          // For MCQ questions, don't focus any input to avoid auto-selection
+          const hasRadioButtons = questionElement.querySelector('input[type="radio"]');
+          const hasCheckboxes = questionElement.querySelector('input[type="checkbox"]');
+          
+          if (hasRadioButtons || hasCheckboxes) {
+            console.log('MCQ question detected, not focusing any input to avoid auto-selection');
+            return;
+          }
+          
+          // For other question types, focus the first input
+          if (allInputs.length > 0) {
+            const targetInput = allInputs[0];
+            console.log('Focusing input for question', questionNumber, ':', targetInput);
+            (targetInput as HTMLElement).focus();
+            
+            // For text inputs, also select the text if it exists
+            if (targetInput.tagName === 'INPUT' && 
+                (targetInput as HTMLInputElement).type === 'text') {
+              (targetInput as HTMLInputElement).select();
+            }
+          } else {
+            console.log('No input found for question', questionNumber);
+          }
+        }, 100);
+      } else {
+        console.log('Question element not found, trying to find by question number');
+        // Alternative: find by looking for the question number in the text
+        const allQuestionDivs = questionsContainer.querySelectorAll('div[id^="question-"]');
+        console.log('All question divs found:', allQuestionDivs);
+        
+        // Look for the question by checking the content
+        let found = false;
+        for (let div of allQuestionDivs) {
+          const questionText = div.textContent || '';
+          if (questionText.includes(`Question ${questionNumber}`) || 
+              questionText.includes(`${questionNumber}.`) ||
+              div.id === `question-${questionNumber}`) {
+            console.log('Found question by content, scrolling to it');
+            div.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'start' 
+            });
+            
+            // Focus the appropriate input element in the question
+            setTimeout(() => {
+              // Try different input types in order of preference
+              let inputElement = div.querySelector('input[type="text"]') ||
+                                div.querySelector('input[type="number"]') ||
+                                div.querySelector('textarea') ||
+                                div.querySelector('input[type="radio"]') ||
+                                div.querySelector('input[type="checkbox"]') ||
+                                div.querySelector('select') ||
+                                div.querySelector('input') ||
+                                div.querySelector('button');
+              
+              if (inputElement) {
+                console.log('Focusing input element:', inputElement);
+                (inputElement as HTMLElement).focus();
+                
+                // For text inputs, also select the text if it exists
+                if (inputElement.tagName === 'INPUT' && 
+                    (inputElement as HTMLInputElement).type === 'text') {
+                  (inputElement as HTMLInputElement).select();
+                }
+                
+                // For radio buttons and checkboxes, trigger click
+                if ((inputElement as HTMLInputElement).type === 'radio' || 
+                    (inputElement as HTMLInputElement).type === 'checkbox') {
+                  (inputElement as HTMLElement).click();
+                }
+              }
+            }, 100);
+            
+            found = true;
+            break;
+          }
+        }
+        
+        // If still not found, scroll to top of questions container
+        if (!found) {
+          console.log('Question not found, scrolling to top of questions container');
+          questionsContainer.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        }
+      }
+    }, 500); // Increased delay to ensure part has fully loaded
+  };
+
   const handleAnswerChange = (
     questionId: number,
     value: string,
@@ -623,18 +899,118 @@ const ReadingTest = ({ test }: any) => {
               </p>
 
               {currentPart.questions &&
-                currentPart.questions.map((question: any, index: number) => (
-                  <div key={index}>
-                    {question.true_false_not_given && (
-                      <TrueFalse
-                        instructions={
-                          currentPart.questions[index]?.instructions || ""
+                currentPart.questions.map((question: any, index: number) => {
+                  // Create IDs for all questions in this group, not just the first one
+                  const createQuestionIds = (): number[] => {
+                    const questionIds: number[] = [];
+                    
+                    // True/False questions
+                    if (question.true_false_not_given) {
+                      question.true_false_not_given.forEach((q: any) => {
+                        questionIds.push(q.question_number);
+                      });
+                    }
+                    
+                    // Fill in the blanks
+                    if (question.fill_in_the_blanks) {
+                      question.fill_in_the_blanks.forEach((q: any) => {
+                        questionIds.push(q.question_number);
+                      });
+                    }
+                    
+                    // Matching headings
+                    if (question.matching_headings) {
+                      question.matching_headings.forEach((q: any) => {
+                        questionIds.push(q.question_number);
+                      });
+                    }
+                    
+                    // Paragraph matching
+                    if (question.paragraph_matching) {
+                      question.paragraph_matching.forEach((q: any) => {
+                        questionIds.push(q.question_number);
+                      });
+                    }
+                    
+                    // MCQ questions
+                    if (question.mcq) {
+                      question.mcq.forEach((q: any) => {
+                        questionIds.push(q.question_number);
+                      });
+                    }
+                    
+                    // Multiple MCQ questions
+                    if (question.multiple_mcq) {
+                      question.multiple_mcq.forEach((q: any) => {
+                        if (Array.isArray(q.question_numbers)) {
+                          q.question_numbers.forEach((num: number) => {
+                            questionIds.push(num);
+                          });
+                        } else {
+                          questionIds.push(q.question_number);
                         }
-                        question={question.true_false_not_given}
-                        handleAnswerChange={handleAnswerChange}
-                        handleQuestionFocus={handleQuestionFocus}
-                      />
-                    )}
+                      });
+                    }
+                    
+                    // Passage fill in the blanks
+                    if (question.passage_fill_in_the_blanks) {
+                      question.passage_fill_in_the_blanks.forEach((q: any) => {
+                        if (Array.isArray(q.question_number)) {
+                          q.question_number.forEach((num: number) => {
+                            questionIds.push(num);
+                          });
+                        } else {
+                          questionIds.push(q.question_number);
+                        }
+                      });
+                    }
+                    
+                    // Summary fill in the blanks
+                    if (question.summary_fill_in_the_blanks) {
+                      question.summary_fill_in_the_blanks.forEach((q: any) => {
+                        if (Array.isArray(q.question_numbers)) {
+                          q.question_numbers.forEach((num: number) => {
+                            questionIds.push(num);
+                          });
+                        } else {
+                          questionIds.push(q.question_number);
+                        }
+                      });
+                    }
+                    
+                    // Fill in the blanks with subtitle
+                    if (question.fill_in_the_blanks_with_subtitle) {
+                      question.fill_in_the_blanks_with_subtitle.forEach((blankSet: any) => {
+                        blankSet.questions?.forEach((q: any) => {
+                          questionIds.push(q.question_number);
+                        });
+                      });
+                    }
+                    
+                    return questionIds;
+                  };
+
+                  const questionIds = createQuestionIds();
+                  const firstQuestionNumber = questionIds[0] || index + 1;
+
+                  console.log(`Creating question container with IDs: ${questionIds.join(', ')} for question set ${index}`);
+
+                  return (
+                    <div 
+                      key={index} 
+                      id={`question-${firstQuestionNumber}`}
+                      data-question-numbers={questionIds.join(',')}
+                    >
+                      {question.true_false_not_given && (
+                        <TrueFalse
+                          instructions={
+                            currentPart.questions[index]?.instructions || ""
+                          }
+                          question={question.true_false_not_given}
+                          handleAnswerChange={handleAnswerChange}
+                          handleQuestionFocus={handleQuestionFocus}
+                        />
+                      )}
 
                     {question.fill_in_the_blanks && (
                       <FillInTheBlanks
@@ -675,6 +1051,7 @@ const ReadingTest = ({ test }: any) => {
                           currentPart.questions[index]?.instructions || ""
                         }
                         question={question.mcq}
+                        answers={answers}
                         handleAnswerChange={handleAnswerChange}
                         handleQuestionFocus={handleQuestionFocus}
                       />
@@ -686,6 +1063,7 @@ const ReadingTest = ({ test }: any) => {
                           currentPart.questions[index]?.instructions || ""
                         }
                         question={question.multiple_mcq}
+                        answers={answers}
                         handleAnswerChange={handleAnswerChange}
                         handleQuestionFocus={handleQuestionFocus}
                       />
@@ -723,8 +1101,9 @@ const ReadingTest = ({ test }: any) => {
                         handleQuestionFocus={handleQuestionFocus}
                       />
                     )}
-                  </div>
-                ))}
+                    </div>
+                  );
+                })}
             </div>
 
             {/* Navigation */}
@@ -792,7 +1171,7 @@ const ReadingTest = ({ test }: any) => {
                             ? "bg-green-200 text-green-700 border-green-400 hover:bg-green-300"
                             : "bg-gray-200 text-gray-700 border-gray-300 hover:bg-gray-300"
                         }`}
-                        onClick={() => setCurrentPartIndex(partIndex)}
+                        onClick={() => handleQuestionNavigation(questionNumber, partIndex)}
                       >
                         {questionNumber}
                       </button>

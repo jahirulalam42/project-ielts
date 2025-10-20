@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 const McqMultiple = ({
   instructions,
   question,
+  answers,
   handleAnswerChange,
   handleQuestionFocus,
 }: any) => {
@@ -18,12 +19,16 @@ const McqMultiple = ({
     question.forEach((q: any) => {
       const groupKey = q.question_numbers.join("-");
       initialSelections[groupKey] = {};
-      q.question_numbers.forEach((num: number) => {
-        initialSelections[groupKey][num] = "";
+      q.question_numbers.forEach((num: number, idx: number) => {
+        // hydrate from global answers if present
+        const answerObj = Array.isArray(answers)
+          ? answers.find((a: any) => String(a.questionId) === String(num))
+          : null;
+        initialSelections[groupKey][num] = answerObj?.value || "";
       });
     });
     setSelectedOptions(initialSelections);
-  }, [question]);
+  }, [question, answers]);
 
   // Check if an individual answer is correct
   const checkIndividualAnswer = (value: string, correctAnswers: string[]) => {
@@ -113,9 +118,7 @@ const McqMultiple = ({
                     type="checkbox"
                     className="checkbox checkbox-primary"
                     onFocus={() => handleQuestionFocus(q.question_numbers[0])}
-                    checked={Object.values(currentSelections).includes(
-                      option.label
-                    )}
+                    checked={Object.values(currentSelections).includes(option.label)}
                     onChange={() => {
                       // Find which question number this option should be assigned to
                       const availableQuestion = q.question_numbers.find(
