@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import FormattedInstructions from "./FormattedInstructions";
 
 // The McqMultiple component accepts the question and the answer handler
 const McqMultiple = ({
@@ -97,7 +98,7 @@ const McqMultiple = ({
   return (
     <div>
       <h5 className="font-medium mb-2">Multiple Select Questions</h5>
-      <div className="text-gray-700 text-sm mb-2">{instructions}</div>
+      <FormattedInstructions instructions={instructions} />
       {question.map((q: any, idx: number) => {
         const groupKey = q.question_numbers.join("-");
         const currentSelections = selectedOptions[groupKey] || {};

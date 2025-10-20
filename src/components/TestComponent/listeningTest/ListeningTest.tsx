@@ -182,6 +182,74 @@ const ListeningTest: React.FC<any> = ({ test }) => {
     setCurrentQuestionNumber(questionId);
   };
 
+  // Navigate to a specific question number (switch part if needed and smooth-scroll to question)
+  const handleQuestionNavigation = (questionNumber: number, partIndex: number) => {
+    setCurrentPartIndex(partIndex);
+    setCurrentQuestionNumber(questionNumber);
+
+    // Delay to allow the part content to render before measuring/scrolling
+    setTimeout(() => {
+      // Locate the RIGHT-side questions container (listening layout mirrors reading)
+      let questionsContainer: any = null;
+
+      const candidates = document.querySelectorAll('.lg\\:h-\\[80vh\\].lg\\:overflow-y-auto');
+      for (let c of candidates as any) {
+        if (
+          (c as HTMLElement).querySelector('[id^="question-"]') ||
+          (c as HTMLElement).textContent?.includes('Question')
+        ) {
+          questionsContainer = c;
+          break;
+        }
+      }
+      if (!questionsContainer) {
+        // fallback by border-l (right side)
+        questionsContainer = document.querySelector('.lg\\:h-\\[80vh\\].lg\\:overflow-y-auto.border-l');
+      }
+      if (!questionsContainer) return;
+
+      // Find specific question container by direct id first
+      let questionElement = document.getElementById(`question-${questionNumber}`) as HTMLElement | null;
+
+      // If not found, search a group container that includes this number
+      if (!questionElement) {
+        const groups = (questionsContainer as HTMLElement).querySelectorAll('[data-question-numbers]');
+        for (let g of Array.from(groups)) {
+          const list = (g as HTMLElement).getAttribute('data-question-numbers')?.split(',') || [];
+          if (list.includes(String(questionNumber))) {
+            questionElement = g as HTMLElement;
+            break;
+          }
+        }
+      }
+
+      if (!questionElement) return;
+
+      // Compute relative position and do a single smooth scroll (avoid jitter)
+      const containerRect = (questionsContainer as HTMLElement).getBoundingClientRect();
+      const elRect = questionElement.getBoundingClientRect();
+      const relativeTop = elRect.top - containerRect.top;
+      (questionsContainer as HTMLElement).scrollTo({
+        top: (questionsContainer as HTMLElement).scrollTop + relativeTop - 50,
+        behavior: 'smooth'
+      });
+
+      // Do not auto-click radio/checkbox; only focus non-choice inputs
+      setTimeout(() => {
+        const hasChoice = questionElement.querySelector('input[type="radio"], input[type="checkbox"]');
+        if (!hasChoice) {
+          const firstInput = questionElement.querySelector('input, textarea, select, button') as HTMLElement | null;
+          if (firstInput) {
+            firstInput.focus();
+            if ((firstInput as HTMLInputElement).tagName === 'INPUT' && (firstInput as HTMLInputElement).type === 'text') {
+              (firstInput as HTMLInputElement).select();
+            }
+          }
+        }
+      }, 50);
+    }, 300);
+  };
+
   const handleNextPart = () => {
     if (currentPartIndex < test.parts.length - 1) {
       setCurrentPartIndex((prev) => prev + 1);
@@ -319,8 +387,37 @@ const ListeningTest: React.FC<any> = ({ test }) => {
           <div className="card-body">
             <h2 className="text-2xl font-bold mb-4">{currentPart.title}</h2>
             <div className="space-y-6">
-              {currentPart.questions?.map((questionSet: any, index: any) => (
-                <div key={index}>
+              {currentPart.questions?.map((questionSet: any, index: any) => {
+                // gather question ids within this set to aid navigation
+                const ids: number[] = [];
+                if (questionSet.fill_in_the_blanks_with_subtitle) {
+                  questionSet.fill_in_the_blanks_with_subtitle.forEach((blankSet: any) => {
+                    blankSet.questions?.forEach((q: any) => ids.push(q.question_number));
+                  });
+                }
+                if (questionSet.mcq) {
+                  questionSet.mcq.forEach((q: any) => ids.push(q.question_number));
+                }
+                if (questionSet.multiple_mcq) {
+                  questionSet.multiple_mcq.forEach((q: any) => {
+                    if (Array.isArray(q.question_numbers)) q.question_numbers.forEach((n: number) => ids.push(n));
+                    else if (q.question_number) ids.push(q.question_number);
+                  });
+                }
+                if (questionSet.box_matching) {
+                  questionSet.box_matching.forEach((q: any) => {
+                    q.questions?.forEach((bq: any) => ids.push(bq.question_number));
+                  });
+                }
+                if (questionSet.map) {
+                  questionSet.map.forEach((m: any) => {
+                    m.questions?.forEach((q: any) => ids.push(q.question_number));
+                  });
+                }
+                const firstId = ids[0] || index + 1;
+
+                return (
+                <div key={index} id={`question-${firstId}`} data-question-numbers={ids.join(',')}>
                   {questionSet.fill_in_the_blanks_with_subtitle && (
                     <SubFillInTheBlanks
                       instructions={questionSet.instruction}
@@ -333,6 +430,7 @@ const ListeningTest: React.FC<any> = ({ test }) => {
                     <McqSingle
                       instructions={questionSet.instruction}
                       question={questionSet.mcq}
+                      answers={answers}
                       handleAnswerChange={handleAnswerChange}
                       handleQuestionFocus={handleQuestionFocus}
                     />
@@ -341,6 +439,7 @@ const ListeningTest: React.FC<any> = ({ test }) => {
                     <McqMultiple
                       instructions={questionSet.instruction}
                       question={questionSet.multiple_mcq}
+                      answers={answers}
                       handleAnswerChange={handleAnswerChange}
                       handleQuestionFocus={handleQuestionFocus}
                     />
@@ -362,7 +461,8 @@ const ListeningTest: React.FC<any> = ({ test }) => {
                     />
                   )}
                 </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Navigation */}
@@ -419,7 +519,7 @@ const ListeningTest: React.FC<any> = ({ test }) => {
                             ? "bg-green-200 text-green-700 border-green-400 hover:bg-green-300"
                             : "bg-gray-200 text-gray-700 border-gray-300 hover:bg-gray-300"
                         }`}
-                        onClick={() => setCurrentPartIndex(partIndex)}
+                        onClick={() => handleQuestionNavigation(questionNumber, partIndex)}
                       >
                         {questionNumber}
                       </button>

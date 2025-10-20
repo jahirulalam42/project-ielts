@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import FormattedInstructions from "./FormattedInstructions";
 
 interface BoxMatchingProps {
   instructions?: any;
@@ -47,7 +48,7 @@ const BoxMatching: React.FC<BoxMatchingProps> = ({
   return (
     <div>
       <h5 className="font-medium mb-2">Box Matching Questions</h5>
-      <div className="text-gray-700 text-sm mb-2">{instructions}</div>
+      <FormattedInstructions instructions={instructions} />
       {question.map((q: any, idx: number) => (
         <div key={idx} className="p-4 border border-black rounded-lg mb-4">
           {/* Instructions */}

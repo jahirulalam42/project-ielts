@@ -1,4 +1,5 @@
 import React from "react";
+import FormattedInstructions from "./FormattedInstructions";
 import Image from "next/image";
 
 interface MapQuestion {
@@ -42,7 +43,7 @@ const Map: React.FC<MapProps> = ({
       {question?.instructions && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
           <p className="text-blue-800 font-medium mb-1">Instructions:</p>
-          <p className="text-blue-700 italic">{question.instructions}</p>
+        <FormattedInstructions instructions={question.instructions} className="mb-2" />
         </div>
       )}
       

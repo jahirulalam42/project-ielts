@@ -1,4 +1,5 @@
 import React from "react";
+import FormattedInstructions from "./FormattedInstructions";
 
 const TrueFalse = ({
   instructions,
@@ -12,7 +13,7 @@ const TrueFalse = ({
   return (
     <div>
       <h5 className="font-medium mb-2">True/False/Not Given</h5>
-      <div className="text-gray-700 text-sm mb-2">{instructions}</div>
+      <FormattedInstructions instructions={instructions} />
 
       {question.map((q: any) => {
         const answerObj = answers?.find(

@@ -1,4 +1,5 @@
 import React from "react";
+import FormattedInstructions from "./FormattedInstructions";
 
 const MatchingHeadings = ({
   instructions,
@@ -11,7 +12,7 @@ const MatchingHeadings = ({
   return (
     <div>
       <h5 className="font-medium mb-2">Heading Matching</h5>
-      <div className="text-gray-700 text-sm mb-2">{instructions}</div>
+      <FormattedInstructions instructions={instructions} />
 
       {question.map((q: any) => {
         return (

@@ -1,4 +1,5 @@
 import React from "react";
+import FormattedInstructions from "./FormattedInstructions";
 
 const SubFillInTheBlanks = ({
   instructions,
@@ -11,7 +12,7 @@ const SubFillInTheBlanks = ({
   return (
     <div>
       <h5 className="font-medium mb-2">Section Completion</h5>
-      <div className="text-gray-700 text-sm mb-2">{instructions}</div>
+      <FormattedInstructions instructions={instructions} />
       <div className="p-4 border border-black rounded-lg mb-2">
         {question.map((section: any, idx: number) => {
           let questionIndex = 0; // Track the correct question mapping
