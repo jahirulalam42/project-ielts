@@ -31,7 +31,7 @@ const McqSingle = ({
                     className="flex items-center space-x-2"
                   >
                     <input
-                      type={q.input_type === "checkbox" ? "checkbox" : "radio"}
+                      type="checkbox"
                       name={`mcq-${q.question_number}`}
                       className="checkbox checkbox-primary"
                       onFocus={() => handleQuestionFocus(q.question_number)}
