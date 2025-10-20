@@ -21,6 +21,26 @@ const FormattedInstructions: React.FC<FormattedInstructionsProps> = ({
     .split("\n")
     .map((l) => l.trimEnd());
 
+  // Inline formatter: supports [b]...[/b] tags for manual bolding
+  const renderInline = (text: string) => {
+    if (!text) return text;
+    const parts: Array<string | JSX.Element> = [];
+    const regex = /\[b\]([\s\S]*?)\[\/b\]/g;
+    let lastIndex = 0;
+    let match: RegExpExecArray | null;
+    while ((match = regex.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        parts.push(text.slice(lastIndex, match.index));
+      }
+      parts.push(<strong key={parts.length}>{match[1]}</strong>);
+      lastIndex = regex.lastIndex;
+    }
+    if (lastIndex < text.length) {
+      parts.push(text.slice(lastIndex));
+    }
+    return parts.length ? parts : text;
+  };
+
   // Build blocks: a top free-text block and then key-value rows if detected
   const rows: Array<{ label: string; text: string } | { text: string }> = [];
 
@@ -74,7 +94,7 @@ const FormattedInstructions: React.FC<FormattedInstructionsProps> = ({
         <div className="whitespace-pre-line text-gray-700 text-sm mb-2">
           {preface.map((p, idx) => (
             <p key={idx} className={idx > 0 ? "mt-1" : undefined}>
-              {"text" in p ? p.text : ""}
+              {"text" in p ? renderInline(p.text) : ""}
             </p>
           ))}
         </div>
@@ -85,9 +105,9 @@ const FormattedInstructions: React.FC<FormattedInstructionsProps> = ({
           {labeled.map((r, idx) => (
             <React.Fragment key={`${r.label}-${idx}`}>
               <div className="font-bold uppercase tracking-wide text-gray-900">
-                {r.label}
+                {renderInline(r.label)}
               </div>
-              <div className="text-gray-700">{r.text}</div>
+              <div className="text-gray-700">{renderInline(r.text)}</div>
             </React.Fragment>
           ))}
         </div>
