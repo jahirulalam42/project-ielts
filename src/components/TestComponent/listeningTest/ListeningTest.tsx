@@ -478,7 +478,7 @@ const ListeningTest: React.FC<any> = ({ test }) => {
               <button
                 onClick={handleNextPart}
                 disabled={currentPartIndex === test.parts.length - 1}
-                className="btn btn-primary"
+                className="btn bg-red-600 hover:bg-red-700 border-0"
                 type="button"
               >
                 Next

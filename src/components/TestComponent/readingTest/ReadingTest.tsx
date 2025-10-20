@@ -1179,7 +1179,7 @@ const ReadingTest = ({ test }: any) => {
               <button
                 onClick={handlePrevPart}
                 disabled={currentPartIndex === 0}
-                className="btn btn-secondary"
+                className="btn bg-red-600 hover:bg-red-700 border-0"
                 type="button"
               >
                 Previous
@@ -1187,7 +1187,7 @@ const ReadingTest = ({ test }: any) => {
               <button
                 onClick={handleNextPart}
                 disabled={currentPartIndex === test.parts.length - 1}
-                className="btn btn-primary"
+                className="btn bg-red-600 hover:bg-red-700 border-0"
                 type="button"
               >
                 Next
