@@ -1,4 +1,5 @@
-{
+[
+  {
     "title": "Test 1",
     "type": "academic",
     "duration": 60,
@@ -697,4 +698,667 @@
         "passageType": "type1"
       }
     ]
+  },
+  {
+    "title": "Test 2",
+    "type": "academic",
+    "duration": 60,
+    "parts": [
+      {
+        "title": "READING  PASSAGE  1",
+        "instructions": "You should spend about 20 minutes on Questions 1-13, which are based on Reading Passage 1 below.",
+        "passage_title": "The Industrial Revolution in Britain",
+        "passage_subtitle": "",
+        "passage": [
+          "The Industrial Revolution began in Britain in the mid-1700s and by the 1830s and 1840s had spread to many other parts of the world, including the United States. In Britain, it was a period when a largely rural, agrarian* society was transformed into an industrialised, urban one. Goods that had once been crafted by hand started to be produced in mass quantities by machines in factories, thanks to the invention of steam power and the introduction of new machines and manufacturing techniques in textiles, iron-making and other industries.",
+          "The foundations of the Industrial Revolution date back to the early 1700s, when the English inventor Thomas Newcomen designed the first modern steam engine. Called the 'atmospheric steam engine', Newcomen's invention was originally used to power machines that pumped water out of mines. In the 1760s, the Scottish engineer James Watt\nstarted to adapt one of Newcomen's models, and succeeded in making it far more efficient. Watt later worked with the English manufacturer Matthew Boulton to invent a new steam engine driven by both the forward and backward strokes of the piston, while the gear mechanism it was connected to produced rotary motion. It was a key innovation that would allow steam power to spread across British industries.",
+          "The demand for coal, which was a relatively cheap energy source, grew rapidly during the Industrial Revolution, as it was needed to run not only the factories used to produce manufactured goods, but also steam-powered transportation. In the early 1800s, the English engineer Richard Trevithick built a steam-powered locomotive, and by 1830 goods and passengers were being transported between the industrial centres of Manchester and Liverpool. In addition, steam-powered boats and ships were widely used to carry goods along Britain's canals as well as across the Atlantic.",
+          "Britain had produced textiles like wool, linen and cotton, for hundreds of years, but prior to the Industrial Revolution, the British textile business was a true 'cottage industry', with the work performed in small workshops or even homes by individual spinners, weavers and dyers. Starting in the mid-1700s, innovations like the spinning jenny and the power loom made weaving cloth and spinning yarn and thread much easier. With these machines, relatively little labour was required to produce cloth, and the new, mechanised textile factories that opened around the country were quickly able to meet customer demand for cloth both at home and abroad.",
+          "The British iron industry also underwent major change as it adopted new innovations. Chief among the new techniques was the smelting of iron ore with coke (a material made by heating coal) instead of the traditional charcoal. This method was cheaper and produced metals that were of a higher quality, enabling Britain's iron and steel\nproduction to expand in response to demand created by the Napoleonic Wars (1803-15) and the expansion of the railways from the 1830s.",
+          "The latter part of the Industrial Revolution also saw key advances in communication methods, as people increasingly saw the need to communicate efficiently over long distances. In 1837, British inventors William Cooke and Charles Wheatstone patented the first commercial telegraphy system. In the 1830s and 1840s, Samuel Morse\nand other inventors worked on their own versions in the United States. Cooke and Wheatstone's system was soon used for railway signalling in the UK. As the speed of the new locomotives increased, it was essential to have a fast and effective means of avoiding collisions.",
+          "The impact of the Industrial Revolution on people's lives was immense. Although many people in Britain had begun moving to the cities from rural areas before the Industrial Revolution, this accelerated dramatically with industrialisation, as the rise of large factories turned smaller towns into major cities in just a few decades. This\nrapid urbanisation brought significant challenges, as overcrowded cities suffered from pollution and inadequate sanitation.",
+          "Although industrialisation increased the country's economic output overall and improved the standard of living for the middle and upper classes, many poor people continued to struggle. Factory workers had to work long hours in dangerous conditions for extremely low wages. These conditions along with the rapid pace of change fuelled opposition\nto industrialisation. A group of British workers who became known as 'Luddites' were British weavers and textile workers who objected to the increased use of mechanised looms and knitting frames. Many had spent years learning their craft, and they feared that unskilled machine operators were robbing them of their livelihood. A few-desperate weavers began breaking into factories and smashing textile machines. They called themselves Luddites after Ned Ludd, a young apprentice who was rumoured to have wrecked a textile machine in 1779.",
+          "The first major instances of machine breaking took place in 1811 in the city of Nottingham, and the practice soon spread across the country. Machine-breaking Luddites attacked and burned factories, and in some cases they even exchanged gunfire with company guards and soldiers. The workers wanted employers to stop installing new machinery, but the British government responded to the uprisings by making machine-breaking punishable by death. The unrest finally reached its peak in April 1812, when a few Luddites were shot during an attack on a mill near Huddersfield. In the days that followed, other Luddites were arrested, and dozens were hanged or transported to Australia. By 1813, the Luddite resistance had all but vanished."
+        ],
+        "image": "",
+        "questions": [
+          {
+            "instructions": "Complete the notes below.\n\nChoose ONE WORD ONLY from the passage for each answer. \nWrite your answers in boxes [b]1-7[/b] on your answer sheet.\n",
+            "fill_in_the_blanks_with_subtitle": [
+              {
+                "title": "Britain's Industrial Revolution",
+                "subtitle": "Steam power",
+                "extra": [
+                  "Newcomen's steam engine was used in mines to remove water.",
+                  "In Watt and Boulton's steam engine, the movement of the __________ was linked to a gear system.",
+                  "A greater supply of __________ was required to power steam engines."
+                ],
+                "questions": [
+                  {
+                    "question_number": 1,
+                    "answer": "Answer1",
+                    "input_type": "text"
+                  },
+                  {
+                    "question_number": 2,
+                    "answer": "Answer2",
+                    "input_type": "text"
+                  }
+                ]
+              },
+              {
+                "subtitle": "Textile industry",
+                "extra": [
+                  "Before the Industrial Revolution, spinners and weavers worked at home and in __________.\n",
+                  "Not as much __________ was needed to produce cloth once the spinning jenny and power loom were invented.\n"
+                ],
+                "questions": [
+                  {
+                    "question_number": 3,
+                    "answer": "Answer3",
+                    "input_type": "text"
+                  },
+                  {
+                    "question_number": 4,
+                    "answer": "Answer4",
+                    "input_type": "text"
+                  }
+                ]
+              },
+              {
+                "subtitle": "Iron industry",
+                "extra": [
+                  "Smelting of iron ore with coke resulted in material that was better __________.\n",
+                  "Demand for iron increased with the growth of the __________."
+                ],
+                "questions": [
+                  {
+                    "question_number": 5,
+                    "answer": "Answer5",
+                    "input_type": "text"
+                  },
+                  {
+                    "question_number": 6,
+                    "answer": "Answer6",
+                    "input_type": "text"
+                  }
+                ]
+              },
+              {
+                "subtitle": "Communications",
+                "extra": [
+                  "Cooke and Wheatstone patented the first telegraphy system.",
+                  "The telegraphy system was used to prevent locomotives colliding."
+                ],
+                "questions": []
+              },
+              {
+                "subtitle": "Urbanisation",
+                "extra": [
+                  "Small towns turned into cities very quickly.",
+                  "The new cities were dirty, crowded and lacked sufficient __________."
+                ],
+                "questions": [
+                  {
+                    "question_number": 7,
+                    "answer": "Answer7",
+                    "input_type": "text"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "instructions": "Do the following statements agree with the information given in Reading Passage 1?\n\nIn boxes 8-13 on your answer sheet, write\nTRUE\t if the statement agrees with the information \nFALSE\tif the statement contradicts the information \nNOT GIVEN if there is no information on this\n",
+            "true_false_not_given": [
+              {
+                "question_number": 8,
+                "question": "Britain's canal network grew rapidly so that more goods could be transported around the country.",
+                "input_type": "dropdown",
+                "answer": "False"
+              },
+              {
+                "question_number": 9,
+                "question": "Costs in the iron industry rose when the technique of smelting iron ore with coke was introduced.",
+                "input_type": "dropdown",
+                "answer": "Not Given"
+              },
+              {
+                "question_number": 10,
+                "question": "Samuel Morse's communication system was more reliable than that developed by William Cooke and Charles Wheatstone.",
+                "input_type": "dropdown",
+                "answer": "True"
+              },
+              {
+                "question_number": 11,
+                "question": "The economic benefits of industrialisation were limited to certain sectors of society.",
+                "input_type": "dropdown",
+                "answer": "False"
+              },
+              {
+                "question_number": 12,
+                "question": "Some skilled weavers believed that the introduction of the new textile machines would lead to job losses.",
+                "input_type": "dropdown",
+                "answer": "True"
+              },
+              {
+                "question_number": 13,
+                "question": "There was some sympathy among local people for the Luddites who were arrested near Huddersfield.",
+                "input_type": "dropdown",
+                "answer": "False"
+              }
+            ]
+          }
+        ],
+        "passageType": "type1"
+      },
+      {
+        "title": "READING PASSAGE 2",
+        "instructions": "You should spend about 20 minutes on Questions [b]14-26[/b], which are based on Reading Passage 2 below.",
+        "passage_title": "Athletes and stress",
+        "passage_subtitle": "",
+        "passage": {
+          "A": "It isn't easy being a professional athlete. Not only are the physical demands greater than most people could handle, athletes also face intense psychological pressure during competition. This is something that British tennis player Emma Raducanu wrote about on social media following her withdrawal from the 2021 Wimbledon tournament. Though the young player had been doing well in the tournament, she began having difficulty regulating her breathing and heart rate during a match, which she later attributed to 'the accumulation of the excitement and the buzz'.",
+          "B": "For athletes, some level of performance stress is almost unavoidable. But there are many different factors that dictate just how people's minds and bodies respond to stressful events. Typically, stress is the result of an exchange between two factors: demands and resources. An athlete may feel stressed about an event if they feel the demands on them are greater than they can handle. These demands include the high level of physical and mental effort required to succeed, and also the athlete's concerns about the difficulty of the event, their chance of succeeding, and any potential dangers such as injury. Resources, on the other hand, are a person's ability to cope with these demands. These include factors such as the competitor's degree of confidence, how much they believe they can control the situation's outcome, and whether they're looking forward to the event or not.",
+          "C": "Each new demand or change in circumstances affects whether a person responds positively or negatively to stress. Typically, the more resources a person feels they have in handling the situation, the more positive their stress response. This positive stress response is called a challenge state. But should the person feel there are too many demands placed on them, the more likely they are to experience a negative stress response - known as a threat state. Research shows that the challenge states lead to good performance, while threat states lead to poorer performance.\nSo, in Emma Raducanu's case, a much larger audience, higher expectations and facing a more skilful opponent, may all have led her to feel there were greater demands being placed on her at Wimbledon - but she didn't have the resources to tackle them. This led to her experiencing a threat response.",
+          "D": "Our challenge and threat responses essentially influence how our body responds to stressful situations, as both affect the production of adrenaline and cortisol - also known as 'stress hormones'. During a challenge state, adrenaline increases the amount of blood pumped from the heart and expands the blood vessels, which allows more energy to be delivered to the muscles and brain. This increase of blood and decrease of pressure in the blood vessels has been consistently related to superior sport performance in everything from cricket batting, to golf putting and football penalty taking. But during a threat state, cortisol inhibits the positive effect of adrenaline, resulting in tighter blood vessels, higher blood pressure, slower psychological responses, and a faster heart rate. In short, a threat state makes people more anxious - they make worse decisions and perform more poorly. In tennis players, cortisol has been associated with more unsuccessful serves and greater anxiety.",
+          "E": "That said, anxiety is also a common experience for athletes when they're under pressure. Anxiety can increase heart rate and perspiration, cause heart palpitations, muscle tremors and shortness of breath, as well as headaches, nausea, stomach pain, weakness and a desire to escape in more extreme cases. Anxiety can also reduce concentration and self-control and cause overthinking. The intensity with which a person experiences anxiety depends on the demands and resources they have. Anxiety may also manifest itself in the form of excitement or nervousness depending on the stress response. Negative stress responses can be damaging to both physical and mental health - and repeated episodes of anxiety coupled with negative responses can increase risk of heart disease and depression.",
+          "F": "But there are many ways athletes can ensure they respond positively under pressure. Positive stress responses can be promoted through the language that they and others - such as coaches or parents - use. Psychologists can also help athletes change how they see their physiological responses - such as helping them see a higher heart rate as excitement, rather than nerves. Developing psychological skills, such as visualisation, can also help decrease physiological responses to threat. Visualisation may involve the athlete recreating a mental picture of a time when they performed well, or picturing themselves doing well in the future. This\ncan help create a feeling of control over the stressful event. Recreating competitive pressure during training can also help athletes learn how to deal with stress. An example of this might be scoring athletes against their peers to create a sense of competition. This would increase the demands which players experience compared to a normal training session, while still allowing them to practise coping with stress.\n"
+        },
+        "image": "",
+        "questions": [
+          {
+            "instructions": "Reading Passage 2 has six paragraphs, A-F.\n\nWhich paragraph contains the following information?\n\nWrite the correct letter, A-F, in boxes 14-18 on your answer sheet.\n\nNB\tYou may use any letter more than once.\n",
+            "paragraph_matching": [
+              {
+                "question_number": 14,
+                "question": "reference to two chemical compounds which impact on performance",
+                "answer": "C",
+                "options": [
+                  {
+                    "label": "A",
+                    "value": "A"
+                  },
+                  {
+                    "label": "B",
+                    "value": "B"
+                  },
+                  {
+                    "label": "C",
+                    "value": "C"
+                  },
+                  {
+                    "label": "D",
+                    "value": "D"
+                  },
+                  {
+                    "label": "E",
+                    "value": "E"
+                  },
+                  {
+                    "label": "F",
+                    "value": "F"
+                  }
+                ],
+                "input_type": "dropdown"
+              },
+              {
+                "question_number": 15,
+                "question": "examples of strategies for minimising the effects of stress",
+                "answer": "B",
+                "options": [
+                  {
+                    "label": "A",
+                    "value": "A"
+                  },
+                  {
+                    "label": "B",
+                    "value": "B"
+                  },
+                  {
+                    "label": "C",
+                    "value": "C"
+                  },
+                  {
+                    "label": "D",
+                    "value": "D"
+                  },
+                  {
+                    "label": "E",
+                    "value": "E"
+                  },
+                  {
+                    "label": "F",
+                    "value": "F"
+                  }
+                ],
+                "input_type": "dropdown"
+              },
+              {
+                "question_number": 16,
+                "question": "how a sportsperson accounted for their own experience of stress",
+                "answer": "E",
+                "options": [
+                  {
+                    "label": "A",
+                    "value": "A"
+                  },
+                  {
+                    "label": "B",
+                    "value": "B"
+                  },
+                  {
+                    "label": "C",
+                    "value": "C"
+                  },
+                  {
+                    "label": "D",
+                    "value": "D"
+                  },
+                  {
+                    "label": "E",
+                    "value": "E"
+                  },
+                  {
+                    "label": "F",
+                    "value": "F"
+                  }
+                ],
+                "input_type": "dropdown"
+              },
+              {
+                "question_number": 17,
+                "question": "study results indicating links between stress responses and performance",
+                "answer": "D",
+                "options": [
+                  {
+                    "label": "A",
+                    "value": "A"
+                  },
+                  {
+                    "label": "B",
+                    "value": "B"
+                  },
+                  {
+                    "label": "C",
+                    "value": "C"
+                  },
+                  {
+                    "label": "D",
+                    "value": "D"
+                  },
+                  {
+                    "label": "E",
+                    "value": "E"
+                  },
+                  {
+                    "label": "F",
+                    "value": "F"
+                  }
+                ],
+                "input_type": "dropdown"
+              },
+              {
+                "question_number": 18,
+                "question": "mention of people who can influence how athletes perceive their stress responses",
+                "answer": "F",
+                "options": [
+                  {
+                    "label": "A",
+                    "value": "A"
+                  },
+                  {
+                    "label": "B",
+                    "value": "B"
+                  },
+                  {
+                    "label": "C",
+                    "value": "C"
+                  },
+                  {
+                    "label": "D",
+                    "value": "D"
+                  },
+                  {
+                    "label": "E",
+                    "value": "E"
+                  },
+                  {
+                    "label": "F",
+                    "value": "F"
+                  }
+                ],
+                "input_type": "dropdown"
+              }
+            ]
+          },
+          {
+            "instructions": "Complete the sentences below.\n\nChoose ONE WORD ONLY from the passage for each answer. \nWrite your answers in boxes 19-22 on your answer sheet.\n",
+            "fill_in_the_blanks": [
+              {
+                "question_number": 19,
+                "question": "Performance stress involves many demands on the athlete, for example, coping with the possible risk of __________.",
+                "input_type": "text",
+                "answer": "Answer1"
+              },
+              {
+                "question_number": 20,
+                "question": "Cortisol can cause tennis players to produce fewer good __________.",
+                "input_type": "text",
+                "answer": "Answer2"
+              },
+              {
+                "question_number": 21,
+                "question": "Psychologists can help athletes to view their physiological responses as the effect of a positive feeling such as __________.",
+                "input_type": "text",
+                "answer": "Answer3"
+              },
+              {
+                "question_number": 22,
+                "question": "__________ is an example of a psychological technique which can reduce an athlete's stress responses.",
+                "input_type": "text",
+                "answer": "Answer4"
+              }
+            ]
+          },
+          {
+            "instructions": "Choose TWO letters, A-E.\n\nWrite the correct letters in boxes 23 and 24 on your answer sheet.\n",
+            "multiple_mcq": [
+              {
+                "question_numbers": [
+                  23,
+                  24
+                ],
+                "question": "Which TWO facts about Emma Raducanu's withdrawal from the Wimbledon tournament are mentioned in the text?",
+                "options": [
+                  {
+                    "label": "A",
+                    "value": "the stage at which she dropped out of the tournament"
+                  },
+                  {
+                    "label": "B",
+                    "value": "symptoms of her performance stress at the tournament"
+                  },
+                  {
+                    "label": "C",
+                    "value": "measures which she had taken to manage her stress levels"
+                  },
+                  {
+                    "label": "D",
+                    "value": "aspects of the Wimbledon tournament which increased her stress levels"
+                  },
+                  {
+                    "label": "E",
+                    "value": "reactions to her social media posts about her experience at Wimbledon"
+                  }
+                ],
+                "input_type": "checkbox",
+                "min_selection": 2,
+                "max_selection": 2,
+                "correct_mapping": [
+                  "B",
+                  "E"
+                ]
+              },
+              {
+                "question_numbers": [
+                  25,
+                  26
+                ],
+                "question": "Which TWO facts about anxiety are mentioned in Paragraph E of the text?",
+                "options": [
+                  {
+                    "label": "A",
+                    "value": "Which TWO facts about anxiety are mentioned in Paragraph E of the text?"
+                  },
+                  {
+                    "label": "B",
+                    "value": "B\thow long it takes for its effects to become apparent"
+                  },
+                  {
+                    "label": "C",
+                    "value": "C\twhich of its symptoms is most frequently encountered"
+                  },
+                  {
+                    "label": "D",
+                    "value": "D\tthe types of athletes who are most likely to suffer from it"
+                  },
+                  {
+                    "label": "E",
+                    "value": "E\tthe harm that can result if athletes experience it too often"
+                  }
+                ],
+                "input_type": "checkbox",
+                "min_selection": 2,
+                "max_selection": 2,
+                "correct_mapping": [
+                  "C",
+                  "E"
+                ]
+              }
+            ]
+          }
+        ],
+        "passageType": "type2"
+      },
+      {
+        "title": "READING PASSAGE 3",
+        "instructions": "You should spend about 20 minutes on Questions 27-40, which are based on Reading Passage 3 below.",
+        "passage_title": "An inquiry into the existence of the gifted child",
+        "passage_subtitle": "",
+        "passage": [
+          "Let us start by looking at a modern 'genius', Maryam Mirzakhani, who died at the early age of 40. She was the only woman to win the Fields Medal - the mathematical equivalent of a Nobel prize. It would be easy to assume that someone as special as Mirzakhani must have been one of those 'gifted' children, those who have an extraordinary ability in a specific sphere of activity or knowledge. But look closer and a different story emerges. Mirzakhani was born in Tehran, Iran. She went to a highly selective girls' school but maths wasn't her interest - reading was.She loved novels and would read anything she could lay her hands on. As for maths, she did rather poorly al it for the first couple of years in her middle school, but became interested when her elder brother told her about what he'd learned. He shared a famous maths problem from a magazine that fascinated\nher - and she was hooked.",
+          "In adult life it is clear that she was curious, excited by what she did and also resolute in the face of setbacks.One of her comments sums it up. 'Of course, the most rewarding part is the \"Aha\" moment, the excitement or discovery and enjoyment of understanding something new ... But most of the time, doing mathematics for me is like being on a long hike with no trail and no end in sight.' That trail took her to the heights of original research\ninto mathematics.",
+          "Is her background unusual? Apparently not. Most Nobel prize winners were unexceptional in childhood. Einstein was slow to talk as a baby. He failed the general part of the entry test to Zurich Polytechnic - though they let him in because of high physics and maths scores. He struggled at work initially, but he kept plugging away and eventually rewrote the laws of Newtonian mechanics with his theory of relativity.",
+          "There has been a considerable amount of research on high performance over the last century that suggests it goes way beyond tested intelligence. On lop of that, research is clear that brains are flexible, new neural pathways can be created, and JQ isn't fixed. For example, just because you can read stories with hundreds of pages al the age of five doesn't mean you will still be ahead of your contemporaries in your teens.",
+          "While the jury is out on giftedness being innate and other factors potentially making the difference, what is certain is that the behaviours associated with high levels of performance arc replicable and most can be taught - even traits such as curiosity.",
+          "According lo my colleague Prof Deborah Eyre, with whom I've collaborated on the book Creal Minds and Ilow lo Gro111 The111, the latest neuroscience and psychological research suggests most individuals can reach levels of'perforrnance associated in school with the gifted and talented. I lowcvcr, they must be taught the right altitudes and approaches to their learning and develop the allributes of high performers - curiosity, persistence and hard work, for example - an approach Eyre calls 'high performance learning'. Critically, they need the right support in developing those approaches at home as well as at school.",
+          "Prof Anders Ericsson, an eminent education psychologist at Florida State University, US, is the co-author of Pea/(.' Secrets/i'Oln the New Science ofExpertise. After research going back to 1980 into diverse achievements, from music to memory to sport, he docsn't think unique and innate talents are at the heart of performance. Deliberate practice, that stretches you every step of the way, and around 10,000 hours of it, is what produces the goods. It's not a magic number - the highest performers move on to doing a whole lot more, of course. Ericsson's memory research is particularly interesting because random students, trained in memory techniques for the study, went on to outperform others thought to have innately superior memories - those who you might call gifted.",
+          "But it is perhaps the work of Benjamin Bloom, another distinguished American educationist working in the 1980s, that gives the most pause for thought. Bloom's team looked at a group of extraordinarily high achieving people in disciplines as varied as ballet, swimming, piano, tennis, maths, sculpture and neurology.\nHe found a pattern of parents encouraging and supporting their children, often in areas they enjoyed themselves. Bloom's outstanding people had worked very hard and consistently at something they had become hooked on when at a young age, and their parents all emerged as having strong work ethics themselves.",
+          "Eyre says we know how high performers learn. From that she has developed a high performing learning approach. She is working on this with a group of schools, both in Britain and abroad. Some spin-off research, which looked in detail at 24 of the 3,000 children being studied who were succeeding despite difficult circumstances, found something remarkable. Half were getting free school meals because ofpoverty, more than half were living with a single parent, and four in five were living in disadvantaged areas. Interviews\nuncovered strong evidence of an adult or adults in the child's life who valued and supported education, either in the immediate or extended family or in the child's wider community.\nChildren talked about the need to work hard at school, to listen in class and keep trying.",
+          "Let us end with Einstein, the epitome of a genius. He clearly had curiosity, character and determination. He struggled against rejection in early life but was undeterred. Did he think he was a genius or even gifted? He once wrote: 'It's not that I'm so smart, it's just that I stay with problems longer. Most people say it is the intellect which makes a great scientist. They are wrong: it is character.'"
+        ],
+        "image": "",
+        "questions": [
+          {
+            "instructions": "Complete the summary below. Choose your answers from the list of words below.",
+            "summary_fill_in_the_blanks": [
+              {
+                "question_numbers": [
+                  27,
+                  28,
+                  29,
+                  30,
+                  31,
+                  32
+                ],
+                "passage": "Maryam Mirzakhani is regarded as __________ in the field of mathematics because she was the only female holder of the prestigious Fields Medal - a record that she retained at the time of her death. However, maths held little __________ for her as a child and in fact her performance was below average until she was __________ by a difficult puzzle that one of her siblings showed her.\nLater, as a professional mathematician, she had an inquiring mind and proved herself to be __________ when things did not go smoothly. She said she got the greatest __________ from making ground-breaking discoveries and in fact she was responsible for some extremely __________ mathematical studies.",
+                "answers": [
+                  "",
+                  "",
+                  "",
+                  "",
+                  "",
+                  ""
+                ],
+                "options": [
+                  {
+                    "label": "A",
+                    "value": "appeal"
+                  },
+                  {
+                    "label": "B",
+                    "value": "determined"
+                  },
+                  {
+                    "label": "C",
+                    "value": "intrigued"
+                  },
+                  {
+                    "label": "D",
+                    "value": "single"
+                  },
+                  {
+                    "label": "E",
+                    "value": "achievement"
+                  },
+                  {
+                    "label": "F",
+                    "value": "devoted"
+                  },
+                  {
+                    "label": "G",
+                    "value": "involved"
+                  },
+                  {
+                    "label": "H",
+                    "value": "unique"
+                  },
+                  {
+                    "label": "I",
+                    "value": "innovative"
+                  },
+                  {
+                    "label": "J",
+                    "value": "satisfaction"
+                  },
+                  {
+                    "label": "K",
+                    "value": "intent"
+                  }
+                ],
+                "input_type": "drag_and_drop",
+                "question": ""
+              }
+            ]
+          },
+          {
+            "instructions": "Do the following statements agree with the information given in the passage? Write TRUE, FALSE or NOT GIVEN.",
+            "true_false_not_given": [
+              {
+                "question_number": 33,
+                "question": "Many people who ended up winning prestigious intellectual prizes only reached an average standard when young.",
+                "input_type": "dropdown",
+                "answer": "False"
+              },
+              {
+                "question_number": 34,
+                "question": "Einstein's failures as a young man were due to his lack of confidence.",
+                "input_type": "dropdown",
+                "answer": "Not Given"
+              },
+              {
+                "question_number": 35,
+                "question": "It is difficult to reach agreement on whether some children are actually born gifted.",
+                "input_type": "dropdown",
+                "answer": "True"
+              },
+              {
+                "question_number": 36,
+                "question": "Einstein was upset by the public's view of his life's work.",
+                "input_type": "dropdown",
+                "answer": "False"
+              },
+              {
+                "question_number": 37,
+                "question": "Einstein was upset by the public's view of his life's work.",
+                "input_type": "dropdown",
+                "answer": "Not Given"
+              }
+            ]
+          },
+          {
+            "instructions": "Choose the correct letter, A, B, C or D.\nWrite the correct letter in boxes 38-40 on your answer sheet.",
+            "mcq": [
+              {
+                "question_number": 38,
+                "question": "What does Eyre believe is needed for children to equal 'gifted' standards?",
+                "input_type": "radio",
+                "answer": [
+                  "C"
+                ],
+                "options": [
+                  {
+                    "label": "A",
+                    "value": "strict discipline from the teaching staff"
+                  },
+                  {
+                    "label": "B",
+                    "value": "assistance from their peers in the classroom"
+                  },
+                  {
+                    "label": "C",
+                    "value": "the development of a spirit of inquiry towards their studies"
+                  },
+                  {
+                    "label": "D",
+                    "value": "the determination to surpass everyone else's achievements"
+                  }
+                ],
+                "min_selection": 1,
+                "max_selection": 1
+              },
+              {
+                "question_number": 39,
+                "question": "What is the result of Ericsson's research?",
+                "input_type": "radio",
+                "answer": [
+                  "A"
+                ],
+                "options": [
+                  {
+                    "label": "A",
+                    "value": "Very gifted students do not need to work on improving memory skills."
+                  },
+                  {
+                    "label": "B",
+                    "value": "Being born with a special gift is not the key factor in becoming expert."
+                  },
+                  {
+                    "label": "C",
+                    "value": "Being born with a special gift is not the key factor in becoming expert."
+                  },
+                  {
+                    "label": "D",
+                    "value": "10,000 hours of relevant and demanding work will create a genius."
+                  }
+                ],
+                "min_selection": 1,
+                "max_selection": 1
+              },
+              {
+                "question_number": 40,
+                "question": "In the penultimate paragraph, it is stated the key to some deprived children's success is",
+                "input_type": "radio",
+                "answer": [
+                  "C"
+                ],
+                "options": [
+                  {
+                    "label": "A",
+                    "value": "a regular and nourishing diet at home."
+                  },
+                  {
+                    "label": "B",
+                    "value": "the loving support of more than one parent."
+                  },
+                  {
+                    "label": "C",
+                    "value": "a community which has well-funded facilities for learning."
+                  },
+                  {
+                    "label": "D",
+                    "value": "the guidance of someone who recognises the benefits of learning."
+                  }
+                ],
+                "min_selection": 1,
+                "max_selection": 1
+              }
+            ]
+          }
+        ],
+        "passageType": "type1"
+      }
+    ]
   }
+]
