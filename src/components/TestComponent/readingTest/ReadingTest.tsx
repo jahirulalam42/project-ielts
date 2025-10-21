@@ -847,7 +847,7 @@ const ReadingTest = ({ test }: any) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="container mx-auto p-4 min-h-screen pb-16">
+      <div className="container mx-auto p-4 h-screen overflow-hidden flex flex-col pb-16">
         {!hasStarted && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center bg-neutral-900/60 backdrop-blur-sm">
             <div
@@ -915,34 +915,31 @@ const ReadingTest = ({ test }: any) => {
           </div>
         )}
         {/* Exam Header */}
-        <div className="card bg-base-100 shadow-xl mb-6 ">
-          <div className="card-body">
-            <h1 className="card-title text-3xl">{test.title}</h1>
+        <div className="card bg-base-100 shadow-xl mb-6">
+          <div className="py-4 px-6">
+            <h2 className="card-title text-2xl">{test.title}</h2>
             <div className="flex justify-between items-center">
               <div>
-                <p className="text-lg">Type: {test.type}</p>
                 <p className="text-lg">Duration: {test.duration} minutes</p>
+              </div>
+              <div className="text-lg font-bold text-red-600 px-4 bg-red-50 rounded-lg border border-red-200">
+                {formatTime(timeLeft)}
+                {isTimeUp && (
+                  <span className="text-red-500 font-bold"> - Time's up!</span>
+                )}
               </div>
               <div className="badge badge-primary">
                 Part {currentPartIndex + 1} of {test.parts.length}
               </div>
             </div>
-            <div className="flex justify-between items-center mt-4">
-              <div className="text-lg font-bold">
-                Time Left: {formatTime(timeLeft)}
-              </div>
-              {isTimeUp && (
-                <div className="text-lg text-red-500 font-bold">Time's up!</div>
-              )}
-            </div>
           </div>
         </div>
 
         {/* Split Screen Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 flex-1 overflow-hidden">
           {/* Passage Section (Left) */}
-          <div className="lg:h-[80vh] lg:overflow-y-auto p-4 border-r-2">
-            <h2 className="text-2xl font-bold mb-4">
+          <div className="h-full overflow-y-auto p-4 border-r-2">
+            <h2 className="text-2xl font-bold mb-4 text-center">
               {currentPart.passage_title}
             </h2>
 
@@ -966,12 +963,12 @@ const ReadingTest = ({ test }: any) => {
           </div>
 
           {/* Questions Section (Right) */}
-          <div className="lg:h-[80vh] lg:overflow-y-auto p-4 border-l">
+          <div className="h-full overflow-y-auto p-4 border-l">
             <div className="space-y-6">
-              <h3 className="text-xl font-bold mb-4">{currentPart.title}</h3>
+              {/* <h3 className="text-xl font-bold mb-4">{currentPart.title}</h3>
               <p className="italic text-gray-600 mb-6">
                 {currentPart.instructions}
-              </p>
+              </p> */}
 
               {currentPart.questions &&
                 currentPart.questions.map((question: any, index: number) => {
@@ -1182,7 +1179,7 @@ const ReadingTest = ({ test }: any) => {
             </div>
 
             {/* Navigation */}
-            <div className="flex justify-between mt-6">
+            {/* <div className="flex justify-between mt-6">
               <button
                 onClick={handlePrevPart}
                 disabled={currentPartIndex === 0}
@@ -1199,16 +1196,8 @@ const ReadingTest = ({ test }: any) => {
               >
                 Next
               </button>
-            </div>
+            </div> */}
 
-            {/* Submit Button */}
-            <button
-              onClick={handleSubmit}
-              type="submit"
-              className="btn btn-success mt-6 w-full"
-            >
-              Submit Test
-            </button>
           </div>
         </div>
 
@@ -1219,42 +1208,74 @@ const ReadingTest = ({ test }: any) => {
       {/* Fixed Question Navigation Panel at Bottom */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
         <div className="px-4 py-2">
-          <div className="flex justify-between">
-            {test.parts.map((part: any, partIndex: number) => (
-              <div key={partIndex} className="flex-1 flex justify-center">
-                <div className="border-2 border-gray-300 rounded-lg p-1 flex gap-0.5 justify-center">
-                  {partQuestions[partIndex]?.map((questionNumber: number) => {
-                    const hasAnswered = Array.isArray(answers)
-                      ? answers.some(
-                          (answer: any) =>
-                            String(answer.questionId) ===
-                              String(questionNumber) &&
-                            answer.value &&
-                            answer.value.trim() !== ""
-                        )
-                      : answers[questionNumber]?.value &&
-                        answers[questionNumber]?.value.trim() !== "";
+          <div className="flex justify-between items-center">
+            {/* Previous Button */}
+            <button
+              onClick={handlePrevPart}
+              disabled={currentPartIndex === 0}
+              className="btn bg-red-600 hover:bg-red-700 border-0 disabled:bg-gray-400 disabled:cursor-not-allowed text-white"
+              type="button"
+            >
+              Previous
+            </button>
 
-                    return (
-                      <button
-                        key={`${questionNumber}-${partIndex}`}
-                        type="button"
-                        className={`w-6 h-6 text-xs rounded border transition-colors ${
-                          questionNumber === currentQuestionNumber
-                            ? "bg-blue-500 text-white border-blue-500"
-                            : hasAnswered
-                            ? "bg-green-200 text-green-700 border-green-400 hover:bg-green-300"
-                            : "bg-gray-200 text-gray-700 border-gray-300 hover:bg-gray-300"
-                        }`}
-                        onClick={() => handleQuestionNavigation(questionNumber, partIndex)}
-                      >
-                        {questionNumber}
-                      </button>
-                    );
-                  })}
+            {/* Question Numbers */}
+            <div className="flex justify-center flex-1">
+              {test.parts.map((part: any, partIndex: number) => (
+                <div key={partIndex} className="flex-1 flex justify-center">
+                  <div className="border-2 border-gray-300 rounded-lg p-1 flex gap-0.5 justify-center">
+                    {partQuestions[partIndex]?.map((questionNumber: number) => {
+                      const hasAnswered = Array.isArray(answers)
+                        ? answers.some(
+                            (answer: any) =>
+                              String(answer.questionId) ===
+                                String(questionNumber) &&
+                              answer.value &&
+                              answer.value.trim() !== ""
+                          )
+                        : answers[questionNumber]?.value &&
+                          answers[questionNumber]?.value.trim() !== "";
+
+                      return (
+                        <button
+                          key={`${questionNumber}-${partIndex}`}
+                          type="button"
+                          className={`w-6 h-6 text-xs rounded border transition-colors ${
+                            questionNumber === currentQuestionNumber
+                              ? "bg-blue-500 text-white border-blue-500"
+                              : hasAnswered
+                              ? "bg-green-200 text-green-700 border-green-400 hover:bg-green-300"
+                              : "bg-gray-200 text-gray-700 border-gray-300 hover:bg-gray-300"
+                          }`}
+                          onClick={() => handleQuestionNavigation(questionNumber, partIndex)}
+                        >
+                          {questionNumber}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+
+            {/* Next Button */}
+            <button
+              onClick={handleNextPart}
+              disabled={currentPartIndex === test.parts.length - 1}
+              className="btn bg-red-600 hover:bg-red-700 border-0 disabled:bg-gray-400 disabled:cursor-not-allowed mx-2 text-white"
+              type="button"
+            >
+              Next
+            </button>
+
+            {/* Submit Button */}
+            <button
+              onClick={handleSubmit}
+              type="submit"
+              className="btn bg-green-600 hover:bg-green-700 border-0 text-white"
+            >
+              Submit Test
+            </button>
           </div>
         </div>
       </div>

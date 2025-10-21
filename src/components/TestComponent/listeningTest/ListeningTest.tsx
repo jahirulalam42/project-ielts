@@ -472,30 +472,6 @@ const ListeningTest: React.FC<any> = ({ test }) => {
               })}
             </div>
 
-            {/* Navigation */}
-            <div className="flex justify-between mt-6">
-              <button
-                onClick={handlePrevPart}
-                disabled={currentPartIndex === 0}
-                className="btn btn-secondary"
-                type="button"
-              >
-                Previous
-              </button>
-              <button
-                onClick={handleNextPart}
-                disabled={currentPartIndex === test.parts.length - 1}
-                className="btn bg-red-600 hover:bg-red-700 border-0"
-                type="button"
-              >
-                Next
-              </button>
-            </div>
-
-            {/* Submit Button */}
-            <button type="submit" className="btn btn-success mt-6 w-full">
-              Submit Test
-            </button>
           </div>
         </div>
 
@@ -506,35 +482,67 @@ const ListeningTest: React.FC<any> = ({ test }) => {
       {/* Fixed Question Navigation Panel at Bottom */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
         <div className="px-4 py-2">
-          <div className="flex justify-between">
-            {test.parts.map((part: any, partIndex: number) => (
-              <div key={partIndex} className="flex-1 flex justify-center">
-                <div className="border-2 border-gray-300 rounded-lg p-2 flex flex-wrap gap-1 justify-center">
-                  {partQuestions[partIndex]?.map((questionNumber: number) => {
-                    const hasAnswered =
-                      answers[questionNumber]?.value &&
-                      answers[questionNumber]?.value.trim() !== "";
+          <div className="flex justify-between items-center">
+            {/* Previous Button */}
+            <button
+              onClick={handlePrevPart}
+              disabled={currentPartIndex === 0}
+              className="btn bg-red-600 hover:bg-red-700 border-0 disabled:bg-gray-400 disabled:cursor-not-allowed mx-2"
+              type="button"
+            >
+              Previous
+            </button>
 
-                    return (
-                      <button
-                        key={`${questionNumber}-${partIndex}`}
-                        type="button"
-                        className={`w-8 h-8 text-xs rounded border transition-colors ${
-                          questionNumber === currentQuestionNumber
-                            ? "bg-blue-500 text-white border-blue-500"
-                            : hasAnswered
-                            ? "bg-green-200 text-green-700 border-green-400 hover:bg-green-300"
-                            : "bg-gray-200 text-gray-700 border-gray-300 hover:bg-gray-300"
-                        }`}
-                        onClick={() => handleQuestionNavigation(questionNumber, partIndex)}
-                      >
-                        {questionNumber}
-                      </button>
-                    );
-                  })}
+            {/* Question Numbers */}
+            <div className="flex justify-center flex-1">
+              {test.parts.map((part: any, partIndex: number) => (
+                <div key={partIndex} className="flex-1 flex justify-center">
+                  <div className="border-2 border-gray-300 rounded-lg p-2 flex flex-wrap gap-1 justify-center">
+                    {partQuestions[partIndex]?.map((questionNumber: number) => {
+                      const hasAnswered =
+                        answers[questionNumber]?.value &&
+                        answers[questionNumber]?.value.trim() !== "";
+
+                      return (
+                        <button
+                          key={`${questionNumber}-${partIndex}`}
+                          type="button"
+                          className={`w-8 h-8 text-xs rounded border transition-colors ${
+                            questionNumber === currentQuestionNumber
+                              ? "bg-blue-500 text-white border-blue-500"
+                              : hasAnswered
+                              ? "bg-green-200 text-green-700 border-green-400 hover:bg-green-300"
+                              : "bg-gray-200 text-gray-700 border-gray-300 hover:bg-gray-300"
+                          }`}
+                          onClick={() => handleQuestionNavigation(questionNumber, partIndex)}
+                        >
+                          {questionNumber}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+
+            {/* Next Button */}
+            <button
+              onClick={handleNextPart}
+              disabled={currentPartIndex === test.parts.length - 1}
+              className="btn bg-red-600 hover:bg-red-700 border-0 disabled:bg-gray-400 disabled:cursor-not-allowed mx-2"
+              type="button"
+            >
+              Next
+            </button>
+
+            {/* Submit Button */}
+            <button
+              onClick={handleSubmit}
+              type="submit"
+              className="btn bg-green-600 hover:bg-green-700 border-0 text-white mx-2"
+            >
+              Submit Test
+            </button>
           </div>
         </div>
       </div>

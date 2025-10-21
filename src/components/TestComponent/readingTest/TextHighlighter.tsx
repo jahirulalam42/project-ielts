@@ -17,7 +17,7 @@ interface TextHighlighterProps {
 
 const TextHighlighter: React.FC<TextHighlighterProps> = ({ content, onHighlightChange }) => {
   const [highlights, setHighlights] = useState<Highlight[]>([]);
-  const [selectedColor, setSelectedColor] = useState<string>('bg-yellow-200');
+  const [selectedColor] = useState<string>('bg-yellow-200');
   const [showToolbar, setShowToolbar] = useState(false);
   const [toolbarPosition, setToolbarPosition] = useState({ x: 0, y: 0 });
   const [selectedText, setSelectedText] = useState('');
@@ -30,14 +30,6 @@ const TextHighlighter: React.FC<TextHighlighterProps> = ({ content, onHighlightC
     setIsClient(true);
   }, []);
 
-  const highlightColors = [
-    { name: 'Yellow', value: 'bg-yellow-200', hex: '#fef3c7' },
-    { name: 'Green', value: 'bg-green-200', hex: '#bbf7d0' },
-    { name: 'Blue', value: 'bg-blue-200', hex: '#bfdbfe' },
-    { name: 'Pink', value: 'bg-pink-200', hex: '#fbcfe8' },
-    { name: 'Purple', value: 'bg-purple-200', hex: '#ddd6fe' },
-    { name: 'Orange', value: 'bg-orange-200', hex: '#fed7aa' },
-  ];
 
   // Generate unique ID without Date.now()
   const generateId = () => {
@@ -222,7 +214,7 @@ const TextHighlighter: React.FC<TextHighlighterProps> = ({ content, onHighlightC
 
       // Add highlighted text
       const highlightedText = text.slice(highlight.startOffset, highlight.endOffset);
-      const colorClass = highlightColors.find(c => c.value === highlight.color)?.value || 'bg-yellow-200';
+      const colorClass = 'bg-yellow-200';
       
       parts.push(
         <span
@@ -285,23 +277,6 @@ const TextHighlighter: React.FC<TextHighlighterProps> = ({ content, onHighlightC
                 transform: 'translateX(-50%)',
               }}
             >
-              <div className="flex gap-2">
-                {highlightColors.map((color) => (
-                  <button
-                    key={color.value}
-                    type="button"
-                    onClick={() => setSelectedColor(color.value)}
-                    className={`w-7 h-7 rounded-full border-2 transition-all duration-200 ${
-                      selectedColor === color.value 
-                        ? 'border-gray-800 scale-110 shadow-md' 
-                        : 'border-gray-300 hover:scale-105'
-                    }`}
-                    style={{ backgroundColor: color.hex }}
-                    title={color.name}
-                  />
-                ))}
-              </div>
-              <div className="h-6 w-px bg-gray-300"></div>
               <button
                 type="button"
                 onClick={addHighlight}
@@ -323,53 +298,6 @@ const TextHighlighter: React.FC<TextHighlighterProps> = ({ content, onHighlightC
             </div>
           )}
 
-          {/* Highlight Controls */}
-          <div className="mb-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-3">
-                <span className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
-                  </svg>
-                  Highlight Colors:
-                </span>
-                {highlightColors.map((color) => (
-                  <button
-                    key={color.value}
-                    type="button"
-                    onClick={() => setSelectedColor(color.value)}
-                    className={`w-6 h-6 rounded-full border-2 transition-all duration-200 ${
-                      selectedColor === color.value 
-                        ? 'border-gray-800 scale-110 shadow-lg' 
-                        : 'border-gray-300 hover:scale-105'
-                    }`}
-                    style={{ backgroundColor: color.hex }}
-                    title={color.name}
-                  />
-                ))}
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="text-sm text-gray-600 bg-white px-3 py-1 rounded-full border">
-                  <span className="font-semibold">{highlights.length}</span> highlight{highlights.length !== 1 ? 's' : ''}
-                </div>
-                {highlights.length > 0 && (
-                  <button
-                    type="button"
-                    onClick={clearAllHighlights}
-                    className="px-3 py-1 bg-red-500 text-white text-sm rounded-lg hover:bg-red-600 transition-colors duration-200 flex items-center gap-1"
-                  >
-                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                    </svg>
-                    Clear All
-                  </button>
-                )}
-              </div>
-            </div>
-            <div className="text-xs text-gray-500 bg-white px-3 py-2 rounded border">
-              <span className="font-medium">💡 Tips:</span> Select text to highlight • Press Enter to confirm • Press Escape to cancel • Click highlighted text to remove
-            </div>
-          </div>
 
           {/* Content with highlighting */}
           <div
