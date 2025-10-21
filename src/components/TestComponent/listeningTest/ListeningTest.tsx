@@ -354,7 +354,7 @@ const ListeningTest: React.FC<any> = ({ test }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="container mx-auto p-4 min-h-screen pb-32">
+      <div className="container mx-auto p-4 h-screen overflow-hidden flex flex-col pb-16">
         {/* Test Header */}
         <div className="card bg-base-100 shadow-xl mb-6">
           <div className="card-body">
@@ -379,18 +379,20 @@ const ListeningTest: React.FC<any> = ({ test }) => {
           </div>
         </div>
 
-        {/* Audio Player */}
-        <div className="card bg-base-100 shadow-xl mb-6">
-          <div className="card-body">
-            <audio controls className="w-full">
-              <source src={test.audioUrl} type="audio/mpeg" />
-              Your browser does not support the audio element.
-            </audio>
+        {/* Main Content Area */}
+        <div className="flex-1 overflow-hidden flex flex-col">
+          {/* Audio Player */}
+          <div className="card bg-base-100 shadow-xl mb-6">
+            <div className="card-body">
+              <audio controls className="w-full">
+                <source src={test.audioUrl} type="audio/mpeg" />
+                Your browser does not support the audio element.
+              </audio>
+            </div>
           </div>
-        </div>
 
-        {/* Questions Section */}
-        <div className="card bg-base-100 shadow-xl">
+          {/* Questions Section */}
+          <div className="card bg-base-100 shadow-xl flex-1 overflow-y-auto">
           <div className="card-body">
             <h2 className="text-2xl font-bold mb-4">{currentPart.title}</h2>
             <div className="space-y-6">
@@ -474,6 +476,7 @@ const ListeningTest: React.FC<any> = ({ test }) => {
 
           </div>
         </div>
+        </div>
 
         {/* Toast Notifications */}
         <ToastContainer />
@@ -487,7 +490,7 @@ const ListeningTest: React.FC<any> = ({ test }) => {
             <button
               onClick={handlePrevPart}
               disabled={currentPartIndex === 0}
-              className="btn bg-red-600 hover:bg-red-700 border-0 disabled:bg-gray-400 disabled:cursor-not-allowed mx-2"
+              className="btn bg-red-600 hover:bg-red-700 border-0 disabled:bg-gray-400 disabled:cursor-not-allowed mx-2 text-white"
               type="button"
             >
               Previous
@@ -529,7 +532,7 @@ const ListeningTest: React.FC<any> = ({ test }) => {
             <button
               onClick={handleNextPart}
               disabled={currentPartIndex === test.parts.length - 1}
-              className="btn bg-red-600 hover:bg-red-700 border-0 disabled:bg-gray-400 disabled:cursor-not-allowed mx-2"
+              className="btn bg-red-600 hover:bg-red-700 border-0 disabled:bg-gray-400 disabled:cursor-not-allowed mx-2 text-white"
               type="button"
             >
               Next
