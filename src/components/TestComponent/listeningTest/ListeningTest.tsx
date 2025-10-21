@@ -275,7 +275,14 @@ const ListeningTest: React.FC<any> = ({ test }) => {
   // Scroll to top whenever the part changes
   useEffect(() => {
     if (typeof window !== "undefined") {
+      // Scroll main page to top
       window.scrollTo({ top: 0, behavior: "smooth" });
+      
+      // Also scroll the questions panel (right side) to top
+      const questionsContainer = document.querySelector('.lg\\:h-\\[80vh\\].lg\\:overflow-y-auto.border-l');
+      if (questionsContainer) {
+        questionsContainer.scrollTo({ top: 0, behavior: "smooth" });
+      }
     }
   }, [currentPartIndex]);
 
