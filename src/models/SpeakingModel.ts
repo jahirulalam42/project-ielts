@@ -16,8 +16,8 @@ export interface SpeakingTest extends mongoose.Document {
   difficulty: "easy" | "medium" | "hard";
   questions: Question[];
   total_duration: number; // Total test duration in minutes
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const SpeakingSchema = new mongoose.Schema<SpeakingTest>({

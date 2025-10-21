@@ -61,6 +61,8 @@ export interface WritingTest extends mongoose.Document {
   type: string;
   duration: number;
   parts: PartsObject[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const WritingSchema = new mongoose.Schema<WritingTest>({
@@ -85,6 +87,8 @@ const WritingSchema = new mongoose.Schema<WritingTest>({
       image: { type: String, required: false },  // Optional field for the image URL
     },
   ],
+}, {
+  timestamps: true // This adds createdAt and updatedAt fields automatically
 });
 
 export default (mongoose.models.WritingTest as Model<WritingTest>) ||

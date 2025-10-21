@@ -5,6 +5,7 @@ import ListeningModel from '@/models/ListeningModel';
 import WritingModel from '@/models/WritingModel';
 import SpeakingModel from '@/models/SpeakingModel';
 import UserModel from '@/models/UserModel';
+import mongoose from 'mongoose';
 
 export async function GET(request: NextRequest) {
   try {
@@ -25,18 +26,43 @@ export async function GET(request: NextRequest) {
       SpeakingModel.countDocuments(),
       UserModel.countDocuments(),
       // Count tests created in the last 7 days
+      // For existing tests without createdAt, we'll use _id timestamp as fallback
       Promise.all([
         ReadingModel.countDocuments({
-          createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) }
+          $or: [
+            { createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } },
+            { 
+              createdAt: { $exists: false },
+              _id: { $gte: new mongoose.Types.ObjectId(Math.floor(Date.now() / 1000 - 7 * 24 * 60 * 60)) }
+            }
+          ]
         }),
         ListeningModel.countDocuments({
-          createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) }
+          $or: [
+            { createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } },
+            { 
+              createdAt: { $exists: false },
+              _id: { $gte: new mongoose.Types.ObjectId(Math.floor(Date.now() / 1000 - 7 * 24 * 60 * 60)) }
+            }
+          ]
         }),
         WritingModel.countDocuments({
-          createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) }
+          $or: [
+            { createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } },
+            { 
+              createdAt: { $exists: false },
+              _id: { $gte: new mongoose.Types.ObjectId(Math.floor(Date.now() / 1000 - 7 * 24 * 60 * 60)) }
+            }
+          ]
         }),
         SpeakingModel.countDocuments({
-          createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) }
+          $or: [
+            { createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } },
+            { 
+              createdAt: { $exists: false },
+              _id: { $gte: new mongoose.Types.ObjectId(Math.floor(Date.now() / 1000 - 7 * 24 * 60 * 60)) }
+            }
+          ]
         })
       ]).then(counts => counts.reduce((sum, count) => sum + count, 0))
     ]);

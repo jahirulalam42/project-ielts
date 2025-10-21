@@ -15,6 +15,8 @@ export interface ListeningTest extends mongoose.Document {
   audioFormat?: String; // File format
   audioSize?: Number; // File size in bytes
   parts: PartsObject[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const ListeningSchema = new mongoose.Schema<ListeningTest>({
