@@ -25,8 +25,56 @@ const ReadingTest = ({ test }: any) => {
   const [passageHighlights, setPassageHighlights] = useState<any[]>([]);
   const { data: session }: any = useSession();
   const [hasStarted, setHasStarted] = useState(false);
+  const [leftPanelWidth, setLeftPanelWidth] = useState<number>(50); // Percentage
+  const [isResizing, setIsResizing] = useState<boolean>(false);
 
   const currentPart = test.parts[currentPartIndex];
+
+  // Resize functionality
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsResizing(true);
+    e.preventDefault();
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!isResizing) return;
+    
+    const container = document.querySelector('.resize-container');
+    if (!container) return;
+    
+    const rect = container.getBoundingClientRect();
+    const newLeftWidth = ((e.clientX - rect.left) / rect.width) * 100;
+    
+    // Constrain between 20% and 80%
+    const constrainedWidth = Math.min(Math.max(newLeftWidth, 20), 80);
+    setLeftPanelWidth(constrainedWidth);
+  };
+
+  const handleMouseUp = () => {
+    setIsResizing(false);
+  };
+
+  // Add event listeners for mouse move and up
+  useEffect(() => {
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+    } else {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+  }, [isResizing]);
 
   // Function to get all question numbers for each part
   const getPartQuestionNumbers = () => {
@@ -936,9 +984,12 @@ const ReadingTest = ({ test }: any) => {
         </div>
 
         {/* Split Screen Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 flex-1 overflow-hidden">
+        <div className="resize-container flex flex-1 overflow-hidden">
           {/* Passage Section (Left) */}
-          <div className="h-full overflow-y-auto p-4 border-r-2">
+          <div 
+            className="h-full overflow-y-auto p-4 border-r-2"
+            style={{ width: `${leftPanelWidth}%` }}
+          >
             <h2 className="text-2xl font-bold mb-4 text-center">
               {currentPart.passage_title}
             </h2>
@@ -962,8 +1013,22 @@ const ReadingTest = ({ test }: any) => {
             </div>
           </div>
 
+          {/* Resize Handle */}
+          <div
+            className="w-1 bg-gray-300 hover:bg-gray-400 cursor-col-resize flex-shrink-0 relative group"
+            onMouseDown={handleMouseDown}
+          >
+            <div className="absolute inset-0 w-3 -left-1 cursor-col-resize"></div>
+            <div className="w-full h-full flex items-center justify-center">
+              <div className="w-0.5 h-8 bg-gray-400 group-hover:bg-gray-500 rounded"></div>
+            </div>
+          </div>
+
           {/* Questions Section (Right) */}
-          <div className="h-full overflow-y-auto p-4 border-l">
+          <div 
+            className="h-full overflow-y-auto p-4 border-l"
+            style={{ width: `${100 - leftPanelWidth}%` }}
+          >
             <div className="space-y-6">
               {/* <h3 className="text-xl font-bold mb-4">{currentPart.title}</h3>
               <p className="italic text-gray-600 mb-6">
