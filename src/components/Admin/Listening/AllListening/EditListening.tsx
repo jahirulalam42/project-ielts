@@ -17,7 +17,15 @@ const EditListening = ({
   };
 
   return (
-    <div className="modal modal-open">
+    <div 
+      className="modal modal-open"
+      onClick={(e) => {
+        // Close modal when clicking on the backdrop (outside the modal-box)
+        if (e.target === e.currentTarget) {
+          setShowEditModal(false);
+        }
+      }}
+    >
       <div className="modal-box max-w-5xl max-h-[90vh] overflow-y-auto">
         <h3 className="font-bold text-xl mb-6">Edit Listening Test</h3>
 

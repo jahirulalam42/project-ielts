@@ -26,7 +26,15 @@ const EditReading = ({
   };
 
   return (
-    <div className="modal modal-open">
+    <div 
+      className="modal modal-open"
+      onClick={(e) => {
+        // Close modal when clicking on the backdrop (outside the modal-box)
+        if (e.target === e.currentTarget) {
+          setShowEditModal(false);
+        }
+      }}
+    >
       <div className="modal-box max-w-5xl max-h-[90vh] overflow-y-auto">
         <h3 className="font-bold text-2xl mb-4">Edit Reading Test</h3>
 
@@ -163,27 +171,99 @@ const EditReading = ({
                         <span className="label-text">Passage Content</span>
                       </label>
                       <div className="space-y-2">
-                        {part.passage.map((paragraph: any, paraIndex: any) => (
-                          <div
-                            key={paraIndex}
-                            className="flex items-start gap-2"
-                          >
-                            <span className="badge badge-neutral mt-1">
-                              {paraIndex + 1}
-                            </span>
-                            <textarea
-                              value={paragraph || ""} // ✅ Use value
-                              onChange={(e) =>
-                                handlePassageParagraphChange(
-                                  partIndex,
-                                  paraIndex,
-                                  e.target.value
-                                )
-                              }
-                              className="textarea textarea-bordered w-full h-32"
-                            />
-                          </div>
-                        ))}
+                        {(() => {
+                          
+                          // Handle null/undefined passage
+                          if (!part.passage) {
+                            return <div className="text-red-500">No passage content found</div>;
+                          }
+                          
+                          // Handle array format
+                          if (Array.isArray(part.passage)) {
+                            // Check if it's an array of objects (like [{A: "text1", B: "text2"}])
+                            if (part.passage.length === 1 && typeof part.passage[0] === 'object' && !Array.isArray(part.passage[0])) {
+                              // This is the object format wrapped in an array
+                              const obj = part.passage[0];
+                              return Object.keys(obj).map((key, paraIndex) => (
+                                <div
+                                  key={key}
+                                  className="flex items-start gap-2"
+                                >
+                                  <span className="badge badge-neutral mt-1">
+                                    {key}
+                                  </span>
+                                  <textarea
+                                    value={String(obj[key] || "")}
+                                    onChange={(e) =>
+                                      handlePassageParagraphChange(
+                                        partIndex,
+                                        paraIndex,
+                                        e.target.value
+                                      )
+                                    }
+                                    className="textarea textarea-bordered w-full h-32"
+                                  />
+                                </div>
+                              ));
+                            } else {
+                              // This is a regular array of strings
+                              return part.passage.map((paragraph: any, paraIndex: any) => (
+                                <div
+                                  key={paraIndex}
+                                  className="flex items-start gap-2"
+                                >
+                                  <span className="badge badge-neutral mt-1">
+                                    {paraIndex + 1}
+                                  </span>
+                                  <textarea
+                                    value={String(paragraph || "")}
+                                    onChange={(e) =>
+                                      handlePassageParagraphChange(
+                                        partIndex,
+                                        paraIndex,
+                                        e.target.value
+                                      )
+                                    }
+                                    className="textarea textarea-bordered w-full h-32"
+                                  />
+                                </div>
+                              ));
+                            }
+                          }
+                          
+                          // Handle object format
+                          if (part.passage && typeof part.passage === 'object' && !Array.isArray(part.passage)) {
+                            const keys = Object.keys(part.passage);
+                            return keys.map((key, paraIndex) => (
+                              <div
+                                key={key}
+                                className="flex items-start gap-2"
+                              >
+                                <span className="badge badge-neutral mt-1">
+                                  {key}
+                                </span>
+                                <textarea
+                                  value={String(part.passage[key] || "")}
+                                  onChange={(e) =>
+                                    handlePassageParagraphChange(
+                                      partIndex,
+                                      paraIndex,
+                                      e.target.value
+                                    )
+                                  }
+                                  className="textarea textarea-bordered w-full h-32"
+                                />
+                              </div>
+                            ));
+                          }
+                          
+                          // Fallback for unexpected format
+                          return (
+                            <div className="text-red-500">
+                              Unexpected passage format: {typeof part.passage}
+                            </div>
+                          );
+                        })()}
                       </div>
                       <button className="btn btn-sm btn-outline mt-2">
                         + Add Paragraph

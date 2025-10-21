@@ -219,7 +219,7 @@ const TextHighlighter: React.FC<TextHighlighterProps> = ({ content, onHighlightC
       parts.push(
         <span
           key={highlight.id}
-          className={`${colorClass} cursor-pointer relative group highlight-animation highlight-hover`}
+          className={`${colorClass} cursor-pointer relative group`}
           onClick={() => removeHighlight(highlight.id)}
           title="Click to remove highlight"
         >
@@ -304,7 +304,6 @@ const TextHighlighter: React.FC<TextHighlighterProps> = ({ content, onHighlightC
             ref={contentRef}
             className="prose max-w-none space-y-4 select-text"
             onMouseUp={handleTextSelection}
-            onKeyUp={handleTextSelection}
           >
             {renderHighlightedContent()}
           </div>
