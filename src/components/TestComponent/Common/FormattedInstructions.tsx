@@ -24,7 +24,7 @@ const FormattedInstructions: React.FC<FormattedInstructionsProps> = ({
   // Inline formatter: supports [b]...[/b] tags for manual bolding
   const renderInline = (text: string) => {
     if (!text) return text;
-    const parts: Array<string | JSX.Element> = [];
+    const parts: Array<string | React.ReactNode> = [];
     const regex = /\[b\]([\s\S]*?)\[\/b\]/g;
     let lastIndex = 0;
     let match: RegExpExecArray | null;

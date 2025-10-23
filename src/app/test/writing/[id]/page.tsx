@@ -38,6 +38,9 @@ export default function WritingTestPage() {
   });
   const [isDragging, setIsDragging] = useState(false);
   const [currentTaskIndex, setCurrentTaskIndex] = useState<number | null>(null);
+  const [hasStarted, setHasStarted] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [isTimeUp, setIsTimeUp] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const { data: session } = useSession();
 
@@ -46,6 +49,13 @@ export default function WritingTestPage() {
   // Function to count words
   const countWords = (text: string): number => {
     return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+  };
+
+  // Format time function
+  const formatTime = (timeInSeconds: number) => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = timeInSeconds % 60;
+    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
   };
 
   const handleMouseDown = (e: React.MouseEvent, taskIndex: number) => {
@@ -95,6 +105,7 @@ export default function WritingTestPage() {
         const data = await getSingleWritingTest(params.id);
         if (data.success) {
           setTest(data.data);
+          setTimeLeft(data.data.duration * 60); // Initialize timer
         }
       } catch (err) {
         setError('Failed to fetch writing test');
@@ -105,6 +116,22 @@ export default function WritingTestPage() {
 
     fetchTest();
   }, [params.id]);
+
+  // Timer effect
+  useEffect(() => {
+    if (!hasStarted) return;
+    if (timeLeft === 0) {
+      setIsTimeUp(true);
+      handleSubmit();
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => prevTime - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft, hasStarted]);
 
   const handleResponseChange = (partId: string, value: string) => {
     setResponses(prev => ({
@@ -214,38 +241,121 @@ export default function WritingTestPage() {
   }
 
   return (
-    <div className="container mx-auto p-4 min-h-screen">
-      <div className="card bg-base-100 shadow-xl mb-8">
-        <div className="card-body">
-          <h1 className="card-title text-3xl mb-4">{test.title}</h1>
-          <div className="flex gap-4 mb-6">
-            <div className="badge badge-info">{test.type}</div>
-            <div className="badge badge-warning">
-              Duration: {test.duration} minutes
+    <div className="container mx-auto p-4 h-screen overflow-hidden flex flex-col">
+      {!hasStarted && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-neutral-900/60 backdrop-blur-sm">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="writing-start-title"
+            className="bg-base-100 w-full max-w-lg rounded-2xl shadow-2xl border border-base-200 overflow-hidden"
+          >
+            <div className="p-6 sm:p-8">
+              <div className="flex items-start gap-4">
+                <div className="rounded-xl bg-primary/10 text-primary p-3">
+                  {/* writing icon */}
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 19l7-7 3 3-7 7-3-3z" fill="currentColor"/>
+                    <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" fill="currentColor"/>
+                    <path d="M2 2l7.586 7.586" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M11 13H6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <h2 id="writing-start-title" className="text-xl font-semibold leading-tight">
+                    Ready to begin your Writing test?
+                  </h2>
+                  <p className="mt-1 text-sm text-base-content/70">
+                    The timer will start as soon as you click <strong>Start Test</strong>.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="rounded-lg border border-base-200 p-3">
+                  <div className="text-xs uppercase tracking-wide text-base-content/60">Duration</div>
+                  <div className="text-sm font-medium">{test.duration} min</div>
+                </div>
+                <div className="rounded-lg border border-base-200 p-3">
+                  <div className="text-xs uppercase tracking-wide text-base-content/60">Tasks</div>
+                  <div className="text-sm font-medium">{test.parts?.length || 2}</div>
+                </div>
+                <div className="rounded-lg border border-base-200 p-3">
+                  <div className="text-xs uppercase tracking-wide text-base-content/60">Type</div>
+                  <div className="text-sm font-medium">{test.type}</div>
+                </div>
+              </div>
+
+              <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-end gap-2">
+                <button
+                  type="button"
+                  className="btn btn-ghost"
+                  onClick={() => { if (typeof window !== 'undefined') window.history.back(); }}
+                >
+                  Back
+                </button>
+                <button
+                  autoFocus
+                  type="button"
+                  className="btn btn-primary shadow-md"
+                  onClick={() => {
+                    const durationMin = test.duration || 60;
+                    setTimeLeft(durationMin * 60);
+                    setHasStarted(true);
+                  }}
+                >
+                  Start Test
+                </button>
+              </div>
             </div>
           </div>
+        </div>
+      )}
 
+      {/* Exam Header */}
+      <div className="card bg-base-100 shadow-xl mb-2">
+        <div className="py-4 px-6">
+          <h2 className="card-title text-2xl">{test.title}</h2>
+          <div className="flex justify-between items-center">
+            <div>
+              <p className="text-lg">Duration: {test.duration} minutes</p>
+            </div>
+            <div className="text-lg font-bold text-red-600 px-4 bg-red-50 rounded-lg border border-red-200">
+              {formatTime(timeLeft)}
+              {isTimeUp && (
+                <span className="text-red-500 font-bold"> - Time's up!</span>
+              )}
+            </div>
+            <div className="badge badge-primary">
+              Task {activeTab + 1} of {test.parts.length}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="card bg-base-100 shadow-xl flex-1 overflow-hidden flex flex-col">
+        <div className="card-body flex-1 overflow-hidden p-4">
           {/* Tab Content */}
           {test.parts.map((part: TestPart, index: number) => (
             <div 
               key={part._id} 
-              className={`mb-8 ${activeTab === index ? 'block' : 'hidden'}`}
+              className={`h-full ${activeTab === index ? 'block' : 'hidden'}`}
             >
-              <div className="divider"></div>
               <h2 className="text-2xl font-semibold mb-4">{part.title}</h2>
               
-              <div className="split-container flex relative">
+              <div className="split-container flex relative h-[calc(100vh-250px)]">
                 {/* Left Side - Question and Instructions */}
                 <div 
-                  className="bg-base-200 p-6 rounded-lg overflow-auto"
+                  className="bg-base-200 p-4 rounded-lg overflow-auto"
                   style={{ width: `${panelWidths[index]}%` }}
                 >
-                  <h3 className="text-lg font-medium mb-2">{part.subtitle}</h3>
+                  <h3 className="mb-2">{part.subtitle}</h3>
 
-                  <div className="prose max-w-none mb-4">
+                  <div className="prose max-w-none mb-4 border border-gray-300 rounded-lg p-4 bg-gray-50 font-semibold">
                     {Array.isArray(part.Question) && part.Question.length > 0 ? (
                       part.Question.map((question, index) => (
-                        <p key={index} className="mb-2">{question}</p>
+                        <p key={index} className="mb-2 whitespace-pre-line leading-relaxed italic">{question}</p>
                       ))
                     ) : (
                       <p>No questions available.</p>
@@ -262,8 +372,7 @@ export default function WritingTestPage() {
                     </div>
                   )}
 
-                  <div className="mt-6 bg-neutral text-neutral-content p-4 rounded-lg">
-                    <h4 className="font-bold mb-2">Instructions:</h4>
+                  <div className="mt-6 p-4 rounded-lg">
                     {Array.isArray(part.instruction) && part.instruction.length > 0 ? (
                       part.instruction.map((instruction, index) => (
                         <p key={index}>{instruction}</p>
@@ -284,7 +393,7 @@ export default function WritingTestPage() {
 
                 {/* Right Side - Input Area */}
                 <div 
-                  className="bg-base-200 p-6 rounded-lg overflow-auto"
+                  className="bg-base-200 p-4 rounded-lg overflow-hidden flex flex-col"
                   style={{ width: `${100 - panelWidths[index]}%` }}
                 >
                   <div className="flex justify-between items-center mb-2">
@@ -294,7 +403,7 @@ export default function WritingTestPage() {
                     </div>
                   </div>
                   <textarea
-                    className="textarea textarea-bordered w-full h-[calc(100vh-300px)]"
+                    className="textarea textarea-bordered w-full flex-1 resize-none"
                     placeholder="Write your response here..."
                     value={responses[part._id] || ''}
                     onChange={(e) => handleResponseChange(part._id, e.target.value)}
@@ -304,51 +413,62 @@ export default function WritingTestPage() {
             </div>
           ))}
 
-          <div className="mt-8 flex justify-end gap-4">
-            <button className="btn btn-primary" onClick={() => handleSubmit()}>
-              Submit Test
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 ml-2"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </button>
-          </div>
         </div>
       </div>
 
-      {/* Sticky Bottom Tabs */}
-      <div className="fixed bottom-0 left-0 right-0 bg-base-100 shadow-lg border-t">
-        <div className="container mx-auto">
-          <div className="flex w-full">
-            <button 
-              className={`flex-1 py-2 text-center font-medium transition-colors ${
-                activeTab === 0 
-                  ? 'bg-primary text-primary-content' 
-                  : 'bg-base-200 hover:bg-base-300'
-              }`}
-              onClick={() => setActiveTab(0)}
+      {/* Fixed Task Navigation Panel at Bottom */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
+        <div className="px-4 py-2">
+          <div className="flex justify-between items-center">
+            {/* Previous Button */}
+            <button
+              onClick={() => setActiveTab(Math.max(0, activeTab - 1))}
+              disabled={activeTab === 0}
+              className="btn bg-red-600 hover:bg-red-700 border-0 disabled:bg-gray-400 disabled:cursor-not-allowed text-white"
+              type="button"
             >
-              Task 1
+              Previous
             </button>
-            <button 
-              className={`flex-1 py-2 text-center font-medium transition-colors ${
-                activeTab === 1 
-                  ? 'bg-primary text-primary-content' 
-                  : 'bg-base-200 hover:bg-base-300'
-              }`}
-              onClick={() => setActiveTab(1)}
+
+            {/* Task Navigation */}
+            <div className="flex justify-center flex-1">
+              {test.parts.map((part: TestPart, partIndex: number) => (
+                <div key={partIndex} className="flex-1 flex justify-center">
+                  <div className="border-2 border-gray-300 rounded-lg p-1 flex gap-0.5 justify-center">
+                    <button
+                      key={`task-${partIndex}`}
+                      type="button"
+                      className={`px-4 py-2 text-sm rounded border transition-colors ${
+                        partIndex === activeTab
+                          ? "bg-blue-500 text-white border-blue-500"
+                          : "bg-gray-200 text-gray-700 border-gray-300 hover:bg-gray-300"
+                      }`}
+                      onClick={() => setActiveTab(partIndex)}
+                    >
+                      Task {partIndex + 1}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Next Button */}
+            <button
+              onClick={() => setActiveTab(Math.min(test.parts.length - 1, activeTab + 1))}
+              disabled={activeTab === test.parts.length - 1}
+              className="btn bg-red-600 hover:bg-red-700 border-0 disabled:bg-gray-400 disabled:cursor-not-allowed mx-2 text-white"
+              type="button"
             >
-              Task 2
+              Next
+            </button>
+
+            {/* Submit Button */}
+            <button
+              onClick={() => handleSubmit()}
+              type="button"
+              className="btn bg-green-600 hover:bg-green-700 border-0 text-white"
+            >
+              Submit Test
             </button>
           </div>
         </div>

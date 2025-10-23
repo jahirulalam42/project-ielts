@@ -35,6 +35,7 @@ const ListeningTest: React.FC<any> = ({ test }) => {
   const [currentQuestionNumber, setCurrentQuestionNumber] = useState(1);
   const [timeLeft, setTimeLeft] = useState(test.duration * 60); // Convert minutes to seconds
   const [isTimeUp, setIsTimeUp] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
   const { data: session }: any = useSession();
 
   const currentPart = test.parts[currentPartIndex];
@@ -330,6 +331,7 @@ const ListeningTest: React.FC<any> = ({ test }) => {
   };
 
   useEffect(() => {
+    if (!hasStarted) return;
     if (timeLeft === 0) {
       setIsTimeUp(true);
       handleSubmit(new Event("submit") as any);
@@ -341,7 +343,7 @@ const ListeningTest: React.FC<any> = ({ test }) => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [timeLeft]);
+  }, [timeLeft, hasStarted]);
 
   const formatTime = (timeInSeconds: number) => {
     const minutes = Math.floor(timeInSeconds / 60);
@@ -355,6 +357,73 @@ const ListeningTest: React.FC<any> = ({ test }) => {
   return (
     <form onSubmit={handleSubmit}>
       <div className="container mx-auto p-4 h-screen overflow-hidden flex flex-col pb-16">
+        {!hasStarted && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-neutral-900/60 backdrop-blur-sm">
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="listening-start-title"
+              className="bg-base-100 w-full max-w-lg rounded-2xl shadow-2xl border border-base-200 overflow-hidden"
+            >
+              <div className="p-6 sm:p-8">
+                <div className="flex items-start gap-4">
+                  <div className="rounded-xl bg-primary/10 text-primary p-3">
+                    {/* headphones icon */}
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" fill="currentColor"/>
+                      <path d="M19 10v2a7 7 0 0 1-14 0v-2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <h2 id="listening-start-title" className="text-xl font-semibold leading-tight">
+                      Ready to begin your Listening test?
+                    </h2>
+                    <p className="mt-1 text-sm text-base-content/70">
+                      The timer will start as soon as you click <strong>Start Test</strong>.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="rounded-lg border border-base-200 p-3">
+                    <div className="text-xs uppercase tracking-wide text-base-content/60">Duration</div>
+                    <div className="text-sm font-medium">{test.duration} min</div>
+                  </div>
+                  <div className="rounded-lg border border-base-200 p-3">
+                    <div className="text-xs uppercase tracking-wide text-base-content/60">Parts</div>
+                    <div className="text-sm font-medium">{test.parts?.length || 4}</div>
+                  </div>
+                  <div className="rounded-lg border border-base-200 p-3">
+                    <div className="text-xs uppercase tracking-wide text-base-content/60">Questions</div>
+                    <div className="text-sm font-medium">{Object.values(partQuestions || {}).reduce((a: number, v: any) => a + (Array.isArray(v) ? v.length : 0), 0)}</div>
+                  </div>
+                </div>
+
+                <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-end gap-2">
+                  <button
+                    type="button"
+                    className="btn btn-ghost"
+                    onClick={() => { if (typeof window !== 'undefined') window.history.back(); }}
+                  >
+                    Back
+                  </button>
+                  <button
+                    autoFocus
+                    type="button"
+                    className="btn btn-primary shadow-md"
+                    onClick={() => {
+                      const durationMin = test.duration || 30;
+                      setTimeLeft(durationMin * 60);
+                      setHasStarted(true);
+                    }}
+                  >
+                    Start Test
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
         {/* Exam Header */}
         <div className="card bg-base-100 shadow-xl mb-2">
           <div className="py-4 px-6">
