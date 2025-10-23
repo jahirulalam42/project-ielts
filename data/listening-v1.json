@@ -1,0 +1,452 @@
+{
+    "title": "Test1",
+    "type": "academic",
+    "duration": 30,
+    "audioUrl": "",
+    "cloudinaryPublicId": "",
+    "audioDuration": 0,
+    "audioFormat": "",
+    "audioSize": 0,
+    "parts": [
+      {
+        "title": "Part 1",
+        "questions": [
+          {
+            "fill_in_the_blanks_with_subtitle": [
+              {
+                "title": "Hinchingbrooke Country Park",
+                "subtitle": "The park",
+                "extra": [
+                  "Area: __________ hectares",
+                  "Habitats: wetland, grassland and woodland ",
+                  "Wetland: lakes, ponds and a __________",
+                  "Wildlife includes birds, insects and animals"
+                ],
+                "questions": [
+                  {
+                    "question_number": 1,
+                    "answer": "Answer1",
+                    "input_type": "text"
+                  },
+                  {
+                    "question_number": 2,
+                    "answer": "Answer2",
+                    "input_type": "text"
+                  }
+                ]
+              },
+              {
+                "subtitle": "Subjects studied in educational visits include",
+                "extra": [
+                  "Science: Children look at __________ about plants, etc.",
+                  "Geography: includes learning to use a __________ and compass",
+                  "History: changes in land use",
+                  "Leisure and tourism: mostly concentrates on the park's __________ .",
+                  "Music: Children make __________ with natural materials, and experiment with rhythm and speed."
+                ],
+                "questions": [
+                  {
+                    "question_number": 3,
+                    "answer": "Answer3",
+                    "input_type": "text"
+                  },
+                  {
+                    "question_number": 4,
+                    "answer": "Answer4",
+                    "input_type": "text"
+                  },
+                  {
+                    "question_number": 5,
+                    "answer": "Answer5",
+                    "input_type": "text"
+                  },
+                  {
+                    "question_number": 6,
+                    "answer": "Answer6",
+                    "input_type": "text"
+                  }
+                ]
+              },
+              {
+                "subtitle": "Benefits of outdoor educational visits",
+                "extra": [
+                  "They give children a feeling of __________ that they may not have elsewhere.",
+                  "Children learn new __________ and gain self-confidence."
+                ],
+                "questions": [
+                  {
+                    "question_number": 7,
+                    "answer": "Answer 7",
+                    "input_type": "text"
+                  },
+                  {
+                    "question_number": 8,
+                    "answer": "Answer 8",
+                    "input_type": "text"
+                  }
+                ]
+              },
+              {
+                "subtitle": "Practical issues",
+                "extra": [
+                  "Cost per child: 9 £ __________",
+                  "Adults, such as __________ free"
+                ],
+                "questions": [
+                  {
+                    "question_number": 9,
+                    "answer": "Answer9",
+                    "input_type": "text"
+                  },
+                  {
+                    "question_number": 10,
+                    "answer": "Answer10",
+                    "input_type": "text"
+                  }
+                ]
+              }
+            ],
+            "instruction": "Complete the notes below.\n\nWrite [b]ONE WORD AND/OR A NUMBER[/b] for each answer."
+          }
+        ]
+      },
+      {
+        "title": "Part 2",
+        "questions": [
+          {
+            "instruction": "Questions 11-15\nChoose the correct letter, A, B or C.",
+            "mcq": [
+              {
+                "question_number": 11,
+                "question": "During the visit to Malatte, in France, members especially enjoyed",
+                "answer": "B",
+                "options": [
+                  {
+                    "label": "A",
+                    "value": "going to a theme park."
+                  },
+                  {
+                    "label": "B",
+                    "value": "experiencing a river trip."
+                  },
+                  {
+                    "label": "C",
+                    "value": "experiencing a river trip."
+                  }
+                ],
+                "input_type": "radio",
+                "min_selection": 1,
+                "max_selection": 1
+              },
+              {
+                "question_number": 2,
+                "question": "What will happen in Stanthorpe to mark the 25th anniversary of the Twinning Association?",
+                "answer": "C",
+                "options": [
+                  {
+                    "label": "A",
+                    "value": "A tree will be planted."
+                  },
+                  {
+                    "label": "B",
+                    "value": "A garden seat will be bought."
+                  },
+                  {
+                    "label": "C",
+                    "value": "A garden seat will be bought."
+                  }
+                ],
+                "input_type": "radio",
+                "min_selection": 1,
+                "max_selection": 1
+              },
+              {
+                "question_number": 3,
+                "question": "Which event raised most funds this year?",
+                "answer": "B",
+                "options": [
+                  {
+                    "label": "A",
+                    "value": "the film show"
+                  },
+                  {
+                    "label": "B",
+                    "value": "the pancake evening"
+                  },
+                  {
+                    "label": "C",
+                    "value": "the pancake evening"
+                  }
+                ],
+                "input_type": "radio",
+                "min_selection": 1,
+                "max_selection": 1
+              },
+              {
+                "question_number": 4,
+                "question": "For the first evening with the French visitors host families are advised to",
+                "answer": "C",
+                "options": [
+                  {
+                    "label": "A",
+                    "value": "take them for a walk round the"
+                  },
+                  {
+                    "label": "B",
+                    "value": "town. go to a local restaurant."
+                  },
+                  {
+                    "label": "C",
+                    "value": "have a meal at home."
+                  }
+                ],
+                "input_type": "radio",
+                "min_selection": 1,
+                "max_selection": 1
+              },
+              {
+                "question_number": 5,
+                "question": "On Saturday evening there will be the chance to",
+                "answer": "C",
+                "options": [
+                  {
+                    "label": "A",
+                    "value": "On Saturday evening there will be the chance to"
+                  },
+                  {
+                    "label": "B",
+                    "value": "a match."
+                  },
+                  {
+                    "label": "C",
+                    "value": "take part in a competition."
+                  }
+                ],
+                "input_type": "radio",
+                "min_selection": 1,
+                "max_selection": 1
+              }
+            ]
+          },
+          {
+            "map": [
+              {
+                "title": "Farley House",
+                "image": "",
+                "instructions": "Label the map below.\n\nWrite the correct letter, A-H, next to Questions 16-20.",
+                "labels": [
+                  "A",
+                  "B",
+                  "C",
+                  "D",
+                  "E",
+                  "F",
+                  "G",
+                  "H"
+                ],
+                "questions": [
+                  {
+                    "question_number": 11,
+                    "question": "Farm shop",
+                    "answer": "C",
+                    "input_type": "radio",
+                    "min_selection": 1,
+                    "max_selection": 1
+                  },
+                  {
+                    "question_number": 12,
+                    "question": "Disabled entry",
+                    "answer": "F",
+                    "input_type": "radio",
+                    "min_selection": 1,
+                    "max_selection": 1
+                  },
+                  {
+                    "question_number": 13,
+                    "question": "Adventure playground Kitchen",
+                    "answer": "H",
+                    "input_type": "radio",
+                    "min_selection": 1,
+                    "max_selection": 1
+                  },
+                  {
+                    "question_number": 14,
+                    "question": "gardens",
+                    "answer": "E",
+                    "input_type": "radio",
+                    "min_selection": 1,
+                    "max_selection": 1
+                  },
+                  {
+                    "question_number": 15,
+                    "question": "The Temple of the Four Winds",
+                    "answer": "H",
+                    "input_type": "radio",
+                    "min_selection": 1,
+                    "max_selection": 1
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Part 3",
+        "questions": [
+          {
+            "instruction": "Questions 21 and 22\nChoose TWO letters, A-E.",
+            "multiple_mcq": [
+              {
+                "question_numbers": [
+                  16,
+                  17
+                ],
+                "question": "Which TWO things did Colin find most satisfying about his bread reuse project?",
+                "options": [
+                  {
+                    "label": "A",
+                    "value": "receiving support from local restaurants"
+                  },
+                  {
+                    "label": "B",
+                    "value": "finding a good way to prevent waste"
+                  },
+                  {
+                    "label": "C",
+                    "value": "overcoming problems in a basic"
+                  },
+                  {
+                    "label": "D",
+                    "value": "process experimenting with designs and"
+                  },
+                  {
+                    "label": "E",
+                    "value": "colours learning how to apply 3-D printing"
+                  }
+                ],
+                "input_type": "checkbox",
+                "min_selection": 2,
+                "max_selection": 2,
+                "correct_mapping": [
+                  "C",
+                  "D"
+                ]
+              },
+              {
+                "question_numbers": [
+                  18,
+                  19
+                ],
+                "question": "Which TWO ways do the students agree that touch-sensitive sensors for food labels could be developed in future?",
+                "options": [
+                  {
+                    "label": "A",
+                    "value": "for use on medical products"
+                  },
+                  {
+                    "label": "B",
+                    "value": "to show that food is no longer fit to eat"
+                  },
+                  {
+                    "label": "C",
+                    "value": "for use with drinks as well as foods"
+                  },
+                  {
+                    "label": "D",
+                    "value": "to provide applications for blind people"
+                  },
+                  {
+                    "label": "E",
+                    "value": "to indicate the weight of certain foods"
+                  }
+                ],
+                "input_type": "checkbox",
+                "min_selection": 2,
+                "max_selection": 2,
+                "correct_mapping": [
+                  "B",
+                  "E"
+                ]
+              }
+            ]
+          },
+          {
+            "instruction": "What is the students' opinion about each of the following food trends?\nChoose SIX answers from the box and write the correct letter, A-H, next to Questions 25-30.\n",
+            "box_matching": [
+              {
+                "options_title": "Opinions",
+                "question_title": "Food trends",
+                "options": [
+                  {
+                    "label": "A",
+                    "value": "This is only relevant to young people."
+                  },
+                  {
+                    "label": "B",
+                    "value": "This may have disappointing results."
+                  },
+                  {
+                    "label": "C",
+                    "value": "This already seems to be widespread."
+                  },
+                  {
+                    "label": "D",
+                    "value": "Retailers should do more to encourage this."
+                  },
+                  {
+                    "label": "E",
+                    "value": "More financial support is needed for this."
+                  },
+                  {
+                    "label": "F",
+                    "value": "Most people know little about this."
+                  },
+                  {
+                    "label": "G",
+                    "value": "There should be stricter regulations about this."
+                  },
+                  {
+                    "label": "H",
+                    "value": "This could be dangerous."
+                  }
+                ],
+                "questions": [
+                  {
+                    "question_number": 20,
+                    "topic": "Use of local products",
+                    "answer": "E"
+                  },
+                  {
+                    "question_number": 21,
+                    "topic": "Reduction in unnecessary packaging",
+                    "answer": "G"
+                  },
+                  {
+                    "question_number": 22,
+                    "topic": "Gluten-free and lactose-free food",
+                    "answer": "B"
+                  },
+                  {
+                    "question_number": 23,
+                    "topic": "Use of branded products related to celebrity chefs",
+                    "answer": "D"
+                  },
+                  {
+                    "question_number": 24,
+                    "topic": "Development of 'ghost kitchens' for takeaway food",
+                    "answer": "B"
+                  },
+                  {
+                    "question_number": 25,
+                    "topic": "Use of mushrooms for common health concerns",
+                    "answer": "A"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }

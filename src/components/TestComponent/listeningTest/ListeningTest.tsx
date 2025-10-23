@@ -355,26 +355,23 @@ const ListeningTest: React.FC<any> = ({ test }) => {
   return (
     <form onSubmit={handleSubmit}>
       <div className="container mx-auto p-4 h-screen overflow-hidden flex flex-col pb-16">
-        {/* Test Header */}
-        <div className="card bg-base-100 shadow-xl mb-6">
-          <div className="card-body">
-            <h1 className="card-title text-3xl">{test.title}</h1>
+        {/* Exam Header */}
+        <div className="card bg-base-100 shadow-xl mb-2">
+          <div className="py-4 px-6">
+            <h2 className="card-title text-2xl">{test.title}</h2>
             <div className="flex justify-between items-center">
               <div>
-                <p className="text-lg">Type: {test.type}</p>
                 <p className="text-lg">Duration: {test.duration} minutes</p>
+              </div>
+              <div className="text-lg font-bold text-red-600 px-4 bg-red-50 rounded-lg border border-red-200">
+                {formatTime(timeLeft)}
+                {isTimeUp && (
+                  <span className="text-red-500 font-bold"> - Time's up!</span>
+                )}
               </div>
               <div className="badge badge-primary">
                 Part {currentPartIndex + 1} of {test.parts.length}
               </div>
-            </div>
-            <div className="flex justify-between items-center mt-4">
-              <div className="text-lg font-bold">
-                Time Left: {formatTime(timeLeft)}
-              </div>
-              {isTimeUp && (
-                <div className="text-lg text-red-500 font-bold">Time's up!</div>
-              )}
             </div>
           </div>
         </div>
@@ -382,7 +379,7 @@ const ListeningTest: React.FC<any> = ({ test }) => {
         {/* Main Content Area */}
         <div className="flex-1 overflow-hidden flex flex-col">
           {/* Audio Player */}
-          <div className="card bg-base-100 shadow-xl mb-6">
+          <div className="card bg-base-100 shadow-xl mb-2">
             <div className="card-body">
               <audio controls className="w-full">
                 <source src={test.audioUrl} type="audio/mpeg" />
