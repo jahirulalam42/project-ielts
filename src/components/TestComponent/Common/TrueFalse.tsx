@@ -16,9 +16,10 @@ const TrueFalse = ({
       <FormattedInstructions instructions={instructions} />
 
       {question.map((q: any) => {
-        const answerObj = answers?.find(
-          (a: any) => a.questionId === q.question_number
-        );
+        // Handle both object and array formats for answers
+        const answerObj = Array.isArray(answers)
+          ? answers.find((a: any) => a.questionId === q.question_number)
+          : answers?.[`${q.question_number}`];
         const currentValue = answerObj ? answerObj.value : "";
         return (
           <div

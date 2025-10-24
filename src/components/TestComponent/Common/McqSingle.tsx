@@ -14,9 +14,10 @@ const McqSingle = ({
       <FormattedInstructions instructions={instructions} />
       <div className="p-4 border border-black rounded-lg mb-2">
         {question.map((q: any, idx: number) => {
-          const answerObj = answers?.find(
-            (a: any) => a.questionId === q.question_number
-          );
+          // Handle both object and array formats for answers
+          const answerObj = Array.isArray(answers)
+            ? answers.find((a: any) => a.questionId === q.question_number)
+            : answers?.[`${q.question_number}`];
           const currentValue = answerObj ? answerObj.value : "";
           return (
             <div key={idx} className="mb-4">

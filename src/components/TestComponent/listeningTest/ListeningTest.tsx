@@ -449,7 +449,7 @@ const ListeningTest: React.FC<any> = ({ test }) => {
         <div className="flex-1 overflow-hidden flex flex-col">
           {/* Audio Player */}
           <div className="card bg-base-100 shadow-xl mb-2">
-            <div className="card-body">
+            <div className="card-body py-2">
               <audio controls className="w-full">
                 <source src={test.audioUrl} type="audio/mpeg" />
                 Your browser does not support the audio element.
@@ -459,7 +459,7 @@ const ListeningTest: React.FC<any> = ({ test }) => {
 
           {/* Questions Section */}
           <div className="card bg-base-100 shadow-xl flex-1 overflow-y-auto">
-          <div className="card-body">
+          <div className="card-body max-w-4xl mx-auto px-4">
             <h2 className="text-2xl font-bold mb-4">{currentPart.title}</h2>
             <div className="space-y-6">
               {currentPart.questions?.map((questionSet: any, index: any) => {
