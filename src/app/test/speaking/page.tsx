@@ -87,7 +87,7 @@ const SpeakingPage: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-red-50">
       {/* Header Section */}
 
-      <div className="bg-gradient-to-r from-red-800 to-red-900 text-white py-16 px-4 border-b border-gray-300">
+      <div className="bg-gradient-to-r from-red-800 to-red-900 text-white py-4 px-4 border-b border-gray-300">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between">
             <div>
@@ -106,7 +106,7 @@ const SpeakingPage: React.FC = () => {
 
       {/* Stats & Controls */}
       <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+        {/* <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
           <div className="stats stats-vertical md:stats-horizontal w-full">
             <div className="stat">
               <div className="stat-title">Total Tests</div>
@@ -123,7 +123,7 @@ const SpeakingPage: React.FC = () => {
               <div className="stat-value text-red-800">11-14 min</div>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Tab Navigation */}
         <div className="bg-white rounded-xl shadow-md p-4 mb-8">

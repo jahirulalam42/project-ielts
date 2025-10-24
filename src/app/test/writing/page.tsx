@@ -59,7 +59,7 @@ const WritingPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
       {/* Header Section */}
-      <div className="bg-gradient-to-r from-red-800 to-red-900 text-white py-16 px-4 border-b border-gray-300">
+      <div className="bg-gradient-to-r from-red-800 to-red-900 text-white py-4 px-4 border-b border-gray-300">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between">
             <div>
@@ -78,7 +78,7 @@ const WritingPage: React.FC = () => {
 
       {/* Stats & Controls */}
       <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+        {/* <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div className="flex items-center space-x-6">
               <div>
@@ -137,7 +137,7 @@ const WritingPage: React.FC = () => {
               />
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Content Section */}
         {isLoading ? (
