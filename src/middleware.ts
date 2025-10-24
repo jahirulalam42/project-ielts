@@ -17,7 +17,7 @@ export const middleware = async (request: NextRequest) => {
 
   const token = await getToken({ req: request, secret });
 
-  console.log("Token Value", token?.role);
+  // console.log("Token Value", token?.role);
 
   if (
     protectedPaths.some((path) => request.nextUrl.pathname.startsWith(path)) &&

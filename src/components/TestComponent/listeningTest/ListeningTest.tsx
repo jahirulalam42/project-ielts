@@ -185,70 +185,310 @@ const ListeningTest: React.FC<any> = ({ test }) => {
 
   // Navigate to a specific question number (switch part if needed and smooth-scroll to question)
   const handleQuestionNavigation = (questionNumber: number, partIndex: number) => {
+    console.log(`Navigating to question ${questionNumber} in part ${partIndex}`);
+    
+    // First, change to the correct part
     setCurrentPartIndex(partIndex);
+    // Then set the current question number
     setCurrentQuestionNumber(questionNumber);
-
-    // Delay to allow the part content to render before measuring/scrolling
+    
+    // Wait for the part to change and then scroll to the specific question
     setTimeout(() => {
-      // Locate the RIGHT-side questions container (listening layout mirrors reading)
-      let questionsContainer: any = null;
-
-      const candidates = document.querySelectorAll('.lg\\:h-\\[80vh\\].lg\\:overflow-y-auto');
-      for (let c of candidates as any) {
-        if (
-          (c as HTMLElement).querySelector('[id^="question-"]') ||
-          (c as HTMLElement).textContent?.includes('Question')
-        ) {
-          questionsContainer = c;
+      // Find the questions container (the scrollable area with questions)
+      let questionsContainer = null;
+      
+      // Look for the card with overflow-y-auto that contains questions
+      const candidates = document.querySelectorAll('.card.overflow-y-auto');
+      for (let container of candidates) {
+        // Check if this container has questions (look for question elements)
+        if (container.querySelector('[id^="question-"]') || 
+            container.querySelector('.space-y-6') ||
+            container.textContent?.includes('Question') ||
+            container.textContent?.includes('instructions')) {
+          questionsContainer = container;
+          console.log('Found questions container by content check');
           break;
         }
       }
+      
+      // If not found, try alternative approach - look for card with flex-1
       if (!questionsContainer) {
-        // fallback by border-l (right side)
-        questionsContainer = document.querySelector('.lg\\:h-\\[80vh\\].lg\\:overflow-y-auto.border-l');
+        questionsContainer = document.querySelector('.card.bg-base-100.shadow-xl.flex-1.overflow-y-auto');
+        if (questionsContainer) {
+          console.log('Found questions container via card classes');
+        }
       }
-      if (!questionsContainer) return;
-
-      // Find specific question container by direct id first
-      let questionElement = document.getElementById(`question-${questionNumber}`) as HTMLElement | null;
-
-      // If not found, search a group container that includes this number
+      
+      if (!questionsContainer) {
+        console.log('No questions container found');
+        return;
+      }
+      
+      console.log('Using questions container:', questionsContainer);
+      
+      // Find the question element - first try direct ID, then look in groups
+      let questionElement = document.getElementById(`question-${questionNumber}`);
+      console.log(`Looking for question-${questionNumber}:`, questionElement);
+      
+      // If not found by direct ID, look for the container that contains this question number
       if (!questionElement) {
-        const groups = (questionsContainer as HTMLElement).querySelectorAll('[data-question-numbers]');
-        for (let g of Array.from(groups)) {
-          const list = (g as HTMLElement).getAttribute('data-question-numbers')?.split(',') || [];
-          if (list.includes(String(questionNumber))) {
-            questionElement = g as HTMLElement;
+        console.log('Direct ID not found, looking for container with this question number');
+        const allQuestionContainers = questionsContainer.querySelectorAll('[data-question-numbers]');
+        for (let container of allQuestionContainers) {
+          const questionNumbers = container.getAttribute('data-question-numbers')?.split(',') || [];
+          if (questionNumbers.includes(questionNumber.toString())) {
+            questionElement = container as HTMLElement;
+            console.log('Found question container with question number:', questionNumber);
             break;
           }
         }
       }
-
-      if (!questionElement) return;
-
-      // Compute relative position and do a single smooth scroll (avoid jitter)
-      const containerRect = (questionsContainer as HTMLElement).getBoundingClientRect();
-      const elRect = questionElement.getBoundingClientRect();
-      const relativeTop = elRect.top - containerRect.top;
-      (questionsContainer as HTMLElement).scrollTo({
-        top: (questionsContainer as HTMLElement).scrollTop + relativeTop - 50,
-        behavior: 'smooth'
-      });
-
-      // Do not auto-click radio/checkbox; only focus non-choice inputs
-      setTimeout(() => {
-        const hasChoice = questionElement.querySelector('input[type="radio"], input[type="checkbox"]');
-        if (!hasChoice) {
-          const firstInput = questionElement.querySelector('input, textarea, select, button') as HTMLElement | null;
-          if (firstInput) {
-            firstInput.focus();
-            if ((firstInput as HTMLInputElement).tagName === 'INPUT' && (firstInput as HTMLInputElement).type === 'text') {
-              (firstInput as HTMLInputElement).select();
+      
+      if (questionElement) {
+        console.log('Found question element, scrolling to it');
+        
+        // Check if this is a grouped question (multiple question numbers in one container)
+        const questionNumbers = questionElement.getAttribute('data-question-numbers')?.split(',') || [];
+        const questionIndex = questionNumbers.indexOf(questionNumber.toString());
+        
+        console.log('Question numbers in container:', questionNumbers);
+        console.log('Target question index:', questionIndex, 'for question', questionNumber);
+        
+        if (questionNumbers.length > 1 && questionIndex >= 0) {
+          console.log('This is a grouped question, trying to find specific question within group');
+          
+          // Try to find the specific question within the group
+          const allElements = questionElement.querySelectorAll('*');
+          let targetElement = null;
+          
+          // Look for elements that contain the specific question number
+          // Collect all candidates first, then select the best one
+          const candidates = [];
+          
+          for (let element of allElements) {
+            const text = element.textContent || '';
+              // Look for the exact question number pattern - be more specific
+              const questionPattern = new RegExp(`\\b${questionNumber}\\b`);
+              const specificPattern = new RegExp(`\\b${questionNumber}\\.\\b|Question\\s+${questionNumber}\\b`);
+              if (questionPattern.test(text)) {
+              // Check if this element is likely to be the question container
+              const hasInputs = element.querySelector('input, textarea, select, button');
+              const hasQuestionText = text.includes(questionNumber.toString());
+              const rect = element.getBoundingClientRect();
+              const isReasonableSize = rect.height < 200 && rect.height > 20;
+              const hasSpecificQuestion = text.includes(`${questionNumber}.`) || text.includes(`Question ${questionNumber}`);
+              const hasExactPattern = specificPattern.test(text);
+              
+              console.log('Found element with question', questionNumber, ':', {
+                hasInputs: !!hasInputs,
+                hasQuestionText,
+                textLength: text.length,
+                element: element.tagName,
+                elementRect: rect,
+                isReasonableSize,
+                hasSpecificQuestion,
+                hasExactPattern
+              });
+              
+              if (hasInputs && hasQuestionText) {
+                // Much higher score for exact pattern match
+                const score = (isReasonableSize ? 10 : 0) + 
+                             (hasSpecificQuestion ? 10 : 0) + 
+                             (hasExactPattern ? 50 : 0) + // 50 points for exact pattern
+                             (text.length < 100 ? 5 : 0) +
+                             (text.length < 50 ? 10 : 0); // Extra points for very small text
+                             
+                candidates.push({
+                  element,
+                  textLength: text.length,
+                  rect,
+                  isReasonableSize,
+                  hasSpecificQuestion,
+                  hasExactPattern,
+                  score
+                });
+              }
             }
           }
+          
+          // Select the best candidate (smallest text, reasonable size, specific question)
+          if (candidates.length > 0) {
+            candidates.sort((a, b) => b.score - a.score);
+            targetElement = candidates[0].element;
+            console.log('Selected best candidate:', {
+              textLength: candidates[0].textLength,
+              score: candidates[0].score,
+              isReasonableSize: candidates[0].isReasonableSize,
+              hasSpecificQuestion: candidates[0].hasSpecificQuestion,
+              hasExactPattern: candidates[0].hasExactPattern
+            });
+          }
+          
+          if (targetElement) {
+            console.log('Scrolling to specific question element within container');
+            console.log('Target element:', targetElement);
+            console.log('Target element position:', (targetElement as HTMLElement).getBoundingClientRect());
+            
+            // Use the target element directly, but ensure it's not the group container
+            let questionContainer = targetElement;
+            
+            // If the target element is too large (likely the group container), 
+            // try to find a smaller child element that's more specific
+            const targetRect = (targetElement as HTMLElement).getBoundingClientRect();
+            if (targetRect.height > 300) { // Likely the group container
+              console.log('Target element seems too large, looking for smaller child');
+              
+              // Look for a child element that's more specific to this question
+              const childElements = (targetElement as HTMLElement).querySelectorAll('*');
+              for (let child of childElements) {
+                const childText = child.textContent || '';
+                const childRect = (child as HTMLElement).getBoundingClientRect();
+                
+                if (childText.includes(`${questionNumber}.`) && 
+                    childRect.height < 200 && 
+                    childRect.height > 20 &&
+                    (child as HTMLElement).querySelector('input, textarea, select')) {
+                  questionContainer = child as HTMLElement;
+                  console.log('Found smaller, more specific question container:', questionContainer);
+                  break;
+                }
+              }
+            }
+            
+            const containerRect = questionsContainer.getBoundingClientRect();
+            const finalTargetRect = (questionContainer as HTMLElement).getBoundingClientRect();
+            const targetRelativeTop = finalTargetRect.top - containerRect.top;
+            
+            console.log('Container rect:', containerRect);
+            console.log('Target rect:', finalTargetRect);
+            console.log('Relative top:', targetRelativeTop);
+            console.log('Current scroll top:', questionsContainer.scrollTop);
+            console.log('New scroll position:', questionsContainer.scrollTop + targetRelativeTop - 50);
+            
+            // Try scrollTo first
+            questionsContainer.scrollTo({
+              top: questionsContainer.scrollTop + targetRelativeTop - 50,
+              behavior: 'smooth'
+            });
+            
+            // Also try scrollIntoView as a backup
+            setTimeout(() => {
+              (questionContainer as HTMLElement).scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start',
+                inline: 'nearest'
+              });
+            }, 100);
+            
+            // For MCQ questions, don't focus any input to avoid auto-selection
+            const hasRadioButtons = targetElement.querySelector('input[type="radio"]');
+            const hasCheckboxes = targetElement.querySelector('input[type="checkbox"]');
+            
+            if (hasRadioButtons || hasCheckboxes) {
+              console.log('MCQ question detected, not focusing any input to avoid auto-selection');
+              return;
+            }
+            
+            // For other question types, focus the first input
+            const allInputs = targetElement.querySelectorAll('input, textarea, select, button');
+            if (allInputs.length > 0) {
+              const targetInput = allInputs[0];
+              console.log('Focusing input for question', questionNumber, ':', targetInput);
+              (targetInput as HTMLElement).focus();
+              
+              // For text inputs, also select the text if it exists
+              if (targetInput.tagName === 'INPUT' && 
+                  (targetInput as HTMLInputElement).type === 'text') {
+                (targetInput as HTMLInputElement).select();
+              }
+            }
+            return;
+          } else {
+            console.log('Specific question element not found, using fallback approach');
+            // Fallback: compute a proportional offset within the group and do a single container scroll
+            const containerRect = questionsContainer.getBoundingClientRect();
+            const groupRect = (questionElement as HTMLElement).getBoundingClientRect();
+            const groupRelativeTop = groupRect.top - containerRect.top;
+            const groupHeight = (questionElement as HTMLElement).offsetHeight;
+            const ratio = questionIndex / Math.max(1, questionNumbers.length);
+            const targetOffset = groupRelativeTop + ratio * groupHeight;
+            questionsContainer.scrollTo({
+              top: questionsContainer.scrollTop + targetOffset - 50,
+              behavior: 'smooth'
+            });
+            return;
+          }
         }
-      }, 50);
-    }, 300);
+        
+        // For single questions or if specific question not found in group
+        console.log('Treating as single question or fallback');
+        const containerRect = questionsContainer.getBoundingClientRect();
+        const questionRect = questionElement.getBoundingClientRect();
+        const relativeTop = questionRect.top - containerRect.top;
+        
+        // Scroll to the question
+        questionsContainer.scrollTo({
+          top: questionsContainer.scrollTop + relativeTop - 50,
+          behavior: 'smooth'
+        });
+        
+        // Focus the first input in the question (if it's not a choice question)
+        setTimeout(() => {
+          const hasRadioButtons = questionElement.querySelector('input[type="radio"]');
+          const hasCheckboxes = questionElement.querySelector('input[type="checkbox"]');
+          
+          if (hasRadioButtons || hasCheckboxes) {
+            console.log('MCQ question detected, not focusing any input to avoid auto-selection');
+            return;
+          }
+          
+          // For other question types, focus the first input
+          const allInputs = questionElement.querySelectorAll('input, textarea, select, button');
+          if (allInputs.length > 0) {
+            const targetInput = allInputs[0];
+            console.log('Focusing input for question', questionNumber, ':', targetInput);
+            (targetInput as HTMLElement).focus();
+            
+            // For text inputs, also select the text if it exists
+            if (targetInput.tagName === 'INPUT' && 
+                (targetInput as HTMLInputElement).type === 'text') {
+              (targetInput as HTMLInputElement).select();
+            }
+          }
+        }, 100);
+      } else {
+        console.log('Question element not found, trying to find by question number');
+        // Alternative: find by looking for the question number in the text
+        const allQuestionDivs = questionsContainer.querySelectorAll('div[id^="question-"]');
+        console.log('All question divs found:', allQuestionDivs);
+        
+        // Look for the question by checking the content
+        let found = false;
+        for (let div of allQuestionDivs) {
+          const questionText = div.textContent || '';
+          if (questionText.includes(`Question ${questionNumber}`) || 
+              questionText.includes(`${questionNumber}.`) ||
+              div.id === `question-${questionNumber}`) {
+            console.log('Found question by content, scrolling to it');
+            div.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'start' 
+            });
+            found = true;
+            break;
+          }
+        }
+        
+        // If still not found, scroll to top of questions container
+        if (!found) {
+          console.log('Question not found, scrolling to top of questions container');
+          questionsContainer.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        }
+      }
+    }, 500); // Increased delay to ensure part has fully loaded
   };
 
   const handleNextPart = () => {
@@ -259,6 +499,17 @@ const ListeningTest: React.FC<any> = ({ test }) => {
       if (nextPartQuestions && nextPartQuestions.length > 0) {
         setCurrentQuestionNumber(nextPartQuestions[0]);
       }
+      
+      // Scroll to top of questions section
+      setTimeout(() => {
+        const questionsContainer = document.querySelector('.card.bg-base-100.shadow-xl.flex-1.overflow-y-auto');
+        if (questionsContainer) {
+          questionsContainer.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        }
+      }, 100);
     }
   };
 
@@ -270,6 +521,17 @@ const ListeningTest: React.FC<any> = ({ test }) => {
       if (prevPartQuestions && prevPartQuestions.length > 0) {
         setCurrentQuestionNumber(prevPartQuestions[0]);
       }
+      
+      // Scroll to top of questions section
+      setTimeout(() => {
+        const questionsContainer = document.querySelector('.card.bg-base-100.shadow-xl.flex-1.overflow-y-auto');
+        if (questionsContainer) {
+          questionsContainer.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        }
+      }, 100);
     }
   };
 
@@ -426,11 +688,11 @@ const ListeningTest: React.FC<any> = ({ test }) => {
         )}
         {/* Exam Header */}
         <div className="card bg-base-100 shadow-xl mb-2">
-          <div className="py-4 px-6">
-            <h2 className="card-title text-2xl">{test.title}</h2>
+          <div className="py-2 px-6">
+            <h2 className="card-title text-xl">{test.title}</h2>
             <div className="flex justify-between items-center">
               <div>
-                <p className="text-lg">Duration: {test.duration} minutes</p>
+                <p className="text-base">Duration: {test.duration} minutes</p>
               </div>
               <div className="text-lg font-bold text-red-600 px-4 bg-red-50 rounded-lg border border-red-200">
                 {formatTime(timeLeft)}
@@ -459,7 +721,7 @@ const ListeningTest: React.FC<any> = ({ test }) => {
 
           {/* Questions Section */}
           <div className="card bg-base-100 shadow-xl flex-1 overflow-y-auto">
-          <div className="card-body max-w-4xl mx-auto px-4">
+          <div className="card-body px-80">
             <h2 className="text-2xl font-bold mb-4">{currentPart.title}</h2>
             <div className="space-y-6">
               {currentPart.questions?.map((questionSet: any, index: any) => {

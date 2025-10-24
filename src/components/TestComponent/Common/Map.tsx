@@ -76,7 +76,7 @@ const Map: React.FC<MapProps> = ({
             {question?.questions.map((q) => (
               <tr key={q?.question_number} className="border-b border-black">
                 <td className="pr-2 py-2 text-black whitespace-nowrap font-medium">
-                  {q?.question_number}. {q.question}
+                  <span className="font-bold">{q?.question_number}.</span> {q.question}
                 </td>
                 {question?.labels.map((label) => (
                   <td key={label} className="text-center">

@@ -964,11 +964,11 @@ const ReadingTest = ({ test }: any) => {
         )}
         {/* Exam Header */}
         <div className="card bg-base-100 shadow-xl mb-6">
-          <div className="py-4 px-6">
-            <h2 className="card-title text-2xl">{test.title}</h2>
+          <div className="py-2 px-6">
+            <h2 className="card-title text-xl">{test.title}</h2>
             <div className="flex justify-between items-center">
               <div>
-                <p className="text-lg">Duration: {test.duration} minutes</p>
+                <p className="text-base">Duration: {test.duration} minutes</p>
               </div>
               <div className="text-lg font-bold text-red-600 px-4 bg-red-50 rounded-lg border border-red-200">
                 {formatTime(timeLeft)}
