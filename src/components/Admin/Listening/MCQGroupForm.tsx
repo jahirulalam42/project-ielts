@@ -34,7 +34,7 @@ const MCQGroupForm = ({
 
   const addQuestion = () => {
     const newQuestion: MCQItem = {
-      question_number: localQuestions.length + 1,
+      question_number: 0, // Will be set globally by parent component
       question: "",
       answer: "",
       options: [
@@ -93,13 +93,9 @@ const MCQGroupForm = ({
 
   const removeQuestion = (index: number) => {
     const updatedQuestions = localQuestions.filter((_, i) => i !== index);
-    // Update question numbers after removal
-    const renumberedQuestions = updatedQuestions.map((q, i) => ({
-      ...q,
-      question_number: i + 1,
-    }));
-    setLocalQuestions(renumberedQuestions);
-    updateParent(renumberedQuestions, localInstruction);
+    // Don't renumber locally - let the global system handle it
+    setLocalQuestions(updatedQuestions);
+    updateParent(updatedQuestions, localInstruction);
   };
 
   return (
