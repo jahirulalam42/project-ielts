@@ -31,6 +31,7 @@ const Navbar: React.FC = () => {
     { href: "/test/reading", label: "Reading" },
     { href: "/test/writing", label: "Writing" },
     { href: "/test/speaking", label: "Speaking" },
+    { href: "/writing-samples", label: "Writing Samples" },
   ];
 
   useEffect(() => {
@@ -50,7 +51,8 @@ const Navbar: React.FC = () => {
         !pathName.startsWith("/test/writing/") &&
         !pathName.startsWith("/test/listening/") &&
         !pathName.startsWith("/admin") &&
-        !pathName.startsWith("/user/") && (
+        !pathName.startsWith("/user/") &&
+        !pathName.startsWith("/writing-samples/") && (
           <nav className="bg-gray-200 border-b border-gray-100 shadow-sm">
             <div className="container mx-auto px-4">
               <div className="navbar">

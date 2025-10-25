@@ -16,6 +16,7 @@
     "bcrypt": "^6.0.0",
     "chart.js": "^4.5.0",
     "cloudinary": "^2.7.0",
+    "contentful": "^11.8.7",
     "formidable": "^3.5.4",
     "lucide-react": "^0.475.0",
     "mongoose": "^8.10.0",
