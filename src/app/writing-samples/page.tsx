@@ -155,7 +155,7 @@ const WritingSamplesPage = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-red-600 via-red-700 to-red-800 text-white py-20 relative overflow-hidden">
+      {/* <div className="bg-gradient-to-br from-red-600 via-red-700 to-red-800 text-white py-10 relative overflow-hidden">
         <div className="absolute inset-0 bg-black opacity-10"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center">
@@ -164,10 +164,10 @@ const WritingSamplesPage = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
               </svg>
             </div>
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 tracking-tight">
+            <h1 className="text-2xl md:text-3xl font-bold mb-6 tracking-tight">
               IELTS Writing Samples
             </h1>
-            <p className="text-xl md:text-2xl text-red-100 max-w-4xl mx-auto leading-relaxed">
+            <p className="text-xl md:text-xl text-red-100 max-w-4xl mx-auto leading-relaxed">
               Master IELTS writing with our comprehensive collection of sample questions, model answers, and expert tips
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
@@ -183,19 +183,18 @@ const WritingSamplesPage = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         {/* Filter Section */}
-        <div className="mb-12">
-          <div className="text-center mb-8">
+        <div className="mb-6">
+          {/* <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-gray-800 mb-4">Browse by Category</h2>
-            <p className="text-gray-600 text-lg">Filter writing samples by task type and question format</p>
-          </div>
+          </div> */}
           
           {/* Task Selection */}
-          <div className="flex flex-wrap gap-3 justify-center mb-8">
+          {/* <div className="flex flex-wrap gap-3 justify-center mb-8">
             <button
               onClick={() => handleTaskSelect('all')}
               className={`px-6 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 ${
@@ -226,7 +225,7 @@ const WritingSamplesPage = () => {
             >
               Task 2
             </button>
-          </div>
+          </div> */}
 
           {/* Question Type Selection */}
           {selectedTask !== 'all' && (
@@ -322,9 +321,9 @@ const WritingSamplesPage = () => {
                   </div>
 
                   {/* Preview of Answer */}
-                  <div className="text-gray-600 mb-6 line-clamp-4 text-sm leading-relaxed">
+                  {/* <div className="text-gray-600 mb-6 line-clamp-4 text-sm leading-relaxed">
                     {renderRichText(sample.fields.answer)}
-                  </div>
+                  </div> */}
 
                   {/* Actions */}
                   <div className="flex justify-between items-center">
