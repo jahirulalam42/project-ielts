@@ -31,7 +31,16 @@ const Navbar: React.FC = () => {
     { href: "/test/reading", label: "Reading" },
     { href: "/test/writing", label: "Writing" },
     { href: "/test/speaking", label: "Speaking" },
-    { href: "/writing-samples", label: "Writing Samples" },
+    { 
+      href: "/writing-samples", 
+      label: "Writing Samples",
+      hasSubmenu: true,
+      submenu: [
+        { href: "/writing-samples", label: "All Samples" },
+        { href: "/writing-samples?task=1", label: "Task 1" },
+        { href: "/writing-samples?task=2", label: "Task 2" },
+      ]
+    },
   ];
 
   useEffect(() => {
@@ -73,16 +82,50 @@ const Navbar: React.FC = () => {
                   <ul className="menu menu-horizontal px-1 space-x-1">
                     {navLinks.map((link) => (
                       <li key={link.href}>
-                        <Link
-                          href={link.href}
-                          className={`font-medium px-4 py-2 rounded-md transition-colors duration-200 btn btn-ghost rounded-btn ${
-                            pathName.startsWith(link.href)
-                              ? "text-red-700 bg-red-50 font-semibold"
-                              : "text-gray-600"
-                          }`}
-                        >
-                          {link.label}
-                        </Link>
+                        {link.hasSubmenu ? (
+                          <div className="dropdown dropdown-hover">
+                            <div
+                              tabIndex={0}
+                              role="button"
+                              className={`font-medium px-4 py-2 rounded-md transition-colors duration-200 btn btn-ghost rounded-btn ${
+                                pathName.startsWith(link.href)
+                                  ? "text-red-700 bg-red-50 font-semibold"
+                                  : "text-gray-600"
+                              }`}
+                            >
+                              {link.label}
+                              <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                              </svg>
+                            </div>
+                            <ul
+                              tabIndex={0}
+                              className="dropdown-content menu p-2 shadow-lg bg-white rounded-lg w-52 border border-gray-200 z-50"
+                            >
+                              {link.submenu?.map((subItem) => (
+                                <li key={subItem.href}>
+                                  <Link
+                                    href={subItem.href}
+                                    className="text-gray-700 hover:bg-red-50 hover:text-red-700 px-3 py-2 rounded-md transition-colors duration-200"
+                                  >
+                                    {subItem.label}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ) : (
+                          <Link
+                            href={link.href}
+                            className={`font-medium px-4 py-2 rounded-md transition-colors duration-200 btn btn-ghost rounded-btn ${
+                              pathName.startsWith(link.href)
+                                ? "text-red-700 bg-red-50 font-semibold"
+                                : "text-gray-600"
+                            }`}
+                          >
+                            {link.label}
+                          </Link>
+                        )}
                       </li>
                     ))}
                   </ul>
@@ -127,16 +170,40 @@ const Navbar: React.FC = () => {
                     >
                       {navLinks.map((link) => (
                         <li key={link.href}>
-                          <Link
-                            href={link.href}
-                            className={`${
-                              pathName.startsWith(link.href)
-                                ? "active bg-red-50 text-red-700"
-                                : ""
-                            }`}
-                          >
-                            {link.label}
-                          </Link>
+                          {link.hasSubmenu ? (
+                            <details>
+                              <summary className={`${
+                                pathName.startsWith(link.href)
+                                  ? "active bg-red-50 text-red-700"
+                                  : ""
+                              }`}>
+                                {link.label}
+                              </summary>
+                              <ul className="ml-4">
+                                {link.submenu?.map((subItem) => (
+                                  <li key={subItem.href}>
+                                    <Link
+                                      href={subItem.href}
+                                      className="text-sm text-gray-600 hover:bg-red-50 hover:text-red-700"
+                                    >
+                                      {subItem.label}
+                                    </Link>
+                                  </li>
+                                ))}
+                              </ul>
+                            </details>
+                          ) : (
+                            <Link
+                              href={link.href}
+                              className={`${
+                                pathName.startsWith(link.href)
+                                  ? "active bg-red-50 text-red-700"
+                                  : ""
+                              }`}
+                            >
+                              {link.label}
+                            </Link>
+                          )}
                         </li>
                       ))}
                       {data?.user.role === "admin" && (

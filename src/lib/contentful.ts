@@ -1,9 +1,9 @@
 import { createClient } from 'contentful';
 
 const client = createClient({
-  space: process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID || '0nh1ov7pts2h',
-  accessToken: process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN || 'os3nwC0NKGqah4YZflkemq4Ch6nbsuouh9kFY_HgFpo',
-  environment: 'master', // or your environment ID
+  space: process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID!,
+  accessToken: process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN!,
+  environment: process.env.NEXT_PUBLIC_CONTENTFUL_ENVIRONMENT || 'master',
 });
 
 export interface WritingSample {
@@ -50,8 +50,8 @@ export const getWritingSamples = async (): Promise<WritingSample[]> => {
   try {
     // First, let's check if we can connect to Contentful
     console.log('Attempting to connect to Contentful...');
-    console.log('Space ID:', process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID || '0nh1ov7pts2h');
-    console.log('Token (first 10 chars):', (process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN || 'os3nwC0NKGqah4YZflkemq4Ch6nbsuouh9kFY_HgFpo').substring(0, 10) + '...');
+    console.log('Space ID:', process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID);
+    console.log('Token (first 10 chars):', process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN?.substring(0, 10) + '...');
     
     const response = await client.getEntries({
       content_type: 'ieltsWriting', // Adjust this based on your Contentful content type
