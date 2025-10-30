@@ -432,7 +432,7 @@ const SpeakingTest: React.FC<SpeakingTestProps> = ({ test }) => {
               </div>
             ) : null}
 
-            <div className="bg-gray-50 p-6 rounded-lg">
+            <div className={"bg-gray-50 p-6 rounded-lg " + (currentQuestion.question_type === 'personal' ? 'text-center' : '')}>
               {renderQuestionText(currentQuestion.question)}
               
               {currentQuestion.instructions && (

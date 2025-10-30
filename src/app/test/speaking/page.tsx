@@ -52,28 +52,24 @@ const SpeakingPage: React.FC = () => {
         return {
           title: "Part 1: Personal Questions",
           description: "Short personal questions about familiar topics",
-          duration: "4-5 minutes",
           icon: "🎤",
         };
       case "part2":
         return {
           title: "Part 2: Cue Card",
           description: "1 minute preparation + 2 minutes speaking",
-          duration: "3-4 minutes",
           icon: "📝",
         };
       case "part3":
         return {
           title: "Part 3: Discussion",
           description: "Follow-up questions and deeper discussion",
-          duration: "4-5 minutes",
           icon: "💬",
         };
       case "full_test":
         return {
           title: "Full Test",
           description: "Complete IELTS Speaking test (Parts 1-3)",
-          duration: "11-14 minutes",
           icon: "📋",
         };
       default:
@@ -149,16 +145,12 @@ const SpeakingPage: React.FC = () => {
           </div>
 
           {/* Tab Content */}
-          <div className="mt-6 text-center p-4 bg-red-50 rounded-lg">
-            <div className="text-4xl mb-2">{tabInfo.icon}</div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+          <div className="mt-2 text-center p-2 bg-red-50 rounded-lg">
+            <div className="text-4xl">{tabInfo.icon}</div>
+            <h2 className="text-2xl font-bold text-gray-800">
               {tabInfo.title}
             </h2>
-            <p className="text-gray-600 mb-2">{tabInfo.description}</p>
-            <div className="badge badge-info gap-2 mt-2">
-              <FaClock className="h-4 w-4" />
-              {tabInfo.duration}
-            </div>
+            <p className="text-gray-600">{tabInfo.description}</p>
           </div>
         </div>
 
