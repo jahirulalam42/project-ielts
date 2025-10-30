@@ -8,7 +8,21 @@ const WritingSampleDetailPage = () => {
   const [sample, setSample] = useState<WritingSample | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isLightboxMounted, setIsLightboxMounted] = useState(false);
+  const [isLightboxVisible, setIsLightboxVisible] = useState(false);
   const params = useParams();
+
+  const openLightbox = () => {
+    setIsLightboxMounted(true);
+    // Let the component mount before starting the animation
+    requestAnimationFrame(() => setIsLightboxVisible(true));
+  };
+
+  const closeLightbox = () => {
+    setIsLightboxVisible(false);
+    // Wait for exit transition to finish before unmounting
+    setTimeout(() => setIsLightboxMounted(false), 200);
+  };
 
   useEffect(() => {
     const fetchSample = async () => {
@@ -129,6 +143,18 @@ const WritingSampleDetailPage = () => {
     });
   };
 
+  // Close modal on Escape key
+  useEffect(() => {
+    if (!isLightboxMounted) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        closeLightbox();
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isLightboxMounted]);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -165,11 +191,11 @@ const WritingSampleDetailPage = () => {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="mb-12">
+        <div className="mb-4">
           {/* Badges */}
-          <div className="flex flex-wrap gap-3 mb-8">
+          <div className="flex flex-wrap gap-3 mb-4">
             <span className="bg-red-100 text-red-700 px-4 py-2 rounded-full text-sm font-semibold shadow-sm">
               {sample.fields.taskType}
             </span>
@@ -182,23 +208,36 @@ const WritingSampleDetailPage = () => {
           </div>
 
           {/* Question */}
-          <div className="bg-white rounded-2xl shadow-lg p-8 mb-8 border border-gray-100">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6 leading-tight">
+          <div className="bg-white rounded-2xl shadow-lg p-8 mb-3 border border-gray-100">
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-800 leading-tight">
               {sample.fields.question}
             </h1>
           </div>
 
           {/* Image */}
           {sample.fields.image && (
-            <div className="mb-12">
-              <div className="relative overflow-hidden rounded-2xl shadow-2xl">
-                <img
-                  src={`https:${sample.fields.image.fields.file.url}`}
-                  alt={sample.fields.question}
-                  className="w-full h-80 md:h-96 object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
-              </div>
+            <div className="mb-4">
+              <button
+                type="button"
+                onClick={openLightbox}
+                className="group relative block w-full text-left focus:outline-none focus:ring-0 outline-none rounded-2xl"
+                aria-label="Open image"
+              >
+                <div className="relative overflow-hidden rounded-2xl shadow-2xl">
+                  <img
+                    src={`https:${sample.fields.image.fields.file.url}`}
+                    alt={sample.fields.question}
+                    className="w-full h-80 md:h-96 object-cover transition-transform duration-300 group-hover:scale-[1.02] cursor-zoom-in"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                  <div className="pointer-events-none absolute bottom-3 right-3 bg-black/50 text-white text-xs px-2 py-1 rounded-md hidden md:inline-flex items-center gap-1">
+                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M10 18a8 8 0 100-16 8 8 0 000 16z" />
+                    </svg>
+                    Click to enlarge
+                  </div>
+                </div>
+              </button>
             </div>
           )}
         </div>
@@ -266,21 +305,53 @@ const WritingSampleDetailPage = () => {
         </div>
 
         {/* Navigation */}
-        <div className="flex flex-col sm:flex-row justify-between gap-4">
-          <Link href="/writing-samples" className="inline-flex items-center justify-center bg-white text-red-600 border-2 border-red-600 px-8 py-4 rounded-lg font-semibold hover:bg-red-50 transition-all duration-300 transform hover:scale-105 shadow-lg">
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="flex flex-row flex-wrap items-center justify-between gap-3">
+          <Link href="/writing-samples" className="inline-flex items-center justify-center whitespace-nowrap bg-white text-red-600 border border-red-600 px-5 py-2.5 rounded-md text-sm font-semibold hover:bg-red-50 transition-colors duration-200 shadow">
+            <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
             All Samples
           </Link>
-          <button className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+          <button className="inline-flex items-center whitespace-nowrap bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-md text-sm font-semibold transition-colors duration-200 shadow">
             Practice This Question
-            <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
             </svg>
           </button>
         </div>
       </div>
+
+      {/* Image Lightbox Modal with transitions */}
+      {isLightboxMounted && sample.fields.image && (
+        <div
+          className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-opacity duration-200 ease-out ${isLightboxVisible ? 'bg-black/80 opacity-100' : 'bg-black/0 opacity-0'}`}
+          onClick={closeLightbox}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Image preview"
+        >
+          <div
+            className={`relative max-w-5xl w-full transition-transform duration-200 ease-out ${isLightboxVisible ? 'scale-100' : 'scale-95'}`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={closeLightbox}
+              className="absolute -top-10 right-0 text-white/90 hover:text-white focus:outline-none"
+              aria-label="Close"
+            >
+              <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <img
+              src={`https:${sample.fields.image.fields.file.url}`}
+              alt={sample.fields.question}
+              className="w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
