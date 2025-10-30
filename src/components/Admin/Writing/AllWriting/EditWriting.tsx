@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import Loader from '@/components/Common/Loader';
 
 const EditWriting = ({
   formData,
@@ -264,7 +265,7 @@ const EditWriting = ({
               {isSaving ? (
                 <>
                   Saving...
-                  <span className="loading loading-spinner loading-xs ml-2"></span>
+                  <Loader message="" className="!w-4 !h-4 !border-2 ml-2" />
                 </>
               ) : (
                 "Save Changes"

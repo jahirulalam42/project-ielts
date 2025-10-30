@@ -2,6 +2,7 @@
 import { getSingleUser, updateUser } from "@/services/data";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useRef, useState } from "react";
+import Loader from '@/components/Common/Loader';
 import { ToastContainer, toast } from "react-toastify";
 
 const Profile = () => {
@@ -117,7 +118,7 @@ const Profile = () => {
                   >
                     {isImageUploading ? (
                       <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-                        <span className="loading loading-spinner text-white"></span>
+                        <Loader message="" className="!w-6 !h-6 !border-2 !border-white" />
                       </div>
                     ) : null}
 
@@ -346,7 +347,7 @@ const Profile = () => {
           </div>
         ) : (
           <div className="w-full h-full flex justify-center items-center">
-            <span className="loading loading-spinner text-red-800"></span>
+            <Loader message="Loading profile..." className="!w-8 !h-8 !border-2 !border-red-800" />
           </div>
         )}
       </div>

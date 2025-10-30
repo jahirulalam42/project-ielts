@@ -1,6 +1,7 @@
 "use client";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import Loader from '@/components/Common/Loader';
 import { getSubmitWritingTest, getSingleWritingTest } from "@/services/data";
 import { useSession } from "next-auth/react";
 
@@ -131,7 +132,7 @@ const SubmissionPage = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <span className="loading loading-spinner loading-lg text-primary"></span>
+        <Loader message="Loading writing submissions..." />
       </div>
     );
   }

@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import Loader from "@/components/Common/Loader";
 import Link from "next/link";
 import { getReadingTest } from "@/services/data";
 
@@ -130,12 +131,7 @@ const ReadingPage: React.FC = () => {
 
         {/* Content Section */}
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-20">
-            <div className="border-t-2 border-red-700 rounded-full w-12 h-12 animate-spin"></div>
-            <p className="mt-4 text-lg text-gray-600">
-              Loading reading tests...
-            </p>
-          </div>
+          <Loader message="Loading reading tests..." />
         ) : error ? (
           <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center my-8">
             <div className="text-red-600 font-medium flex items-center justify-center">

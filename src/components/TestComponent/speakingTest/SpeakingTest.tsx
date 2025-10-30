@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
+import Loader from '@/components/Common/Loader';
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
@@ -518,7 +519,7 @@ const SpeakingTest: React.FC<SpeakingTestProps> = ({ test }) => {
                   disabled={isProcessing}
                 >
                   {isProcessing ? (
-                    <span className="loading loading-spinner loading-sm"></span>
+                    <Loader message="" className="!w-6 !h-6 !border-2" />
                   ) : (
                     <>
                       <FaCheck className="h-5 w-5 mr-2" />

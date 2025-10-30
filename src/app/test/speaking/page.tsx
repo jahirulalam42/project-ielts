@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import Loader from "@/components/Common/Loader";
 import { getSpeakingTests } from "@/services/data";
 import Link from "next/link";
 import { FaMicrophone, FaClock, FaPlay } from "react-icons/fa";
@@ -163,10 +164,7 @@ const SpeakingPage: React.FC = () => {
 
         {/* Content Section */}
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-20">
-            <span className="loading loading-spinner loading-lg text-red-600 mb-4"></span>
-            <p className="text-lg text-gray-600">Loading speaking tests...</p>
-          </div>
+          <Loader message="Loading speaking tests..." />
         ) : error ? (
           <div className="alert alert-error shadow-lg my-8">
             <div>

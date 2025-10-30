@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from 'react';
+import Loader from '@/components/Common/Loader';
 import { getWritingSampleBySlug, WritingSample } from '@/lib/contentful';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
@@ -158,7 +159,7 @@ const WritingSampleDetailPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="loading loading-spinner loading-lg"></div>
+        <Loader message="Loading writing sample..." />
       </div>
     );
   }

@@ -2,6 +2,7 @@
 import { getAllUsers } from "@/services/data";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import Loader from '@/components/Common/Loader';
 import {
   FaChartBar,
   FaBook,
@@ -144,7 +145,7 @@ const AdminDashboard = () => {
               >
                 {loading ? (
                   <>
-                    <span className="loading loading-spinner loading-xs mr-2"></span>
+                    <Loader message="" className="!w-4 !h-4 !border-2 !mr-2" />
                     Refreshing...
                   </>
                 ) : (
@@ -166,7 +167,7 @@ const AdminDashboard = () => {
                       <p className="text-base-content/70">{stat.name}</p>
                       {loading ? (
                         <div className="flex items-center mt-1">
-                          <span className="loading loading-spinner loading-sm mr-2"></span>
+                          <Loader message="" className="!w-5 !h-5 !border-2 !mr-2" />
                           <span className="text-sm text-base-content/50">Loading...</span>
                         </div>
                       ) : (

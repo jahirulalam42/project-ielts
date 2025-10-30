@@ -1,6 +1,7 @@
 "use client";
 import { getAllUsers, updateUser, deleteUser } from "@/services/data";
 import React, { useState, useEffect } from "react";
+import Loader from '@/components/Common/Loader';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
@@ -143,7 +144,7 @@ const UserDashboard = () => {
       {loading && (
         <div className="flex justify-center my-12">
           {/* <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div> */}
-          <span className="loading loading-spinner text-primary"></span>
+          <Loader message="" className="!w-6 !h-6 !border-2" />
         </div>
       )}
 
