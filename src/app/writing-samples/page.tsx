@@ -308,8 +308,13 @@ const WritingSamplesPage = () => {
                   </div>
 
                   {/* Question */}
-                  <h2 className="text-xl font-bold text-gray-800 mb-4 line-clamp-3 leading-tight group-hover:text-red-600 transition-colors duration-300">
-                    {sample.fields.question}
+                  <h2 className="text-l font-bold text-gray-800 mb-4 leading-tight transition-colors duration-300">
+                    <Link
+                      href={`/writing-samples/${sample.fields.slug}`}
+                      className="hover:text-red-600"
+                    >
+                      {sample.fields.question}
+                    </Link>
                   </h2>
 
                   {/* Date */}
@@ -329,15 +334,13 @@ const WritingSamplesPage = () => {
                   <div className="flex justify-between items-center">
                     <Link
                       href={`/writing-samples/${sample.fields.slug}`}
-                      className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                      className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-semibold transition-colors duration-200 shadow whitespace-nowrap"
                     >
                       View Sample
-                    </Link>
-                    <div className="text-gray-400 group-hover:text-red-500 transition-colors duration-300">
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                       </svg>
-                    </div>
+                    </Link>
                   </div>
                 </div>
               </div>
