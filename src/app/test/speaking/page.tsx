@@ -28,6 +28,14 @@ const SpeakingPage: React.FC = () => {
   }, []);
 
   const filteredTests = speakingData.filter((test) => test.type === activeTab);
+  const ITEMS_PER_PAGE = 12;
+  const [page, setPage] = useState(1);
+  const totalPages = Math.ceil(filteredTests.length / ITEMS_PER_PAGE);
+  const paginatedTests = filteredTests.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
+
+  useEffect(() => {
+    setPage(1);
+  }, [activeTab]);
 
   const getDifficultyBadge = (difficulty: string) => {
     const colorMap: Record<string, string> = {
@@ -83,7 +91,7 @@ const SpeakingPage: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-red-50">
       {/* Header Section */}
 
-      <div className="bg-gradient-to-r from-red-800 to-red-900 text-white py-4 px-4 border-b border-gray-300">
+      {/* <div className="bg-gradient-to-r from-red-800 to-red-900 text-white py-4 px-4 border-b border-gray-300">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between">
             <div>
@@ -95,13 +103,12 @@ const SpeakingPage: React.FC = () => {
                 on your responses
               </p>
             </div>
-            {/* <div className="hidden md:block bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16" /> */}
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Stats & Controls */}
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="max-w-6xl mx-auto px-4 py-4">
         {/* <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
           <div className="stats stats-vertical md:stats-horizontal w-full">
             <div className="stat">
@@ -122,7 +129,7 @@ const SpeakingPage: React.FC = () => {
         </div> */}
 
         {/* Tab Navigation */}
-        <div className="bg-white rounded-xl shadow-md p-4 mb-8">
+        <div className="bg-white rounded-xl shadow-md p-4 mb-4">
           <div className="flex flex-wrap justify-center gap-2">
             {[
               { key: "part1", label: "Part 1" },
@@ -180,75 +187,109 @@ const SpeakingPage: React.FC = () => {
             </div>
           </div>
         ) : filteredTests.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredTests.map((test) => (
-              <div
-                key={test._id}
-                className="card bg-base-100 border border-gray-200 shadow-md hover:shadow-xl transition-all"
-              >
-                <div className="card-body">
-                  <div className="flex justify-between items-start mb-3">
-                    <h2 className="card-title text-xl text-gray-800">
-                      {test.title}
-                    </h2>
-                    <span className="font-bold">
-                      {getDifficultyBadge(test.difficulty)}
-                    </span>
-                  </div>
-
-                  {test.description && (
-                    <p className="text-gray-600 mt-2 mb-4">
-                      {test.description}
-                    </p>
-                  )}
-
-                  <div className="flex justify-between text-sm text-gray-500 mb-2">
-                    <div className="flex items-center">
-                      <FaMicrophone className="h-4 w-4 mr-1 text-red-500" />
-                      {test.questions.length} questions
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {paginatedTests.map((test) => (
+                <div
+                  key={test._id}
+                  className="card bg-base-100 border border-gray-200 shadow-md hover:shadow-xl transition-all"
+                >
+                  <div className="card-body">
+                    <div className="flex justify-between items-start mb-3">
+                      <h2 className="card-title text-xl text-gray-800">
+                        {test.title}
+                      </h2>
+                      <span className="font-bold">
+                        {getDifficultyBadge(test.difficulty)}
+                      </span>
                     </div>
-                    <div className="flex items-center">
-                      <FaClock className="h-4 w-4 mr-1 text-red-500" />
-                      {test.total_duration} min
-                    </div>
-                  </div>
 
-                  {/* <div className="mt-4">
-                    <div className="flex justify-between text-xs text-gray-600 mb-1">
-                      <span>Your progress</span>
-                      <span>0%</span>
-                    </div>
-                    <progress
-                      className="progress progress-primary w-full"
-                      value="0"
-                      max="100"
-                    ></progress>
-                  </div> */}
+                    {test.description && (
+                      <p className="text-gray-600 mt-2 mb-4">
+                        {test.description}
+                      </p>
+                    )}
 
-                  <div className="card-actions justify-end mt-6">
-                    <Link
-                      href={`/test/speaking/${test._id}`}
-                      className="px-5 py-2.5 bg-red-700 hover:bg-red-800 text-white text-sm font-medium rounded-lg flex items-center transition-colors"
-                    >
-                      Start Test
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4 ml-2"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
+                    <div className="flex justify-between text-sm text-gray-500 mb-2">
+                      <div className="flex items-center">
+                        <FaMicrophone className="h-4 w-4 mr-1 text-red-500" />
+                        {test.questions.length} questions
+                      </div>
+                      <div className="flex items-center">
+                        <FaClock className="h-4 w-4 mr-1 text-red-500" />
+                        {test.total_duration} min
+                      </div>
+                    </div>
+
+                    {/* <div className="mt-4">
+                      <div className="flex justify-between text-xs text-gray-600 mb-1">
+                        <span>Your progress</span>
+                        <span>0%</span>
+                      </div>
+                      <progress
+                        className="progress progress-primary w-full"
+                        value="0"
+                        max="100"
+                      ></progress>
+                    </div> */}
+
+                    <div className="card-actions justify-end mt-6">
+                      <Link
+                        href={`/test/speaking/${test._id}`}
+                        className="px-5 py-2.5 bg-red-700 hover:bg-red-800 text-white text-sm font-medium rounded-lg flex items-center transition-colors"
                       >
-                        <path
-                          fillRule="evenodd"
-                          d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </Link>
+                        Start Test
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-4 w-4 ml-2"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </Link>
+                    </div>
                   </div>
                 </div>
+              ))}
+            </div>
+            {totalPages > 1 && (
+              <div className="mt-12 flex justify-center">
+                <div className="flex space-x-2">
+                  <button
+                    className="px-4 py-2 text-sm rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    disabled={page === 1}
+                  >
+                    Previous
+                  </button>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                    <button
+                      key={p}
+                      className={`px-4 py-2 text-sm rounded-lg ${
+                        page === p ? "bg-red-700 text-white" : "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                      }`}
+                      onClick={() => setPage(p)}
+                      disabled={page === p}
+                    >
+                      {p}
+                    </button>
+                  ))}
+                  <button
+                    className="px-4 py-2 text-sm rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                    disabled={page === totalPages}
+                  >
+                    Next
+                  </button>
+                </div>
               </div>
-            ))}
-          </div>
+            )}
+          </>
         ) : (
           <div className="text-center py-16 bg-white rounded-xl shadow-md">
             <div className="inline-block p-4 bg-red-100 rounded-full mb-6">
