@@ -700,7 +700,7 @@ const ListeningTest: React.FC<any> = ({ test }) => {
                   <span className="text-red-500 font-bold"> - Time's up!</span>
                 )}
               </div>
-              <div className="badge badge-primary">
+              <div className="badge bg-red-600 hover:bg-red-700 text-white border-0">
                 Part {currentPartIndex + 1} of {test.parts.length}
               </div>
             </div>

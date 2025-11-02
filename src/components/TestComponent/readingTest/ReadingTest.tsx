@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import TrueFalse from "../Common/TrueFalse";
 import FillInTheBlanks from "../Common/FillInTheBlanks";
 import MatchingHeadings from "../Common/MatchingHeadings";
@@ -27,6 +27,10 @@ const ReadingTest = ({ test }: any) => {
   const [hasStarted, setHasStarted] = useState(false);
   const [leftPanelWidth, setLeftPanelWidth] = useState<number>(50); // Percentage
   const [isResizing, setIsResizing] = useState<boolean>(false);
+  
+  // Refs for scrollable containers
+  const passageContainerRef = useRef<HTMLDivElement>(null);
+  const questionsContainerRef = useRef<HTMLDivElement>(null);
 
   const currentPart = test.parts[currentPartIndex];
 
@@ -796,6 +800,14 @@ const ReadingTest = ({ test }: any) => {
       if (nextPartQuestions && nextPartQuestions.length > 0) {
         setCurrentQuestionNumber(nextPartQuestions[0]);
       }
+      
+      // Scroll both containers to top
+      if (passageContainerRef.current) {
+        passageContainerRef.current.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      if (questionsContainerRef.current) {
+        questionsContainerRef.current.scrollTo({ top: 0, behavior: "smooth" });
+      }
     }
   };
 
@@ -807,19 +819,29 @@ const ReadingTest = ({ test }: any) => {
       if (prevPartQuestions && prevPartQuestions.length > 0) {
         setCurrentQuestionNumber(prevPartQuestions[0]);
       }
+      
+      // Scroll both containers to top
+      if (passageContainerRef.current) {
+        passageContainerRef.current.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      if (questionsContainerRef.current) {
+        questionsContainerRef.current.scrollTo({ top: 0, behavior: "smooth" });
+      }
     }
   };
 
-  // Scroll to top whenever the part changes
+  // Scroll to top whenever the part changes (backup/fallback)
   useEffect(() => {
     if (typeof window !== "undefined") {
       // Scroll main page to top
       window.scrollTo({ top: 0, behavior: "smooth" });
       
-      // Also scroll the questions panel (right side) to top
-      const questionsContainer = document.querySelector('.lg\\:h-\\[80vh\\].lg\\:overflow-y-auto.border-l');
-      if (questionsContainer) {
-        questionsContainer.scrollTo({ top: 0, behavior: "smooth" });
+      // Scroll both containers to top using refs
+      if (passageContainerRef.current) {
+        passageContainerRef.current.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      if (questionsContainerRef.current) {
+        questionsContainerRef.current.scrollTo({ top: 0, behavior: "smooth" });
       }
     }
   }, [currentPartIndex]);
@@ -976,7 +998,7 @@ const ReadingTest = ({ test }: any) => {
                   <span className="text-red-500 font-bold"> - Time's up!</span>
                 )}
               </div>
-              <div className="badge badge-primary">
+              <div className="badge bg-red-600 hover:bg-red-700 text-white border-0">
                 Part {currentPartIndex + 1} of {test.parts.length}
               </div>
             </div>
@@ -987,6 +1009,7 @@ const ReadingTest = ({ test }: any) => {
         <div className="resize-container flex flex-1 overflow-hidden">
           {/* Passage Section (Left) */}
           <div 
+            ref={passageContainerRef}
             className="h-full overflow-y-auto p-4 border-r-2"
             style={{ width: `${leftPanelWidth}%` }}
           >
@@ -1026,6 +1049,7 @@ const ReadingTest = ({ test }: any) => {
 
           {/* Questions Section (Right) */}
           <div 
+            ref={questionsContainerRef}
             className="h-full overflow-y-auto p-4 border-l"
             style={{ width: `${100 - leftPanelWidth}%` }}
           >
