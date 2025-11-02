@@ -47,7 +47,7 @@ const BoxMatching: React.FC<BoxMatchingProps> = ({
 
   return (
     <div>
-      <h5 className="font-medium mb-2">Box Matching Questions</h5>
+      {/* <h5 className="font-medium mb-2">Box Matching Questions</h5> */}
       <FormattedInstructions instructions={instructions} />
       {question.map((q: any, idx: number) => (
         <div key={idx} className="p-4 border border-black rounded-lg mb-4">

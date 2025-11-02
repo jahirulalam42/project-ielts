@@ -38,7 +38,7 @@ const Map: React.FC<MapProps> = ({
 }) => {
   return (
     <div className="space-y-4 mb-6">
-      <h3 className="text-xl font-semibold mb-2">{question?.title}</h3>
+      {/* <h3 className="text-xl font-semibold mb-2">{question?.title}</h3> */}
       
       {question?.instructions && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">

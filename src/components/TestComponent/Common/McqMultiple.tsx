@@ -97,7 +97,7 @@ const McqMultiple = ({
 
   return (
     <div>
-      <h5 className="font-medium mb-2">Multiple Select Questions</h5>
+      {/* <h5 className="font-medium mb-2">Multiple Select Questions</h5> */}
       <FormattedInstructions instructions={instructions} />
       {question.map((q: any, idx: number) => {
         const groupKey = q.question_numbers.join("-");

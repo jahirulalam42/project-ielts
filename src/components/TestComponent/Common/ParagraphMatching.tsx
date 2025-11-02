@@ -11,7 +11,7 @@ const ParagraphMatching = ({
 }: any) => {
   return (
     <div>
-      <h5 className="font-medium mb-2">Paragraph Matching</h5>
+      {/* <h5 className="font-medium mb-2">Paragraph Matching</h5> */}
       <FormattedInstructions instructions={instructions} />
       {question.map((q: any) => {
         return (

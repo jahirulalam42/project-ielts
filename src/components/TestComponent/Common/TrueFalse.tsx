@@ -12,7 +12,7 @@ const TrueFalse = ({
   console.log("True false question", question);
   return (
     <div>
-      <h5 className="font-medium mb-2">True/False/Not Given</h5>
+      {/* <h5 className="font-medium mb-2">True/False/Not Given</h5> */}
       <FormattedInstructions instructions={instructions} />
 
       {question.map((q: any) => {

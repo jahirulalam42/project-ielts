@@ -60,7 +60,7 @@ const TextHighlighter: React.FC<TextHighlighterProps> = ({
 
     // Find paragraph key by looking at data attributes
     let paragraphKey: string | null = null;
-    let startNode = range.startContainer;
+    let startNode: Node | null = range.startContainer;
 
     while (startNode && startNode !== contentRef.current) {
       if (startNode.nodeType === Node.ELEMENT_NODE) {
@@ -71,7 +71,7 @@ const TextHighlighter: React.FC<TextHighlighterProps> = ({
           break;
         }
       }
-      startNode = startNode.parentElement;
+      startNode = startNode.parentNode;
     }
 
     if (!paragraphKey) {
@@ -348,12 +348,12 @@ const TextHighlighter: React.FC<TextHighlighterProps> = ({
                 </svg>
                 Highlight
               </button>
-              <span
+              {/* <span
                 className="text-sm text-gray-600 max-w-[150px] truncate"
                 title={selectedText}
               >
                 {selectedText}
-              </span>
+              </span> */}
               <button
                 type="button"
                 onClick={() => {

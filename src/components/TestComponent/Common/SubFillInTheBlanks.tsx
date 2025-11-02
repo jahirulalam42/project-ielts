@@ -11,7 +11,7 @@ const SubFillInTheBlanks = ({
 }: any) => {
   return (
     <div>
-      <h5 className="font-medium mb-2">Section Completion</h5>
+      {/* <h5 className="font-medium mb-2">Section Completion</h5> */}
       <FormattedInstructions instructions={instructions} />
       <div className="p-4 border border-black rounded-lg mb-2">
         {question.map((section: any, idx: number) => {

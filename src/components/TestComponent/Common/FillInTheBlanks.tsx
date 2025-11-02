@@ -11,7 +11,7 @@ const FillInTheBlanks: React.FC<any> = ({
 }: any) => {
   return (
     <div>
-      <h5 className="font-medium mb-2">Fill in the Blanks</h5>
+      {/* <h5 className="font-medium mb-2">Fill in the Blanks</h5> */}
       <FormattedInstructions instructions={instructions} />
 
       <div className="p-4 border border-black rounded-lg mb-2">

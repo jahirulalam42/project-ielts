@@ -82,7 +82,7 @@ const PassFillInTheBlanks = ({
 
   return (
     <div>
-      <h5 className="font-medium mb-2">Passage Fill in the Blanks</h5>
+      {/* <h5 className="font-medium mb-2">Passage Fill in the Blanks</h5> */}
       <FormattedInstructions instructions={instructions} />
       <div className="p-4 border border-black rounded-lg mb-2">
         <p className="mb-2">{question[0]?.instruction}</p>

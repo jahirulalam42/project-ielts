@@ -59,7 +59,7 @@ const SumFillInTheBlanks = ({
 
   return (
     <div>
-      <h5 className="font-medium mb-2">Summary Completion</h5>
+      {/* <h5 className="font-medium mb-2">Summary Completion</h5> */}
       <FormattedInstructions instructions={instructions} />
       <DndContext onDragEnd={handleDragEnd}>
         <div className="p-4 border border-black rounded-lg mb-2">
