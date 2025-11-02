@@ -59,7 +59,7 @@ const AdminDashboard = () => {
     },
     {
       name: "Speaking Tests",
-      link: "/admin/speaking",
+      link: "/admin/allSpeaking",
       value: stats.speakingTests,
       icon: FaMicrophone,
       color: "bg-purple-500",

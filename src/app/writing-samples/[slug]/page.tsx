@@ -313,12 +313,12 @@ const WritingSampleDetailPage = () => {
             </svg>
             All Samples
           </Link>
-          <button className="inline-flex items-center whitespace-nowrap bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-md text-sm font-semibold transition-colors duration-200 shadow">
+          {/* <button className="inline-flex items-center whitespace-nowrap bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-md text-sm font-semibold transition-colors duration-200 shadow">
             Practice This Question
             <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
             </svg>
-          </button>
+          </button> */}
         </div>
       </div>
 

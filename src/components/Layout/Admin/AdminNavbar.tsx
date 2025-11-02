@@ -83,7 +83,7 @@ const AdminNavbar = () => {
         {
           id: "speaking",
           label: "Speaking Tests",
-          href: "/admin/speaking",
+          href: "/admin/allSpeaking",
           icon: FaMicrophone,
         },
       ],

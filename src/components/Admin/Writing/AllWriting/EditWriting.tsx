@@ -16,9 +16,16 @@ const EditWriting = ({
   handleSave,
 }: any) => {
   return (
-    <div>
-      <div className="modal modal-open">
-        <div className="modal-box w-11/12 max-w-5xl h-5/6 overflow-y-auto">
+    <div 
+      className="modal modal-open"
+      onClick={(e) => {
+        // Close modal when clicking on the backdrop (outside the modal-box)
+        if (e.target === e.currentTarget) {
+          setShowEditModal(false);
+        }
+      }}
+    >
+      <div className="modal-box w-11/12 max-w-5xl h-5/6 overflow-y-auto">
           <h3 className="font-bold text-xl mb-4">Edit Writing Test</h3>
 
           {/* Test Level Fields */}
@@ -30,7 +37,7 @@ const EditWriting = ({
               <input
                 type="text"
                 name="title"
-                value={formData.title}
+                value={formData.title || ""}
                 onChange={handleInputChange}
                 className="input input-bordered w-full"
               />
@@ -42,7 +49,7 @@ const EditWriting = ({
               </label>
               <select
                 name="type"
-                value={formData.type}
+                value={formData.type || ""}
                 onChange={handleInputChange}
                 className="select select-bordered w-full"
               >
@@ -58,7 +65,7 @@ const EditWriting = ({
               <input
                 type="number"
                 name="duration"
-                value={formData.duration}
+                value={formData.duration || ""}
                 onChange={handleInputChange}
                 className="input input-bordered w-full"
               />
@@ -96,7 +103,7 @@ const EditWriting = ({
                     </label>
                     <input
                       type="text"
-                      value={part.title}
+                      value={part.title || ""}
                       onChange={(e) =>
                         handlePartChange(partIndex, "title", e.target.value)
                       }
@@ -110,7 +117,7 @@ const EditWriting = ({
                     </label>
                     <input
                       type="text"
-                      value={part.subtitle}
+                      value={part.subtitle || ""}
                       onChange={(e) =>
                         handlePartChange(partIndex, "subtitle", e.target.value)
                       }
@@ -124,7 +131,7 @@ const EditWriting = ({
                     </label>
                     <input
                       type="text"
-                      value={part.image}
+                      value={part.image || ""}
                       onChange={(e) =>
                         handlePartChange(partIndex, "image", e.target.value)
                       }
@@ -146,10 +153,10 @@ const EditWriting = ({
                     </button>
                   </div>
 
-                  {part.Question.map((question: string, qIndex: number) => (
+                  {(part.Question || []).map((question: string, qIndex: number) => (
                     <div key={qIndex} className="flex items-start gap-2 mb-2">
                       <textarea
-                        value={question}
+                        value={question || ""}
                         onChange={(e) =>
                           handleArrayChange(
                             partIndex,
@@ -168,7 +175,7 @@ const EditWriting = ({
                           removeArrayItem(partIndex, "Question", qIndex)
                         }
                         className="btn btn-sm btn-error mt-1"
-                        disabled={part.Question.length <= 1}
+                        disabled={(part.Question || []).length <= 1}
                       >
                         ×
                       </button>
@@ -189,11 +196,11 @@ const EditWriting = ({
                     </button>
                   </div>
 
-                  {part.instruction.map(
+                  {(part.instruction || []).map(
                     (instruction: string, iIndex: number) => (
                       <div key={iIndex} className="flex items-start gap-2 mb-2">
                         <textarea
-                          value={instruction}
+                          value={instruction || ""}
                           onChange={(e) =>
                             handleArrayChange(
                               partIndex,
@@ -212,7 +219,7 @@ const EditWriting = ({
                             removeArrayItem(partIndex, "instruction", iIndex)
                           }
                           className="btn btn-sm btn-error mt-1"
-                          disabled={part.instruction.length <= 1}
+                          disabled={(part.instruction || []).length <= 1}
                         >
                           ×
                         </button>
@@ -273,7 +280,6 @@ const EditWriting = ({
             </button>
           </div>
         </div>
-      </div>
     </div>
   );
 };
