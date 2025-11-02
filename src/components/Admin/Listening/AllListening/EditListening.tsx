@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import AudioUploader from "../../Common/AudioUploader";
 import ImageUploader from "../../Common/ImageUploader";
 
@@ -8,6 +8,12 @@ const EditListening = ({
   setShowEditModal,
   saveChanges,
 }: any) => {
+  const [instructionModal, setInstructionModal] = useState<{
+    partIndex: number;
+    groupIndex: number;
+    isOpen: boolean;
+  } | null>(null);
+
   const handleAudioUploaded = (audioUrl: string, publicId: string) => {
     setEditedTest((prev: any) => ({
       ...prev,
@@ -174,7 +180,10 @@ const EditListening = ({
                         className="btn btn-xs btn-secondary"
                         onClick={() => {
                           const newParts = [...editedTest.parts];
-                          newParts[partIndex].questions.push({ mcq: [] });
+                          newParts[partIndex].questions.push({ 
+                            instruction: "",
+                            mcq: [] 
+                          });
                           setEditedTest({ ...editedTest, parts: newParts });
                         }}
                       >
@@ -202,7 +211,10 @@ const EditListening = ({
                         className="btn btn-xs btn-warning"
                         onClick={() => {
                           const newParts = [...editedTest.parts];
-                          newParts[partIndex].questions.push({ multiple_mcq: [] });
+                          newParts[partIndex].questions.push({ 
+                            instruction: "",
+                            multiple_mcq: [] 
+                          });
                           setEditedTest({ ...editedTest, parts: newParts });
                         }}
                       >
@@ -212,7 +224,10 @@ const EditListening = ({
                         className="btn btn-xs btn-info"
                         onClick={() => {
                           const newParts = [...editedTest.parts];
-                          newParts[partIndex].questions.push({ box_matching: [] });
+                          newParts[partIndex].questions.push({ 
+                            instruction: "",
+                            box_matching: [] 
+                          });
                           setEditedTest({ ...editedTest, parts: newParts });
                         }}
                       >
@@ -223,18 +238,41 @@ const EditListening = ({
 
                   {part.questions.map(
                     (questionGroup: any, groupIndex: number) => {
-                      const questionType = Object.keys(questionGroup)[0];
-                      const questions = questionGroup[questionType];
+                      // Get question type (skip 'instruction' field)
+                      const questionType = Object.keys(questionGroup).find(
+                        (key) => key !== "instruction" && key !== "questions"
+                      ) || (questionGroup.questions ? "questions" : Object.keys(questionGroup)[0]);
+                      const questions = questionGroup[questionType] || questionGroup.questions || [];
+                      const instruction = questionGroup.instruction || "";
+
+                      // Check if this question type supports instructions
+                      const supportsInstruction = ["mcq", "multiple_mcq", "box_matching", "questions", "fill_in_the_blanks_with_subtitle"].includes(questionType);
 
                       return (
                         <div
                           key={groupIndex}
-                          className="mb-6 p-4 bg-base-100 rounded-lg"
+                          className="mb-6 p-4 bg-base-100 rounded-lg border border-gray-200"
                         >
                           <div className="flex justify-between items-center mb-3">
-                            <span className="badge badge-info capitalize">
-                              {questionType.replace(/_/g, " ")}
-                            </span>
+                            <div className="flex items-center gap-2">
+                              <span className="badge badge-info capitalize">
+                                {questionType.replace(/_/g, " ")}
+                              </span>
+                              {supportsInstruction && (
+                                <button
+                                  className="btn btn-xs btn-info"
+                                  onClick={() => {
+                                    setInstructionModal({
+                                      partIndex,
+                                      groupIndex,
+                                      isOpen: true,
+                                    });
+                                  }}
+                                >
+                                  Instruction
+                                </button>
+                              )}
+                            </div>
                             <button
                               className="btn btn-xs btn-error"
                               onClick={() => {
@@ -256,36 +294,59 @@ const EditListening = ({
                           {/* Fill in the blanks editor */}
                           {questionType ===
                             "fill_in_the_blanks_with_subtitle" && (
-                            <div className="space-y-4">
+                            <div className="space-y-6">
+                              {/* Instructions for Fill Blanks Group */}
+                              {supportsInstruction && (
+                                <div className="form-control mb-4">
+                                  <label className="label">
+                                    <span className="label-text font-semibold">
+                                      Instructions
+                                    </span>
+                                  </label>
+                                  <textarea
+                                    className="textarea textarea-bordered"
+                                    value={instruction}
+                                    onChange={(e) => {
+                                      const newParts = [...editedTest.parts];
+                                      const questionGroup =
+                                        newParts[partIndex].questions[groupIndex];
+                                      newParts[partIndex].questions[groupIndex] = {
+                                        ...questionGroup,
+                                        instruction: e.target.value,
+                                      };
+                                      setEditedTest({ ...editedTest, parts: newParts });
+                                    }}
+                                    placeholder="Enter instructions for this question group..."
+                                    rows={2}
+                                  />
+                                </div>
+                              )}
                               {questions.map((item: any, itemIndex: number) => (
                                 <div
                                   key={itemIndex}
-                                  className="border rounded-lg p-4"
+                                  className="border rounded-lg p-4 bg-base-100"
                                 >
-                                  {/* Only show title field for the first section */}
-                                  {itemIndex === 0 && (
-                                    <div className="form-control mb-3">
-                                      <label className="label">
-                                        <span className="label-text">Title</span>
-                                      </label>
-                                      <input
-                                        type="text"
-                                        value={item.title || ""}
-                                        onChange={(e) => {
-                                          const newParts = [...editedTest.parts];
-                                          newParts[partIndex].questions[
-                                            groupIndex
-                                          ][questionType][itemIndex].title =
-                                            e.target.value;
-                                          setEditedTest({
-                                            ...editedTest,
-                                            parts: newParts,
-                                          });
-                                        }}
-                                        className="input input-bordered input-sm"
-                                      />
-                                    </div>
-                                  )}
+                                  <div className="form-control mb-3">
+                                    <label className="label">
+                                      <span className="label-text">Title</span>
+                                    </label>
+                                    <input
+                                      type="text"
+                                      value={item.title || ""}
+                                      onChange={(e) => {
+                                        const newParts = [...editedTest.parts];
+                                        newParts[partIndex].questions[
+                                          groupIndex
+                                        ][questionType][itemIndex].title =
+                                          e.target.value;
+                                        setEditedTest({
+                                          ...editedTest,
+                                          parts: newParts,
+                                        });
+                                      }}
+                                      className="input input-bordered w-full"
+                                    />
+                                  </div>
 
                                   <div className="form-control mb-3">
                                     <label className="label">
@@ -295,7 +356,7 @@ const EditListening = ({
                                     </label>
                                     <input
                                       type="text"
-                                      value={item.subtitle}
+                                      value={item.subtitle || ""}
                                       onChange={(e) => {
                                         const newParts = [...editedTest.parts];
                                         newParts[partIndex].questions[
@@ -307,69 +368,126 @@ const EditListening = ({
                                           parts: newParts,
                                         });
                                       }}
-                                      className="input input-bordered input-sm"
+                                      className="input input-bordered w-full"
                                     />
                                   </div>
 
                                   <div className="form-control mb-3">
                                     <label className="label">
                                       <span className="label-text">
-                                        Extra Content (one per line)
+                                        Content with Blanks
                                       </span>
                                     </label>
-                                    <textarea
-                                      value={item.extra.join("\n")}
-                                      onChange={(e) => {
+                                    <div className="space-y-2">
+                                      {(item.extra || []).map((text: string, textIndex: number) => (
+                                        <textarea
+                                          key={textIndex}
+                                          value={text}
+                                          onChange={(e) => {
+                                            const newParts = [...editedTest.parts];
+                                            const newExtra = [...(item.extra || [])];
+                                            newExtra[textIndex] = e.target.value;
+                                            newParts[partIndex].questions[
+                                              groupIndex
+                                            ][questionType][itemIndex].extra =
+                                              newExtra;
+                                            setEditedTest({
+                                              ...editedTest,
+                                              parts: newParts,
+                                            });
+                                          }}
+                                          className="textarea textarea-bordered w-full"
+                                        />
+                                      ))}
+                                    </div>
+                                    <button
+                                      className="btn btn-xs btn-outline mt-2"
+                                      onClick={() => {
                                         const newParts = [...editedTest.parts];
+                                        const currentExtra = item.extra || [];
                                         newParts[partIndex].questions[
                                           groupIndex
-                                        ][questionType][itemIndex].extra =
-                                          e.target.value.split("\n");
+                                        ][questionType][itemIndex].extra = [
+                                          ...currentExtra,
+                                          "",
+                                        ];
                                         setEditedTest({
                                           ...editedTest,
                                           parts: newParts,
                                         });
                                       }}
-                                      className="textarea textarea-bordered h-32"
-                                    />
+                                    >
+                                      + Add Content Line
+                                    </button>
                                   </div>
 
-                                  <div className="mt-4">
+                                  <div className="space-y-2">
                                     <h6 className="font-medium mb-2">
                                       Questions
                                     </h6>
-                                    {item.questions?.map(
+                                    {(item.questions || []).map(
                                       (q: any, qIndex: number) => (
                                         <div
                                           key={qIndex}
-                                          className="flex items-center gap-3 mb-2"
+                                          className="flex items-center gap-2 p-3 bg-base-200 rounded-lg"
                                         >
-                                          <span className="font-medium">
-                                            Q{q.question_number}:
+                                          <span className="badge badge-neutral">
+                                            Q{q.question_number}
                                           </span>
-                                          <input
-                                            type="text"
-                                            placeholder="Answer"
-                                            value={q.answer}
-                                            onChange={(e) => {
-                                              const newParts = [
-                                                ...editedTest.parts,
-                                              ];
-                                              newParts[partIndex].questions[
-                                                groupIndex
-                                              ][questionType][
-                                                itemIndex
-                                              ].questions[qIndex].answer =
-                                                e.target.value;
-                                              setEditedTest({
-                                                ...editedTest,
-                                                parts: newParts,
-                                              });
-                                            }}
-                                            className="input input-bordered input-sm"
-                                          />
+                                          <div className="flex-1">
+                                            <label className="label">
+                                              <span className="label-text">Answer</span>
+                                            </label>
+                                            <input
+                                              type="text"
+                                              value={q.answer || ""}
+                                              onChange={(e) => {
+                                                const newParts = [
+                                                  ...editedTest.parts,
+                                                ];
+                                                newParts[partIndex].questions[
+                                                  groupIndex
+                                                ][questionType][
+                                                  itemIndex
+                                                ].questions[qIndex].answer =
+                                                  e.target.value;
+                                                setEditedTest({
+                                                  ...editedTest,
+                                                  parts: newParts,
+                                                });
+                                              }}
+                                              className="input input-bordered w-full"
+                                            />
+                                          </div>
+                                          <div className="w-40">
+                                            <label className="label">
+                                              <span className="label-text">Input Type</span>
+                                            </label>
+                                            <select
+                                              value={q.input_type || "text"}
+                                              onChange={(e) => {
+                                                const newParts = [
+                                                  ...editedTest.parts,
+                                                ];
+                                                newParts[partIndex].questions[
+                                                  groupIndex
+                                                ][questionType][
+                                                  itemIndex
+                                                ].questions[qIndex].input_type =
+                                                  e.target.value;
+                                                setEditedTest({
+                                                  ...editedTest,
+                                                  parts: newParts,
+                                                });
+                                              }}
+                                              className="select select-bordered w-full"
+                                            >
+                                              <option value="text">Text</option>
+                                              <option value="number">Number</option>
+                                            </select>
+                                          </div>
                                           <button
-                                            className="btn btn-xs btn-error"
+                                            className="btn btn-xs btn-error mt-6"
                                             onClick={() => {
                                               const newParts = [
                                                 ...editedTest.parts,
@@ -395,9 +513,12 @@ const EditListening = ({
                                       className="btn btn-xs btn-primary mt-2"
                                       onClick={() => {
                                         const newParts = [...editedTest.parts];
+                                        const currentQuestions = item.questions || [];
                                         const newQuestion = {
                                           question_number:
-                                            item.questions.length + 1,
+                                            currentQuestions.length > 0
+                                              ? Math.max(...currentQuestions.map((q: any) => q.question_number || 0)) + 1
+                                              : 1,
                                           answer: "",
                                           input_type: "text",
                                         };
@@ -405,14 +526,17 @@ const EditListening = ({
                                           groupIndex
                                         ][questionType][
                                           itemIndex
-                                        ].questions.push(newQuestion);
+                                        ].questions = [
+                                          ...currentQuestions,
+                                          newQuestion,
+                                        ];
                                         setEditedTest({
                                           ...editedTest,
                                           parts: newParts,
                                         });
                                       }}
                                     >
-                                      Add Question
+                                      + Add Question
                                     </button>
                                   </div>
                                 </div>
@@ -436,7 +560,7 @@ const EditListening = ({
                                   });
                                 }}
                               >
-                                Add New Blank Section
+                                + Add New Blank Section
                               </button>
                             </div>
                           )}
@@ -444,6 +568,32 @@ const EditListening = ({
                           {/* MCQ Editor */}
                           {questionType === "mcq" && (
                             <div className="space-y-4">
+                              {/* Instructions for MCQ Group */}
+                              {supportsInstruction && (
+                                <div className="form-control mb-4">
+                                  <label className="label">
+                                    <span className="label-text font-semibold">
+                                      Instructions
+                                    </span>
+                                  </label>
+                                  <textarea
+                                    className="textarea textarea-bordered"
+                                    value={instruction}
+                                    onChange={(e) => {
+                                      const newParts = [...editedTest.parts];
+                                      const questionGroup =
+                                        newParts[partIndex].questions[groupIndex];
+                                      newParts[partIndex].questions[groupIndex] = {
+                                        ...questionGroup,
+                                        instruction: e.target.value,
+                                      };
+                                      setEditedTest({ ...editedTest, parts: newParts });
+                                    }}
+                                    placeholder="Enter instructions for this question group..."
+                                    rows={2}
+                                  />
+                                </div>
+                              )}
                               {questions.map((mcq: any, mcqIndex: number) => (
                                 <div
                                   key={mcqIndex}
@@ -931,6 +1081,32 @@ const EditListening = ({
                           {/* Multiple MCQ Editor */}
                           {questionType === "multiple_mcq" && (
                             <div className="space-y-4">
+                              {/* Instructions for Multiple MCQ Group */}
+                              {supportsInstruction && (
+                                <div className="form-control mb-4">
+                                  <label className="label">
+                                    <span className="label-text font-semibold">
+                                      Instructions
+                                    </span>
+                                  </label>
+                                  <textarea
+                                    className="textarea textarea-bordered"
+                                    value={instruction}
+                                    onChange={(e) => {
+                                      const newParts = [...editedTest.parts];
+                                      const questionGroup =
+                                        newParts[partIndex].questions[groupIndex];
+                                      newParts[partIndex].questions[groupIndex] = {
+                                        ...questionGroup,
+                                        instruction: e.target.value,
+                                      };
+                                      setEditedTest({ ...editedTest, parts: newParts });
+                                    }}
+                                    placeholder="Enter instructions for this question group..."
+                                    rows={2}
+                                  />
+                                </div>
+                              )}
                               {questions.map((multipleMcq: any, mcqIndex: number) => (
                                 <div
                                   key={mcqIndex}
@@ -1190,34 +1366,37 @@ const EditListening = ({
                           {/* Box Matching Editor */}
                           {questionType === "box_matching" && (
                             <div className="space-y-4">
+                              {/* Instructions for Box Matching Group */}
+                              {supportsInstruction && (
+                                <div className="form-control mb-4">
+                                  <label className="label">
+                                    <span className="label-text font-semibold">
+                                      Instructions
+                                    </span>
+                                  </label>
+                                  <textarea
+                                    className="textarea textarea-bordered"
+                                    value={instruction}
+                                    onChange={(e) => {
+                                      const newParts = [...editedTest.parts];
+                                      const questionGroup =
+                                        newParts[partIndex].questions[groupIndex];
+                                      newParts[partIndex].questions[groupIndex] = {
+                                        ...questionGroup,
+                                        instruction: e.target.value,
+                                      };
+                                      setEditedTest({ ...editedTest, parts: newParts });
+                                    }}
+                                    placeholder="Enter instructions for this question group..."
+                                    rows={2}
+                                  />
+                                </div>
+                              )}
                               {questions.map((boxMatch: any, boxIndex: number) => (
                                 <div
                                   key={boxIndex}
                                   className="border rounded-lg p-4"
                                 >
-                                  <div className="form-control mb-3">
-                                    <label className="label">
-                                      <span className="label-text">
-                                        Instructions
-                                      </span>
-                                    </label>
-                                    <textarea
-                                      value={boxMatch.instructions}
-                                      onChange={(e) => {
-                                        const newParts = [...editedTest.parts];
-                                        newParts[partIndex].questions[
-                                          groupIndex
-                                        ][questionType][boxIndex].instructions =
-                                          e.target.value;
-                                        setEditedTest({
-                                          ...editedTest,
-                                          parts: newParts,
-                                        });
-                                      }}
-                                      className="textarea textarea-bordered h-20"
-                                    />
-                                  </div>
-
                                   <div className="grid grid-cols-2 gap-4 mb-3">
                                     <div className="form-control">
                                       <label className="label">
@@ -1579,6 +1758,53 @@ const EditListening = ({
           </button>
         </div>
       </div>
+
+      {/* Instruction Modal */}
+      {instructionModal && instructionModal.isOpen && (
+        <div
+          className="modal modal-open"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setInstructionModal(null);
+            }
+          }}
+        >
+          <div className="modal-box">
+            <h3 className="font-bold text-lg mb-4">Edit Instructions</h3>
+            <textarea
+              className="textarea textarea-bordered w-full h-32"
+              value={
+                editedTest.parts[instructionModal.partIndex]?.questions[
+                  instructionModal.groupIndex
+                ]?.instruction || ""
+              }
+              onChange={(e) => {
+                const newParts = [...editedTest.parts];
+                const questionGroup =
+                  newParts[instructionModal.partIndex].questions[
+                    instructionModal.groupIndex
+                  ];
+                newParts[instructionModal.partIndex].questions[
+                  instructionModal.groupIndex
+                ] = {
+                  ...questionGroup,
+                  instruction: e.target.value,
+                };
+                setEditedTest({ ...editedTest, parts: newParts });
+              }}
+              placeholder="Enter instructions for this question group..."
+            />
+            <div className="modal-action">
+              <button
+                className="btn btn-ghost"
+                onClick={() => setInstructionModal(null)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

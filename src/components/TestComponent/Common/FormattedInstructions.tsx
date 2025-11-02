@@ -21,18 +21,28 @@ const FormattedInstructions: React.FC<FormattedInstructionsProps> = ({
     .split("\n")
     .map((l) => l.trimEnd());
 
-  // Inline formatter: supports [b]...[/b] tags for manual bolding
+  // Inline formatter: supports [b]...[/b] for bold, [i]...[/i] for italic, and [h]...[/h] for larger bold text
   const renderInline = (text: string) => {
     if (!text) return text;
     const parts: Array<string | React.ReactNode> = [];
-    const regex = /\[b\]([\s\S]*?)\[\/b\]/g;
+    // Match [b]...[/b], [i]...[/i], and [h]...[/h] tags
+    const regex = /\[([bih])\]([\s\S]*?)\[\/\1\]/g;
     let lastIndex = 0;
     let match: RegExpExecArray | null;
+    let keyCounter = 0;
     while ((match = regex.exec(text)) !== null) {
       if (match.index > lastIndex) {
         parts.push(text.slice(lastIndex, match.index));
       }
-      parts.push(<strong key={parts.length}>{match[1]}</strong>);
+      const tag = match[1]; // 'b', 'i', or 'h'
+      const content = match[2];
+      if (tag === 'b') {
+        parts.push(<strong key={`bold-${keyCounter++}`}>{content}</strong>);
+      } else if (tag === 'i') {
+        parts.push(<em key={`italic-${keyCounter++}`}>{content}</em>);
+      } else if (tag === 'h') {
+        parts.push(<strong key={`heading-${keyCounter++}`} className="text-lg font-bold">{content}</strong>);
+      }
       lastIndex = regex.lastIndex;
     }
     if (lastIndex < text.length) {
