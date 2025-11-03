@@ -625,11 +625,11 @@ const ListeningTest: React.FC<any> = ({ test }) => {
               role="dialog"
               aria-modal="true"
               aria-labelledby="listening-start-title"
-              className="bg-base-100 w-full max-w-lg rounded-2xl shadow-2xl border border-base-200 overflow-hidden"
+              className="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-gray-200 overflow-hidden"
             >
               <div className="p-6 sm:p-8">
                 <div className="flex items-start gap-4">
-                  <div className="rounded-xl bg-primary/10 text-primary p-3">
+                  <div className="rounded-xl bg-red-100 text-red-700 p-3">
                     {/* headphones icon */}
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" fill="currentColor"/>
@@ -637,34 +637,34 @@ const ListeningTest: React.FC<any> = ({ test }) => {
                     </svg>
                   </div>
                   <div className="flex-1">
-                    <h2 id="listening-start-title" className="text-xl font-semibold leading-tight">
+                    <h2 id="listening-start-title" className="text-xl font-semibold leading-tight text-gray-900">
                       Ready to begin your Listening test?
                     </h2>
-                    <p className="mt-1 text-sm text-base-content/70">
+                    <p className="mt-1 text-sm text-gray-600">
                       The timer will start as soon as you click <strong>Start Test</strong>.
                     </p>
                   </div>
                 </div>
 
                 <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div className="rounded-lg border border-base-200 p-3">
-                    <div className="text-xs uppercase tracking-wide text-base-content/60">Duration</div>
-                    <div className="text-sm font-medium">{test.duration} min</div>
+                  <div className="rounded-lg border border-red-200 bg-red-50 p-3">
+                    <div className="text-xs uppercase tracking-wide text-red-600 font-medium">Duration</div>
+                    <div className="text-sm font-semibold text-gray-900">{test.duration} min</div>
                   </div>
-                  <div className="rounded-lg border border-base-200 p-3">
-                    <div className="text-xs uppercase tracking-wide text-base-content/60">Parts</div>
-                    <div className="text-sm font-medium">{test.parts?.length || 4}</div>
+                  <div className="rounded-lg border border-red-200 bg-red-50 p-3">
+                    <div className="text-xs uppercase tracking-wide text-red-600 font-medium">Parts</div>
+                    <div className="text-sm font-semibold text-gray-900">{test.parts?.length || 4}</div>
                   </div>
-                  <div className="rounded-lg border border-base-200 p-3">
-                    <div className="text-xs uppercase tracking-wide text-base-content/60">Questions</div>
-                    <div className="text-sm font-medium">{Object.values(partQuestions || {}).reduce((a: number, v: any) => a + (Array.isArray(v) ? v.length : 0), 0)}</div>
+                  <div className="rounded-lg border border-red-200 bg-red-50 p-3">
+                    <div className="text-xs uppercase tracking-wide text-red-600 font-medium">Questions</div>
+                    <div className="text-sm font-semibold text-gray-900">{Object.values(partQuestions || {}).reduce((a: number, v: any) => a + (Array.isArray(v) ? v.length : 0), 0)}</div>
                   </div>
                 </div>
 
                 <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-end gap-2">
                   <button
                     type="button"
-                    className="btn btn-ghost"
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                     onClick={() => { if (typeof window !== 'undefined') window.history.back(); }}
                   >
                     Back
@@ -672,7 +672,7 @@ const ListeningTest: React.FC<any> = ({ test }) => {
                   <button
                     autoFocus
                     type="button"
-                    className="btn btn-primary shadow-md"
+                    className="px-5 py-2.5 text-sm font-medium text-white bg-red-700 hover:bg-red-800 rounded-lg shadow-md transition-colors"
                     onClick={() => {
                       const durationMin = test.duration || 30;
                       setTimeLeft(durationMin * 60);

@@ -21,34 +21,67 @@ const FormattedInstructions: React.FC<FormattedInstructionsProps> = ({
     .split("\n")
     .map((l) => l.trimEnd());
 
-  // Inline formatter: supports [b]...[/b] for bold, [i]...[/i] for italic, and [h]...[/h] for larger bold text
+  // Inline formatter: supports [b]...[/b] for bold, [i]...[/i] for italic, [h]...[/h] for larger bold text,
+  // [bi]...[/bi] for bold+italic, and nested tags like [b][i]...[/i][/b]
   const renderInline = (text: string) => {
     if (!text) return text;
-    const parts: Array<string | React.ReactNode> = [];
-    // Match [b]...[/b], [i]...[/i], and [h]...[/h] tags
-    const regex = /\[([bih])\]([\s\S]*?)\[\/\1\]/g;
-    let lastIndex = 0;
-    let match: RegExpExecArray | null;
-    let keyCounter = 0;
-    while ((match = regex.exec(text)) !== null) {
-      if (match.index > lastIndex) {
-        parts.push(text.slice(lastIndex, match.index));
+    
+    let globalKeyCounter = 0;
+    
+    // Recursive function to parse and apply formatting
+    const parseFormatting = (str: string, depth: number = 0): Array<string | React.ReactNode> => {
+      if (depth > 10) return [str]; // Prevent infinite recursion
+      
+      const parts: Array<string | React.ReactNode> = [];
+      // Match [b]...[/b], [i]...[/i], [h]...[/h], and [bi]...[/bi] tags
+      // Also handles nested tags
+      const regex = /\[([bih]+)\]([\s\S]*?)\[\/\1\]/g;
+      let lastIndex = 0;
+      let match: RegExpExecArray | null;
+      
+      while ((match = regex.exec(str)) !== null) {
+        if (match.index > lastIndex) {
+          // Add plain text before the tag
+          const beforeText = str.slice(lastIndex, match.index);
+          parts.push(...parseFormatting(beforeText, depth + 1));
+        }
+        
+        const tags = match[1]; // 'b', 'i', 'h', 'bi', 'ib', etc.
+        const content = match[2];
+        
+        // Recursively parse content inside tags (handles nested formatting)
+        const parsedContent = parseFormatting(content, depth + 1);
+        
+        // Generate unique key
+        const uniqueKey = `fmt-${depth}-${globalKeyCounter++}`;
+        
+        // Apply formatting based on tags
+        let element: React.ReactNode = parsedContent;
+        if (tags.includes('h')) {
+          element = <strong key={`${uniqueKey}-h`} className="text-lg font-bold">{parsedContent}</strong>;
+        } else {
+          // Apply bold and italic - order matters for nesting
+          if (tags.includes('b') || tags.includes('bi')) {
+            element = <strong key={`${uniqueKey}-b`}>{element}</strong>;
+          }
+          if (tags.includes('i') || tags.includes('bi')) {
+            element = <em key={`${uniqueKey}-i`}>{element}</em>;
+          }
+        }
+        
+        parts.push(element);
+        lastIndex = regex.lastIndex;
       }
-      const tag = match[1]; // 'b', 'i', or 'h'
-      const content = match[2];
-      if (tag === 'b') {
-        parts.push(<strong key={`bold-${keyCounter++}`}>{content}</strong>);
-      } else if (tag === 'i') {
-        parts.push(<em key={`italic-${keyCounter++}`}>{content}</em>);
-      } else if (tag === 'h') {
-        parts.push(<strong key={`heading-${keyCounter++}`} className="text-lg font-bold">{content}</strong>);
+      
+      if (lastIndex < str.length) {
+        parts.push(...parseFormatting(str.slice(lastIndex), depth + 1));
       }
-      lastIndex = regex.lastIndex;
-    }
-    if (lastIndex < text.length) {
-      parts.push(text.slice(lastIndex));
-    }
-    return parts.length ? parts : text;
+      
+      return parts.length ? parts : [str];
+    };
+    
+    const result = parseFormatting(text);
+    return result.length === 1 && typeof result[0] === 'string' ? result[0] : result;
   };
 
   // Build blocks: a top free-text block and then key-value rows if detected

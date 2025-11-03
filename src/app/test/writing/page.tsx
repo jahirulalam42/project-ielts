@@ -38,10 +38,10 @@ const WritingPage: React.FC = () => {
 
   const getTypeBadgeClass = (type: string) => {
     const typeMap: Record<string, string> = {
-      academic: "bg-blue-100 text-blue-800 border-blue-300",
-      general: "bg-gray-100 text-gray-800 border-gray-300",
-      "task 1": "bg-purple-100 text-purple-800 border-purple-300",
-      "task 2": "bg-teal-100 text-teal-800 border-teal-300",
+      academic: "bg-red-100 text-red-800 border-red-300",
+      general: "bg-red-100 text-red-800 border-red-300",
+      "task 1": "bg-red-100 text-red-800 border-red-300",
+      "task 2": "bg-red-100 text-red-800 border-red-300",
     };
 
     const lowerType = type.toLowerCase();
@@ -49,7 +49,7 @@ const WritingPage: React.FC = () => {
     if (lowerType.includes("general")) return typeMap.general;
     if (lowerType.includes("task 1")) return typeMap["task 1"];
     if (lowerType.includes("task 2")) return typeMap["task 2"];
-    return "bg-gray-100 text-gray-800 border-gray-300";
+    return "bg-red-100 text-red-800 border-red-300";
   };
 
   useEffect(() => {
@@ -212,10 +212,10 @@ const WritingPage: React.FC = () => {
                         <h2 className="text-xl font-semibold text-gray-900 mb-2">
                           {test.title}
                         </h2>
-                        <p className="text-gray-600 mb-4 text-sm">
+                        {/* <p className="text-gray-600 mb-4 text-sm">
                           {test.description ||
                             "Practice your writing skills with this IELTS task"}
-                        </p>
+                        </p> */}
                       </div>
                     </div>
 

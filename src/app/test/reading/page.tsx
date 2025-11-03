@@ -31,13 +31,13 @@ const ReadingPage: React.FC = () => {
 
   const getSectionBadge = (type: string) => {
     const sectionMap: Record<string, string> = {
-      academic: "bg-blue-100 text-blue-800 border-blue-300",
-      general: "bg-gray-100 text-gray-800 border-gray-300",
-      practice: "bg-purple-100 text-purple-800 border-purple-300",
+      academic: "bg-red-100 text-red-800 border-red-300",
+      general: "bg-red-100 text-red-800 border-red-300",
+      practice: "bg-red-100 text-red-800 border-red-300",
     };
     return (
       sectionMap[type.toLowerCase()] ||
-      "bg-gray-100 text-gray-800 border-gray-300"
+      "bg-red-100 text-red-800 border-red-300"
     );
   };
 

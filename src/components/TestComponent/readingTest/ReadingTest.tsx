@@ -924,45 +924,45 @@ const ReadingTest = ({ test }: any) => {
               role="dialog"
               aria-modal="true"
               aria-labelledby="reading-start-title"
-              className="bg-base-100 w-full max-w-lg rounded-2xl shadow-2xl border border-base-200 overflow-hidden"
+              className="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-gray-200 overflow-hidden"
             >
               <div className="p-6 sm:p-8">
                 <div className="flex items-start gap-4">
-                  <div className="rounded-xl bg-primary/10 text-primary p-3">
+                  <div className="rounded-xl bg-red-100 text-red-700 p-3">
                     {/* play icon */}
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M8 5v14l11-7L8 5z" fill="currentColor"/>
                     </svg>
                   </div>
                   <div className="flex-1">
-                    <h2 id="reading-start-title" className="text-xl font-semibold leading-tight">
+                    <h2 id="reading-start-title" className="text-xl font-semibold leading-tight text-gray-900">
                       Ready to begin your Reading test?
                     </h2>
-                    <p className="mt-1 text-sm text-base-content/70">
+                    <p className="mt-1 text-sm text-gray-600">
                       The timer will start as soon as you click <strong>Start Test</strong>.
                     </p>
                   </div>
                 </div>
 
                 <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div className="rounded-lg border border-base-200 p-3">
-                    <div className="text-xs uppercase tracking-wide text-base-content/60">Duration</div>
-                    <div className="text-sm font-medium">{(test && (test.duration as number)) || 60} min</div>
+                  <div className="rounded-lg border border-red-200 bg-red-50 p-3">
+                    <div className="text-xs uppercase tracking-wide text-red-600 font-medium">Duration</div>
+                    <div className="text-sm font-semibold text-gray-900">{(test && (test.duration as number)) || 60} min</div>
                   </div>
-                  <div className="rounded-lg border border-base-200 p-3">
-                    <div className="text-xs uppercase tracking-wide text-base-content/60">Parts</div>
-                    <div className="text-sm font-medium">{test?.parts?.length || 3}</div>
+                  <div className="rounded-lg border border-red-200 bg-red-50 p-3">
+                    <div className="text-xs uppercase tracking-wide text-red-600 font-medium">Parts</div>
+                    <div className="text-sm font-semibold text-gray-900">{test?.parts?.length || 3}</div>
                   </div>
-                  <div className="rounded-lg border border-base-200 p-3">
-                    <div className="text-xs uppercase tracking-wide text-base-content/60">Questions</div>
-                    <div className="text-sm font-medium">{Object.values(partQuestions || {}).reduce((a: number, v: any) => a + (Array.isArray(v) ? v.length : 0), 0)}</div>
+                  <div className="rounded-lg border border-red-200 bg-red-50 p-3">
+                    <div className="text-xs uppercase tracking-wide text-red-600 font-medium">Questions</div>
+                    <div className="text-sm font-semibold text-gray-900">{Object.values(partQuestions || {}).reduce((a: number, v: any) => a + (Array.isArray(v) ? v.length : 0), 0)}</div>
                   </div>
                 </div>
 
                 <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-end gap-2">
                   <button
                     type="button"
-                    className="btn btn-ghost"
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                     onClick={() => { if (typeof window !== 'undefined') window.history.back(); }}
                   >
                     Back
@@ -970,7 +970,7 @@ const ReadingTest = ({ test }: any) => {
                   <button
                     autoFocus
                     type="button"
-                    className="btn btn-primary shadow-md"
+                    className="px-5 py-2.5 text-sm font-medium text-white bg-red-700 hover:bg-red-800 rounded-lg shadow-md transition-colors"
                     onClick={() => {
                       const durationMin = (test && (test.duration as number)) || 60;
                       setTimeLeft(durationMin * 60);
