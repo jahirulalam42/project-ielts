@@ -323,7 +323,7 @@ export default function WritingTestPage() {
                 <span className="text-red-500 font-bold"> - Time's up!</span>
               )}
             </div>
-            <div className="badge badge-primary">
+            <div className="badge bg-red-600 hover:bg-red-700 text-white border-0">
               Task {activeTab + 1} of {test.parts.length}
             </div>
           </div>
@@ -394,8 +394,8 @@ export default function WritingTestPage() {
                   style={{ width: `${100 - panelWidths[index]}%` }}
                 >
                   <div className="flex justify-between items-center mb-2">
-                    <label className="text-sm font-medium">Your Response:</label>
-                    <div className="text-sm">
+                    {/* <label className="text-sm font-medium">Your Response:</label> */}
+                    <div className="text-sm font-bold">
                       Word count: {wordCounts[part._id] || 0}
                     </div>
                   </div>
@@ -437,7 +437,7 @@ export default function WritingTestPage() {
                       type="button"
                       className={`px-4 py-2 text-sm rounded border transition-colors ${
                         partIndex === activeTab
-                          ? "bg-blue-500 text-white border-blue-500"
+                          ? "bg-red-600 text-white border-red-600"
                           : "bg-gray-200 text-gray-700 border-gray-300 hover:bg-gray-300"
                       }`}
                       onClick={() => setActiveTab(partIndex)}
