@@ -9,6 +9,22 @@ const FillInTheBlanks: React.FC<any> = ({
   handleAnswerChange,
   handleQuestionFocus,
 }: any) => {
+  // Helper function to normalize answers for comparison
+  const normalizeAnswer = (answer: string): string => {
+    return answer
+      .trim() // Remove leading/trailing spaces
+      .replace(/\s+/g, " ") // Replace multiple spaces with single space
+      .toLowerCase(); // Optional: make case insensitive
+  };
+
+  // Check if answer is correct (with space normalization)
+  const isAnswerCorrect = (
+    userAnswer: string,
+    correctAnswer: string
+  ): boolean => {
+    return normalizeAnswer(userAnswer) === normalizeAnswer(correctAnswer);
+  };
+
   return (
     <div>
       {/* <h5 className="font-medium mb-2">Fill in the Blanks</h5> */}
@@ -38,11 +54,11 @@ const FillInTheBlanks: React.FC<any> = ({
                       e.target.value,
                       "Fill in the Blanks",
                       q.answer,
-                      e.target.value === q.answer ? true : false
+                      isAnswerCorrect(e.target.value, q.answer) // Use the normalized comparison
                     )
                   }
                 />
-                {q.question.split("__________")[1]}
+                {q.question.split("_________")[1]}
               </p>
             </div>
           );
