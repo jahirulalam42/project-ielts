@@ -31,15 +31,15 @@ const Navbar: React.FC = () => {
     { href: "/test/reading", label: "Reading" },
     { href: "/test/writing", label: "Writing" },
     { href: "/test/speaking", label: "Speaking" },
-    { 
-      href: "/writing-samples", 
+    {
+      href: "/writing-samples",
       label: "Writing Samples",
       hasSubmenu: true,
       submenu: [
         { href: "/writing-samples", label: "All Samples" },
         { href: "/writing-samples?task=1", label: "Task 1" },
         { href: "/writing-samples?task=2", label: "Task 2" },
-      ]
+      ],
     },
   ];
 
@@ -79,45 +79,41 @@ const Navbar: React.FC = () => {
 
                 {/* Desktop Navigation */}
                 <div className="navbar-center hidden lg:flex">
-                  <ul className="menu menu-horizontal px-1 space-x-1">
+                  <ul className="menu menu-horizontal px-1 py-3 gap-2">
                     {navLinks.map((link) => (
                       <li key={link.href}>
                         {link.hasSubmenu ? (
-                          <div className="dropdown dropdown-hover">
-                            <div
-                              tabIndex={0}
-                              role="button"
-                              className={`font-medium px-4 py-2 rounded-md transition-colors duration-200 btn btn-ghost rounded-btn ${
+                          <details>
+                            <summary
+                              className={`font-medium transition-colors duration-200 ${
                                 pathName.startsWith(link.href)
                                   ? "text-red-700 bg-red-50 font-semibold"
                                   : "text-gray-600"
                               }`}
                             >
                               {link.label}
-                              <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                              </svg>
-                            </div>
-                            <ul
-                              tabIndex={0}
-                              className="dropdown-content menu p-2 shadow-lg bg-white rounded-lg w-52 border border-gray-200 z-50"
-                            >
+                            </summary>
+                            <ul className="p-2 bg-white rounded-lg shadow-lg border border-gray-200 w-52 z-50">
                               {link.submenu?.map((subItem) => (
                                 <li key={subItem.href}>
                                   <Link
                                     href={subItem.href}
-                                    className="text-gray-700 hover:bg-red-50 hover:text-red-700 px-3 py-2 rounded-md transition-colors duration-200"
+                                    className={`text-gray-700 hover:bg-red-50 hover:text-red-700 px-3 py-2 rounded-md transition-colors duration-200 ${
+                                      pathName === subItem.href
+                                        ? "bg-red-50 text-red-700 font-medium"
+                                        : ""
+                                    }`}
                                   >
                                     {subItem.label}
                                   </Link>
                                 </li>
                               ))}
                             </ul>
-                          </div>
+                          </details>
                         ) : (
                           <Link
                             href={link.href}
-                            className={`font-medium px-4 py-2 rounded-md transition-colors duration-200 btn btn-ghost rounded-btn ${
+                            className={`font-medium transition-colors duration-200 ${
                               pathName.startsWith(link.href)
                                 ? "text-red-700 bg-red-50 font-semibold"
                                 : "text-gray-600"
@@ -143,15 +139,11 @@ const Navbar: React.FC = () => {
                   )}
 
                   {/* Mobile menu button */}
-                  <div className="dropdown dropdown-end lg:hidden">
-                    <div
-                      tabIndex={0}
-                      role="button"
-                      className="btn btn-ghost btn-circle"
-                    >
+                  <div className="dropdown lg:hidden">
+                    <div tabIndex={0} role="button" className="btn btn-ghost">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6"
+                        className="h-5 w-5"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -159,46 +151,52 @@ const Navbar: React.FC = () => {
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M4 6h16M4 12h16M4 18h16"
+                          strokeWidth="2"
+                          d="M4 6h16M4 12h8m-8 6h16"
                         />
                       </svg>
                     </div>
                     <ul
                       tabIndex={0}
-                      className="dropdown-content menu menu-sm mt-3 z-[100] p-2 shadow bg-base-100 rounded-box w-52 border border-gray-200"
+                      className="menu menu-sm dropdown-content bg-base-100 rounded-box z-50 mt-3 w-52 p-2 shadow"
                     >
                       {navLinks.map((link) => (
                         <li key={link.href}>
                           {link.hasSubmenu ? (
-                            <details>
-                              <summary className={`${
-                                pathName.startsWith(link.href)
-                                  ? "active bg-red-50 text-red-700"
-                                  : ""
-                              }`}>
+                            <>
+                              <span
+                                className={`font-medium ${
+                                  pathName.startsWith(link.href)
+                                    ? "text-red-700 bg-red-50 font-semibold"
+                                    : "text-gray-600"
+                                }`}
+                              >
                                 {link.label}
-                              </summary>
-                              <ul className="ml-4">
+                              </span>
+                              <ul className="p-2 bg-gray-50 rounded-md">
                                 {link.submenu?.map((subItem) => (
                                   <li key={subItem.href}>
                                     <Link
                                       href={subItem.href}
-                                      className="text-sm text-gray-600 hover:bg-red-50 hover:text-red-700"
+                                      className={`text-gray-700 hover:bg-red-50 hover:text-red-700 px-3 py-2 rounded-md transition-colors duration-200 ${
+                                        pathName === subItem.href
+                                          ? "bg-red-50 text-red-700 font-medium"
+                                          : ""
+                                      }`}
                                     >
                                       {subItem.label}
                                     </Link>
                                   </li>
                                 ))}
                               </ul>
-                            </details>
+                            </>
                           ) : (
                             <Link
                               href={link.href}
-                              className={`${
+                              className={`font-medium ${
                                 pathName.startsWith(link.href)
-                                  ? "active bg-red-50 text-red-700"
-                                  : ""
+                                  ? "text-red-700 bg-red-50 font-semibold"
+                                  : "text-gray-600"
                               }`}
                             >
                               {link.label}
@@ -206,28 +204,6 @@ const Navbar: React.FC = () => {
                           )}
                         </li>
                       ))}
-                      {data?.user.role === "admin" && (
-                        <li>
-                          <Link href="/admin">Admin Panel</Link>
-                        </li>
-                      )}
-                      {data && (
-                        <>
-                          <div className="divider my-1"></div>
-                          <li>
-                            <Link href="/userDashboard">Dashboard</Link>
-                          </li>
-                          <li>
-                            <Link href="/profile">Profile</Link>
-                          </li>
-                          <li>
-                            <Link href="/settings">Settings</Link>
-                          </li>
-                          <li>
-                            <LoginButton />
-                          </li>
-                        </>
-                      )}
                     </ul>
                   </div>
 

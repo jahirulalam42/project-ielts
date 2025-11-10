@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import FormattedInstructions from "./FormattedInstructions";
 
-// The McqMultiple component accepts the question and the answer handler
 const McqMultiple = ({
   instructions,
   question,
@@ -9,34 +8,31 @@ const McqMultiple = ({
   handleAnswerChange,
   handleQuestionFocus,
 }: any) => {
-  // Track selected options for each question in the group
+  // Track selected options locally
   const [selectedOptions, setSelectedOptions] = useState<{
     [key: string]: { [key: number]: string };
   }>({});
 
-  // Initialize selectedOptions when component mounts or questions change
+  // Use ref to track initial mount and prevent unnecessary updates
+  const isInitialMount = useRef(true);
+  const skipNextUpdate = useRef(false);
+
+  // Initialize only once when component mounts
   useEffect(() => {
     const initialSelections: { [key: string]: { [key: number]: string } } = {};
     question.forEach((q: any) => {
       const groupKey = q.question_numbers.join("-");
       initialSelections[groupKey] = {};
-      q.question_numbers.forEach((num: number, idx: number) => {
-        // hydrate from global answers if present
-        const answerObj = Array.isArray(answers)
-          ? answers.find((a: any) => String(a.questionId) === String(num))
-          : null;
-        initialSelections[groupKey][num] = answerObj?.value || "";
+      q.question_numbers.forEach((num: number) => {
+        const answerValue = answers[`${num}`]?.value || "";
+        initialSelections[groupKey][num] = answerValue;
       });
     });
     setSelectedOptions(initialSelections);
-  }, [question, answers]);
+    isInitialMount.current = false;
+  }, [question]); // Only depend on question structure, not answers
 
-  // Check if an individual answer is correct
-  const checkIndividualAnswer = (value: string, correctAnswers: string[]) => {
-    return correctAnswers.includes(value);
-  };
-
-  // Handle checkbox change for each group of questions
+  // Handle checkbox change without triggering parent during render
   const handleCheckboxChange = (
     groupKey: string,
     optionLabel: string,
@@ -48,56 +44,49 @@ const McqMultiple = ({
       (v) => v !== ""
     ).length;
 
-    // If the option is already selected for this question, unselect it
+    let newSelections = { ...currentSelections };
+
+    // Toggle selection
     if (currentSelections[questionNumber] === optionLabel) {
-      const newSelections = {
-        ...currentSelections,
-        [questionNumber]: "",
-      };
-      setSelectedOptions({ ...selectedOptions, [groupKey]: newSelections });
-
-      // Update all answers in the group
-      q.question_numbers.forEach((num: number) => {
-        handleAnswerChange(
-          num,
-          newSelections[num] || "",
-          "MCQ Multiple",
-          q.correct_mapping[q.question_numbers.indexOf(num)],
-          checkIndividualAnswer(newSelections[num] || "", q.correct_mapping),
-          q.question_numbers
-        );
-      });
+      newSelections[questionNumber] = "";
     } else {
-      // If the selection limit is not reached, select the option
       if (selectedCount < q.max_selection) {
-        const newSelections = {
-          ...currentSelections,
-          [questionNumber]: optionLabel,
-        };
-        setSelectedOptions({ ...selectedOptions, [groupKey]: newSelections });
-
-        // Update all answers in the group
-        q.question_numbers.forEach((num: number) => {
-          handleAnswerChange(
-            num,
-            newSelections[num] || "",
-            q.input_type,
-            q.correct_mapping[q.question_numbers.indexOf(num)],
-            checkIndividualAnswer(newSelections[num] || "", q.correct_mapping),
-            q.question_numbers
-          );
-        });
+        newSelections[questionNumber] = optionLabel;
       } else {
         alert(
           `You can only select ${q.max_selection} options for this question.`
         );
+        return;
       }
     }
+
+    // Update local state first
+    setSelectedOptions((prev) => ({
+      ...prev,
+      [groupKey]: newSelections,
+    }));
+
+    // Then update parent - use setTimeout to ensure this happens after render
+    setTimeout(() => {
+      q.question_numbers.forEach((num: number) => {
+        const idx = q.question_numbers.indexOf(num);
+        const correctAnswer = q.correct_mapping?.[idx] || "";
+        const isCorrect = newSelections[num] === correctAnswer;
+
+        handleAnswerChange(
+          num,
+          newSelections[num] || "",
+          q.input_type,
+          correctAnswer,
+          isCorrect,
+          q.question_numbers
+        );
+      });
+    }, 0);
   };
 
   return (
     <div>
-      {/* <h5 className="font-medium mb-2">Multiple Select Questions</h5> */}
       <FormattedInstructions instructions={instructions} />
       {question.map((q: any, idx: number) => {
         const groupKey = q.question_numbers.join("-");
@@ -119,9 +108,11 @@ const McqMultiple = ({
                     type="checkbox"
                     className="checkbox checkbox-primary"
                     onFocus={() => handleQuestionFocus(q.question_numbers[0])}
-                    checked={Object.values(currentSelections).includes(option.label)}
+                    checked={Object.values(currentSelections).includes(
+                      option.label
+                    )}
                     onChange={() => {
-                      // Find which question number this option should be assigned to
+                      // Find available question for this option
                       const availableQuestion = q.question_numbers.find(
                         (num: number) =>
                           !currentSelections[num] ||
@@ -141,16 +132,6 @@ const McqMultiple = ({
                 </label>
               ))}
             </div>
-
-            {/* Debug info - remove this in production */}
-            {/* <div className="text-xs text-black-500 mt-2">
-              Selected:{" "}
-              {Object.entries(currentSelections)
-                .filter(([_, value]) => value !== "")
-                .map(([key, value]) => `${key}: ${value}`)
-                .join(", ")}{" "}
-              | Correct: {q.correct_mapping?.join(", ")}
-            </div> */}
           </div>
         );
       })}
