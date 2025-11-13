@@ -372,7 +372,7 @@ const SpeakingPage: React.FC = () => {
       </div> */}
 
       {/* Speaking Test Structure */}
-      <div className="max-w-6xl mx-auto px-4 pb-16 mt-6">
+      <div className="max-w-6xl mx-auto px-4 pb-16 mt-16">
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
           <div className="bg-red-700 text-white p-6">
             <h2 className="text-2xl font-bold flex items-center">
