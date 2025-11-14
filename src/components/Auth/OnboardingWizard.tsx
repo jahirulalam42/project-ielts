@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 
-import { getSingleUser, updateUser } from "@/services/data";
+import { getOnboardingData, saveOnboardingData } from "@/services/data";
 
 type OnboardingData = {
   purpose: string;
@@ -12,15 +12,8 @@ type OnboardingData = {
   examDateType: string;
   customExamDate: string;
   englishLevel: string;
-  hardestModule: string;
+  hardestModule: string | string[];
   targetCountries: string[];
-  testType: string;
-  counsellingInterest: string;
-  interestAreas: string[];
-  communication: string[];
-  availability: string[];
-  shareScores: boolean;
-  notes: string;
 };
 
 const purposeOptions = [
@@ -60,28 +53,6 @@ const countryOptions = [
   "Still exploring",
 ];
 
-const testTypes = ["Academic", "General Training", "UKVI", "Not sure"];
-
-const interestAreas = [
-  "Study abroad consultation",
-  "IELTS coaching",
-  "Writing correction",
-  "Speaking partners / live room",
-  "Intensive crash course",
-  "Scholarship alerts",
-  "Visa guidance",
-];
-
-const communicationChannels = ["Email", "WhatsApp", "SMS", "In-app only"];
-
-const availabilityOptions = [
-  "Weekday mornings",
-  "Weekday evenings",
-  "Weekend mornings",
-  "Weekend evenings",
-  "Flexible / contact to schedule",
-];
-
 const examDateQuickSelect = [
   { id: "lt1", label: "Within 1 month" },
   { id: "1-3", label: "In 1–3 months" },
@@ -94,27 +65,71 @@ const DEFAULT_FORM: OnboardingData = {
   examDateType: "",
   customExamDate: "",
   englishLevel: "",
-  hardestModule: "",
+  hardestModule: [],
   targetCountries: [],
-  testType: "",
-  counsellingInterest: "",
-  interestAreas: [],
-  communication: ["Email"],
-  availability: [],
-  shareScores: false,
-  notes: "",
 };
 
-const stepOrder = ["goals", "profile", "services", "wrapUp"] as const;
-
 const ONBOARDING_STORAGE_KEY = "ielts-onboarding-status";
+
+type Question = {
+  id: keyof OnboardingData;
+  title: string;
+  description?: string;
+  type: "single" | "multi" | "date";
+  options?: string[];
+  quickSelect?: { id: string; label: string }[];
+};
+
+const questions: Question[] = [
+  {
+    id: "purpose",
+    title: "What's your purpose for taking IELTS?",
+    description: "Help us understand your goals",
+    type: "single",
+    options: purposeOptions,
+  },
+  {
+    id: "targetScore",
+    title: "What's your target band score?",
+    description: "Select your goal score",
+    type: "single",
+    options: targetScoreOptions,
+  },
+  {
+    id: "examDateType",
+    title: "When do you plan to take the exam?",
+    description: "Choose a timeframe or select a specific date",
+    type: "date",
+    quickSelect: examDateQuickSelect,
+  },
+  {
+    id: "englishLevel",
+    title: "What's your current English level?",
+    description: "Self-assess your proficiency",
+    type: "single",
+    options: englishLevels,
+  },
+  {
+    id: "hardestModule",
+    title: "Which IELTS module is most challenging for you?",
+    description: "Tell us where you need the most help (select all that apply)",
+    type: "multi",
+    options: moduleOptions,
+  },
+  {
+    id: "targetCountries",
+    title: "Which countries or regions are you targeting?",
+    description: "Select all that apply",
+    type: "multi",
+    options: countryOptions,
+  },
+];
 
 const OnboardingWizard = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const nextPath = searchParams.get("next") || "/dashboard";
   const { data: session, status } = useSession();
-  const [step, setStep] = useState<typeof stepOrder[number]>("goals");
   const [form, setForm] = useState<OnboardingData>(DEFAULT_FORM);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
@@ -144,24 +159,32 @@ const OnboardingWizard = () => {
 
     const hydrateStatus = async () => {
       try {
-        const response = await getSingleUser(session.user.id);
-        const userRecord =
-          response?.data?.[0] ?? response?.data ?? response ?? null;
-        const onboardingStatus =
-          userRecord?.onboarding?.status ?? userRecord?.onboardingStatus;
+        const response = await getOnboardingData(session.user.id);
+        const onboardingRecord = response?.data ?? null;
+        const onboardingStatus = onboardingRecord?.status;
 
+        console.log("Onboarding check:", { 
+          hasRecord: !!onboardingRecord, 
+          status: onboardingStatus,
+          record: onboardingRecord 
+        });
+
+        // If onboarding is completed, redirect immediately
+        // If skipped, show onboarding again (user can complete or skip again)
         if (
-          onboardingStatus === "completed" ||
-          onboardingStatus === "skipped"
+          onboardingRecord &&
+          onboardingStatus === "completed"
         ) {
           localStorage.setItem(storageKey, onboardingStatus);
           router.replace(nextPath);
           return;
         }
 
+        // If no record exists, status is skipped, or status is in-progress, show wizard
         localStorage.setItem(storageKey, "in-progress");
       } catch (error) {
         console.error("Failed to load onboarding status", error);
+        // If error occurs, show wizard (safe default)
       } finally {
         if (isMounted) {
           setIsCheckingStatus(false);
@@ -176,10 +199,34 @@ const OnboardingWizard = () => {
     };
   }, [session?.user?.id, status, router, nextPath, storageKey]);
 
+  // Calculate progress based on filled fields
   const progressValue = useMemo(() => {
-    const index = stepOrder.indexOf(step);
-    return Math.round(((index + 1) / stepOrder.length) * 100);
-  }, [step]);
+    const hardestModuleFilled = Array.isArray(form.hardestModule) 
+      ? form.hardestModule.length > 0 
+      : form.hardestModule !== "";
+    const fields = [
+      form.purpose,
+      form.targetScore,
+      form.examDateType || form.customExamDate,
+      form.englishLevel,
+      hardestModuleFilled,
+      form.targetCountries.length > 0,
+    ];
+    const filledCount = fields.filter(Boolean).length;
+    return Math.round((filledCount / fields.length) * 100);
+  }, [form]);
+
+  // Check if all required fields are filled
+  const isFormValid = useMemo(() => {
+    return (
+      form.purpose !== "" &&
+      form.targetScore !== "" &&
+      (form.examDateType !== "" || form.customExamDate !== "") &&
+      form.englishLevel !== "" &&
+      (form.hardestModule as string[]).length > 0 &&
+      form.targetCountries.length > 0
+    );
+  }, [form]);
 
   const handleSelect = (field: keyof OnboardingData, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -197,19 +244,6 @@ const OnboardingWizard = () => {
     });
   };
 
-  const goToNext = () => {
-    const index = stepOrder.indexOf(step);
-    if (index < stepOrder.length - 1) {
-      setStep(stepOrder[index + 1]);
-    }
-  };
-
-  const goToPrevious = () => {
-    const index = stepOrder.indexOf(step);
-    if (index > 0) {
-      setStep(stepOrder[index - 1]);
-    }
-  };
 
   const handleSubmit = async () => {
     setSubmitError(null);
@@ -217,25 +251,45 @@ const OnboardingWizard = () => {
     if (status === "loading") return;
     if (!session?.user?.id) {
       setSubmitError(
-        "We couldn’t verify your account. Please sign in again to continue."
+        "We couldn't verify your account. Please sign in again to continue."
       );
+      return;
+    }
+
+    // Validate all required fields
+    if (!isFormValid) {
+      setSubmitError("Please answer all questions before submitting.");
+      // Scroll to first unanswered question
+      const firstUnanswered = questions.find((q) => {
+        if (q.type === "multi") {
+          return (form[q.id] as string[]).length === 0;
+        }
+        if (q.id === "examDateType") {
+          return !form.examDateType && !form.customExamDate;
+        }
+        return !form[q.id];
+      });
+      if (firstUnanswered) {
+        const element = document.querySelector(`[data-question-id="${firstUnanswered.id}"]`);
+        element?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
       return;
     }
 
     setIsSubmitting(true);
     try {
       const payload = {
-        onboarding: {
-          ...form,
-          examDate:
-            form.customExamDate?.trim() ||
-            (form.examDateType ? form.examDateType : ""),
-          status: "completed",
-          completedAt: new Date().toISOString(),
-        },
+        ...form,
+        examDate:
+          form.customExamDate?.trim() ||
+          (form.examDateType ? form.examDateType : ""),
+        status: "completed",
+        completedAt: new Date().toISOString(),
       };
 
-      await updateUser(session.user.id, payload);
+      console.log("Saving onboarding data:", { userId: session.user.id, payload });
+      const result = await saveOnboardingData(session.user.id, payload);
+      console.log("Onboarding save result:", result);
 
       if (typeof window !== "undefined") {
         localStorage.setItem(storageKey, "completed");
@@ -247,47 +301,36 @@ const OnboardingWizard = () => {
     } catch (error) {
       console.error("Failed to save onboarding", error);
       setSubmitError(
-        "We couldn’t save your preferences. Please try again in a moment."
+        "We couldn't save your preferences. Please try again in a moment."
       );
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const StepShell: React.FC<{
-    title: string;
-    description: string;
-    children: React.ReactNode;
-  }> = ({ title, description, children }) => (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-semibold text-gray-900">{title}</h2>
-        <p className="mt-2 text-sm leading-relaxed text-gray-500">
-          {description}
-        </p>
+
+  // Don't render wizard if we're checking status or if user is not authenticated
+  if (status === "loading" || isCheckingStatus) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-100">
+        <div className="flex min-h-screen items-center justify-center">
+          <span className="loading loading-dots loading-lg text-red-500" />
+        </div>
       </div>
-      <div className="space-y-4">{children}</div>
-    </div>
-  );
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-rose-100">
-      {(status === "loading" || isCheckingStatus) && (
-        <div className="flex min-h-screen items-center justify-center">
-          <span className="loading loading-dots loading-lg text-rose-500" />
-        </div>
-      )}
-      {!(status === "loading" || isCheckingStatus) && (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-rose-100 py-12">
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-10">
-        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-100 py-8">
+      <div className="mx-auto max-w-4xl px-4 sm:px-6">
+        <div className="mb-6 flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium uppercase tracking-widest text-rose-500">
-              Smart onboarding
-            </p>
-            <h1 className="mt-2 text-3xl font-semibold text-gray-900">
-              Tell us about your IELTS journey
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+              Welcome! Let's get started
             </h1>
+            <p className="mt-1 text-sm text-gray-500">
+              A few quick questions to personalize your experience. Completing this takes under 90 seconds.
+            </p>
           </div>
           <button
             type="button"
@@ -297,11 +340,8 @@ const OnboardingWizard = () => {
               }
               if (session?.user?.id) {
                 try {
-                  await updateUser(session.user.id, {
-                    onboarding: {
-                      status: "skipped",
-                      updatedAt: new Date().toISOString(),
-                    },
+                  await saveOnboardingData(session.user.id, {
+                    status: "skipped",
                   });
                 } catch (error) {
                   console.error("Failed to persist onboarding skip", error);
@@ -309,465 +349,208 @@ const OnboardingWizard = () => {
               }
               router.push(nextPath);
             }}
-            className="text-sm font-medium text-gray-500 hover:text-gray-700"
+            className="text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors"
           >
-            Skip for now
+            Skip for Now
           </button>
         </div>
 
-        <div className="space-y-4">
-          <div className="h-2 w-full overflow-hidden rounded-full bg-rose-100">
+        {/* Progress Bar */}
+        <div className="mb-6">
+          <div className="h-1 w-full overflow-hidden rounded-full bg-gray-200">
             <div
-              className="h-2 rounded-full bg-rose-500 transition-all duration-500"
+              className="h-full rounded-full bg-gradient-to-r from-red-500 to-red-600 transition-all duration-500 ease-out"
               style={{ width: `${progressValue}%` }}
             />
           </div>
-          <div className="flex items-center justify-between text-xs font-medium uppercase tracking-widest text-gray-400">
-            <span>{progressValue}% complete</span>
-            <span>
-              Step {stepOrder.indexOf(step) + 1} / {stepOrder.length}
-            </span>
+          <div className="flex items-center justify-between mt-2 text-xs font-medium text-gray-500">
+            <span>{Math.round(progressValue)}% complete</span>
+            <span>{questions.length} questions</span>
           </div>
         </div>
 
-        <div className="mt-8 overflow-hidden rounded-3xl border border-rose-100/70 bg-white/95 shadow-2xl backdrop-blur-md">
-          <div className="grid gap-0 md:grid-cols-[1.1fr,0.9fr]">
-            <div className="border-b border-rose-100/70 p-8 sm:p-10 md:border-b-0 md:border-r">
-              {submitError && (
-                <div className="alert alert-error mb-6">
-                  <span>{submitError}</span>
-                </div>
-              )}
-              {step === "goals" && (
-                <StepShell
-                  title="Your IELTS goals"
-                  description="Set the tone so we can prioritise the lessons, reminders, and offers that match your plan."
-                >
-                  <section>
-                    <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-                      Purpose for IELTS
-                    </h3>
-                    <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                      {purposeOptions.map((option) => (
-                        <button
-                          key={option}
-                          type="button"
-                          onClick={() => handleSelect("purpose", option)}
-                          className={`btn h-auto justify-start border ${
-                            form.purpose === option
-                              ? "border-rose-400 bg-rose-50 text-rose-600"
-                              : "border-gray-200 bg-white text-gray-600 hover:border-rose-200 hover:bg-rose-50"
-                          }`}
-                        >
-                          {option}
-                        </button>
-                      ))}
-                    </div>
-                  </section>
-
-                  <section className="grid gap-6 sm:grid-cols-2">
-                    <div>
-                      <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-                        Target band score
-                      </h3>
-                      <div className="mt-3 grid gap-2">
-                        {targetScoreOptions.map((score) => (
-                          <button
-                            key={score}
-                            type="button"
-                            onClick={() => handleSelect("targetScore", score)}
-                            className={`btn h-10 justify-start border ${
-                              form.targetScore === score
-                                ? "border-rose-400 bg-rose-50 text-rose-600"
-                                : "border-gray-200 bg-white text-gray-600 hover:border-rose-200 hover:bg-rose-50"
-                            }`}
-                          >
-                            {score}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-                        Expected exam date
-                      </h3>
-                      <div className="mt-3 grid gap-2">
-                        {examDateQuickSelect.map((item) => (
-                          <button
-                            key={item.id}
-                            type="button"
-                            onClick={() =>
-                              handleSelect("examDateType", item.label)
-                            }
-                            className={`btn h-10 justify-start border ${
-                              form.examDateType === item.label
-                                ? "border-rose-400 bg-rose-50 text-rose-600"
-                                : "border-gray-200 bg-white text-gray-600 hover:border-rose-200 hover:bg-rose-50"
-                            }`}
-                          >
-                            {item.label}
-                          </button>
-                        ))}
-                        <div className="divider text-xs uppercase tracking-widest text-gray-400">
-                          or pick a date
-                        </div>
-                        <input
-                          type="date"
-                          value={form.customExamDate}
-                          onChange={(e) =>
-                            handleSelect("customExamDate", e.target.value)
-                          }
-                          className="input input-bordered w-full border-gray-200 focus:border-rose-400 focus:ring focus:ring-rose-100"
-                        />
-                      </div>
-                    </div>
-                  </section>
-                </StepShell>
-              )}
-
-              {step === "profile" && (
-                <StepShell
-                  title="Profile & readiness"
-                  description="Understand where you stand today to personalise coaching and feedback loops."
-                >
-                  <section>
-                    <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-                      Current English level (self assessment)
-                    </h3>
-                    <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                      {englishLevels.map((level) => (
-                        <button
-                          key={level}
-                          type="button"
-                          onClick={() => handleSelect("englishLevel", level)}
-                          className={`btn h-10 justify-start border ${
-                            form.englishLevel === level
-                              ? "border-rose-400 bg-rose-50 text-rose-600"
-                              : "border-gray-200 bg-white text-gray-600 hover:border-rose-200 hover:bg-rose-50"
-                          }`}
-                        >
-                          {level}
-                        </button>
-                      ))}
-                    </div>
-                  </section>
-
-                  <section>
-                    <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-                      Hardest IELTS module right now
-                    </h3>
-                    <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                      {moduleOptions.map((module) => (
-                        <button
-                          key={module}
-                          type="button"
-                          onClick={() => handleSelect("hardestModule", module)}
-                          className={`btn h-10 justify-start border ${
-                            form.hardestModule === module
-                              ? "border-rose-400 bg-rose-50 text-rose-600"
-                              : "border-gray-200 bg-white text-gray-600 hover:border-rose-200 hover:bg-rose-50"
-                          }`}
-                        >
-                          {module}
-                        </button>
-                      ))}
-                    </div>
-                  </section>
-
-                  <section>
-                    <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-                      Target country or region
-                    </h3>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {countryOptions.map((country) => {
-                        const active = form.targetCountries.includes(country);
-                        return (
-                          <button
-                            key={country}
-                            type="button"
-                            onClick={() =>
-                              toggleMultiSelect("targetCountries", country)
-                            }
-                            className={`btn h-10 rounded-full border px-4 ${
-                              active
-                                ? "border-rose-400 bg-rose-50 text-rose-600"
-                                : "border-gray-200 bg-white text-gray-600 hover:border-rose-200 hover:bg-rose-50"
-                            }`}
-                          >
-                            {country}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </section>
-
-                  <section>
-                    <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-                      Preferred test format
-                    </h3>
-                    <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                      {testTypes.map((type) => (
-                        <button
-                          key={type}
-                          type="button"
-                          onClick={() => handleSelect("testType", type)}
-                          className={`btn h-10 justify-start border ${
-                            form.testType === type
-                              ? "border-rose-400 bg-rose-50 text-rose-600"
-                              : "border-gray-200 bg-white text-gray-600 hover:border-rose-200 hover:bg-rose-50"
-                          }`}
-                        >
-                          {type}
-                        </button>
-                      ))}
-                    </div>
-                  </section>
-                </StepShell>
-              )}
-
-              {step === "services" && (
-                <StepShell
-                  title="Services & support"
-                  description="Choose what kind of support and offers you want us to bring to you first."
-                >
-                  <section>
-                    <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-                      Interested in free counselling?
-                    </h3>
-                    <div className="mt-3 flex gap-3">
-                      {["Yes", "Maybe later", "No"].map((choice) => (
-                        <button
-                          key={choice}
-                          type="button"
-                          onClick={() =>
-                            handleSelect("counsellingInterest", choice)
-                          }
-                          className={`btn h-10 flex-1 border ${
-                            form.counsellingInterest === choice
-                              ? "border-rose-400 bg-rose-50 text-rose-600"
-                              : "border-gray-200 bg-white text-gray-600 hover:border-rose-200 hover:bg-rose-50"
-                          }`}
-                        >
-                          {choice}
-                        </button>
-                      ))}
-                    </div>
-                  </section>
-
-                  <section>
-                    <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-                      What would you like help with?
-                    </h3>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {interestAreas.map((area) => {
-                        const active = form.interestAreas.includes(area);
-                        return (
-                          <button
-                            key={area}
-                            type="button"
-                            onClick={() =>
-                              toggleMultiSelect("interestAreas", area)
-                            }
-                            className={`btn h-10 rounded-full border px-4 ${
-                              active
-                                ? "border-rose-400 bg-rose-50 text-rose-600"
-                                : "border-gray-200 bg-white text-gray-600 hover:border-rose-200 hover:bg-rose-50"
-                            }`}
-                          >
-                            {area}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </section>
-
-                  <section>
-                    <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-                      How should we reach you?
-                    </h3>
-                    <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                      {communicationChannels.map((channel) => {
-                        const active = form.communication.includes(channel);
-                        return (
-                          <button
-                            key={channel}
-                            type="button"
-                            onClick={() =>
-                              toggleMultiSelect("communication", channel)
-                            }
-                            className={`btn h-10 justify-start border ${
-                              active
-                                ? "border-rose-400 bg-rose-50 text-rose-600"
-                                : "border-gray-200 bg-white text-gray-600 hover:border-rose-200 hover:bg-rose-50"
-                            }`}
-                          >
-                            {channel}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </section>
-                </StepShell>
-              )}
-
-              {step === "wrapUp" && (
-                <StepShell
-                  title="Almost done"
-                  description="Share a few final details so we can schedule counsellors and match you to the right mentors."
-                >
-                  <section>
-                    <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-                      When can we reach you?
-                    </h3>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {availabilityOptions.map((slot) => {
-                        const active = form.availability.includes(slot);
-                        return (
-                          <button
-                            key={slot}
-                            type="button"
-                            onClick={() =>
-                              toggleMultiSelect("availability", slot)
-                            }
-                            className={`btn h-10 rounded-full border px-4 ${
-                              active
-                                ? "border-rose-400 bg-rose-50 text-rose-600"
-                                : "border-gray-200 bg-white text-gray-600 hover:border-rose-200 hover:bg-rose-50"
-                            }`}
-                          >
-                            {slot}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </section>
-
-                  <section className="flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50/70 p-4">
-                    <input
-                      type="checkbox"
-                      checked={form.shareScores}
-                      onChange={(e) =>
-                        setForm((prev) => ({
-                          ...prev,
-                          shareScores: e.target.checked,
-                        }))
-                      }
-                      className="checkbox checkbox-rose"
-                    />
-                    <div className="text-sm text-gray-600">
-                      Share my latest band score or mock test results with the
-                      counsellor to get precise guidance.
-                    </div>
-                  </section>
-
-                  <section>
-                    <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-                      Anything else we should know?
-                    </h3>
-                    <textarea
-                      value={form.notes}
-                      onChange={(e) =>
-                        setForm((prev) => ({ ...prev, notes: e.target.value }))
-                      }
-                      rows={4}
-                      placeholder="Example: Need writing feedback before 15th May; prefer evening slots."
-                      className="textarea textarea-bordered w-full border-gray-200 focus:border-rose-400 focus:ring focus:ring-rose-100"
-                    />
-                  </section>
-                </StepShell>
-              )}
-
-              <div className="mt-8 flex flex-col gap-3 border-t border-gray-200 pt-6 sm:flex-row sm:items-center sm:justify-between">
-                <div className="text-xs text-gray-400">
-                  We’ll never share your details without permission. Update your
-                  preferences anytime in your profile.
-                </div>
-                <div className="flex gap-3">
-                  {step !== "goals" && (
-                    <button
-                      type="button"
-                      onClick={goToPrevious}
-                      className="btn btn-ghost text-sm text-gray-500 hover:text-gray-700"
-                    >
-                      Back
-                    </button>
-                  )}
-                  {step !== "wrapUp" ? (
-                    <button
-                      type="button"
-                      onClick={goToNext}
-                      className="btn btn-primary bg-rose-500 text-white hover:bg-rose-600"
-                    >
-                      Continue
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={handleSubmit}
-                      className={`btn btn-primary bg-rose-500 text-white hover:bg-rose-600 ${
-                        isSubmitting ? "loading" : ""
-                      }`}
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? "Saving your profile…" : "Finish"}
-                    </button>
-                  )}
-                </div>
-              </div>
+        {/* All Questions Card */}
+        <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 sm:p-8">
+          {submitError && (
+            <div className="alert alert-error mb-4">
+              <span>{submitError}</span>
             </div>
+          )}
 
-            <aside className="flex flex-col justify-between bg-rose-50/70 p-8 sm:p-10">
-              <div className="space-y-6">
-                <div className="rounded-2xl bg-white/90 p-6 shadow-lg backdrop-blur">
-                  <h3 className="text-sm font-semibold uppercase tracking-wide text-rose-500">
-                    What you unlock
-                  </h3>
-                  <ul className="mt-3 space-y-3 text-sm text-gray-600">
-                    <li>• Personalised study plan synced to your exam date</li>
-                    <li>• Priority access to counsellors in your target country</li>
-                    <li>
-                      • Tailored offers on writing correction, mock tests, and
-                      crash courses
-                    </li>
-                    <li>• Weekly check-ins based on your chosen modules</li>
-                  </ul>
+          <div className="space-y-5">
+            {questions.map((question, qIdx) => {
+              const isAnswered = question.type === "multi"
+                ? (form[question.id] as string[]).length > 0
+                : question.id === "examDateType"
+                ? form.examDateType !== "" || form.customExamDate !== ""
+                : question.id === "hardestModule"
+                ? Array.isArray(form.hardestModule) ? form.hardestModule.length > 0 : form.hardestModule !== ""
+                : form[question.id] !== "";
+              
+              return (
+              <div 
+                key={question.id} 
+                data-question-id={question.id}
+                className={`border-b border-gray-100 last:border-0 pb-5 last:pb-0 ${
+                  !isAnswered ? "opacity-90" : ""
+                }`}
+              >
+                <div className="mb-2">
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className={`flex items-center justify-center w-5 h-5 rounded-full text-white text-xs font-bold flex-shrink-0 ${
+                      isAnswered 
+                        ? "bg-gradient-to-br from-red-500 to-red-600" 
+                        : "bg-gray-400"
+                    }`}>
+                      {qIdx + 1}
+                    </div>
+                    <h3 className="text-sm font-semibold text-gray-900">
+                      {question.title}
+                      <span className="text-red-500 ml-1">*</span>
+                    </h3>
+                  </div>
+                  {question.description && (
+                    <p className="text-xs text-gray-500 ml-7">
+                      {question.description}
+                    </p>
+                  )}
+                  {/* {!isAnswered && (
+                    <p className="text-xs text-red-500 ml-7 mt-1">
+                      This field is required
+                    </p>
+                  )} */}
                 </div>
 
-                <div className="rounded-2xl border border-rose-100 bg-rose-100/50 p-6 text-sm text-gray-600">
-                  <p className="font-semibold text-gray-800">
-                    Completing this takes under 90 seconds.
-                  </p>
-                  <p className="mt-2">
-                    Our counsellors and automated journeys rely on these inputs
-                    to ensure every recommendation feels handcrafted.
-                  </p>
+                <div className="ml-7">
+                  {question.type === "single" && (
+                    <div className="flex flex-wrap gap-2">
+                      {question.options?.map((option) => {
+                        const isSelected = form[question.id] === option;
+                        return (
+                          <button
+                            key={option}
+                            type="button"
+                            onClick={() => handleSelect(question.id, option)}
+                            className={`px-4 py-2 rounded-lg border transition-all duration-200 whitespace-nowrap ${
+                              isSelected
+                                ? "border-red-500 bg-red-50 text-red-700 font-medium"
+                                : "border-gray-200 bg-white text-gray-700 hover:border-red-200 hover:bg-red-50/50"
+                            }`}
+                          >
+                            <span className="text-sm">{option}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  {question.type === "multi" && (
+                    <div className="flex flex-wrap gap-2">
+                      {question.options?.map((option) => {
+                        const isSelected = (form[question.id] as string[]).includes(option);
+                        return (
+                          <button
+                            key={option}
+                            type="button"
+                            onClick={() => toggleMultiSelect(question.id, option)}
+                            className={`px-4 py-2 rounded-lg border transition-all duration-200 whitespace-nowrap flex items-center gap-1.5 ${
+                              isSelected
+                                ? "border-red-500 bg-red-50 text-red-700 font-medium"
+                                : "border-gray-200 bg-white text-gray-700 hover:border-red-200 hover:bg-red-50/50"
+                            }`}
+                          >
+                            <span className="text-sm">{option}</span>
+                            {isSelected && (
+                              <svg
+                                className="w-3.5 h-3.5 text-red-500"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M5 13l4 4L19 7"
+                                />
+                              </svg>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  {question.type === "date" && (
+                    <div className="space-y-2">
+                      <div className="flex flex-wrap gap-2">
+                        {question.quickSelect?.map((item) => {
+                          const isSelected = form.examDateType === item.label;
+                          return (
+                            <button
+                              key={item.id}
+                              type="button"
+                              onClick={() => handleSelect("examDateType", item.label)}
+                              className={`px-4 py-2 rounded-lg border transition-all duration-200 whitespace-nowrap ${
+                                isSelected
+                                  ? "border-red-500 bg-red-50 text-red-700 font-medium"
+                                  : "border-gray-200 bg-white text-gray-700 hover:border-red-200 hover:bg-red-50/50"
+                              }`}
+                            >
+                              <span className="text-sm">{item.label}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                      <div className="relative">
+                        <div className="absolute inset-0 flex items-center">
+                          <div className="w-full border-t border-gray-200"></div>
+                        </div>
+                        <div className="relative flex justify-center text-xs">
+                          <span className="px-2 bg-white text-gray-400">OR</span>
+                        </div>
+                      </div>
+                      <input
+                        type="date"
+                        value={form.customExamDate}
+                        onChange={(e) => handleSelect("customExamDate", e.target.value)}
+                        className="w-full p-2.5 rounded-lg border border-gray-200 focus:border-red-500 focus:ring-1 focus:ring-red-200 transition-all text-sm"
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
+            );
+            })}
+          </div>
 
-              <div className="mt-8 rounded-2xl bg-white/80 p-5 text-sm text-gray-500 shadow-lg backdrop-blur">
-                {isComplete ? (
-                  <p className="font-medium text-rose-600">
-                    Profile saved! Redirecting you to your dashboard…
-                  </p>
-                ) : (
-                  <>
-                    <p className="font-medium text-gray-700">
-                      Have questions?
-                    </p>
-                    <p>
-                      Jump into a live chat or request a callback after you
-                      finish onboarding. We’re here to help.
-                    </p>
-                  </>
-                )}
-              </div>
-            </aside>
+          {/* Submit Button */}
+          <div className="mt-6 pt-6 border-t border-gray-200 flex items-center justify-between">
+            <p className="text-xs text-gray-500">
+              <span className="text-red-500">*</span> Required fields
+            </p>
+            <button
+              type="button"
+              onClick={handleSubmit}
+              disabled={isSubmitting || !isFormValid}
+              className={`px-6 py-2.5 rounded-lg font-semibold text-white transition-all duration-300 shadow-md ${
+                isSubmitting || !isFormValid
+                  ? "opacity-50 cursor-not-allowed bg-gray-400"
+                  : "bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 hover:shadow-lg"
+              }`}
+            >
+              {isSubmitting ? (
+                <span className="flex items-center gap-2">
+                  <span className="loading loading-spinner loading-sm"></span>
+                  Saving...
+                </span>
+              ) : (
+                "Complete"
+              )}
+            </button>
           </div>
         </div>
       </div>
-    </div>
-      )}
     </div>
   );
 };

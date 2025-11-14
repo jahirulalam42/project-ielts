@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { getOnboardingData } from "@/services/data";
 
 const SignInForm = () => {
   const [email, setEmail] = useState("");
@@ -25,12 +26,60 @@ const SignInForm = () => {
       callbackUrl,
     });
 
-    setLoading(false);
     if (res?.error) {
+      setLoading(false);
       setError("Invalid Email or Password!");
-    } else {
+      return;
+    }
+
+    // If sign in successful, get user ID and check onboarding status
+    try {
+      // Get user ID by calling login API (we already validated credentials above)
+      const userResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        }
+      );
+      
+      const userData = await userResponse.json();
+      const userId = userData?.data?.[0]?._id;
+
+      if (userId) {
+        // Check onboarding status
+        try {
+          const onboardingResponse = await getOnboardingData(userId);
+          const onboardingRecord = onboardingResponse?.data;
+          const onboardingStatus = onboardingRecord?.status;
+
+          // If onboarding is completed, go directly to destination
+          // If skipped, show onboarding again
+          if (
+            onboardingRecord &&
+            onboardingStatus === "completed"
+          ) {
+            setLoading(false);
+            router.push(callbackUrl);
+            return;
+          }
+        } catch (error) {
+          // If error checking onboarding, proceed to onboarding page
+          console.error("Error checking onboarding status:", error);
+        }
+      }
+
+      // If no onboarding record or not completed, go to onboarding page
       const encodedNext = encodeURIComponent(callbackUrl);
       router.push(`/user/onboarding?next=${encodedNext}`);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error after sign in:", error);
+      // Fallback: redirect to onboarding
+      const encodedNext = encodeURIComponent(callbackUrl);
+      router.push(`/user/onboarding?next=${encodedNext}`);
+      setLoading(false);
     }
   };
   return (

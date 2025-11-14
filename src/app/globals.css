@@ -50,3 +50,47 @@ body {
 ::-moz-selection {
   background-color: rgba(59, 130, 246, 0.3);
 }
+
+/* Onboarding Wizard Animations */
+@keyframes fadeSlideForward {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeSlideBackward {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-slide-forward {
+  animation: fadeSlideForward 0.4s ease-out;
+}
+
+.animate-fade-slide-backward {
+  animation: fadeSlideBackward 0.4s ease-out;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
