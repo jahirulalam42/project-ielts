@@ -46,9 +46,9 @@ export async function POST(
       userId: String(userId), // Ensure userId is a string
     };
     
-    // Only include valid schema fields (matching the 6 onboarding questions)
+    // Only include valid schema fields (matching the onboarding questions)
     const validFields = [
-      'purpose', 'targetScore', 'examDateType', 'customExamDate', 'examDate',
+      'fullName', 'phoneNo', 'purpose', 'targetScore', 'examDateType', 'customExamDate', 'examDate',
       'englishLevel', 'hardestModule', 'targetCountries', 'status', 'completedAt'
     ];
     

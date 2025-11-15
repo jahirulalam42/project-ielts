@@ -3,10 +3,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+import { parsePhoneNumberFromString, isValidPhoneNumber } from "libphonenumber-js";
 
 import { getOnboardingData, saveOnboardingData } from "@/services/data";
 
 type OnboardingData = {
+  fullName: string;
+  phoneNo: string;
   purpose: string;
   targetScore: string;
   examDateType: string;
@@ -60,6 +65,8 @@ const examDateQuickSelect = [
 ];
 
 const DEFAULT_FORM: OnboardingData = {
+  fullName: "",
+  phoneNo: "",
   purpose: "",
   targetScore: "",
   examDateType: "",
@@ -75,12 +82,27 @@ type Question = {
   id: keyof OnboardingData;
   title: string;
   description?: string;
-  type: "single" | "multi" | "date";
+  type: "single" | "multi" | "date" | "text" | "phone";
   options?: string[];
   quickSelect?: { id: string; label: string }[];
+  placeholder?: string;
 };
 
 const questions: Question[] = [
+  {
+    id: "fullName",
+    title: "What's your full name?",
+    description: "Please enter your full name",
+    type: "text",
+    placeholder: "Enter your full name",
+  },
+  {
+    id: "phoneNo",
+    title: "What's your phone number?",
+    description: "We'll use this to contact you about your IELTS prep",
+    type: "phone",
+    placeholder: "Enter your phone number",
+  },
   {
     id: "purpose",
     title: "What's your purpose for taking IELTS?",
@@ -205,6 +227,8 @@ const OnboardingWizard = () => {
       ? form.hardestModule.length > 0 
       : form.hardestModule !== "";
     const fields = [
+      form.fullName,
+      form.phoneNo,
       form.purpose,
       form.targetScore,
       form.examDateType || form.customExamDate,
@@ -218,7 +242,21 @@ const OnboardingWizard = () => {
 
   // Check if all required fields are filled
   const isFormValid = useMemo(() => {
+    // Validate phone number
+    let isPhoneValid = false;
+    if (form.phoneNo) {
+      try {
+        const phoneWithPlus = form.phoneNo.startsWith("+") ? form.phoneNo : `+${form.phoneNo}`;
+        isPhoneValid = isValidPhoneNumber(phoneWithPlus);
+      } catch {
+        isPhoneValid = false;
+      }
+    }
+
     return (
+      form.fullName.trim() !== "" &&
+      form.phoneNo !== "" &&
+      isPhoneValid &&
       form.purpose !== "" &&
       form.targetScore !== "" &&
       (form.examDateType !== "" || form.customExamDate !== "") &&
@@ -230,6 +268,12 @@ const OnboardingWizard = () => {
 
   const handleSelect = (field: keyof OnboardingData, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handlePhoneChange = (value: string) => {
+    // react-phone-input-2 returns value without + prefix (e.g., "1234567890")
+    // We'll add the + prefix when validating and storing
+    setForm((prev) => ({ ...prev, phoneNo: value }));
   };
 
   const toggleMultiSelect = (field: keyof OnboardingData, value: string) => {
@@ -267,6 +311,18 @@ const OnboardingWizard = () => {
         if (q.id === "examDateType") {
           return !form.examDateType && !form.customExamDate;
         }
+        if (q.type === "text") {
+          return !(form[q.id] as string)?.trim();
+        }
+        if (q.type === "phone") {
+          if (!form.phoneNo) return true;
+          try {
+            const phoneWithPlus = form.phoneNo.startsWith("+") ? form.phoneNo : `+${form.phoneNo}`;
+            return !isValidPhoneNumber(phoneWithPlus);
+          } catch {
+            return true;
+          }
+        }
         return !form[q.id];
       });
       if (firstUnanswered) {
@@ -276,10 +332,35 @@ const OnboardingWizard = () => {
       return;
     }
 
+    // Validate and format phone number before submission
+    let formattedPhoneNo = form.phoneNo;
+    if (form.phoneNo) {
+      try {
+        // react-phone-input-2 returns value without + prefix, add it for validation
+        const phoneWithPlus = form.phoneNo.startsWith("+") ? form.phoneNo : `+${form.phoneNo}`;
+        const phoneNumber = parsePhoneNumberFromString(phoneWithPlus);
+        
+        if (phoneNumber && isValidPhoneNumber(phoneNumber.number)) {
+          // Store in E.164 format (e.g., +1234567890)
+          formattedPhoneNo = phoneNumber.format("E.164");
+        } else {
+          setSubmitError("Please enter a valid phone number.");
+          setIsSubmitting(false);
+          return;
+        }
+      } catch (error) {
+        console.error("Phone number validation error:", error);
+        setSubmitError("Please enter a valid phone number.");
+        setIsSubmitting(false);
+        return;
+      }
+    }
+
     setIsSubmitting(true);
     try {
       const payload = {
         ...form,
+        phoneNo: formattedPhoneNo, // Use formatted phone number
         examDate:
           form.customExamDate?.trim() ||
           (form.examDateType ? form.examDateType : ""),
@@ -385,13 +466,26 @@ const OnboardingWizard = () => {
                 ? form.examDateType !== "" || form.customExamDate !== ""
                 : question.id === "hardestModule"
                 ? Array.isArray(form.hardestModule) ? form.hardestModule.length > 0 : form.hardestModule !== ""
+                : question.type === "text"
+                ? (form[question.id] as string).trim() !== ""
+                : question.type === "phone"
+                ? form.phoneNo !== "" && (() => {
+                    try {
+                      const phoneWithPlus = form.phoneNo.startsWith("+") ? form.phoneNo : `+${form.phoneNo}`;
+                      return isValidPhoneNumber(phoneWithPlus);
+                    } catch {
+                      return false;
+                    }
+                  })()
                 : form[question.id] !== "";
               
               return (
               <div 
                 key={question.id} 
                 data-question-id={question.id}
-                className={`border-b border-gray-100 last:border-0 pb-5 last:pb-0 ${
+                className={`border-b border-gray-100 last:border-0 pb-5 last:pb-0 relative ${
+                  question.type === "phone" ? "z-[999]" : "z-0"
+                } ${
                   !isAnswered ? "opacity-90" : ""
                 }`}
               >
@@ -422,6 +516,40 @@ const OnboardingWizard = () => {
                 </div>
 
                 <div className="ml-7">
+                  {question.type === "text" && (
+                    <input
+                      type="text"
+                      value={form[question.id] as string}
+                      onChange={(e) => handleSelect(question.id, e.target.value)}
+                      placeholder={question.placeholder}
+                      className="w-full p-2.5 rounded-lg border border-gray-200 focus:border-red-500 focus:ring-1 focus:ring-red-200 transition-all text-sm"
+                    />
+                  )}
+
+                  {question.type === "phone" && (
+                    <div className="phone-input-wrapper w-full relative z-[1000]">
+                      <PhoneInput
+                        country={"us"}
+                        value={form.phoneNo}
+                        onChange={handlePhoneChange}
+                        inputProps={{
+                          required: true,
+                          autoFocus: false,
+                        }}
+                        containerClass="phone-input-container"
+                        inputClass="phone-input-field"
+                        buttonClass="phone-input-button"
+                        dropdownClass="phone-input-dropdown"
+                        searchClass="phone-input-search"
+                        placeholder="Enter your phone number"
+                        enableSearch={true}
+                        disableSearchIcon={true}
+                        countryCodeEditable={true}
+                        specialLabel=""
+                      />
+                    </div>
+                  )}
+
                   {question.type === "single" && (
                     <div className="flex flex-wrap gap-2">
                       {question.options?.map((option) => {

@@ -2,6 +2,8 @@ import mongoose, { Model, Schema } from "mongoose";
 
 export interface Onboarding extends mongoose.Document {
   userId: string;
+  fullName: string;
+  phoneNo: string;
   purpose: string;
   targetScore: string;
   examDateType: string;
@@ -29,6 +31,14 @@ const OnboardingSchema = new mongoose.Schema<Onboarding>(
       type: String,
       required: [true, "User ID is required"],
       unique: true, // One onboarding record per user
+    },
+    fullName: {
+      type: String,
+      default: "",
+    },
+    phoneNo: {
+      type: String,
+      default: "",
     },
     purpose: {
       type: String,
