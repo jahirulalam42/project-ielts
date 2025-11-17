@@ -112,6 +112,7 @@ body {
   transition: all 0.2s !important;
   background: white !important;
   color: #111827 !important;
+  margin-left: 8px !important;
 }
 
 .phone-input-field:focus {
