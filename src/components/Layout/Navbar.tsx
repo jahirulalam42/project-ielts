@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
 import { getSingleUser } from "@/services/data";
 import userImage from "../../../public/images/user.jpg";
+import NotificationBell from "@/components/Common/NotificationBell";
 
 declare module "next-auth" {
   interface Session {
@@ -230,6 +231,8 @@ const Navbar: React.FC = () => {
                       )}
                     </ul>
                   </div>
+
+                  {data && <NotificationBell />}
 
                   {/* User profile dropdown */}
                   {data ? (
