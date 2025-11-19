@@ -116,6 +116,17 @@ const AdminNavbar = () => {
         },
       ],
     },
+    {
+      section: "Communication",
+      items: [
+        {
+          id: "notifications",
+          label: "Notifications",
+          href: "/admin/notifications",
+          icon: FaBell,
+        },
+      ],
+    },
   ];
 
   const Sidebar = ({ isDesktop = false, isCollapsed = false }) => (

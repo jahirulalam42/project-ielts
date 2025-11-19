@@ -50,3 +50,336 @@ body {
 ::-moz-selection {
   background-color: rgba(59, 130, 246, 0.3);
 }
+
+/* Onboarding Wizard Animations */
+@keyframes fadeSlideForward {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeSlideBackward {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-slide-forward {
+  animation: fadeSlideForward 0.4s ease-out;
+}
+
+.animate-fade-slide-backward {
+  animation: fadeSlideBackward 0.4s ease-out;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Phone Input Styling */
+.phone-input-container {
+  width: 100% !important;
+  position: relative !important;
+  z-index: 1000 !important;
+  overflow: visible !important;
+}
+
+.phone-input-field {
+  width: 100% !important;
+  padding: 10px 10px 10px 50px !important;
+  border-radius: 0.5rem !important;
+  border: 1px solid #e5e7eb !important;
+  font-size: 0.875rem !important;
+  transition: all 0.2s !important;
+  background: white !important;
+  color: #111827 !important;
+  margin-left: 8px !important;
+}
+
+.phone-input-field:focus {
+  border-color: #f43f5e !important;
+  outline: none !important;
+  box-shadow: 0 0 0 1px rgba(244, 63, 94, 0.2) !important;
+}
+
+.phone-input-button {
+  border-radius: 0.5rem 0 0 0.5rem !important;
+  border: 1px solid #e5e7eb !important;
+  border-right: none !important;
+  background: white !important;
+  height: 100% !important;
+  padding: 0 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.phone-input-button:hover {
+  background: #f9fafb !important;
+}
+
+.phone-input-button:focus {
+  outline: none !important;
+}
+
+/* Dropdown Styling */
+.phone-input-dropdown {
+  position: absolute !important;
+  z-index: 999999 !important;
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid #e5e7eb !important;
+  max-height: 300px !important;
+  overflow-y: auto !important;
+  margin-top: 4px !important;
+  width: 100% !important;
+  min-width: 300px !important;
+  opacity: 1 !important;
+  backdrop-filter: none !important;
+}
+
+/* Ensure all child elements have proper backgrounds */
+.phone-input-dropdown > * {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+}
+
+.phone-input-dropdown ul {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Override library's default transparent/backdrop styles */
+.flag-dropdown,
+.flag-dropdown.open,
+.flag-dropdown.open .selected-flag {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+}
+
+/* Ensure the dropdown container itself is opaque */
+div.phone-input-dropdown,
+div[class*="flag-dropdown"],
+div[class*="country-list"],
+div[class*="react-tel-input"],
+div[class*="country-list"] {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* Ensure country list dropdown has highest z-index */
+div[class*="country-list"],
+ul[class*="country-list"],
+.country-list {
+  position: absolute !important;
+  z-index: 999999 !important;
+}
+
+/* Ensure questions below don't overlap the dropdown */
+.bg-white.rounded-xl {
+  position: relative !important;
+  z-index: 0 !important;
+  overflow: visible !important;
+}
+
+/* Ensure the main onboarding container allows overflow */
+.min-h-screen {
+  overflow: visible !important;
+}
+
+/* Phone input question gets highest z-index */
+[data-question-id="phoneNo"] {
+  z-index: 1000 !important;
+  position: relative !important;
+  overflow: visible !important;
+}
+
+/* Ensure all other questions have lower z-index */
+[data-question-id]:not([data-question-id="phoneNo"]) {
+  z-index: 1 !important;
+  position: relative !important;
+  overflow: visible !important;
+}
+
+/* Ensure the questions container allows overflow */
+.space-y-5 {
+  position: relative !important;
+  z-index: 0 !important;
+  overflow: visible !important;
+}
+
+/* Ensure questions after phone input don't overlap */
+.space-y-5 > [data-question-id]:not([data-question-id="phoneNo"]) {
+  z-index: 0 !important;
+  position: relative !important;
+}
+
+/* Create a new stacking context for phone input */
+.phone-input-wrapper {
+  position: relative !important;
+  z-index: 1000 !important;
+  overflow: visible !important;
+}
+
+/* Override react-phone-input-2 specific classes */
+.react-tel-input .flag-dropdown,
+.react-tel-input .country-list,
+.react-tel-input .country-list .country {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+}
+
+.react-tel-input .country-list {
+  position: absolute !important;
+  z-index: 999999 !important;
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+/* Force dropdown to appear above everything - most aggressive */
+.react-tel-input .country-list {
+  position: absolute !important;
+  z-index: 999999 !important;
+}
+
+/* Catch all possible dropdown variations from react-phone-input-2 */
+.react-tel-input .flag-dropdown.open .country-list,
+.react-tel-input .flag-dropdown.open ul,
+.react-tel-input ul.country-list,
+.react-tel-input div.country-list {
+  position: absolute !important;
+  z-index: 999999 !important;
+}
+
+.react-tel-input .country-list .country {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.react-tel-input .country-list .country:hover {
+  background: #fef2f2 !important;
+  background-color: #fef2f2 !important;
+}
+
+.phone-input-dropdown::-webkit-scrollbar {
+  width: 8px;
+}
+
+.phone-input-dropdown::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.phone-input-dropdown::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.phone-input-dropdown::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.phone-input-dropdown .country {
+  padding: 10px 16px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  transition: background-color 0.15s ease !important;
+  border-bottom: 1px solid #f3f4f6 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.phone-input-dropdown .country:last-child {
+  border-bottom: none !important;
+}
+
+.phone-input-dropdown .country:hover {
+  background: #fef2f2 !important;
+}
+
+.phone-input-dropdown .country.highlight {
+  background: #fee2e2 !important;
+  font-weight: 500 !important;
+}
+
+.phone-input-dropdown .country .flag {
+  width: 20px !important;
+  height: 15px !important;
+  margin-right: 8px !important;
+}
+
+.phone-input-dropdown .country-name {
+  flex: 1 !important;
+  font-size: 0.875rem !important;
+  color: #111827 !important;
+}
+
+.phone-input-dropdown .dial-code {
+  font-size: 0.875rem !important;
+  color: #6b7280 !important;
+  font-weight: 500 !important;
+}
+
+/* Search Input in Dropdown */
+.phone-input-search {
+  padding: 12px 16px !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  position: sticky !important;
+  top: 0 !important;
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  z-index: 10 !important;
+  opacity: 1 !important;
+}
+
+.phone-input-search input {
+  width: 100% !important;
+  padding: 8px 12px !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 0.375rem !important;
+  font-size: 0.875rem !important;
+  outline: none !important;
+  transition: all 0.2s !important;
+}
+
+.phone-input-search input:focus {
+  border-color: #f43f5e !important;
+  box-shadow: 0 0 0 1px rgba(244, 63, 94, 0.2) !important;
+}
+
+/* No results message */
+.phone-input-dropdown .no-entries-message {
+  padding: 16px !important;
+  text-align: center !important;
+  color: #6b7280 !important;
+  font-size: 0.875rem !important;
+}

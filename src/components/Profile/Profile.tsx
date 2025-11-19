@@ -1,5 +1,5 @@
 "use client";
-import { getSingleUser, updateUser } from "@/services/data";
+import { getSingleUser, updateUser, getOnboardingData } from "@/services/data";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useRef, useState } from "react";
 import Loader from '@/components/Common/Loader';
@@ -8,6 +8,7 @@ import { ToastContainer, toast } from "react-toastify";
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [userData, setUserData]: any = useState();
+  const [onboardingData, setOnboardingData]: any = useState(null);
   const [isImageUploading, setIsImageUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isHoveringImage, setIsHoveringImage] = useState(false);
@@ -85,7 +86,21 @@ const Profile = () => {
         return result;
       }
     };
+    
+    const fetchOnboardingData = async () => {
+      if (data?.user?.id) {
+        try {
+          const result = await getOnboardingData(data.user.id);
+          setOnboardingData(result?.data);
+        } catch (error) {
+          console.error("Error fetching onboarding data:", error);
+          setOnboardingData(null);
+        }
+      }
+    };
+    
     fetchSingleUser();
+    fetchOnboardingData();
   }, [data]);
 
   return (
@@ -331,6 +346,119 @@ const Profile = () => {
                     <p className="text-gray-700">{userData.bio}</p>
                   )}
                 </div>
+
+                {/* Onboarding Information Section */}
+                {onboardingData && onboardingData.status === "completed" && (
+                  <div className="mb-8 border-t pt-8">
+                    <h3 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
+                      <svg
+                        className="w-6 h-6 mr-2 text-red-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                      IELTS Journey Information
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* Purpose for IELTS */}
+                      {onboardingData.purpose && (
+                        <div>
+                          <label className="block text-sm font-medium text-gray-500 mb-1">
+                            Purpose for IELTS
+                          </label>
+                          <div className="text-gray-900 font-medium">
+                            {onboardingData.purpose}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Target Band Score */}
+                      {onboardingData.targetScore && (
+                        <div>
+                          <label className="block text-sm font-medium text-gray-500 mb-1">
+                            Target Band Score
+                          </label>
+                          <div className="text-gray-900 font-medium">
+                            {onboardingData.targetScore}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Expected Exam Date */}
+                      {(onboardingData.examDate || onboardingData.examDateType || onboardingData.customExamDate) && (
+                        <div>
+                          <label className="block text-sm font-medium text-gray-500 mb-1">
+                            Expected Exam Date
+                          </label>
+                          <div className="text-gray-900 font-medium">
+                            {onboardingData.customExamDate || onboardingData.examDateType || onboardingData.examDate || "Not specified"}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Current English Level */}
+                      {onboardingData.englishLevel && (
+                        <div>
+                          <label className="block text-sm font-medium text-gray-500 mb-1">
+                            Current English Level
+                          </label>
+                          <div className="text-gray-900 font-medium">
+                            {onboardingData.englishLevel}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Hardest IELTS Module */}
+                      {onboardingData.hardestModule && 
+                       Array.isArray(onboardingData.hardestModule) && 
+                       onboardingData.hardestModule.length > 0 && (
+                        <div>
+                          <label className="block text-sm font-medium text-gray-500 mb-1">
+                            Most Challenging Module(s)
+                          </label>
+                          <div className="flex flex-wrap gap-2">
+                            {onboardingData.hardestModule.map((module: string, idx: number) => (
+                              <span
+                                key={idx}
+                                className="px-3 py-1 bg-red-50 text-red-700 rounded-full text-sm font-medium border border-red-200"
+                              >
+                                {module}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Target Countries */}
+                      {onboardingData.targetCountries && 
+                       Array.isArray(onboardingData.targetCountries) && 
+                       onboardingData.targetCountries.length > 0 && (
+                        <div>
+                          <label className="block text-sm font-medium text-gray-500 mb-1">
+                            Target Country/Region
+                          </label>
+                          <div className="flex flex-wrap gap-2">
+                            {onboardingData.targetCountries.map((country: string, idx: number) => (
+                              <span
+                                key={idx}
+                                className="px-3 py-1 bg-red-50 text-red-700 rounded-full text-sm font-medium border border-red-200"
+                              >
+                                {country}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
 
                 <div className="flex items-center justify-between border-t pt-6">
                   {isEditing && (

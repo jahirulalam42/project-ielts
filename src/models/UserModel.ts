@@ -10,6 +10,8 @@ export interface User extends mongoose.Document {
   bio: string;
   role: string;
   type: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 const userSchema = new mongoose.Schema<User>({
@@ -43,6 +45,8 @@ const userSchema = new mongoose.Schema<User>({
   type: {
     type: String,
   },
+}, {
+  timestamps: true, // Adds createdAt and updatedAt automatically
 });
 
 export default mongoose.models.user || mongoose.model<User>("user", userSchema);
