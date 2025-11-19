@@ -46,6 +46,14 @@ const SignInForm = () => {
       
       const userData = await userResponse.json();
       const userId = userData?.data?.[0]?._id;
+      const userRole = userData?.data?.[0]?.role;
+
+      // Skip onboarding for admin users
+      if (userRole === "admin") {
+        setLoading(false);
+        router.push(callbackUrl);
+        return;
+      }
 
       if (userId) {
         // Check onboarding status
@@ -54,8 +62,8 @@ const SignInForm = () => {
           const onboardingRecord = onboardingResponse?.data;
           const onboardingStatus = onboardingRecord?.status;
 
-          // If onboarding is completed, go directly to destination
-          // If skipped, show onboarding again
+          // Only if onboarding is completed, skip the onboarding page
+          // If skipped, user must see onboarding again until they submit
           if (
             onboardingRecord &&
             onboardingStatus === "completed"
@@ -70,12 +78,33 @@ const SignInForm = () => {
         }
       }
 
-      // If no onboarding record or not completed, go to onboarding page
+      // If no onboarding record, status is skipped, or not completed, go to onboarding page
       const encodedNext = encodeURIComponent(callbackUrl);
       router.push(`/user/onboarding?next=${encodedNext}`);
       setLoading(false);
     } catch (error) {
       console.error("Error after sign in:", error);
+      // Fallback: check if user is admin, otherwise redirect to onboarding
+      try {
+        const userResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/login`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+          }
+        );
+        const userData = await userResponse.json();
+        const userRole = userData?.data?.[0]?.role;
+        
+        if (userRole === "admin") {
+          setLoading(false);
+          router.push(callbackUrl);
+          return;
+        }
+      } catch (fallbackError) {
+        console.error("Fallback error:", fallbackError);
+      }
       // Fallback: redirect to onboarding
       const encodedNext = encodeURIComponent(callbackUrl);
       router.push(`/user/onboarding?next=${encodedNext}`);
@@ -195,12 +224,17 @@ const SignInForm = () => {
 
               <button
                 type="submit"
-                className={`btn btn-primary w-full border-0 bg-rose-500 text-white shadow-lg shadow-rose-200 transition duration-200 hover:bg-rose-600 ${
-                  loading ? "loading" : ""
-                }`}
+                className="btn btn-primary w-full border-0 bg-rose-500 text-white shadow-lg shadow-rose-200 transition duration-200 hover:bg-rose-600 disabled:opacity-70 disabled:cursor-not-allowed"
                 disabled={loading}
               >
-                {loading ? "Signing in…" : "Sign In"}
+                {loading ? (
+                  <span className="flex items-center gap-2">
+                    <span className="loading loading-spinner loading-sm"></span>
+                    Signing in…
+                  </span>
+                ) : (
+                  "Sign In"
+                )}
               </button>
             </form>
 

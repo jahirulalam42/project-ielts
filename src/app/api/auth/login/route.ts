@@ -1,6 +1,7 @@
 // /app/api/auth/login/route.ts (App Router)
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/models/UserModel";
+import NotificationModel from "@/models/NotificationModel";
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 
@@ -32,6 +33,32 @@ export const POST = async (request: Request) => {
         { success: false, error: "Invalid email or password" },
         { status: 401 }
       );
+    }
+
+    // Check if this is a new user and create welcome notification
+    try {
+      // Check if welcome notification already exists for this user
+      const welcomeNotification = await NotificationModel.findOne({
+        audience: "user",
+        targetUserId: user._id,
+        title: { $regex: /welcome|greeting/i },
+      });
+
+      // Only create welcome notification if it doesn't exist (first time sign-in)
+      if (!welcomeNotification) {
+        await NotificationModel.create({
+          title: "Welcome to IELTS Prep! 🎉",
+          message: `Hello ${user.username || "there"}! We're thrilled to have you join our IELTS preparation community. Get started by exploring our practice tests, track your progress, and work towards achieving your target band score. Good luck on your IELTS journey!`,
+          type: "success",
+          audience: "user",
+          targetUserId: user._id,
+          createdBy: user._id, // User creates their own welcome notification
+          link: "/userDashboard",
+        });
+      }
+    } catch (error) {
+      // Don't fail login if notification creation fails
+      console.error("Error creating welcome notification:", error);
     }
 
     // Return user as an array to match credentials.authorize() expectation

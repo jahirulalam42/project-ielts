@@ -150,7 +150,7 @@ const questions: Question[] = [
 const OnboardingWizard = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const nextPath = searchParams.get("next") || "/dashboard";
+  const nextPath = searchParams.get("next") || "/";
   const { data: session, status } = useSession();
   const [form, setForm] = useState<OnboardingData>(DEFAULT_FORM);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -177,6 +177,13 @@ const OnboardingWizard = () => {
       return;
     }
 
+    // Skip onboarding for admin users
+    if (session?.user?.role === "admin") {
+      setIsCheckingStatus(false);
+      router.replace(nextPath);
+      return;
+    }
+
     let isMounted = true;
 
     const hydrateStatus = async () => {
@@ -191,8 +198,8 @@ const OnboardingWizard = () => {
           record: onboardingRecord 
         });
 
-        // If onboarding is completed, redirect immediately
-        // If skipped, show onboarding again (user can complete or skip again)
+        // Only if onboarding is completed, redirect immediately
+        // If skipped, user must see onboarding again until they submit
         if (
           onboardingRecord &&
           onboardingStatus === "completed"
@@ -219,7 +226,7 @@ const OnboardingWizard = () => {
     return () => {
       isMounted = false;
     };
-  }, [session?.user?.id, status, router, nextPath, storageKey]);
+  }, [session?.user?.id, session?.user?.role, status, router, nextPath, storageKey]);
 
   // Calculate progress based on filled fields
   const progressValue = useMemo(() => {

@@ -195,12 +195,17 @@ const SignUp = () => {
 
               <button
                 type="submit"
-                className={`btn btn-primary w-full border-0 bg-rose-500 text-white shadow-lg shadow-rose-200 transition duration-200 hover:bg-rose-600 ${
-                  loading ? "loading" : ""
-                }`}
+                className="btn btn-primary w-full border-0 bg-rose-500 text-white shadow-lg shadow-rose-200 transition duration-200 hover:bg-rose-600 disabled:opacity-70 disabled:cursor-not-allowed"
                 disabled={loading}
               >
-                {loading ? "Creating your account…" : "Continue"}
+                {loading ? (
+                  <span className="flex items-center gap-2">
+                    <span className="loading loading-spinner loading-sm"></span>
+                    Creating your account…
+                  </span>
+                ) : (
+                  "Continue"
+                )}
               </button>
             </form>
 

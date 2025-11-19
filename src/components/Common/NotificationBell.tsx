@@ -26,6 +26,7 @@ const NotificationBell = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
 
   const fetchNotifications = useCallback(async () => {
     if (status !== "authenticated") return;
@@ -67,6 +68,18 @@ const NotificationBell = () => {
     if (hours < 24) return `${hours}h ago`;
     const days = Math.floor(hours / 24);
     return `${days}d ago`;
+  };
+
+  const truncateText = (text: string, maxLength: number = 100) => {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + "...";
+  };
+
+  const handleNotificationClick = (notification: Notification) => {
+    setSelectedNotification(notification);
+    if (!notification.isRead) {
+      handleMarkAsRead(notification._id);
+    }
   };
 
   const handleMarkAsRead = async (id: string) => {
@@ -150,21 +163,21 @@ const NotificationBell = () => {
               {notifications.map((notification) => (
                 <div
                   key={notification._id}
-                  className={`p-3 rounded-xl border text-sm ${
+                  className={`p-3 rounded-xl border text-sm cursor-pointer transition-all hover:shadow-md ${
                     notification.isRead
                       ? "bg-slate-50 border-slate-100"
                       : "bg-indigo-50/80 border-indigo-100"
                   }`}
-                  onClick={() => handleMarkAsRead(notification._id)}
+                  onClick={() => handleNotificationClick(notification)}
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <p className="font-semibold text-slate-800">{notification.title}</p>
+                    <p className="font-semibold text-slate-800">{truncateText(notification.title, 60)}</p>
                     <span className={`badge ${typeBadgeClasses[notification.type]}`}>
                       {notification.type}
                     </span>
                   </div>
-                  <p className="text-slate-600 mt-1 whitespace-pre-line">
-                    {notification.message}
+                  <p className="text-slate-600 mt-1 line-clamp-2">
+                    {truncateText(notification.message, 100)}
                   </p>
                   <div className="mt-2 flex items-center justify-between text-xs text-slate-500">
                     <span>{formatTimeAgo(notification.createdAt)}</span>
@@ -180,15 +193,8 @@ const NotificationBell = () => {
                       </span>
                     )}
                   </div>
-                  {notification.link && (
-                    <a
-                      href={notification.link}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="link link-primary text-xs mt-2 inline-block"
-                    >
-                      Open link
-                    </a>
+                  {(notification.message.length > 100 || notification.title.length > 60) && (
+                    <p className="text-xs text-primary mt-2 font-medium">Click to view full message</p>
                   )}
                 </div>
               ))}
@@ -196,6 +202,60 @@ const NotificationBell = () => {
           )}
         </div>
       </div>
+
+      {/* Notification Detail Modal */}
+      {selectedNotification && (
+        <dialog className="modal modal-open" onClick={() => setSelectedNotification(null)}>
+          <div className="modal-box max-w-2xl" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <span className={`badge ${typeBadgeClasses[selectedNotification.type]}`}>
+                  {selectedNotification.type}
+                </span>
+                <span className="text-sm text-slate-500">
+                  {formatTimeAgo(selectedNotification.createdAt)}
+                </span>
+              </div>
+              <button
+                className="btn btn-sm btn-circle btn-ghost"
+                onClick={() => setSelectedNotification(null)}
+              >
+                ✕
+              </button>
+            </div>
+            <h3 className="font-bold text-lg text-slate-800 mb-3">
+              {selectedNotification.title}
+            </h3>
+            <p className="text-slate-700 whitespace-pre-line mb-4">
+              {selectedNotification.message}
+            </p>
+            {selectedNotification.link && (
+              <a
+                href={selectedNotification.link}
+                target="_blank"
+                rel="noreferrer"
+                className="btn btn-outline btn-primary inline-flex items-center gap-2 mb-4"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+                Open link
+              </a>
+            )}
+            <div className="modal-action">
+              <button
+                className="btn btn-primary"
+                onClick={() => setSelectedNotification(null)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+          <form method="dialog" className="modal-backdrop" onClick={() => setSelectedNotification(null)}>
+            <button>close</button>
+          </form>
+        </dialog>
+      )}
     </div>
   );
 };

@@ -20,13 +20,11 @@ const NotificationSchema = new Schema<NotificationDocument>(
       type: String,
       required: true,
       trim: true,
-      maxlength: 120,
     },
     message: {
       type: String,
       required: true,
       trim: true,
-      maxlength: 2000,
     },
     type: {
       type: String,
@@ -66,6 +64,10 @@ const NotificationSchema = new Schema<NotificationDocument>(
 
 NotificationSchema.index({ audience: 1, targetUserId: 1 });
 
-export default (mongoose.models.Notification as Model<NotificationDocument>) ||
-  mongoose.model<NotificationDocument>("Notification", NotificationSchema);
+// Clear the model cache if it exists to ensure fresh schema
+if (mongoose.models.Notification) {
+  delete mongoose.models.Notification;
+}
+
+export default mongoose.model<NotificationDocument>("Notification", NotificationSchema);
 

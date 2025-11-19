@@ -31,6 +31,7 @@ const AdminNotificationsPage = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [targetType, setTargetType] = useState<TargetType>("all");
+  const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
   const [formValues, setFormValues] = useState({
     title: "",
     message: "",
@@ -38,6 +39,11 @@ const AdminNotificationsPage = () => {
     type: "info",
     targetUserEmail: "",
   });
+
+  const truncateText = (text: string, maxLength: number = 150) => {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + "...";
+  };
 
   const loadNotifications = useCallback(async () => {
     try {
@@ -91,7 +97,11 @@ const AdminNotificationsPage = () => {
 
       const data = await res.json();
       if (!data.success) {
-        throw new Error(data.error || "Failed to create notification");
+        // Show the error message from the API
+        const errorMessage = data.error || "Failed to create notification";
+        toast.error(errorMessage);
+        setSubmitting(false);
+        return;
       }
 
       toast.success("Notification sent successfully");
@@ -106,7 +116,16 @@ const AdminNotificationsPage = () => {
       loadNotifications();
     } catch (error: any) {
       console.error(error);
-      toast.error(error.message || "Failed to create notification");
+      // Extract error message from various error formats
+      let errorMessage = "Failed to create notification";
+      if (error.message) {
+        errorMessage = error.message;
+      } else if (typeof error === "string") {
+        errorMessage = error;
+      } else if (error.error) {
+        errorMessage = error.error;
+      }
+      toast.error(errorMessage);
     } finally {
       setSubmitting(false);
     }
@@ -326,7 +345,8 @@ const AdminNotificationsPage = () => {
               {notifications.map((notification) => (
                 <div
                   key={notification._id}
-                  className="border border-slate-100 rounded-xl p-4 hover:shadow transition bg-slate-50/60"
+                  className="border border-slate-100 rounded-xl p-4 hover:shadow transition bg-slate-50/60 cursor-pointer"
+                  onClick={() => setSelectedNotification(notification)}
                 >
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div>
@@ -334,7 +354,7 @@ const AdminNotificationsPage = () => {
                         {new Date(notification.createdAt).toLocaleString()}
                       </p>
                       <h3 className="text-lg font-semibold text-slate-800">
-                        {notification.title}
+                        {truncateText(notification.title, 80)}
                       </h3>
                     </div>
                     <div className="flex gap-2 items-center">
@@ -346,21 +366,28 @@ const AdminNotificationsPage = () => {
                       </span>
                       <button
                         className="btn btn-xs btn-ghost text-error"
-                        onClick={() => handleDelete(notification._id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(notification._id);
+                        }}
                       >
                         Delete
                       </button>
                     </div>
                   </div>
-                  <p className="mt-3 text-slate-700 whitespace-pre-line">
-                    {notification.message}
+                  <p className="mt-3 text-slate-700 line-clamp-3">
+                    {truncateText(notification.message, 200)}
                   </p>
+                  {(notification.message.length > 200 || notification.title.length > 80) && (
+                    <p className="text-xs text-primary mt-2 font-medium">Click to view full message</p>
+                  )}
                   {notification.link && (
                     <a
                       href={notification.link}
                       target="_blank"
                       rel="noreferrer"
                       className="link link-primary mt-2 inline-flex items-center gap-1"
+                      onClick={(e) => e.stopPropagation()}
                     >
                       View link
                     </a>
@@ -371,6 +398,75 @@ const AdminNotificationsPage = () => {
           )}
         </div>
       </div>
+
+      {/* Notification Detail Modal */}
+      {selectedNotification && (
+        <dialog className="modal modal-open" onClick={() => setSelectedNotification(null)}>
+          <div className="modal-box max-w-3xl" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <span className={`badge ${typeStyles[selectedNotification.type]}`}>
+                  {selectedNotification.type}
+                </span>
+                <span className="badge badge-outline">
+                  {selectedNotification.audience === "all" ? "Everyone" : "Individual"}
+                </span>
+                <span className="text-sm text-slate-500">
+                  {new Date(selectedNotification.createdAt).toLocaleString()}
+                </span>
+              </div>
+              <button
+                className="btn btn-sm btn-circle btn-ghost"
+                onClick={() => setSelectedNotification(null)}
+              >
+                ✕
+              </button>
+            </div>
+            <h3 className="font-bold text-xl text-slate-800 mb-4">
+              {selectedNotification.title}
+            </h3>
+            <p className="text-slate-700 whitespace-pre-line mb-4 text-base leading-relaxed">
+              {selectedNotification.message}
+            </p>
+            {selectedNotification.link && (
+              <a
+                href={selectedNotification.link}
+                target="_blank"
+                rel="noreferrer"
+                className="btn btn-outline btn-primary inline-flex items-center gap-2 mb-4"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+                Open link
+              </a>
+            )}
+            <div className="modal-action">
+              <button
+                className="btn btn-error"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (confirm("Delete this notification?")) {
+                    handleDelete(selectedNotification._id);
+                    setSelectedNotification(null);
+                  }
+                }}
+              >
+                Delete
+              </button>
+              <button
+                className="btn btn-primary"
+                onClick={() => setSelectedNotification(null)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+          <form method="dialog" className="modal-backdrop" onClick={() => setSelectedNotification(null)}>
+            <button>close</button>
+          </form>
+        </dialog>
+      )}
     </div>
   );
 };

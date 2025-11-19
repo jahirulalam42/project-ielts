@@ -7,7 +7,7 @@ import { authOptions } from "@/lib/auth";
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -21,7 +21,8 @@ export async function PATCH(
 
     await dbConnect();
 
-    const notification = await NotificationModel.findById(params.id);
+    const { id } = await params;
+    const notification = await NotificationModel.findById(id);
     if (!notification) {
       return NextResponse.json(
         { success: false, error: "Notification not found" },
@@ -81,7 +82,7 @@ export async function PATCH(
 
 export async function DELETE(
   _request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -94,7 +95,8 @@ export async function DELETE(
     }
 
     await dbConnect();
-    const deleted = await NotificationModel.findByIdAndDelete(params.id);
+    const { id } = await params;
+    const deleted = await NotificationModel.findByIdAndDelete(id);
 
     if (!deleted) {
       return NextResponse.json(
