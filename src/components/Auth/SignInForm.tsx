@@ -43,7 +43,7 @@ const SignInForm = () => {
           body: JSON.stringify({ email, password }),
         }
       );
-      
+
       const userData = await userResponse.json();
       const userId = userData?.data?.[0]?._id;
       const userRole = userData?.data?.[0]?.role;
@@ -64,10 +64,7 @@ const SignInForm = () => {
 
           // Only if onboarding is completed, skip the onboarding page
           // If skipped, user must see onboarding again until they submit
-          if (
-            onboardingRecord &&
-            onboardingStatus === "completed"
-          ) {
+          if (onboardingRecord && onboardingStatus === "completed") {
             setLoading(false);
             router.push(callbackUrl);
             return;
@@ -96,7 +93,7 @@ const SignInForm = () => {
         );
         const userData = await userResponse.json();
         const userRole = userData?.data?.[0]?.role;
-        
+
         if (userRole === "admin") {
           setLoading(false);
           router.push(callbackUrl);
@@ -244,24 +241,38 @@ const SignInForm = () => {
                 Or continue with
                 <span className="flex-1 border-b border-dashed border-gray-200" />
               </div>
+              // In your SignInForm.tsx, update the OAuth buttons section:
               <div className="grid grid-cols-3 gap-3">
                 <button
                   type="button"
+                  onClick={() =>
+                    signIn("google", {
+                      callbackUrl: callbackUrl,
+                      redirect: true,
+                    })
+                  }
                   className="btn btn-outline border-gray-200 text-gray-600 hover:border-rose-200 hover:bg-rose-50"
                 >
                   Google
                 </button>
                 <button
                   type="button"
-                  className="btn btn-outline border-gray-200 text-gray-600 hover:border-rose-200 hover:bg-rose-50"
-                >
-                  Facebook
-                </button>
-                <button
-                  type="button"
+                  onClick={() =>
+                    signIn("linkedin", {
+                      callbackUrl: callbackUrl,
+                      redirect: true,
+                    })
+                  }
                   className="btn btn-outline border-gray-200 text-gray-600 hover:border-rose-200 hover:bg-rose-50"
                 >
                   LinkedIn
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-outline border-gray-200 text-gray-600 hover:border-rose-200 hover:bg-rose-50 opacity-50 cursor-not-allowed"
+                  disabled
+                >
+                  Facebook
                 </button>
               </div>
             </div>
