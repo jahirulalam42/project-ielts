@@ -95,8 +95,8 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
+    // In your auth.ts, update the jwt callback
     async jwt({ token, user, account }) {
-      // Initial sign in
       if (user) {
         token.id = user.id;
         token.name = user.name;
@@ -104,10 +104,7 @@ export const authOptions: NextAuthOptions = {
         token.role = user?.role;
       }
 
-      // For OAuth providers, you might want to fetch or set additional user data
       if (account?.provider !== "credentials" && user) {
-        // Here you can make an API call to your backend to create/update user
-        // and get the role from your database
         try {
           const res = await fetch(
             `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/oauth-user`,
@@ -118,15 +115,18 @@ export const authOptions: NextAuthOptions = {
                 name: user.name,
                 provider: account.provider,
                 providerId: user.id,
+                image: user.image,
               }),
               headers: { "Content-Type": "application/json" },
             }
           );
 
           const userData = await res.json();
+
           if (userData.success && userData.data) {
             token.role = userData.data.role;
             token.id = userData.data._id || userData.data.id;
+            token.isNewUser = userData.data.isNewUser; // Add this flag
           }
         } catch (error) {
           console.error("Error syncing OAuth user:", error);

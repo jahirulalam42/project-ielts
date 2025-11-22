@@ -27,6 +27,29 @@ export const POST = async (request: Request) => {
       );
     }
 
+    // Check if user signed up via OAuth and doesn't have a password
+    if (user.authProvider !== "credentials") {
+      return NextResponse.json(
+        {
+          success: false,
+          error: `This account was created using ${user.authProvider}. Please sign in with ${user.authProvider} instead.`,
+        },
+        { status: 401 }
+      );
+    }
+
+    // Check if user has a password (should always be true for credentials authProvider, but double-check)
+    if (!user.password) {
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            "Password not set for this account. Please use OAuth login or reset your password.",
+        },
+        { status: 401 }
+      );
+    }
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return NextResponse.json(
@@ -48,7 +71,9 @@ export const POST = async (request: Request) => {
       if (!welcomeNotification) {
         await NotificationModel.create({
           title: "Welcome to IELTS Prep! 🎉",
-          message: `Hello ${user.username || "there"}! We're thrilled to have you join our IELTS preparation community. Get started by exploring our practice tests, track your progress, and work towards achieving your target band score. Good luck on your IELTS journey!`,
+          message: `Hello ${
+            user.username || "there"
+          }! We're thrilled to have you join our IELTS preparation community. Get started by exploring our practice tests, track your progress, and work towards achieving your target band score. Good luck on your IELTS journey!`,
           type: "success",
           audience: "user",
           targetUserId: user._id,
