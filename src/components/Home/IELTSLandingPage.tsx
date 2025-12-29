@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   FaCheckCircle,
   FaHeadphones,
@@ -10,180 +10,209 @@ import {
   FaChartLine,
   FaUserFriends,
   FaGraduationCap,
-  FaChartBar
+  FaChartBar,
+  FaStar,
+  FaArrowRight,
+  FaAward,
+  FaClock,
+  FaUsers,
+  FaRocket,
+  FaLightbulb,
+  FaTrophy
 } from "react-icons/fa";
 import { TbTargetArrow } from "react-icons/tb";
 import { IoMdTimer } from "react-icons/io";
 import { GiProgression } from "react-icons/gi";
 
 export default function IELTSLandingPage(): any {
+  const [isVisible, setIsVisible] = useState<{ [key: string]: boolean }>({});
+  const sectionsRef = useRef<{ [key: string]: HTMLElement | null }>({});
+
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: "0px 0px -100px 0px",
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setIsVisible((prev) => ({
+            ...prev,
+            [entry.target.id]: true,
+          }));
+        }
+      });
+    }, observerOptions);
+
+    // Use setTimeout to ensure refs are set
+    const timeoutId = setTimeout(() => {
+      Object.values(sectionsRef.current).forEach((ref) => {
+        if (ref) observer.observe(ref);
+      });
+    }, 100);
+
+    return () => {
+      clearTimeout(timeoutId);
+      Object.values(sectionsRef.current).forEach((ref) => {
+        if (ref) observer.unobserve(ref);
+      });
+    };
+  }, []);
+
+  const fadeInUp = (id: string) =>
+    isVisible[id]
+      ? "opacity-100 translate-y-0 transition-all duration-700 ease-out"
+      : "opacity-0 translate-y-10 transition-all duration-700 ease-out";
+
+  const fadeIn = (id: string) =>
+    isVisible[id]
+      ? "opacity-100 transition-all duration-1000 ease-out"
+      : "opacity-0 transition-all duration-1000 ease-out";
+
+  const scaleIn = (id: string) =>
+    isVisible[id]
+      ? "opacity-100 scale-100 transition-all duration-700 ease-out"
+      : "opacity-0 scale-95 transition-all duration-700 ease-out";
+
   return (
-    <div className="min-h-screen bg-base-100 text-base-content">
-      {/* Top Navbar */}
-      {/* <header className="sticky top-0 z-50 backdrop-blur bg-white/90 border-b border-gray-200 shadow-sm">
-        <div className="container mx-auto px-4 lg:px-8">
-          <nav className="navbar py-3">
-            <div className="navbar-start">
-              <Link href="/" className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center">
-                  <span className="text-white font-semibold text-xl">I</span>
-                </div>
-                <div className="hidden sm:block">
-                  <span className="text-lg font-bold text-red-700">
-                    IELTS Pro
-                  </span>
-                  <div className="text-xs text-gray-500">
-                    Practice • Track • Improve
-                  </div>
-                </div>
-              </Link>
-            </div>
-
-            <div className="navbar-center hidden lg:flex">
-              <ul className="menu menu-horizontal px-1 gap-1">
-                <li>
-                  <Link
-                    href="#features"
-                    className="btn btn-ghost rounded-btn font-medium"
-                  >
-                    Features
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#how-it-works"
-                    className="btn btn-ghost rounded-btn font-medium"
-                  >
-                    How It Works
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#pricing"
-                    className="btn btn-ghost rounded-btn font-medium"
-                  >
-                    Pricing
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#testimonials"
-                    className="btn btn-ghost rounded-btn font-medium"
-                  >
-                    Testimonials
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div className="navbar-end flex items-center gap-3">
-              <Link
-                href="/auth/signin"
-                className="btn btn-sm btn-outline btn-neutral hidden sm:inline-flex"
-              >
-                Sign in
-              </Link>
-              <Link
-                href="/auth/signup"
-                className="btn btn-sm btn-primary bg-red-600 hover:bg-red-700 border-0"
-              >
-                Get Started
-              </Link>
-            </div>
-          </nav>
-        </div>
-      </header> */}
-
+    <div className="min-h-screen bg-gradient-to-b from-white via-gray-50 to-white text-base-content overflow-x-hidden">
       {/* Hero Section */}
-      <section className="pt-16 pb-24 px-4">
-        <div className="container mx-auto max-w-6xl">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="order-2 lg:order-1">
-              <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-5">
-                Prepare with <span className="text-red-600">Confidence</span> —
+      <section className="relative pt-20 pb-32 px-4 overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 -left-20 w-96 h-96 bg-red-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+          <div className="absolute top-40 -right-20 w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+          <div className="absolute -bottom-20 left-1/2 w-96 h-96 bg-purple-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+        </div>
+
+        <div className="container mx-auto max-w-7xl relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            {/* Left Content */}
+            <div
+              ref={(el) => { sectionsRef.current["hero-left"] = el; }}
+              id="hero-left"
+              className={`${fadeInUp("hero-left")}`}
+            >
+              <div className="flex flex-wrap gap-3 mb-6">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 rounded-full text-green-700 text-sm font-bold border-2 border-green-200">
+                  <FaCheckCircle className="text-green-600" />
+                  <span>100% Free Forever</span>
+                </div>
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 rounded-full text-red-700 text-sm font-medium">
+                  <FaAward className="text-red-600" />
+                  <span>50,000+ Students</span>
+                </div>
+              </div>
+
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight mb-6">
+                <span className="bg-gradient-to-r from-gray-900 via-red-700 to-gray-900 bg-clip-text text-transparent">
+                  Master IELTS with
+                </span>
                 <br />
-                Master the <span className="text-red-600">IELTS</span>
+                <span className="text-red-600">Confidence</span>
               </h1>
-              <p className="text-lg text-gray-600 mb-8 max-w-xl">
-                Realistic practice tests, detailed analytics, and expert-led
-                lessons to boost your Listening, Reading, Writing, and Speaking
-                scores. Designed for learners who want a clear, measurable path
-                to success.
+
+              <p className="text-xl md:text-2xl text-gray-600 mb-8 leading-relaxed max-w-xl">
+                Comprehensive practice tests, AI-powered feedback, and expert guidance to help you achieve your target band score. <span className="font-semibold text-green-600">Completely free</span> - no credit card required. Start your journey to IELTS success today.
               </p>
 
-              <div className="flex flex-wrap gap-4 mb-10">
+              <div className="flex flex-wrap gap-4 mb-12">
                 <Link
                   href="/test/reading"
-                  className="btn btn-primary btn-lg bg-red-600 hover:bg-red-700 border-0"
+                  className="group relative px-8 py-4 bg-gradient-to-r from-red-600 to-red-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 overflow-hidden"
                 >
-                  Start a Practice Test
+                  <span className="relative z-10 flex items-center gap-2">
+                    Start Free Practice Test
+                    <FaArrowRight className="group-hover:translate-x-1 transition-transform duration-300" />
+                  </span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-red-700 to-red-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </Link>
-                <Link href="#features" className="btn btn-outline btn-lg">
-                  See Features
+                <Link
+                  href="#features"
+                  className="px-8 py-4 bg-white border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:border-red-600 hover:text-red-600 transform hover:-translate-y-1 transition-all duration-300 shadow-md hover:shadow-lg"
+                >
+                  Explore Features
                 </Link>
               </div>
 
-              <div className="stats stats-vertical lg:stats-horizontal gap-2">
-                <div className="stat bg-base-200 rounded-lg p-4 text-center">
-                  <div className="stat-value text-red-600 text-xl md:text-2xl">
-                    98%
+              {/* Stats */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                {[
+                  { value: "98%", label: "Success Rate", icon: FaTrophy },
+                  { value: "50K+", label: "Students", icon: FaUsers },
+                  { value: "4.9/5", label: "Rating", icon: FaStar },
+                  { value: "24/7", label: "Available", icon: FaClock },
+                ].map((stat, idx) => (
+                  <div
+                    key={idx}
+                    className="bg-white/80 backdrop-blur-sm p-4 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100"
+                  >
+                    <stat.icon className="text-red-600 text-2xl mb-2" />
+                    <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
+                    <div className="text-sm text-gray-600">{stat.label}</div>
                   </div>
-                  <div className="stat-desc text-sm">Student satisfaction</div>
-                </div>
-
-                <div className="stat bg-base-200 rounded-lg p-4 text-center">
-                  <div className="stat-value text-xl md:text-2xl">3×</div>
-                  <div className="stat-desc text-sm">Faster improvement</div>
-                </div>
-
-                <div className="stat bg-base-200 rounded-lg p-4 text-center">
-                  <div className="stat-value text-xl md:text-2xl">
-                    4 Sections
-                  </div>
-                  <div className="stat-desc text-sm">
-                    Complete exam coverage
-                  </div>
-                </div>
-
-                <div className="stat bg-base-200 rounded-lg p-4 text-center">
-                  <div className="stat-value text-xl md:text-2xl">24/7</div>
-                  <div className="stat-desc text-sm">Practice anytime</div>
-                </div>
+                ))}
               </div>
             </div>
 
-            <div className="order-1 lg:order-2 flex justify-center">
+            {/* Right Visual */}
+            <div
+              ref={(el) => { sectionsRef.current["hero-right"] = el; }}
+              id="hero-right"
+              className={`${scaleIn("hero-right")} flex justify-center lg:justify-end`}
+            >
               <div className="relative">
-                <div className="bg-gradient-to-r from-red-600 to-red-800 rounded-2xl p-8 shadow-2xl max-w-md">
+                {/* Main Card */}
+                <div className="relative bg-gradient-to-br from-red-600 via-red-700 to-red-800 rounded-3xl p-8 shadow-2xl transform hover:scale-105 transition-transform duration-500">
                   <div className="grid grid-cols-2 gap-6">
                     {[
                       {
-                        icon: <FaHeadphones className="text-white text-3xl" />,
+                        icon: <FaHeadphones className="text-white text-4xl" />,
                         label: "Listening",
+                        color: "from-blue-500 to-blue-600",
                       },
                       {
-                        icon: <FaBookOpen className="text-white text-3xl" />,
+                        icon: <FaBookOpen className="text-white text-4xl" />,
                         label: "Reading",
+                        color: "from-green-500 to-green-600",
                       },
                       {
-                        icon: <FaPencilAlt className="text-white text-3xl" />,
+                        icon: <FaPencilAlt className="text-white text-4xl" />,
                         label: "Writing",
+                        color: "from-purple-500 to-purple-600",
                       },
                       {
-                        icon: <FaMicrophone className="text-white text-3xl" />,
+                        icon: <FaMicrophone className="text-white text-4xl" />,
                         label: "Speaking",
+                        color: "from-orange-500 to-orange-600",
                       },
                     ].map((item, index) => (
                       <div
                         key={index}
-                        className="bg-white/10 backdrop-blur-sm p-5 rounded-xl border border-white/20 flex flex-col items-center justify-center"
+                        className="group bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-110 cursor-pointer"
                       >
-                        {item.icon}
-                        <h3 className="text-white font-semibold mt-3">
-                          {item.label}
-                        </h3>
+                        <div className="flex flex-col items-center justify-center">
+                          <div className="mb-3 transform group-hover:rotate-6 transition-transform duration-300">
+                            {item.icon}
+                          </div>
+                          <h3 className="text-white font-bold text-lg">{item.label}</h3>
+                        </div>
                       </div>
                     ))}
+                  </div>
+                </div>
+
+                {/* Floating Badge */}
+                <div className="absolute -top-6 -right-6 bg-white rounded-2xl p-4 shadow-2xl animate-bounce-slow">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                      <FaCheckCircle className="text-green-600 text-2xl" />
+                    </div>
+                    <div>
+                      <div className="text-xs text-gray-500">Band Score</div>
+                      <div className="text-xl font-bold text-gray-900">8.5</div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -193,183 +222,97 @@ export default function IELTSLandingPage(): any {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-16 bg-base-200">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Comprehensive Preparation Features
+      <section
+        id="features"
+        ref={(el) => { sectionsRef.current["features"] = el; }}
+        className="py-24 px-4 bg-white"
+      >
+        <div className="container mx-auto max-w-7xl">
+          <div className={`text-center mb-20 ${fadeInUp("features")}`}>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 rounded-full text-red-700 text-sm font-medium mb-4">
+              <FaLightbulb className="text-red-600" />
+              <span>Why Choose Us</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
+              Everything You Need to
+              <br />
+              <span className="text-red-600">Excel in IELTS</span>
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Everything you need to achieve your target band score
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Our comprehensive platform combines cutting-edge technology with proven teaching methods to deliver exceptional results. <span className="font-semibold text-green-600">All features are completely free</span> - no hidden costs, no subscriptions.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               {
-                icon: <FaCheckCircle className="text-red-600 text-2xl" />,
+                icon: FaCheckCircle,
                 title: "Realistic Mock Tests",
-                desc: "Timed full-length tests that mirror the real exam",
+                desc: "Full-length practice tests that perfectly mirror the actual IELTS exam format and difficulty level. Unlimited access, completely free.",
+                color: "text-blue-600",
+                bgColor: "bg-blue-50",
               },
               {
-                icon: <FaChartLine className="text-red-600 text-2xl" />,
-                title: "Detailed Analytics",
-                desc: "Track strengths and weaknesses with visual reports",
+                icon: FaChartLine,
+                title: "Advanced Analytics",
+                desc: "Detailed performance insights with visual reports to track your progress and identify improvement areas.",
+                color: "text-green-600",
+                bgColor: "bg-green-50",
               },
               {
-                icon: <FaUserFriends className="text-red-600 text-2xl" />,
+                icon: FaUserFriends,
                 title: "Expert Feedback",
-                desc: "Personalized evaluations from certified instructors",
+                desc: "Personalized evaluations from certified IELTS instructors with actionable recommendations.",
+                color: "text-purple-600",
+                bgColor: "bg-purple-50",
               },
               {
-                icon: <FaGraduationCap className="text-red-600 text-2xl" />,
-                title: "Video Lessons",
-                desc: "Comprehensive tutorials for each test section",
+                icon: FaGraduationCap,
+                title: "Comprehensive Learning",
+                desc: "Video lessons, study materials, and practice exercises covering all four test sections.",
+                color: "text-orange-600",
+                bgColor: "bg-orange-50",
               },
-            ].map((feature, index) => (
+            ].map((feature, index) => {
+              const IconComponent = feature.icon;
+              return (
               <div
                 key={index}
-                className="card bg-base-100 shadow-md p-6 rounded-xl hover:shadow-lg transition-all duration-300"
+                className={`group ${fadeInUp(`feature-${index}`)}`}
+                ref={(el) => { sectionsRef.current[`feature-${index}`] = el; }}
+                id={`feature-${index}`}
               >
-                <div className="flex flex-col items-center text-center">
-                  <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mb-4">
-                    {feature.icon}
+                <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 h-full transform hover:-translate-y-2">
+                  <div className={`w-16 h-16 ${feature.bgColor} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                    <IconComponent className={`text-3xl ${feature.color}`} />
                   </div>
-                  <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-                  <p className="text-gray-600">{feature.desc}</p>
+                  <h3 className="text-xl font-bold mb-3 text-gray-900">{feature.title}</h3>
+                  <p className="text-gray-600 leading-relaxed">{feature.desc}</p>
                 </div>
               </div>
-            ))}
+            );
+            })}
           </div>
         </div>
       </section>
 
-      {/* How It Works */}
-      <section id="how-it-works" className="py-16 bg-base-100">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="flex justify-center">
-              <div className="relative max-w-md">
-                <div className="bg-gradient-to-br from-blue-50 to-base-100 rounded-2xl p-8 border border-gray-200 shadow-md">
-                  <div className="flex justify-center mb-6">
-                    <div className="bg-white border rounded-xl p-6 shadow-md w-full">
-                      <div className="flex justify-between items-center mb-4 gap-2">
-                        <div className="text-lg font-bold">Progress Report</div>
-                        <div className="badge badge-success">Band 7.5</div>
-                      </div>
-                      <div className="space-y-4">
-                        <div>
-                          <div className="flex justify-between mb-1">
-                            <span>Listening</span>
-                            <span>8.0</span>
-                          </div>
-                          <progress
-                            className="progress progress-success w-full"
-                            value="80"
-                            max="100"
-                          ></progress>
-                        </div>
-                        <div>
-                          <div className="flex justify-between mb-1">
-                            <span>Reading</span>
-                            <span>7.5</span>
-                          </div>
-                          <progress
-                            className="progress progress-primary w-full"
-                            value="75"
-                            max="100"
-                          ></progress>
-                        </div>
-                        <div>
-                          <div className="flex justify-between mb-1">
-                            <span>Writing</span>
-                            <span>6.5</span>
-                          </div>
-                          <progress
-                            className="progress progress-warning w-full"
-                            value="65"
-                            max="100"
-                          ></progress>
-                        </div>
-                        <div>
-                          <div className="flex justify-between mb-1">
-                            <span>Speaking</span>
-                            <span>7.0</span>
-                          </div>
-                          <progress
-                            className="progress progress-info w-full"
-                            value="70"
-                            max="100"
-                          ></progress>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-center text-gray-600 text-sm">
-                    Track your progress with detailed analytics
-                  </div>
-                </div>
-              </div>
+      {/* How It Works Section */}
+      <section
+        id="how-it-works"
+        ref={(el) => { sectionsRef.current["how-it-works"] = el; }}
+        className="py-24 px-4 bg-gradient-to-b from-gray-50 to-white"
+      >
+        <div className="container mx-auto max-w-7xl">
+          <div className={`text-center mb-20 ${fadeInUp("how-it-works")}`}>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 rounded-full text-red-700 text-sm font-medium mb-4">
+              <FaRocket className="text-red-600" />
+              <span>Simple Process</span>
             </div>
-
-            <div>
-              <h3 className="text-2xl font-bold mb-4">How it works</h3>
-              <p className="text-lg text-gray-600 mb-6">
-                A simple three-step path to improve your band score.
-              </p>
-
-              <ol className="space-y-6">
-                {[
-                  {
-                    step: "1",
-                    title: "Take a diagnostic test",
-                    desc: "Understand your baseline with a full-length mock exam",
-                  },
-                  {
-                    step: "2",
-                    title: "Study focused lessons",
-                    desc: "Targeted exercises and model answers to close gaps",
-                  },
-                  {
-                    step: "3",
-                    title: "Track progress & retake",
-                    desc: "Charts show improvements and guide your next steps",
-                  },
-                ].map((item, index) => (
-                  <li key={index} className="flex gap-5">
-                    <div className="flex flex-col items-center">
-                      <div className="w-10 h-10 rounded-full bg-red-600 text-white flex items-center justify-center text-lg font-bold">
-                        {item.step}
-                      </div>
-                      {index < 2 && (
-                        <div className="w-1 h-full bg-gray-200 mt-1"></div>
-                      )}
-                    </div>
-                    <div>
-                      <h4 className="text-lg font-semibold">{item.title}</h4>
-                      <p className="text-gray-600 mt-1">{item.desc}</p>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-
-              <div className="mt-8">
-                <Link href="#pricing" className="btn btn-outline btn-lg">
-                  View Plans
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* New How It Works - 4 Step Process */}
-      <section id="how-it-works-new" className="py-16 bg-base-200">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">How It Works - 4 Step Process</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Your complete journey to IELTS success in 4 simple steps
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
+              How It Works
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Your path to IELTS success in four simple steps
             </p>
           </div>
 
@@ -377,79 +320,94 @@ export default function IELTSLandingPage(): any {
             {[
               {
                 step: "1",
-                icon: <TbTargetArrow className="text-blue-600 text-2xl" />,
-                title: "Choose a Module",
-                desc: "Select from Listening, Reading, Writing, or Speaking. Each module mirrors the real IELTS exam format.",
-                color: "bg-blue-50"
+                icon: TbTargetArrow,
+                title: "Choose Your Module",
+                desc: "Select from Listening, Reading, Writing, or Speaking. Each module is designed to match the real IELTS exam format.",
+                color: "text-blue-600",
+                bgColor: "bg-blue-50",
               },
               {
                 step: "2",
-                icon: <IoMdTimer className="text-green-600 text-2xl" />,
-                title: "Take the Test",
-                desc: "Experience the real exam interface with built-in timers, progress tracking, and interactive questions.",
-                color: "bg-green-50"
+                icon: IoMdTimer,
+                title: "Take Practice Tests",
+                desc: "Experience the real exam environment with built-in timers, progress tracking, and interactive question types.",
+                color: "text-green-600",
+                bgColor: "bg-green-50",
               },
               {
                 step: "3",
-                icon: <FaChartBar className="text-purple-600 text-2xl" />,
-                title: "Track Your Progress",
-                desc: "Review your answers, listen to speaking recordings, and analyze detailed performance reports.",
-                color: "bg-purple-50"
+                icon: FaChartBar,
+                title: "Analyze Performance",
+                desc: "Get detailed feedback, review your answers, and understand your strengths and areas for improvement.",
+                color: "text-purple-600",
+                bgColor: "bg-purple-50",
               },
               {
                 step: "4",
-                icon: <GiProgression className="text-orange-600 text-2xl" />,
-                title: "Improve Over Time",
-                desc: "Self-evaluate your performance, identify weak areas, and watch your band score improve.",
-                color: "bg-orange-50"
+                icon: GiProgression,
+                title: "Improve & Succeed",
+                desc: "Use insights to focus your study, practice more, and watch your band score improve over time.",
+                color: "text-orange-600",
+                bgColor: "bg-orange-50",
               },
-            ].map((item, index) => (
-              <div key={index} className="relative group">
+            ].map((item, index) => {
+              const IconComponent = item.icon;
+              return (
+              <div
+                key={index}
+                className={`relative group ${fadeInUp(`step-${index}`)}`}
+                ref={(el) => { sectionsRef.current[`step-${index}`] = el; }}
+                id={`step-${index}`}
+              >
                 {/* Step Number Badge */}
-                <div className="absolute -top-3 -left-3 z-10">
-                  <div className="w-12 h-12 rounded-full bg-red-600 text-white flex items-center justify-center text-xl font-bold shadow-lg group-hover:scale-110 transition-transform duration-300">
+                <div className="absolute -top-4 -left-4 z-10">
+                  <div className="w-14 h-14 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-full flex items-center justify-center text-xl font-bold shadow-xl group-hover:scale-110 transition-transform duration-300">
                     {item.step}
                   </div>
                 </div>
-                
+
                 {/* Main Card */}
-                <div className="card bg-base-100 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 p-6 h-full">
+                <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 h-full transform hover:-translate-y-2">
                   <div className="flex flex-col items-center text-center">
-                    <div className={`w-16 h-16 rounded-full ${item.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                      {item.icon}
+                    <div className={`w-20 h-20 ${item.bgColor} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                      <IconComponent className={`text-3xl ${item.color}`} />
                     </div>
-                    <h4 className="text-xl font-bold mb-3 text-gray-800">{item.title}</h4>
-                    <p className="text-gray-600 mb-6 leading-relaxed">{item.desc}</p>
+                    <h4 className="text-xl font-bold mb-4 text-gray-900">{item.title}</h4>
+                    <p className="text-gray-600 leading-relaxed">{item.desc}</p>
                   </div>
                 </div>
-                
+
                 {/* Connecting Arrow */}
                 {index < 3 && (
-                  <div className="hidden lg:block absolute top-1/2 -right-4 w-8 h-0.5 bg-gradient-to-r from-black to-transparent">
-                    <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-0 h-0 border-l-4 border-l-black border-t-2 border-t-transparent border-b-2 border-b-transparent"></div>
+                  <div className="hidden lg:block absolute top-1/2 -right-4 z-0">
+                    <FaArrowRight className="text-gray-300 text-2xl" />
                   </div>
                 )}
               </div>
-            ))}
+            );
+            })}
           </div>
 
-          {/* Call to Action */}
-          <div className="text-center">
-            <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-2xl p-8 border border-red-100 max-w-4xl mx-auto">
-              <h4 className="text-2xl font-bold text-gray-800 mb-4">Ready to Start Your IELTS Journey?</h4>
-              <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-                Join thousands of successful test-takers who have improved their band scores with our comprehensive practice platform.
+          {/* CTA Box */}
+          <div className={`text-center ${fadeIn("cta-box")}`} ref={(el) => { sectionsRef.current["cta-box"] = el; }} id="cta-box">
+            <div className="bg-gradient-to-r from-red-50 via-orange-50 to-red-50 rounded-3xl p-12 border border-red-100 max-w-5xl mx-auto shadow-xl">
+              <h3 className="text-3xl font-bold text-gray-900 mb-4">
+                Ready to Start Your IELTS Journey?
+              </h3>
+              <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+                Join thousands of successful test-takers who have improved their band scores with our comprehensive practice platform. <span className="font-semibold text-green-600">Everything is free</span> - unlimited practice tests, analytics, and feedback.
               </p>
               <div className="flex flex-wrap justify-center gap-4">
                 <Link
                   href="/test/reading"
-                  className="btn btn-primary btn-lg bg-red-600 hover:bg-red-700 border-0"
+                  className="group px-8 py-4 bg-gradient-to-r from-red-600 to-red-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 flex items-center gap-2"
                 >
                   Start Free Test
+                  <FaArrowRight className="group-hover:translate-x-1 transition-transform duration-300" />
                 </Link>
                 <Link
                   href="/user/signup"
-                  className="btn btn-outline btn-lg"
+                  className="px-8 py-4 bg-white border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:border-red-600 hover:text-red-600 transform hover:-translate-y-1 transition-all duration-300 shadow-md hover:shadow-lg"
                 >
                   Create Account
                 </Link>
@@ -459,154 +417,82 @@ export default function IELTSLandingPage(): any {
         </div>
       </section>
 
-      {/* Pricing */}
-      <section id="pricing" className="py-16 bg-base-200">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Choose Your Plan
+      {/* Testimonials Section */}
+      <section
+        id="testimonials"
+        ref={(el) => { sectionsRef.current["testimonials"] = el; }}
+        className="py-24 px-4 bg-gradient-to-b from-gray-50 to-white"
+      >
+        <div className="container mx-auto max-w-7xl">
+          <div className={`text-center mb-20 ${fadeInUp("testimonials")}`}>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 rounded-full text-red-700 text-sm font-medium mb-4">
+              <FaStar className="text-red-600" />
+              <span>Success Stories</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
+              Trusted by Thousands of Students
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Flexible options to fit your study needs and budget
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {[
-              {
-                name: "Basic",
-                price: "Free",
-                period: "Forever",
-                features: [
-                  "2 practice tests",
-                  "Basic analytics",
-                  "Limited feedback",
-                  "Community support",
-                ],
-                highlight: false,
-              },
-              {
-                name: "Premium",
-                price: "$19",
-                period: "per month",
-                features: [
-                  "Unlimited tests",
-                  "Advanced analytics",
-                  "Expert feedback",
-                  "Video lessons",
-                  "Priority support",
-                ],
-                highlight: true,
-              },
-              {
-                name: "Intensive",
-                price: "$149",
-                period: "for 6 months",
-                features: [
-                  "All Premium features",
-                  "1-on-1 coaching",
-                  "Score guarantee",
-                  "Study planner",
-                  "24/7 support",
-                ],
-                highlight: false,
-              },
-            ].map((plan, index) => (
-              <div
-                key={index}
-                className={`card rounded-xl overflow-hidden ${
-                  plan.highlight
-                    ? "ring-2 ring-red-600 transform -translate-y-2 shadow-xl"
-                    : "shadow-md"
-                }`}
-              >
-                <div
-                  className={`p-6 ${
-                    plan.highlight ? "bg-red-600 text-white" : "bg-base-100"
-                  }`}
-                >
-                  <h3 className="text-2xl font-bold">{plan.name}</h3>
-                  <div className="mt-4">
-                    <span className="text-3xl font-bold">{plan.price}</span>
-                    <span className="text-gray-500 ml-2">{plan.period}</span>
-                  </div>
-                </div>
-                <div className="card-body bg-base-100">
-                  <ul className="space-y-3 mb-6">
-                    {plan.features.map((feature, fIndex) => (
-                      <li key={fIndex} className="flex items-start">
-                        <div className="text-green-500 mr-2 mt-1">✓</div>
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <button
-                    className={`btn btn-block ${
-                      plan.highlight
-                        ? "btn-primary bg-red-600 hover:bg-red-700 border-0"
-                        : "btn-outline"
-                    }`}
-                  >
-                    Get Started
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section id="testimonials" className="py-16 bg-base-100">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Success Stories
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Hear from students who achieved their dream scores
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Real stories from real students who achieved their dream band scores
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                name: "Sarah K.",
+                name: "Sarah Kim",
                 score: "7.5",
-                text: "The practice tests mirrored the actual exam perfectly. I improved my writing score by 1.5 bands!",
+                role: "University Student",
+                text: "The practice tests were incredibly realistic and helped me understand the exam format. I improved my writing score by 1.5 bands in just 3 months!",
+                avatar: "SK",
+                country: "South Korea",
               },
               {
-                name: "David M.",
+                name: "David Martinez",
                 score: "8.0",
-                text: "The personalized feedback on my speaking practice was invaluable. I finally overcame my hesitation.",
+                role: "Software Engineer",
+                text: "The AI-powered feedback on my speaking practice was game-changing. I finally overcame my hesitation and achieved my target score.",
+                avatar: "DM",
+                country: "Mexico",
               },
               {
-                name: "Priya T.",
+                name: "Priya Sharma",
                 score: "8.5",
-                text: "The vocabulary builder helped me tremendously in the reading section. Highly recommended!",
+                role: "Medical Professional",
+                text: "The comprehensive analytics helped me identify my weak areas. The vocabulary builder and reading strategies were particularly helpful.",
+                avatar: "PS",
+                country: "India",
               },
             ].map((testimonial, index) => (
               <div
                 key={index}
-                className="card bg-base-200 border border-gray-200"
+                className={`${fadeInUp(`testimonial-${index}`)}`}
+                ref={(el) => { sectionsRef.current[`testimonial-${index}`] = el; }}
+                id={`testimonial-${index}`}
               >
-                <div className="card-body">
-                  <div className="flex items-center mb-4">
-                    <div className="avatar placeholder">
-                      <div className="bg-red-100 text-red-800 rounded-full w-12">
-                        <span className="text-lg font-bold">
-                          {testimonial.name.charAt(0)}
-                        </span>
-                      </div>
+                <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 h-full transform hover:-translate-y-2">
+                  <div className="flex items-center gap-1 mb-4">
+                    {[...Array(5)].map((_, i) => (
+                      <FaStar key={i} className="text-yellow-400 text-lg" />
+                    ))}
+                  </div>
+                  <p className="text-gray-700 mb-6 leading-relaxed italic">
+                    "{testimonial.text}"
+                  </p>
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 bg-gradient-to-br from-red-500 to-red-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                      {testimonial.avatar}
                     </div>
-                    <div className="ml-4">
-                      <h4 className="font-bold text-lg">{testimonial.name}</h4>
-                      <div className="badge badge-primary bg-red-600 border-0 text-white">
-                        Band {testimonial.score}
+                    <div>
+                      <h4 className="font-bold text-lg text-gray-900">{testimonial.name}</h4>
+                      <div className="flex items-center gap-2 mb-1">
+                        <div className="badge badge-primary bg-red-600 border-0 text-white">
+                          Band {testimonial.score}
+                        </div>
                       </div>
+                      <p className="text-sm text-gray-500">{testimonial.role} • {testimonial.country}</p>
                     </div>
                   </div>
-                  <p className="text-gray-700 italic">"{testimonial.text}"</p>
                 </div>
               </div>
             ))}
@@ -614,133 +500,42 @@ export default function IELTSLandingPage(): any {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-16 bg-gradient-to-r from-red-600 to-red-800 text-white">
-        <div className="container mx-auto px-4 max-w-4xl text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+      {/* Final CTA Section */}
+      <section
+        ref={(el) => { sectionsRef.current["final-cta"] = el; }}
+        id="final-cta"
+        className="py-24 px-4 bg-gradient-to-r from-red-600 via-red-700 to-red-800 text-white relative overflow-hidden"
+      >
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-0 w-full h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')]"></div>
+        </div>
+
+        <div className="container mx-auto max-w-5xl text-center relative z-10">
+          <FaTrophy className="text-6xl mb-6 mx-auto opacity-90" />
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
             Ready to Achieve Your IELTS Goals?
           </h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Join thousands of successful test-takers and start your journey to a
-            higher band score today.
+          <p className="text-xl md:text-2xl mb-10 max-w-3xl mx-auto opacity-95">
+            Join thousands of successful test-takers and start your journey to a higher band score today. <span className="font-bold">100% free</span> - no credit card, no trial period, just free practice forever.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link
-              href="/auth/signup"
-              className="btn btn-primary btn-lg bg-white text-red-700 hover:bg-gray-100 border-0"
+              href="/user/signup"
+              className="group px-10 py-5 bg-white text-red-700 font-bold rounded-xl shadow-2xl hover:shadow-3xl transform hover:-translate-y-2 transition-all duration-300 flex items-center gap-2 text-lg"
             >
-              Start 7-Day Free Trial
+              Get Started Free
+              <FaArrowRight className="group-hover:translate-x-1 transition-transform duration-300" />
             </Link>
             <Link
               href="#features"
-              className="btn btn-outline btn-lg text-white hover:bg-white/10"
+              className="px-10 py-5 bg-transparent border-2 border-white text-white font-bold rounded-xl hover:bg-white/10 transform hover:-translate-y-2 transition-all duration-300 text-lg"
             >
               Learn More
             </Link>
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      {/* <footer className="bg-base-200 border-t border-gray-200 py-12">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center">
-                  <span className="text-white font-semibold text-lg">I</span>
-                </div>
-                <div>
-                  <div className="font-bold text-lg">IELTS Pro</div>
-                  <div className="text-sm text-gray-600">
-                    Practice • Track • Improve
-                  </div>
-                </div>
-              </div>
-              <p className="text-gray-600 mb-4">
-                Professional IELTS preparation for ambitious test-takers
-                worldwide.
-              </p>
-              <div className="flex gap-3">
-                {[1, 2, 3, 4].map((i) => (
-                  <button
-                    key={i}
-                    className="btn btn-circle btn-sm bg-base-300 border-0"
-                  >
-                    <span className="text-gray-600">f{i}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-bold mb-4">Resources</h3>
-              <ul className="space-y-2">
-                {[
-                  "Study Guides",
-                  "Practice Tests",
-                  "Vocabulary Lists",
-                  "Writing Samples",
-                  "Speaking Tips",
-                ].map((item, i) => (
-                  <li key={i}>
-                    <Link
-                      href="#"
-                      className="text-gray-600 hover:text-red-600 transition-colors"
-                    >
-                      {item}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-bold mb-4">Company</h3>
-              <ul className="space-y-2">
-                {[
-                  "About Us",
-                  "Careers",
-                  "Contact",
-                  "Blog",
-                  "Success Stories",
-                ].map((item, i) => (
-                  <li key={i}>
-                    <Link
-                      href="#"
-                      className="text-gray-600 hover:text-red-600 transition-colors"
-                    >
-                      {item}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-bold mb-4">Contact</h3>
-              <ul className="space-y-2 text-gray-600">
-                <li className="flex items-start">
-                  <span className="mr-2">📍</span>
-                  <span>123 Education Street, London, UK</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2">📞</span>
-                  <span>+44 20 7123 4567</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2">✉️</span>
-                  <span>support@ieltsprep.com</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-300 mt-12 pt-8 text-center text-gray-500">
-            <p>© {new Date().getFullYear()} IELTS Pro. All rights reserved.</p>
-          </div>
-        </div>
-      </footer> */}
     </div>
   );
 }

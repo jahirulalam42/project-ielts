@@ -128,16 +128,16 @@ const SignInForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-rose-100">
-      <div className="mx-auto flex min-h-screen max-w-6xl items-center px-4 py-12 sm:px-6 lg:px-12">
-        <div className="grid w-full overflow-hidden rounded-3xl border border-rose-100/70 bg-white/95 shadow-2xl backdrop-blur-md md:grid-cols-[1.1fr,1fr]">
-          <div className="relative hidden bg-[radial-gradient(circle_at_top_left,_#fb7185,_transparent_55%),_radial-gradient(circle_at_bottom_right,_#fda4af,_transparent_50%)] p-10 text-gray-900 md:flex md:flex-col md:justify-between">
-            <div className="space-y-6">
+    <div className="h-screen overflow-hidden bg-gradient-to-br from-rose-50 via-white to-rose-100">
+      <div className="mx-auto flex h-full max-w-6xl items-center px-4 py-4 sm:px-6 lg:px-12">
+        <div className="grid w-full max-h-[95vh] overflow-hidden rounded-3xl border border-rose-100/70 bg-white/95 shadow-2xl backdrop-blur-md md:grid-cols-[1.1fr,1fr]">
+          <div className="relative hidden bg-[radial-gradient(circle_at_top_left,_#fb7185,_transparent_55%),_radial-gradient(circle_at_bottom_right,_#fda4af,_transparent_50%)] p-8 text-gray-900 md:flex md:flex-col md:justify-between overflow-y-auto max-h-[95vh]">
+            <div className="space-y-4">
               <span className="inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-1 text-sm font-medium tracking-wide text-gray-900">
                 <span className="inline-flex h-2 w-2 rounded-full bg-emerald-400" />
                 IELTS Prep Workspace
               </span>
-              <h2 className="text-3xl font-semibold leading-snug text-gray-900">
+              <h2 className="text-2xl font-semibold leading-snug text-gray-900">
                 Plan, practise, and polish every module with one dedicated
                 dashboard.
               </h2>
@@ -147,13 +147,13 @@ const SignInForm = () => {
               </p>
             </div>
 
-            <div className="space-y-4">
-              <div className="rounded-2xl bg-white/90 p-5 shadow-lg backdrop-blur">
+            <div className="space-y-3">
+              <div className="rounded-2xl bg-white/90 p-4 shadow-lg backdrop-blur">
                 <p className="text-sm leading-relaxed text-gray-700">
                   "The mock tests and analytics lifted my confidence to attempt
                   IELTS Academic. I secured an overall band 7.5."
                 </p>
-                <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-gray-900">
+                <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-gray-900">
                   — Priya Sharma · Ahmedabad
                 </p>
               </div>
@@ -163,29 +163,29 @@ const SignInForm = () => {
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-3 text-[11px] font-medium text-gray-700">
-              <span className="rounded-full border border-gray-500/40 px-4 py-1">
+            <div className="flex flex-wrap gap-2 text-[11px] font-medium text-gray-700">
+              <span className="rounded-full border border-gray-500/40 px-3 py-1">
                 Timed mock tests
               </span>
-              <span className="rounded-full border border-gray-500/40 px-4 py-1">
+              <span className="rounded-full border border-gray-500/40 px-3 py-1">
                 Speaking evaluations
               </span>
-              <span className="rounded-full border border-gray-500/40 px-4 py-1">
+              <span className="rounded-full border border-gray-500/40 px-3 py-1">
                 Smart review notes
               </span>
             </div>
           </div>
 
-          <div className="flex flex-col justify-center bg-white px-6 py-10 sm:px-10 md:px-12 lg:px-14">
-            <div className="mb-9">
+          <div className="flex flex-col justify-center bg-white px-6 py-6 sm:px-10 md:px-12 lg:px-14 overflow-y-auto max-h-[95vh]">
+            <div className="mb-6">
               <div className="flex items-center gap-3 text-sm text-rose-500">
                 <span className="inline-flex h-2 w-2 rounded-full bg-rose-500" />
                 Welcome back
               </div>
-              <h1 className="mt-4 text-3xl font-semibold text-gray-900 md:text-4xl">
+              <h1 className="mt-3 text-2xl font-semibold text-gray-900 md:text-3xl">
                 Sign in to continue your prep
               </h1>
-              <p className="mt-4 text-sm leading-relaxed text-gray-500">
+              <p className="mt-2 text-sm leading-relaxed text-gray-500">
                 Access your personalised study plan, analyse past tests, and
                 join live speaking rooms with fellow aspirants.
               </p>
@@ -197,7 +197,7 @@ const SignInForm = () => {
               </div>
             )}
 
-            <form onSubmit={onSubmit} className="space-y-6">
+            <form onSubmit={onSubmit} className="space-y-4">
               <div className="form-control">
                 <label className="label">
                   <span className="label-text font-medium text-gray-700">
@@ -254,13 +254,13 @@ const SignInForm = () => {
               </button>
             </form>
 
-            <div className="mt-8 space-y-4">
+            <div className="mt-6 space-y-3">
               <div className="flex items-center gap-4 text-xs uppercase tracking-widest text-gray-400">
                 <span className="flex-1 border-b border-dashed border-gray-200" />
                 Or continue with
                 <span className="flex-1 border-b border-dashed border-gray-200" />
               </div>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-3 gap-2">
                 <button
                   type="button"
                   onClick={() => handleOAuthSignIn("google")}
@@ -306,7 +306,7 @@ const SignInForm = () => {
               </div>
             </div>
 
-            <p className="mt-10 text-center text-sm text-gray-500">
+            <p className="mt-6 text-center text-sm text-gray-500">
               Don't have an account?{" "}
               <Link
                 href="/user/signup"
