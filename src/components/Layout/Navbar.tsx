@@ -42,6 +42,8 @@ const Navbar: React.FC = () => {
         { href: "/writing-samples?task=2", label: "Task 2" },
       ],
     },
+    { href: "/about", label: "About" },
+    { href: "/contact", label: "Contact" },
   ];
 
   useEffect(() => {
