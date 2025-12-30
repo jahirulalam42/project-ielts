@@ -18,7 +18,11 @@ import {
   FaUsers,
   FaRocket,
   FaLightbulb,
-  FaTrophy
+  FaTrophy,
+  FaDesktop,
+  FaRedo,
+  FaGlobeAmericas,
+  FaUserCheck
 } from "react-icons/fa";
 import { TbTargetArrow } from "react-icons/tb";
 import { IoMdTimer } from "react-icons/io";
@@ -97,7 +101,7 @@ export default function IELTSLandingPage(): any {
               <div className="flex flex-wrap gap-3 mb-6">
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 rounded-full text-green-700 text-sm font-bold border-2 border-green-200">
                   <FaCheckCircle className="text-green-600" />
-                  <span>100% Free Forever</span>
+                  <span>100% Free</span>
                 </div>
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 rounded-full text-red-700 text-sm font-medium">
                   <FaAward className="text-red-600" />
@@ -296,6 +300,79 @@ export default function IELTSLandingPage(): any {
         </div>
       </section>
 
+      {/* Who Is This For Section */}
+      <section
+        id="who-is-this-for"
+        ref={(el) => { sectionsRef.current["who-is-this-for"] = el; }}
+        className="py-24 px-4 bg-gradient-to-b from-white to-gray-50"
+      >
+        <div className="container mx-auto max-w-7xl">
+          <div className={`text-center mb-20 ${fadeInUp("who-is-this-for")}`}>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 rounded-full text-red-700 text-sm font-medium mb-4">
+              <FaUserCheck className="text-red-600" />
+              <span>Perfect For You</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
+              Who Is BandGrowth For?
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Whether you're taking IELTS for the first time or aiming to improve your score, we're here to help you succeed.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                icon: FaGraduationCap,
+                title: "First-time IELTS Takers",
+                description: "New to IELTS? Start your journey with confidence. Our platform guides you through every step.",
+                color: "text-blue-600",
+                bgColor: "bg-blue-50",
+              },
+              {
+                icon: FaRedo,
+                title: "Retakers",
+                description: "Aiming for a higher band score? Focus on your weak areas with targeted practice and detailed feedback.",
+                color: "text-green-600",
+                bgColor: "bg-green-50",
+              },
+              {
+                icon: FaDesktop,
+                title: "Computer-Based Candidates",
+                description: "Preparing for computer-delivered IELTS? Practice in the exact format you'll face on test day.",
+                color: "text-purple-600",
+                bgColor: "bg-purple-50",
+              },
+              {
+                icon: FaGlobeAmericas,
+                title: "Study, Work & Migration",
+                description: "Whether you're pursuing education, career opportunities, or immigration, achieve your target band score.",
+                color: "text-orange-600",
+                bgColor: "bg-orange-50",
+              },
+            ].map((item, index) => {
+              const IconComponent = item.icon;
+              return (
+                <div
+                  key={index}
+                  className={`${fadeInUp(`who-for-${index}`)}`}
+                  ref={(el) => { sectionsRef.current[`who-for-${index}`] = el; }}
+                  id={`who-for-${index}`}
+                >
+                  <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 h-full transform hover:-translate-y-2 text-center">
+                    <div className={`w-16 h-16 ${item.bgColor} rounded-2xl flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform duration-300`}>
+                      <IconComponent className={`text-3xl ${item.color}`} />
+                    </div>
+                    <h3 className="text-lg font-bold mb-3 text-gray-900">{item.title}</h3>
+                    <p className="text-gray-600 leading-relaxed text-sm">{item.description}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
       {/* How It Works Section */}
       <section
         id="how-it-works"
@@ -417,6 +494,183 @@ export default function IELTSLandingPage(): any {
         </div>
       </section>
 
+      {/* Why BandGrowth Section */}
+      <section
+        id="why-bandgrowth"
+        ref={(el) => { sectionsRef.current["why-bandgrowth"] = el; }}
+        className="py-24 px-4 bg-white"
+      >
+        <div className="container mx-auto max-w-7xl">
+          <div className={`text-center mb-20 ${fadeInUp("why-bandgrowth")}`}>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 rounded-full text-red-700 text-sm font-medium mb-4">
+              <FaTrophy className="text-red-600" />
+              <span>Trust & Value</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
+              Why Choose BandGrowth?
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              We're not just another practice platform. We're your partner in achieving IELTS success.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {[
+              {
+                icon: FaDesktop,
+                title: "Designed for Computer-Based IELTS",
+                description: "Our platform mirrors the exact computer-delivered IELTS format. Practice in the same interface you'll see on test day.",
+                color: "text-blue-600",
+                bgColor: "bg-blue-50",
+              },
+              {
+                icon: FaChartLine,
+                title: "Focus on Band Improvement",
+                description: "We don't just test you—we help you improve. Get actionable insights and targeted practice to boost your band score.",
+                color: "text-green-600",
+                bgColor: "bg-green-50",
+              },
+              {
+                icon: FaChartBar,
+                title: "Clear Analytics, Not Confusion",
+                description: "Understand your performance with intuitive visual reports. No complex scoring systems—just clear, actionable insights.",
+                color: "text-purple-600",
+                bgColor: "bg-purple-50",
+              },
+              {
+                icon: FaClock,
+                title: "Practice Anytime, Anywhere",
+                description: "Access full practice tests, writing samples, and analytics 24/7. Study at your own pace, on any device.",
+                color: "text-orange-600",
+                bgColor: "bg-orange-50",
+              },
+            ].map((item, index) => {
+              const IconComponent = item.icon;
+              return (
+                <div
+                  key={index}
+                  className={`${fadeInUp(`why-${index}`)}`}
+                  ref={(el) => { sectionsRef.current[`why-${index}`] = el; }}
+                  id={`why-${index}`}
+                >
+                  <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 h-full transform hover:-translate-y-2">
+                    <div className="flex items-start gap-4">
+                      <div className={`w-14 h-14 ${item.bgColor} rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300`}>
+                        <IconComponent className={`text-2xl ${item.color}`} />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-bold mb-3 text-gray-900">{item.title}</h3>
+                        <p className="text-gray-600 leading-relaxed">{item.description}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Writing Samples Section */}
+      <section
+        id="writing-samples"
+        ref={(el) => { sectionsRef.current["writing-samples"] = el; }}
+        className="py-24 px-4 bg-white"
+      >
+        <div className="container mx-auto max-w-7xl">
+          <div className={`text-center mb-20 ${fadeInUp("writing-samples")}`}>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 rounded-full text-red-700 text-sm font-medium mb-4">
+              <FaBookOpen className="text-red-600" />
+              <span>Learn from Examples</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
+              Explore Writing Samples
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Study model answers for Task 1 and Task 2 questions. Learn from expertly crafted responses that demonstrate high band score techniques.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {[
+              {
+                task: "Task 1",
+                title: "Academic Writing Task 1",
+                description: "View sample answers for charts, graphs, maps, and process diagrams. Learn how to describe data effectively and achieve Band 7+ scores.",
+                questionTypes: ["Line Graph", "Bar Chart", "Pie Chart", "Table", "Map", "Process"],
+                link: "/writing-samples?task=1",
+                bgColor: "bg-blue-50",
+              },
+              {
+                task: "Task 2",
+                title: "Academic Writing Task 2",
+                description: "Study model essays for opinion, discussion, and problem-solution questions. Understand structure, vocabulary, and argumentation techniques.",
+                questionTypes: ["Agree/Disagree", "Discussion", "Problem/Solution", "Advantages/Disadvantages"],
+                link: "/writing-samples?task=2",
+                bgColor: "bg-purple-50",
+              },
+            ].map((item, index) => (
+              <div
+                key={index}
+                className={`${fadeInUp(`writing-sample-${index}`)}`}
+                ref={(el) => { sectionsRef.current[`writing-sample-${index}`] = el; }}
+                id={`writing-sample-${index}`}
+              >
+                <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-gray-100 h-full transform hover:-translate-y-2">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className={`w-16 h-16 ${item.bgColor} rounded-2xl flex items-center justify-center`}>
+                      <FaPencilAlt className={`text-3xl ${index === 0 ? 'text-blue-600' : 'text-purple-600'}`} />
+                    </div>
+                    <div>
+                      <div className="badge badge-primary bg-red-600 border-0 text-white mb-2">
+                        {item.task}
+                      </div>
+                      <h3 className="text-2xl font-bold text-gray-900">{item.title}</h3>
+                    </div>
+                  </div>
+                  
+                  <p className="text-gray-600 mb-6 leading-relaxed">
+                    {item.description}
+                  </p>
+
+                  <div className="mb-6">
+                    <p className="text-sm font-semibold text-gray-700 mb-3">Question Types:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {item.questionTypes.map((type, idx) => (
+                        <span
+                          key={idx}
+                          className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium"
+                        >
+                          {type}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <Link
+                    href={item.link}
+                    className="group inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300"
+                  >
+                    View {item.task} Samples
+                    <FaArrowRight className="group-hover:translate-x-1 transition-transform duration-300" />
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className={`text-center mt-12 ${fadeIn("writing-samples-cta")}`} ref={(el) => { sectionsRef.current["writing-samples-cta"] = el; }} id="writing-samples-cta">
+            <Link
+              href="/writing-samples"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-white border-2 border-red-600 text-red-600 font-semibold rounded-xl hover:bg-red-50 transform hover:-translate-y-1 transition-all duration-300 shadow-md hover:shadow-lg"
+            >
+              Browse All Writing Samples
+              <FaArrowRight />
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Testimonials Section */}
       <section
         id="testimonials"
@@ -517,7 +771,7 @@ export default function IELTSLandingPage(): any {
             Ready to Achieve Your IELTS Goals?
           </h2>
           <p className="text-xl md:text-2xl mb-10 max-w-3xl mx-auto opacity-95">
-            Join thousands of successful test-takers and start your journey to a higher band score today. <span className="font-bold">100% free</span> - no credit card, no trial period, just free practice forever.
+            Join thousands of successful test-takers and start your journey to a higher band score today. <span className="font-bold">100% free</span> - no credit card, no trial period, just free practice.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link
