@@ -1,4 +1,5 @@
 import React from "react";
+import FormattedInstructions from "./FormattedInstructions";
 import Image from "next/image";
 
 interface MapQuestion {
@@ -37,12 +38,12 @@ const Map: React.FC<MapProps> = ({
 }) => {
   return (
     <div className="space-y-4 mb-6">
-      <h3 className="text-xl font-semibold mb-2">{question?.title}</h3>
+      {/* <h3 className="text-xl font-semibold mb-2">{question?.title}</h3> */}
       
       {question?.instructions && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
           <p className="text-blue-800 font-medium mb-1">Instructions:</p>
-          <p className="text-blue-700 italic">{question.instructions}</p>
+        <FormattedInstructions instructions={question.instructions} className="mb-2" />
         </div>
       )}
       
@@ -75,7 +76,7 @@ const Map: React.FC<MapProps> = ({
             {question?.questions.map((q) => (
               <tr key={q?.question_number} className="border-b border-black">
                 <td className="pr-2 py-2 text-black whitespace-nowrap font-medium">
-                  {q?.question_number}. {q.question}
+                  <span className="font-bold">{q?.question_number}.</span> {q.question}
                 </td>
                 {question?.labels.map((label) => (
                   <td key={label} className="text-center">

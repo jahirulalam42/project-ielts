@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import TrueFalse from "../Common/TrueFalse";
 import FillInTheBlanks from "../Common/FillInTheBlanks";
 import MatchingHeadings from "../Common/MatchingHeadings";
@@ -24,8 +24,61 @@ const ReadingTest = ({ test }: any) => {
   const [isTimeUp, setIsTimeUp] = useState(false);
   const [passageHighlights, setPassageHighlights] = useState<any[]>([]);
   const { data: session }: any = useSession();
+  const [hasStarted, setHasStarted] = useState(false);
+  const [leftPanelWidth, setLeftPanelWidth] = useState<number>(50); // Percentage
+  const [isResizing, setIsResizing] = useState<boolean>(false);
+
+  // Refs for scrollable containers
+  const passageContainerRef = useRef<HTMLDivElement>(null);
+  const questionsContainerRef = useRef<HTMLDivElement>(null);
 
   const currentPart = test.parts[currentPartIndex];
+
+  // Resize functionality
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsResizing(true);
+    e.preventDefault();
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!isResizing) return;
+
+    const container = document.querySelector(".resize-container");
+    if (!container) return;
+
+    const rect = container.getBoundingClientRect();
+    const newLeftWidth = ((e.clientX - rect.left) / rect.width) * 100;
+
+    // Constrain between 20% and 80%
+    const constrainedWidth = Math.min(Math.max(newLeftWidth, 20), 80);
+    setLeftPanelWidth(constrainedWidth);
+  };
+
+  const handleMouseUp = () => {
+    setIsResizing(false);
+  };
+
+  // Add event listeners for mouse move and up
+  useEffect(() => {
+    if (isResizing) {
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
+      document.body.style.cursor = "col-resize";
+      document.body.style.userSelect = "none";
+    } else {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    }
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    };
+  }, [isResizing]);
 
   // Function to get all question numbers for each part
   const getPartQuestionNumbers = () => {
@@ -370,6 +423,401 @@ const ReadingTest = ({ test }: any) => {
     setCurrentQuestionNumber(questionId);
   };
 
+  const handleQuestionNavigation = (
+    questionNumber: number,
+    partIndex: number
+  ) => {
+    console.log(
+      `Navigating to question ${questionNumber} in part ${partIndex}`
+    );
+
+    // First, change to the correct part
+    setCurrentPartIndex(partIndex);
+    // Then set the current question number
+    setCurrentQuestionNumber(questionNumber);
+
+    // Wait for the part to change and then scroll to the specific question
+    setTimeout(() => {
+      // Find the questions container (the RIGHT side scrollable area)
+      // Look specifically for the right side container that contains questions
+      let questionsContainer: any = null;
+
+      // First, try to find the right side container by looking for the questions section
+      const questionsSection = document.querySelector(".space-y-6");
+      if (questionsSection) {
+        questionsContainer = questionsSection.parentElement;
+        console.log("Found questions container via parent of .space-y-6");
+      }
+
+      // If not found, look for the RIGHT side container specifically
+      if (!questionsContainer) {
+        // Look for the container that has the questions content (right side)
+        const allContainers = document.querySelectorAll(
+          ".lg\\:h-\\[80vh\\].lg\\:overflow-y-auto"
+        );
+        for (let container of allContainers) {
+          // Check if this container has questions (look for question elements)
+          if (
+            container.querySelector('[id^="question-"]') ||
+            container.querySelector(".space-y-6") ||
+            container.textContent?.includes("Question") ||
+            container.textContent?.includes("instructions")
+          ) {
+            questionsContainer = container;
+            console.log(
+              "Found RIGHT side questions container by content check"
+            );
+            break;
+          }
+        }
+      }
+
+      // If still not found, try alternative approach
+      if (!questionsContainer) {
+        // Look for the container that has border-l (right side has border-l)
+        questionsContainer = document.querySelector(
+          ".lg\\:h-\\[80vh\\].lg\\:overflow-y-auto.border-l"
+        );
+        if (questionsContainer) {
+          console.log("Found questions container via border-l class");
+        }
+      }
+
+      if (!questionsContainer) {
+        console.log("No questions container found");
+        return;
+      }
+
+      console.log("Using questions container:", questionsContainer);
+
+      // Find the question element - first try direct ID, then look in groups
+      let questionElement: any = document.getElementById(
+        `question-${questionNumber}`
+      );
+      console.log(`Looking for question-${questionNumber}:`, questionElement);
+
+      // If not found by direct ID, look for the container that contains this question number
+      if (!questionElement) {
+        console.log(
+          "Direct ID not found, looking for container with this question number"
+        );
+        const allQuestionContainers = questionsContainer.querySelectorAll(
+          "[data-question-numbers]"
+        );
+        for (let container of allQuestionContainers) {
+          const questionNumbers =
+            container.getAttribute("data-question-numbers")?.split(",") || [];
+          if (questionNumbers.includes(questionNumber.toString())) {
+            questionElement = container as HTMLElement;
+            console.log(
+              "Found question container with question number:",
+              questionNumber
+            );
+            break;
+          }
+        }
+      }
+
+      if (questionElement) {
+        console.log("Found question element, scrolling to it");
+        // Calculate the position of the question within the container
+        const containerRect = questionsContainer.getBoundingClientRect();
+        const questionRect = questionElement.getBoundingClientRect();
+        const relativeTop = questionRect.top - containerRect.top;
+
+        // Defer scrolling until we locate the exact target (avoid double scroll jitter)
+
+        // Try to find the specific question within the group and scroll to it
+        setTimeout(() => {
+          console.log(
+            "Looking for specific question",
+            questionNumber,
+            "within container:",
+            questionElement
+          );
+
+          // Check if this is a grouped question (multiple question numbers in one container)
+          const questionNumbers =
+            questionElement.getAttribute("data-question-numbers")?.split(",") ||
+            [];
+          const questionIndex = questionNumbers.indexOf(
+            questionNumber.toString()
+          );
+
+          console.log("Question numbers in container:", questionNumbers);
+          console.log(
+            "Target question index:",
+            questionIndex,
+            "for question",
+            questionNumber
+          );
+
+          if (questionNumbers.length > 1 && questionIndex >= 0) {
+            console.log(
+              "This is a grouped question, trying to find specific question within group"
+            );
+
+            // Calculate the position of the specific question within the group
+            const specificQuestionIndex = questionNumbers.indexOf(
+              questionNumber.toString()
+            );
+            console.log(
+              "Question index within group:",
+              specificQuestionIndex,
+              "for question",
+              questionNumber
+            );
+
+            if (specificQuestionIndex >= 0) {
+              console.log(
+                "Looking for specific question within grouped container"
+              );
+
+              // Try a different approach: look for elements with specific question numbers
+              const allElements = questionElement.querySelectorAll("*");
+              let targetElement = null;
+
+              // Look for elements that contain the specific question number
+              for (let element of allElements) {
+                const text = element.textContent || "";
+                // Look for the exact question number pattern
+                const questionPattern = new RegExp(
+                  `Question\\s+${questionNumber}\\b`
+                );
+                if (questionPattern.test(text)) {
+                  // Check if this element is likely to be the question container
+                  const hasInputs = element.querySelector(
+                    "input, textarea, select, button"
+                  );
+                  const hasQuestionText =
+                    text.includes("Question") &&
+                    text.includes(questionNumber.toString());
+
+                  console.log(
+                    "Found element with question",
+                    questionNumber,
+                    ":",
+                    {
+                      hasInputs: !!hasInputs,
+                      hasQuestionText,
+                      textLength: text.length,
+                      element: element.tagName,
+                    }
+                  );
+
+                  if (hasInputs && hasQuestionText) {
+                    targetElement = element;
+                    console.log("Found specific question element with inputs");
+                    break;
+                  }
+                }
+              }
+
+              if (targetElement) {
+                console.log(
+                  "Scrolling to specific question element within container"
+                );
+                const containerRect2 =
+                  questionsContainer.getBoundingClientRect();
+                const targetRect = (
+                  targetElement as HTMLElement
+                ).getBoundingClientRect();
+                const targetRelativeTop = targetRect.top - containerRect2.top;
+                questionsContainer.scrollTo({
+                  top: questionsContainer.scrollTop + targetRelativeTop - 50,
+                  behavior: "smooth",
+                });
+
+                // For MCQ questions, don't focus any input to avoid auto-selection
+                const hasRadioButtons = targetElement.querySelector(
+                  'input[type="radio"]'
+                );
+                const hasCheckboxes = targetElement.querySelector(
+                  'input[type="checkbox"]'
+                );
+
+                if (hasRadioButtons || hasCheckboxes) {
+                  console.log(
+                    "MCQ question detected, not focusing any input to avoid auto-selection"
+                  );
+                  return;
+                }
+
+                // For other question types, focus the first input
+                const allInputs = targetElement.querySelectorAll(
+                  "input, textarea, select, button"
+                );
+                if (allInputs.length > 0) {
+                  const targetInput = allInputs[0];
+                  console.log(
+                    "Focusing input for question",
+                    questionNumber,
+                    ":",
+                    targetInput
+                  );
+                  (targetInput as HTMLElement).focus();
+
+                  // For text inputs, also select the text if it exists
+                  if (
+                    targetInput.tagName === "INPUT" &&
+                    (targetInput as HTMLInputElement).type === "text"
+                  ) {
+                    (targetInput as HTMLInputElement).select();
+                  }
+                }
+                return;
+              } else {
+                console.log(
+                  "Specific question element not found, using fallback approach"
+                );
+                // Fallback: compute a proportional offset within the group and do a single container scroll
+                const containerRect3 =
+                  questionsContainer.getBoundingClientRect();
+                const groupRect = (
+                  questionElement as HTMLElement
+                ).getBoundingClientRect();
+                const groupRelativeTop = groupRect.top - containerRect3.top;
+                const groupHeight = (questionElement as HTMLElement)
+                  .offsetHeight;
+                const ratio =
+                  specificQuestionIndex / Math.max(1, questionNumbers.length);
+                const targetOffset = groupRelativeTop + ratio * groupHeight;
+                questionsContainer.scrollTo({
+                  top: questionsContainer.scrollTop + targetOffset - 50,
+                  behavior: "smooth",
+                });
+                return;
+              }
+            }
+          }
+
+          // Fallback: focus the first input in the container
+          const allInputs = questionElement.querySelectorAll(
+            "input, textarea, select, button"
+          );
+          console.log(
+            "All inputs found for question",
+            questionNumber,
+            ":",
+            allInputs.length
+          );
+
+          // For MCQ questions, don't focus any input to avoid auto-selection
+          const hasRadioButtons = questionElement.querySelector(
+            'input[type="radio"]'
+          );
+          const hasCheckboxes = questionElement.querySelector(
+            'input[type="checkbox"]'
+          );
+
+          if (hasRadioButtons || hasCheckboxes) {
+            console.log(
+              "MCQ question detected, not focusing any input to avoid auto-selection"
+            );
+            return;
+          }
+
+          // For other question types, focus the first input
+          if (allInputs.length > 0) {
+            const targetInput = allInputs[0];
+            console.log(
+              "Focusing input for question",
+              questionNumber,
+              ":",
+              targetInput
+            );
+            (targetInput as HTMLElement).focus();
+
+            // For text inputs, also select the text if it exists
+            if (
+              targetInput.tagName === "INPUT" &&
+              (targetInput as HTMLInputElement).type === "text"
+            ) {
+              (targetInput as HTMLInputElement).select();
+            }
+          } else {
+            console.log("No input found for question", questionNumber);
+          }
+        }, 100);
+      } else {
+        console.log(
+          "Question element not found, trying to find by question number"
+        );
+        // Alternative: find by looking for the question number in the text
+        const allQuestionDivs = questionsContainer.querySelectorAll(
+          'div[id^="question-"]'
+        );
+        console.log("All question divs found:", allQuestionDivs);
+
+        // Look for the question by checking the content
+        let found = false;
+        for (let div of allQuestionDivs) {
+          const questionText = div.textContent || "";
+          if (
+            questionText.includes(`Question ${questionNumber}`) ||
+            questionText.includes(`${questionNumber}.`) ||
+            div.id === `question-${questionNumber}`
+          ) {
+            console.log("Found question by content, scrolling to it");
+            div.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+
+            // Focus the appropriate input element in the question
+            setTimeout(() => {
+              // Try different input types in order of preference
+              let inputElement =
+                div.querySelector('input[type="text"]') ||
+                div.querySelector('input[type="number"]') ||
+                div.querySelector("textarea") ||
+                div.querySelector('input[type="radio"]') ||
+                div.querySelector('input[type="checkbox"]') ||
+                div.querySelector("select") ||
+                div.querySelector("input") ||
+                div.querySelector("button");
+
+              if (inputElement) {
+                console.log("Focusing input element:", inputElement);
+                (inputElement as HTMLElement).focus();
+
+                // For text inputs, also select the text if it exists
+                if (
+                  inputElement.tagName === "INPUT" &&
+                  (inputElement as HTMLInputElement).type === "text"
+                ) {
+                  (inputElement as HTMLInputElement).select();
+                }
+
+                // For radio buttons and checkboxes, trigger click
+                if (
+                  (inputElement as HTMLInputElement).type === "radio" ||
+                  (inputElement as HTMLInputElement).type === "checkbox"
+                ) {
+                  (inputElement as HTMLElement).click();
+                }
+              }
+            }, 100);
+
+            found = true;
+            break;
+          }
+        }
+
+        // If still not found, scroll to top of questions container
+        if (!found) {
+          console.log(
+            "Question not found, scrolling to top of questions container"
+          );
+          questionsContainer.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
+        }
+      }
+    }, 500); // Increased delay to ensure part has fully loaded
+  };
+
   const handleAnswerChange = (
     questionId: number,
     value: string,
@@ -471,6 +919,14 @@ const ReadingTest = ({ test }: any) => {
       if (nextPartQuestions && nextPartQuestions.length > 0) {
         setCurrentQuestionNumber(nextPartQuestions[0]);
       }
+
+      // Scroll both containers to top
+      if (passageContainerRef.current) {
+        passageContainerRef.current.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      if (questionsContainerRef.current) {
+        questionsContainerRef.current.scrollTo({ top: 0, behavior: "smooth" });
+      }
     }
   };
 
@@ -482,13 +938,30 @@ const ReadingTest = ({ test }: any) => {
       if (prevPartQuestions && prevPartQuestions.length > 0) {
         setCurrentQuestionNumber(prevPartQuestions[0]);
       }
+
+      // Scroll both containers to top
+      if (passageContainerRef.current) {
+        passageContainerRef.current.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      if (questionsContainerRef.current) {
+        questionsContainerRef.current.scrollTo({ top: 0, behavior: "smooth" });
+      }
     }
   };
 
-  // Scroll to top whenever the part changes
+  // Scroll to top whenever the part changes (backup/fallback)
   useEffect(() => {
     if (typeof window !== "undefined") {
+      // Scroll main page to top
       window.scrollTo({ top: 0, behavior: "smooth" });
+
+      // Scroll both containers to top using refs
+      if (passageContainerRef.current) {
+        passageContainerRef.current.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      if (questionsContainerRef.current) {
+        questionsContainerRef.current.scrollTo({ top: 0, behavior: "smooth" });
+      }
     }
   }, [currentPartIndex]);
 
@@ -538,6 +1011,7 @@ const ReadingTest = ({ test }: any) => {
   };
 
   useEffect(() => {
+    if (!hasStarted) return;
     if (timeLeft === 0) {
       setIsTimeUp(true);
       // handleSubmit(); // Automatically submit the test when time runs out
@@ -549,7 +1023,7 @@ const ReadingTest = ({ test }: any) => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [timeLeft]);
+  }, [timeLeft, hasStarted]);
 
   const formatTime = (timeInSeconds: number) => {
     const minutes = Math.floor(timeInSeconds / 60);
@@ -562,36 +1036,132 @@ const ReadingTest = ({ test }: any) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="container mx-auto p-4 min-h-screen pb-16">
-        {/* Exam Header */}
-        <div className="card bg-base-100 shadow-xl mb-6 ">
-          <div className="card-body">
-            <h1 className="card-title text-3xl">{test.title}</h1>
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="text-lg">Type: {test.type}</p>
-                <p className="text-lg">Duration: {test.duration} minutes</p>
-              </div>
-              <div className="badge badge-primary">
-                Part {currentPartIndex + 1} of {test.parts.length}
+      <div className="container mx-auto p-4 h-screen overflow-hidden flex flex-col pb-16">
+        {!hasStarted && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-neutral-900/60 backdrop-blur-sm">
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="reading-start-title"
+              className="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-gray-200 overflow-hidden"
+            >
+              <div className="p-6 sm:p-8">
+                <div className="flex items-start gap-4">
+                  <div className="rounded-xl bg-red-100 text-red-700 p-3">
+                    {/* play icon */}
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M8 5v14l11-7L8 5z" fill="currentColor" />
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <h2
+                      id="reading-start-title"
+                      className="text-xl font-semibold leading-tight text-gray-900"
+                    >
+                      Ready to begin your Reading test?
+                    </h2>
+                    <p className="mt-1 text-sm text-gray-600">
+                      The timer will start as soon as you click{" "}
+                      <strong>Start Test</strong>.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="rounded-lg border border-red-200 bg-red-50 p-3">
+                    <div className="text-xs uppercase tracking-wide text-red-600 font-medium">
+                      Duration
+                    </div>
+                    <div className="text-sm font-semibold text-gray-900">
+                      {(test && (test.duration as number)) || 60} min
+                    </div>
+                  </div>
+                  <div className="rounded-lg border border-red-200 bg-red-50 p-3">
+                    <div className="text-xs uppercase tracking-wide text-red-600 font-medium">
+                      Parts
+                    </div>
+                    <div className="text-sm font-semibold text-gray-900">
+                      {test?.parts?.length || 3}
+                    </div>
+                  </div>
+                  <div className="rounded-lg border border-red-200 bg-red-50 p-3">
+                    <div className="text-xs uppercase tracking-wide text-red-600 font-medium">
+                      Questions
+                    </div>
+                    <div className="text-sm font-semibold text-gray-900">
+                      {Object.values(partQuestions || {}).reduce(
+                        (a: number, v: any) =>
+                          a + (Array.isArray(v) ? v.length : 0),
+                        0
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-end gap-2">
+                  <button
+                    type="button"
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    onClick={() => {
+                      if (typeof window !== "undefined") window.history.back();
+                    }}
+                  >
+                    Back
+                  </button>
+                  <button
+                    autoFocus
+                    type="button"
+                    className="px-5 py-2.5 text-sm font-medium text-white bg-red-700 hover:bg-red-800 rounded-lg shadow-md transition-colors"
+                    onClick={() => {
+                      const durationMin =
+                        (test && (test.duration as number)) || 60;
+                      setTimeLeft(durationMin * 60);
+                      setHasStarted(true);
+                    }}
+                  >
+                    Start Test
+                  </button>
+                </div>
               </div>
             </div>
-            <div className="flex justify-between items-center mt-4">
-              <div className="text-lg font-bold">
-                Time Left: {formatTime(timeLeft)}
+          </div>
+        )}
+        {/* Exam Header */}
+        <div className="card bg-base-100 shadow-xl mb-6">
+          <div className="py-2 px-6">
+            <h2 className="card-title text-xl">{test.title}</h2>
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="text-base">Duration: {test.duration} minutes</p>
               </div>
-              {isTimeUp && (
-                <div className="text-lg text-red-500 font-bold">Time's up!</div>
-              )}
+              <div className="text-lg font-bold text-red-600 px-4 bg-red-50 rounded-lg border border-red-200">
+                {formatTime(timeLeft)}
+                {isTimeUp && (
+                  <span className="text-red-500 font-bold"> - Time's up!</span>
+                )}
+              </div>
+              <div className="badge bg-red-600 hover:bg-red-700 text-white border-0">
+                Part {currentPartIndex + 1} of {test.parts.length}
+              </div>
             </div>
           </div>
         </div>
 
         {/* Split Screen Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="resize-container flex flex-1 overflow-hidden">
           {/* Passage Section (Left) */}
-          <div className="lg:h-[80vh] lg:overflow-y-auto p-4 border-r-2">
-            <h2 className="text-2xl font-bold mb-4">
+          <div
+            ref={passageContainerRef}
+            className="h-full overflow-y-auto p-4 border-r-2"
+            style={{ width: `${leftPanelWidth}%` }}
+          >
+            <h2 className="text-2xl font-bold mb-4 text-center">
               {currentPart.passage_title}
             </h2>
 
@@ -614,125 +1184,249 @@ const ReadingTest = ({ test }: any) => {
             </div>
           </div>
 
+          {/* Resize Handle */}
+          <div
+            className="w-1 bg-gray-300 hover:bg-gray-400 cursor-col-resize flex-shrink-0 relative group"
+            onMouseDown={handleMouseDown}
+          >
+            <div className="absolute inset-0 w-3 -left-1 cursor-col-resize"></div>
+            <div className="w-full h-full flex items-center justify-center">
+              <div className="w-0.5 h-8 bg-gray-400 group-hover:bg-gray-500 rounded"></div>
+            </div>
+          </div>
+
           {/* Questions Section (Right) */}
-          <div className="lg:h-[80vh] lg:overflow-y-auto p-4 border-l">
+          <div
+            ref={questionsContainerRef}
+            className="h-full overflow-y-auto p-4 border-l"
+            style={{ width: `${100 - leftPanelWidth}%` }}
+          >
             <div className="space-y-6">
-              <h3 className="text-xl font-bold mb-4">{currentPart.title}</h3>
+              {/* <h3 className="text-xl font-bold mb-4">{currentPart.title}</h3>
               <p className="italic text-gray-600 mb-6">
                 {currentPart.instructions}
-              </p>
+              </p> */}
 
               {currentPart.questions &&
-                currentPart.questions.map((question: any, index: number) => (
-                  <div key={index}>
-                    {question.true_false_not_given && (
-                      <TrueFalse
-                        instructions={
-                          currentPart.questions[index]?.instructions || ""
-                        }
-                        question={question.true_false_not_given}
-                        handleAnswerChange={handleAnswerChange}
-                        handleQuestionFocus={handleQuestionFocus}
-                      />
-                    )}
+                currentPart.questions.map((question: any, index: number) => {
+                  // Create IDs for all questions in this group, not just the first one
+                  const createQuestionIds = (): number[] => {
+                    const questionIds: number[] = [];
 
-                    {question.fill_in_the_blanks && (
-                      <FillInTheBlanks
-                        instructions={
-                          currentPart.questions[index]?.instructions || ""
-                        }
-                        question={question.fill_in_the_blanks}
-                        handleAnswerChange={handleAnswerChange}
-                        handleQuestionFocus={handleQuestionFocus}
-                      />
-                    )}
+                    // True/False questions
+                    if (question.true_false_not_given) {
+                      question.true_false_not_given.forEach((q: any) => {
+                        questionIds.push(q.question_number);
+                      });
+                    }
 
-                    {question.matching_headings && (
-                      <MatchingHeadings
-                        instructions={
-                          currentPart.questions[index]?.instructions || ""
-                        }
-                        question={question.matching_headings}
-                        handleAnswerChange={handleAnswerChange}
-                        handleQuestionFocus={handleQuestionFocus}
-                      />
-                    )}
+                    // Fill in the blanks
+                    if (question.fill_in_the_blanks) {
+                      question.fill_in_the_blanks.forEach((q: any) => {
+                        questionIds.push(q.question_number);
+                      });
+                    }
 
-                    {question.paragraph_matching && (
-                      <ParagraphMatching
-                        instructions={
-                          currentPart.questions[index]?.instructions || ""
-                        }
-                        question={question.paragraph_matching}
-                        handleAnswerChange={handleAnswerChange}
-                        handleQuestionFocus={handleQuestionFocus}
-                      />
-                    )}
+                    // Matching headings
+                    if (question.matching_headings) {
+                      question.matching_headings.forEach((q: any) => {
+                        questionIds.push(q.question_number);
+                      });
+                    }
 
-                    {question.mcq && (
-                      <McqSingle
-                        instructions={
-                          currentPart.questions[index]?.instructions || ""
-                        }
-                        question={question.mcq}
-                        handleAnswerChange={handleAnswerChange}
-                        handleQuestionFocus={handleQuestionFocus}
-                      />
-                    )}
+                    // Paragraph matching
+                    if (question.paragraph_matching) {
+                      question.paragraph_matching.forEach((q: any) => {
+                        questionIds.push(q.question_number);
+                      });
+                    }
 
-                    {question.multiple_mcq && (
-                      <McqMultiple
-                        instructions={
-                          currentPart.questions[index]?.instructions || ""
-                        }
-                        question={question.multiple_mcq}
-                        handleAnswerChange={handleAnswerChange}
-                        handleQuestionFocus={handleQuestionFocus}
-                      />
-                    )}
+                    // MCQ questions
+                    if (question.mcq) {
+                      question.mcq.forEach((q: any) => {
+                        questionIds.push(q.question_number);
+                      });
+                    }
 
-                    {question.passage_fill_in_the_blanks && (
-                      <PassFillInTheBlanks
-                        instructions={
-                          currentPart.questions[index]?.instructions || ""
+                    // Multiple MCQ questions
+                    if (question.multiple_mcq) {
+                      question.multiple_mcq.forEach((q: any) => {
+                        if (Array.isArray(q.question_numbers)) {
+                          q.question_numbers.forEach((num: number) => {
+                            questionIds.push(num);
+                          });
+                        } else {
+                          questionIds.push(q.question_number);
                         }
-                        question={question.passage_fill_in_the_blanks}
-                        handleAnswerChange={handleAnswerChange}
-                        handleQuestionFocus={handleQuestionFocus}
-                      />
-                    )}
+                      });
+                    }
 
-                    {question.summary_fill_in_the_blanks && (
-                      <SumFillInTheBlanks
-                        instructions={
-                          currentPart.questions[index]?.instructions || ""
+                    // Passage fill in the blanks
+                    if (question.passage_fill_in_the_blanks) {
+                      question.passage_fill_in_the_blanks.forEach((q: any) => {
+                        if (Array.isArray(q.question_number)) {
+                          q.question_number.forEach((num: number) => {
+                            questionIds.push(num);
+                          });
+                        } else {
+                          questionIds.push(q.question_number);
                         }
-                        question={question.summary_fill_in_the_blanks}
-                        handleAnswerChange={handleAnswerChange}
-                        handleQuestionFocus={handleQuestionFocus}
-                      />
-                    )}
+                      });
+                    }
 
-                    {question.fill_in_the_blanks_with_subtitle && (
-                      <SubFillInTheBlanks
-                        instructions={
-                          currentPart.questions[index]?.instructions || ""
+                    // Summary fill in the blanks
+                    if (question.summary_fill_in_the_blanks) {
+                      question.summary_fill_in_the_blanks.forEach((q: any) => {
+                        if (Array.isArray(q.question_numbers)) {
+                          q.question_numbers.forEach((num: number) => {
+                            questionIds.push(num);
+                          });
+                        } else {
+                          questionIds.push(q.question_number);
                         }
-                        question={question.fill_in_the_blanks_with_subtitle}
-                        handleAnswerChange={handleAnswerChange}
-                        handleQuestionFocus={handleQuestionFocus}
-                      />
-                    )}
-                  </div>
-                ))}
+                      });
+                    }
+
+                    // Fill in the blanks with subtitle
+                    if (question.fill_in_the_blanks_with_subtitle) {
+                      question.fill_in_the_blanks_with_subtitle.forEach(
+                        (blankSet: any) => {
+                          blankSet.questions?.forEach((q: any) => {
+                            questionIds.push(q.question_number);
+                          });
+                        }
+                      );
+                    }
+
+                    return questionIds;
+                  };
+
+                  const questionIds = createQuestionIds();
+                  const firstQuestionNumber = questionIds[0] || index + 1;
+
+                  console.log(
+                    `Creating question container with IDs: ${questionIds.join(
+                      ", "
+                    )} for question set ${index}`
+                  );
+
+                  return (
+                    <div
+                      key={index}
+                      id={`question-${firstQuestionNumber}`}
+                      data-question-numbers={questionIds.join(",")}
+                    >
+                      {question.true_false_not_given && (
+                        <TrueFalse
+                          instructions={
+                            currentPart.questions[index]?.instructions || ""
+                          }
+                          question={question.true_false_not_given}
+                          handleAnswerChange={handleAnswerChange}
+                          handleQuestionFocus={handleQuestionFocus}
+                        />
+                      )}
+
+                      {question.fill_in_the_blanks && (
+                        <FillInTheBlanks
+                          instructions={
+                            currentPart.questions[index]?.instructions || ""
+                          }
+                          question={question.fill_in_the_blanks}
+                          handleAnswerChange={handleAnswerChange}
+                          handleQuestionFocus={handleQuestionFocus}
+                        />
+                      )}
+
+                      {question.matching_headings && (
+                        <MatchingHeadings
+                          instructions={
+                            currentPart.questions[index]?.instructions || ""
+                          }
+                          question={question.matching_headings}
+                          handleAnswerChange={handleAnswerChange}
+                          handleQuestionFocus={handleQuestionFocus}
+                        />
+                      )}
+
+                      {question.paragraph_matching && (
+                        <ParagraphMatching
+                          instructions={
+                            currentPart.questions[index]?.instructions || ""
+                          }
+                          question={question.paragraph_matching}
+                          handleAnswerChange={handleAnswerChange}
+                          handleQuestionFocus={handleQuestionFocus}
+                        />
+                      )}
+
+                      {question.mcq && (
+                        <McqSingle
+                          instructions={
+                            currentPart.questions[index]?.instructions || ""
+                          }
+                          question={question.mcq}
+                          answers={answers}
+                          handleAnswerChange={handleAnswerChange}
+                          handleQuestionFocus={handleQuestionFocus}
+                        />
+                      )}
+
+                      {question.multiple_mcq && (
+                        <McqMultiple
+                          instructions={
+                            currentPart.questions[index]?.instructions || ""
+                          }
+                          question={question.multiple_mcq}
+                          answers={answers}
+                          handleAnswerChange={handleAnswerChange}
+                          handleQuestionFocus={handleQuestionFocus}
+                        />
+                      )}
+
+                      {question.passage_fill_in_the_blanks && (
+                        <PassFillInTheBlanks
+                          instructions={
+                            currentPart.questions[index]?.instructions || ""
+                          }
+                          question={question.passage_fill_in_the_blanks}
+                          handleAnswerChange={handleAnswerChange}
+                          handleQuestionFocus={handleQuestionFocus}
+                        />
+                      )}
+
+                      {question.summary_fill_in_the_blanks && (
+                        <SumFillInTheBlanks
+                          instructions={
+                            currentPart.questions[index]?.instructions || ""
+                          }
+                          question={question.summary_fill_in_the_blanks}
+                          handleAnswerChange={handleAnswerChange}
+                          handleQuestionFocus={handleQuestionFocus}
+                        />
+                      )}
+
+                      {question.fill_in_the_blanks_with_subtitle && (
+                        <SubFillInTheBlanks
+                          instructions={
+                            currentPart.questions[index]?.instructions || ""
+                          }
+                          question={question.fill_in_the_blanks_with_subtitle}
+                          handleAnswerChange={handleAnswerChange}
+                          handleQuestionFocus={handleQuestionFocus}
+                        />
+                      )}
+                    </div>
+                  );
+                })}
             </div>
 
             {/* Navigation */}
-            <div className="flex justify-between mt-6">
+            {/* <div className="flex justify-between mt-6">
               <button
                 onClick={handlePrevPart}
                 disabled={currentPartIndex === 0}
-                className="btn btn-secondary"
+                className="btn bg-red-600 hover:bg-red-700 border-0"
                 type="button"
               >
                 Previous
@@ -740,21 +1434,12 @@ const ReadingTest = ({ test }: any) => {
               <button
                 onClick={handleNextPart}
                 disabled={currentPartIndex === test.parts.length - 1}
-                className="btn btn-primary"
+                className="btn bg-red-600 hover:bg-red-700 border-0"
                 type="button"
               >
                 Next
               </button>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              onClick={handleSubmit}
-              type="submit"
-              className="btn btn-success mt-6 w-full"
-            >
-              Submit Test
-            </button>
+            </div> */}
           </div>
         </div>
 
@@ -765,42 +1450,76 @@ const ReadingTest = ({ test }: any) => {
       {/* Fixed Question Navigation Panel at Bottom */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
         <div className="px-4 py-2">
-          <div className="flex justify-between">
-            {test.parts.map((part: any, partIndex: number) => (
-              <div key={partIndex} className="flex-1 flex justify-center">
-                <div className="border-2 border-gray-300 rounded-lg p-1 flex gap-0.5 justify-center">
-                  {partQuestions[partIndex]?.map((questionNumber: number) => {
-                    const hasAnswered = Array.isArray(answers)
-                      ? answers.some(
-                          (answer: any) =>
-                            String(answer.questionId) ===
-                              String(questionNumber) &&
-                            answer.value &&
-                            answer.value.trim() !== ""
-                        )
-                      : answers[questionNumber]?.value &&
-                        answers[questionNumber]?.value.trim() !== "";
+          <div className="flex justify-between items-center">
+            {/* Previous Button */}
+            <button
+              onClick={handlePrevPart}
+              disabled={currentPartIndex === 0}
+              className="btn bg-red-600 hover:bg-red-700 border-0 disabled:bg-gray-400 disabled:cursor-not-allowed text-white"
+              type="button"
+            >
+              Previous
+            </button>
 
-                    return (
-                      <button
-                        key={`${questionNumber}-${partIndex}`}
-                        type="button"
-                        className={`w-6 h-6 text-xs rounded border transition-colors ${
-                          questionNumber === currentQuestionNumber
-                            ? "bg-blue-500 text-white border-blue-500"
-                            : hasAnswered
-                            ? "bg-green-200 text-green-700 border-green-400 hover:bg-green-300"
-                            : "bg-gray-200 text-gray-700 border-gray-300 hover:bg-gray-300"
-                        }`}
-                        onClick={() => setCurrentPartIndex(partIndex)}
-                      >
-                        {questionNumber}
-                      </button>
-                    );
-                  })}
+            {/* Question Numbers */}
+            <div className="flex justify-center flex-1">
+              {test.parts.map((part: any, partIndex: number) => (
+                <div key={partIndex} className="flex-1 flex justify-center">
+                  <div className="border-2 border-gray-300 rounded-lg p-1 flex gap-0.5 justify-center">
+                    {partQuestions[partIndex]?.map((questionNumber: number) => {
+                      const hasAnswered = Array.isArray(answers)
+                        ? answers.some(
+                            (answer: any) =>
+                              String(answer.questionId) ===
+                                String(questionNumber) &&
+                              answer.value &&
+                              answer.value.trim() !== ""
+                          )
+                        : answers[questionNumber]?.value &&
+                          answers[questionNumber]?.value.trim() !== "";
+
+                      return (
+                        <button
+                          key={`${questionNumber}-${partIndex}`}
+                          type="button"
+                          className={`w-6 h-6 text-xs rounded border transition-colors ${
+                            questionNumber === currentQuestionNumber
+                              ? "bg-blue-500 text-white border-blue-500"
+                              : hasAnswered
+                              ? "bg-green-200 text-green-700 border-green-400 hover:bg-green-300"
+                              : "bg-gray-200 text-gray-700 border-gray-300 hover:bg-gray-300"
+                          }`}
+                          onClick={() =>
+                            handleQuestionNavigation(questionNumber, partIndex)
+                          }
+                        >
+                          {questionNumber}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+
+            {/* Next Button */}
+            <button
+              onClick={handleNextPart}
+              disabled={currentPartIndex === test.parts.length - 1}
+              className="btn bg-red-600 hover:bg-red-700 border-0 disabled:bg-gray-400 disabled:cursor-not-allowed mx-2 text-white"
+              type="button"
+            >
+              Next
+            </button>
+
+            {/* Submit Button */}
+            <button
+              onClick={handleSubmit}
+              type="submit"
+              className="btn bg-green-600 hover:bg-green-700 border-0 text-white"
+            >
+              Submit Test
+            </button>
           </div>
         </div>
       </div>

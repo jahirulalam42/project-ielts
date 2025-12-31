@@ -40,6 +40,10 @@ const SpeakingCreationPage: React.FC = () => {
     instructions: "",
   });
 
+  // Cue card specific UI state (not persisted directly)
+  const [cueTitle, setCueTitle] = useState<string>("");
+  const [cuePoints, setCuePoints] = useState<string>("");
+
   const questionTypes = [
     { value: "personal", label: "Personal Question (Part 1)" },
     { value: "cue_card", label: "Cue Card (Part 2)" },
@@ -119,12 +123,25 @@ const SpeakingCreationPage: React.FC = () => {
       speaking_time: 2,
       instructions: "",
     });
+    setCueTitle("");
+    setCuePoints("");
   };
 
   const addQuestion = () => {
-    if (!currentQuestion.question.trim()) {
-      toast.error("Please enter a question");
-      return;
+    if (currentQuestion.question_type === "cue_card") {
+      if (!cueTitle.trim()) {
+        toast.error("Please enter the cue card title/topic");
+        return;
+      }
+      if (!cuePoints.trim()) {
+        toast.error("Please enter at least one bullet point");
+        return;
+      }
+    } else {
+      if (!currentQuestion.question.trim()) {
+        toast.error("Please enter a question");
+        return;
+      }
     }
 
     // Validate question count based on test type
@@ -133,8 +150,22 @@ const SpeakingCreationPage: React.FC = () => {
       return;
     }
 
+    // Build the final question text
+    let builtQuestion = currentQuestion.question;
+    if (currentQuestion.question_type === "cue_card") {
+      const points = cuePoints
+        .split(/\r?\n/)
+        .map(p => p.trim())
+        .filter(Boolean)
+        .map(p => `- ${p}`)
+        .join("\n");
+
+      builtQuestion = `${cueTitle.trim()}\n\nYou should say:\n${points}`;
+    }
+
     const newQuestion = {
       ...currentQuestion,
+      question: builtQuestion,
       question_number: test.questions.length + 1,
     };
 
@@ -391,20 +422,54 @@ const SpeakingCreationPage: React.FC = () => {
                   </div>
                 )}
 
-                <div className="form-control mb-4">
-                  <label className="label">
-                    <span className="label-text font-semibold">Question</span>
-                  </label>
-                  <textarea
-                    placeholder="Enter the question or cue card"
-                    className="textarea textarea-bordered h-32"
-                    value={currentQuestion.question}
-                    onChange={(e) => setCurrentQuestion({ 
-                      ...currentQuestion, 
-                      question: e.target.value 
-                    })}
-                  />
-                </div>
+                {currentQuestion.question_type !== "cue_card" && (
+                  <div className="form-control mb-4">
+                    <label className="label">
+                      <span className="label-text font-semibold">Question</span>
+                    </label>
+                    <textarea
+                      placeholder="Enter the question"
+                      className="textarea textarea-bordered h-32"
+                      value={currentQuestion.question}
+                      onChange={(e) => setCurrentQuestion({ 
+                        ...currentQuestion, 
+                        question: e.target.value 
+                      })}
+                    />
+                  </div>
+                )}
+
+                {currentQuestion.question_type === "cue_card" && (
+                  <div className="grid grid-cols-1 gap-4 mb-4">
+                    <div className="form-control">
+                      <label className="label">
+                        <span className="label-text font-semibold">Cue Card Title / Topic</span>
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Describe a person you know who has chosen a career in the medical field"
+                        className="input input-bordered"
+                        value={cueTitle}
+                        onChange={(e) => setCueTitle(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="form-control">
+                      <label className="label">
+                        <span className="label-text font-semibold">Cue Card Bullet Points (one per line)</span>
+                      </label>
+                      <textarea
+                        placeholder={"Who he/she is\nWhat he/she does\nWhy he/she chose this career\nHow you feel about him/her"}
+                        className="textarea textarea-bordered h-32"
+                        value={cuePoints}
+                        onChange={(e) => setCuePoints(e.target.value)}
+                      />
+                      <label className="label">
+                        <span className="label-text-alt text-gray-500">We will format this as a cue card with bullets.</span>
+                      </label>
+                    </div>
+                  </div>
+                )}
 
                 <div className="form-control mb-4">
                   <label className="label">
@@ -483,7 +548,7 @@ const SpeakingCreationPage: React.FC = () => {
                             )}
                           </div>
                           
-                          <p className="text-gray-700 mb-2">{question.question}</p>
+                          <p className="text-gray-700 mb-2 whitespace-pre-line">{question.question}</p>
                           
                           {question.instructions && (
                             <p className="text-sm text-gray-500">

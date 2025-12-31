@@ -192,6 +192,23 @@ const TestCreationPage: React.FC = () => {
     setTest({ ...test, parts: updatedParts });
   };
 
+  const removeParagraph = (passageIndex: number, paraIndex: number) => {
+    const updatedParts = [...test.parts];
+    const passage = updatedParts[passageIndex].passage;
+    
+    if (Array.isArray(passage)) {
+      // For type1 (array) - remove by index
+      passage.splice(paraIndex, 1);
+    } else {
+      // For type2 (object) - remove by key
+      const keys = Object.keys(passage);
+      const keyToRemove = keys[paraIndex];
+      delete passage[keyToRemove];
+    }
+    
+    setTest({ ...test, parts: updatedParts });
+  };
+
   const updateGroupInstruction = (
     passageIndex: number,
     groupIndex: number,
@@ -651,44 +668,60 @@ const TestCreationPage: React.FC = () => {
           <div className="mb-2">
             {Array.isArray(passage.passage)
               ? passage.passage.map((para, paraIndex) => (
-                  <textarea
-                    key={paraIndex}
-                    placeholder={`Paragraph ${String.fromCharCode(
-                      65 + paraIndex
-                    )}`}
-                    value={para}
-                    onChange={(e) =>
-                      updateParagraph(
-                        passageIndex,
-                        paraIndex,
-                        e.target.value,
-                        test,
-                        setTest
-                      )
-                    }
-                    className="border p-2 mb-2 w-full"
-                  />
+                  <div key={paraIndex} className="mb-2 flex gap-2">
+                    <textarea
+                      placeholder={`Paragraph ${String.fromCharCode(
+                        65 + paraIndex
+                      )}`}
+                      value={para}
+                      onChange={(e) =>
+                        updateParagraph(
+                          passageIndex,
+                          paraIndex,
+                          e.target.value,
+                          test,
+                          setTest
+                        )
+                      }
+                      className="border p-2 flex-1"
+                    />
+                    <button
+                      onClick={() => removeParagraph(passageIndex, paraIndex)}
+                      className="bg-red-500 text-white p-2 rounded hover:bg-red-600"
+                      title="Remove paragraph"
+                    >
+                      ✕
+                    </button>
+                  </div>
                 ))
-              : Object.keys(passage.passage).map((key) => (
-                  <textarea
-                    key={key}
-                    placeholder={`Paragraph ${key}`}
-                    value={passage.passage[key]}
-                    onChange={(e) =>
-                      updateParagraph(
-                        passageIndex,
-                        parseInt(key, 36) - 10,
-                        e.target.value,
-                        test,
-                        setTest
-                      )
-                    }
-                    className="border p-2 mb-2 w-full"
-                  />
+              : Object.keys(passage.passage).map((key, paraIndex) => (
+                  <div key={key} className="mb-2 flex gap-2">
+                    <textarea
+                      placeholder={`Paragraph ${key}`}
+                      value={passage.passage[key]}
+                      onChange={(e) =>
+                        updateParagraph(
+                          passageIndex,
+                          parseInt(key, 36) - 10,
+                          e.target.value,
+                          test,
+                          setTest
+                        )
+                      }
+                      className="border p-2 flex-1"
+                    />
+                    <button
+                      onClick={() => removeParagraph(passageIndex, paraIndex)}
+                      className="bg-red-500 text-white p-2 rounded hover:bg-red-600"
+                      title="Remove paragraph"
+                    >
+                      ✕
+                    </button>
+                  </div>
                 ))}
             <button
               onClick={() => addParagraph(passageIndex)}
-              className="bg-green-500 text-white p-2 rounded"
+              className="bg-green-500 text-white p-2 rounded hover:bg-green-600"
             >
               Add Paragraph
             </button>

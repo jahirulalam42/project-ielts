@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import Loader from "@/components/Common/Loader";
 import Link from "next/link";
 import { getReadingTest } from "@/services/data";
 
@@ -15,20 +16,28 @@ const ReadingPage: React.FC = () => {
       filter === "all" || test.type.toLowerCase() === filter;
     const matchesSearch =
       test.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (test.description?.toLowerCase().includes(searchQuery.toLowerCase()) ??
-        false);
+      (test.description?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
     return matchesFilter && matchesSearch;
   });
 
+  const ITEMS_PER_PAGE = 12;
+  const [page, setPage] = useState(1);
+  const totalPages = Math.ceil(filteredTests.length / ITEMS_PER_PAGE);
+  const paginatedTests = filteredTests.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
+
+  useEffect(() => {
+    if (page > totalPages) setPage(1);
+  }, [filter, searchQuery, totalPages]);
+
   const getSectionBadge = (type: string) => {
     const sectionMap: Record<string, string> = {
-      academic: "bg-blue-100 text-blue-800 border-blue-300",
-      general: "bg-gray-100 text-gray-800 border-gray-300",
-      practice: "bg-purple-100 text-purple-800 border-purple-300",
+      academic: "bg-red-100 text-red-800 border-red-300",
+      general: "bg-red-100 text-red-800 border-red-300",
+      practice: "bg-red-100 text-red-800 border-red-300",
     };
     return (
       sectionMap[type.toLowerCase()] ||
-      "bg-gray-100 text-gray-800 border-gray-300"
+      "bg-red-100 text-red-800 border-red-300"
     );
   };
 
@@ -49,7 +58,7 @@ const ReadingPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
       {/* Header Section */}
-      <div className="bg-gradient-to-r from-red-800 to-red-900 text-white py-16 px-4 border-b border-gray-300">
+      {/* <div className="bg-gradient-to-r from-red-800 to-red-900 text-white py-4 px-4 border-b border-gray-300">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between">
             <div>
@@ -60,14 +69,13 @@ const ReadingPage: React.FC = () => {
                 Authentic academic and general training reading tests
               </p>
             </div>
-            {/* Optional: You can add an image or icon here */}
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Stats & Controls */}
       <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+        {/* <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div className="flex items-center space-x-6">
               <div>
@@ -119,16 +127,11 @@ const ReadingPage: React.FC = () => {
               />
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Content Section */}
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-20">
-            <div className="border-t-2 border-red-700 rounded-full w-12 h-12 animate-spin"></div>
-            <p className="mt-4 text-lg text-gray-600">
-              Loading reading tests...
-            </p>
-          </div>
+          <Loader message="Loading reading tests..." />
         ) : error ? (
           <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center my-8">
             <div className="text-red-600 font-medium flex items-center justify-center">
@@ -151,8 +154,8 @@ const ReadingPage: React.FC = () => {
           </div>
         ) : filteredTests.length > 0 ? (
           <div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {filteredTests.map((test) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {paginatedTests.map((test) => (
                 <div
                   key={test._id}
                   className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-transform duration-300 hover:shadow-md"
@@ -239,26 +242,38 @@ const ReadingPage: React.FC = () => {
               ))}
             </div>
 
-            {/* Pagination */}
-            <div className="mt-12 flex justify-center">
-              <div className="flex space-x-2">
-                <button className="px-4 py-2 text-sm rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
-                  Previous
-                </button>
-                <button className="px-4 py-2 text-sm rounded-lg bg-red-700 text-white">
-                  1
-                </button>
-                <button className="px-4 py-2 text-sm rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
-                  2
-                </button>
-                <button className="px-4 py-2 text-sm rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
-                  3
-                </button>
-                <button className="px-4 py-2 text-sm rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
-                  Next
-                </button>
+            {totalPages > 1 && (
+              <div className="mt-12 flex justify-center">
+                <div className="flex space-x-2">
+                  <button
+                    className="px-4 py-2 text-sm rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    disabled={page === 1}
+                  >
+                    Previous
+                  </button>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                    <button
+                      key={p}
+                      className={`px-4 py-2 text-sm rounded-lg ${
+                        page === p ? "bg-red-700 text-white" : "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                      }`}
+                      onClick={() => setPage(p)}
+                      disabled={page === p}
+                    >
+                      {p}
+                    </button>
+                  ))}
+                  <button
+                    className="px-4 py-2 text-sm rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                    disabled={page === totalPages}
+                  >
+                    Next
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         ) : (
           <div className="text-center py-16 bg-white rounded-lg shadow-sm border border-gray-200">

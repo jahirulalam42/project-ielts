@@ -45,12 +45,12 @@ const BoxMatchingGroupForm = ({
         { label: "H", value: "" },
       ],
       questions: [
-        { question_number: 1, topic: "", answer: "" }, // Temporary - will be renumbered globally
-        { question_number: 2, topic: "", answer: "" },
-        { question_number: 3, topic: "", answer: "" },
-        { question_number: 4, topic: "", answer: "" },
-        { question_number: 5, topic: "", answer: "" },
-        { question_number: 6, topic: "", answer: "" },
+        { question_number: 0, topic: "", answer: "" }, // Will be set globally
+        { question_number: 0, topic: "", answer: "" },
+        { question_number: 0, topic: "", answer: "" },
+        { question_number: 0, topic: "", answer: "" },
+        { question_number: 0, topic: "", answer: "" },
+        { question_number: 0, topic: "", answer: "" },
       ],
     };
     const newQuestions = [...localQuestions, newQuestion];
@@ -119,7 +119,7 @@ const BoxMatchingGroupForm = ({
     const updatedQuestion = { ...localQuestions[questionIndex] };
     // Don't set a specific question number - let the global system handle it
     updatedQuestion.questions.push({
-      question_number: 1, // Temporary - will be renumbered globally
+      question_number: 0, // Will be set globally
       topic: "",
       answer: "",
     });

@@ -145,9 +145,35 @@ const AllReading: React.FC<any> = ({ readingData, setReadingData }) => {
       newTest.parts = [...newTest.parts];
       newTest.parts[partIndex] = {
         ...newTest.parts[partIndex],
-        passage: [...newTest.parts[partIndex].passage],
       };
-      newTest.parts[partIndex].passage[paraIndex] = value;
+      
+      // Handle both array and object formats
+      if (Array.isArray(newTest.parts[partIndex].passage)) {
+        // Check if it's an array of objects (like [{A: "text1", B: "text2"}])
+        if (newTest.parts[partIndex].passage.length === 1 && 
+            typeof newTest.parts[partIndex].passage[0] === 'object' && 
+            !Array.isArray(newTest.parts[partIndex].passage[0])) {
+          // Object format wrapped in array: [{A: para1, B: para2, C: para3}]
+          const obj = { ...newTest.parts[partIndex].passage[0] };
+          const keys = Object.keys(obj);
+          const keyToUpdate = keys[paraIndex];
+          obj[keyToUpdate] = value;
+          newTest.parts[partIndex].passage = [obj];
+        } else {
+          // Regular array format: [para1, para2, para3]
+          newTest.parts[partIndex].passage = [...newTest.parts[partIndex].passage];
+          newTest.parts[partIndex].passage[paraIndex] = value;
+        }
+      } else {
+        // Direct object format: {A: para1, B: para2, C: para3}
+        const keys = Object.keys(newTest.parts[partIndex].passage);
+        const keyToUpdate = keys[paraIndex];
+        newTest.parts[partIndex].passage = {
+          ...newTest.parts[partIndex].passage,
+          [keyToUpdate]: value
+        };
+      }
+      
       return newTest;
     });
   };

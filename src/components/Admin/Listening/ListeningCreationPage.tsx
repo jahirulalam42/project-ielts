@@ -55,7 +55,7 @@ const ListeningCreationPage = () => {
               })),
           };
         }
-        // Handle McqGroup
+        // Handle MCQ Group
         else if ("questions" in group && "instruction" in group) {
           // Ensure questions is an array before mapping
           const questionsArray = Array.isArray(group.questions)
@@ -69,8 +69,20 @@ const ListeningCreationPage = () => {
             })),
           };
         }
-        // Handle MultipleMcqGroup
-        else if ("multiple_mcq" in group && "instruction" in group) {
+        // Handle MCQ Group (alternative structure)
+        else if ("mcq" in group) {
+          return {
+            ...group,
+            mcq: Array.isArray(group.mcq)
+              ? group.mcq.map((question) => ({
+                  ...question,
+                  question_number: globalQuestionNumber++,
+                }))
+              : [],
+          };
+        }
+        // Handle Multiple MCQ Group
+        else if ("multiple_mcq" in group) {
           return {
             ...group,
             multiple_mcq: Array.isArray(group.multiple_mcq)
@@ -88,8 +100,8 @@ const ListeningCreationPage = () => {
               : [],
           };
         }
-        // Handle BoxMatchingGroup
-        else if ("box_matching" in group && "instruction" in group) {
+        // Handle Box Matching Group
+        else if ("box_matching" in group) {
           return {
             ...group,
             box_matching: Array.isArray(group.box_matching)

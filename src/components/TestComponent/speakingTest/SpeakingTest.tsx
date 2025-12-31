@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
+import Loader from '@/components/Common/Loader';
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
@@ -44,6 +45,62 @@ const SpeakingTest: React.FC<SpeakingTestProps> = ({ test }) => {
   const prepTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const currentQuestion = test.questions[currentQuestionIndex];
+
+  const renderQuestionText = (text: string) => {
+    // Render cue card style: detect lines and bullets
+    const lines = text.split(/\r?\n/);
+    const parts: React.ReactNode[] = [];
+    let inBullets = false;
+    let bulletItems: string[] = [];
+    let hasRenderedTitle = false;
+
+    const flushBullets = () => {
+      if (bulletItems.length > 0) {
+        parts.push(
+          <ul key={`ul-${parts.length}`} className="list-disc pl-6 space-y-1">
+            {bulletItems.map((item, idx) => (
+              <li key={idx} className="text-lg text-gray-700">{item}</li>
+            ))}
+          </ul>
+        );
+        bulletItems = [];
+      }
+    };
+
+    lines.forEach((line, idx) => {
+      const trimmed = line.trim();
+      if (trimmed.startsWith('- ')) {
+        inBullets = true;
+        bulletItems.push(trimmed.slice(2));
+      } else if (trimmed.length === 0) {
+        // blank line
+        flushBullets();
+        parts.push(<div key={`br-${idx}`} className="h-2" />);
+        inBullets = false;
+      } else {
+        // normal paragraph or header
+        flushBullets();
+        if (!hasRenderedTitle) {
+          parts.push(
+            <p key={`p-${idx}`} className="text-2xl font-semibold text-gray-800 mb-3">{line}</p>
+          );
+          hasRenderedTitle = true;
+        } else if (trimmed.toLowerCase() === 'you should say:' || trimmed.toLowerCase() === 'you should say') {
+          parts.push(
+            <p key={`p-${idx}`} className="font-semibold text-gray-800 mb-2">{line}</p>
+          );
+        } else {
+          parts.push(
+            <p key={`p-${idx}`} className="text-lg text-gray-700 mb-2">{line}</p>
+          );
+        }
+        inBullets = false;
+      }
+    });
+
+    flushBullets();
+    return <>{parts}</>;
+  };
 
   useEffect(() => {
     // Initialize timers based on question type
@@ -326,7 +383,7 @@ const SpeakingTest: React.FC<SpeakingTestProps> = ({ test }) => {
     <div className="container mx-auto p-4 min-h-screen bg-gradient-to-b from-blue-50 to-indigo-50">
       <div className="max-w-4xl mx-auto">
         {/* Test Header */}
-        <div className="card bg-base-100 shadow-xl mb-6">
+        {/* <div className="card bg-base-100 shadow-xl mb-6">
           <div className="card-body">
             <h1 className="card-title text-3xl">{test.title}</h1>
             <div className="flex justify-between items-center">
@@ -337,20 +394,20 @@ const SpeakingTest: React.FC<SpeakingTestProps> = ({ test }) => {
                   Questions answered: {answeredQuestions.size}/{test.questions.length}
                 </p>
               </div>
-              <div className="badge badge-primary">
+              <div className="px-3 py-1 rounded-full bg-red-100 text-red-700 font-semibold text-sm">
                 {currentQuestion.question_type.replace('_', ' ')}
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Timer */}
-        <div className="card bg-base-100 shadow-xl mb-6">
+        <div className="card bg-base-100 shadow-xl mb-2">
           <div className="card-body">
-            <div className="flex items-center justify-center gap-4">
-              <FaClock className="text-2xl text-primary" />
+            <div className="flex items-center justify-center gap-2">
+              <FaClock className="text-2xl text-red-600" />
               <div className="text-center">
-                <div className="text-3xl font-bold text-primary">
+                <div className="text-3xl font-bold text-red-600">
                   {isPreparationPhase 
                     ? formatTime(preparationTimeLeft) 
                     : formatTime(timeLeft)
@@ -365,24 +422,24 @@ const SpeakingTest: React.FC<SpeakingTestProps> = ({ test }) => {
         </div>
 
         {/* Question Display */}
-        <div className="card bg-base-100 shadow-xl mb-6">
+        <div className="card bg-base-100 shadow-xl mb-2">
           <div className="card-body">
-            <h2 className="card-title text-xl mb-4">Question {currentQuestion.question_number}</h2>
+            {/* <h2 className="card-title text-xl mb-4">Question {currentQuestion.question_number}</h2> */}
             
             {isPreparationPhase ? (
-              <div className="alert alert-info mb-4">
+              <div className="alert bg-red-50 mb-4">
                 <FaClock className="h-4 w-4" />
                 <span>Preparation Phase: Take 1 minute to prepare your answer</span>
               </div>
             ) : null}
 
-            <div className="bg-gray-50 p-6 rounded-lg">
-              <p className="text-lg text-gray-700 mb-4">{currentQuestion.question}</p>
+            <div className={"bg-gray-50 p-6 rounded-lg " + (currentQuestion.question_type === 'personal' ? 'text-center' : '')}>
+              {renderQuestionText(currentQuestion.question)}
               
               {currentQuestion.instructions && (
-                <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                  <p className="text-sm text-blue-700">
-                    <strong>Instructions:</strong> {currentQuestion.instructions}
+                <div className="mt-4 p-3 bg-red-50 rounded-lg">
+                  <p className="text-sm text-red-700">
+                    <span className="whitespace-pre-line">{currentQuestion.instructions}</span>
                   </p>
                 </div>
               )}
@@ -391,15 +448,33 @@ const SpeakingTest: React.FC<SpeakingTestProps> = ({ test }) => {
         </div>
 
         {/* Recording Controls */}
-        <div className="card bg-base-100 shadow-xl mb-6">
+        <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
-            <h3 className="card-title text-lg mb-4">Recording Controls</h3>
+            {/* {!isPreparationPhase && (
+              <h3 className="card-title text-lg mb-4">Recording Controls</h3>
+            )} */}
+            {isPreparationPhase && (
+              <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-center justify-center items-center">
+                <div className="flex items-center gap-2 justify-center items-center">
+                  <FaClock className="h-4 w-4 text-red-600" />
+                  <span className="font-semibold">Preparation phase in progress</span>
+                  <span aria-hidden className="flex items-center ml-1">
+                    <span className="w-1.5 h-1.5 bg-red-600 rounded-full animate-pulse" style={{ animationDelay: '0ms' }}></span>
+                    <span className="w-1.5 h-1.5 bg-red-600 rounded-full animate-pulse ml-1" style={{ animationDelay: '150ms' }}></span>
+                    <span className="w-1.5 h-1.5 bg-red-600 rounded-full animate-pulse ml-1" style={{ animationDelay: '300ms' }}></span>
+                  </span>
+                </div>
+                <p className="text-sm mt-1">
+                  Recording control buttons will appear automatically when preparation ends.
+                </p>
+              </div>
+            )}
             
             <div className="flex justify-center gap-4">
               {!isRecording && !recordedAudio && !isPreparationPhase && (
                 <button
                   onClick={startRecording}
-                  className="btn btn-primary btn-lg"
+                  className="btn btn-lg bg-red-600 hover:bg-red-700 text-white border-none"
                   disabled={isPreparationPhase}
                 >
                   <FaMicrophone className="h-5 w-5 mr-2" />
@@ -410,7 +485,7 @@ const SpeakingTest: React.FC<SpeakingTestProps> = ({ test }) => {
               {isRecording && !isPaused && (
                 <button
                   onClick={pauseRecording}
-                  className="btn btn-warning btn-lg"
+                  className="btn btn-lg bg-yellow-500 hover:bg-yellow-600 text-white border-none"
                 >
                   <FaPause className="h-5 w-5 mr-2" />
                   Pause
@@ -420,7 +495,7 @@ const SpeakingTest: React.FC<SpeakingTestProps> = ({ test }) => {
               {isRecording && isPaused && (
                 <button
                   onClick={resumeRecording}
-                  className="btn btn-info btn-lg"
+                  className="btn btn-lg bg-blue-600 hover:bg-blue-700 text-white border-none"
                 >
                   <FaPlay className="h-5 w-5 mr-2" />
                   Resume
@@ -430,7 +505,7 @@ const SpeakingTest: React.FC<SpeakingTestProps> = ({ test }) => {
               {isRecording && (
                 <button
                   onClick={stopRecording}
-                  className="btn btn-error btn-lg"
+                  className="btn btn-lg bg-red-700 hover:bg-red-800 text-white border-none"
                 >
                   <FaStop className="h-5 w-5 mr-2" />
                   Stop Recording & Submit
@@ -440,11 +515,11 @@ const SpeakingTest: React.FC<SpeakingTestProps> = ({ test }) => {
               {recordedAudio && !isRecording && (
                 <button
                   onClick={handleSubmit}
-                  className="btn btn-success btn-lg"
+                  className="btn btn-lg bg-red-600 hover:bg-red-700 text-white border-none"
                   disabled={isProcessing}
                 >
                   {isProcessing ? (
-                    <span className="loading loading-spinner loading-sm"></span>
+                    <Loader message="" className="!w-6 !h-6 !border-2" />
                   ) : (
                     <>
                       <FaCheck className="h-5 w-5 mr-2" />
@@ -456,11 +531,11 @@ const SpeakingTest: React.FC<SpeakingTestProps> = ({ test }) => {
             </div>
 
             {/* Next Question Button - Always available when recording */}
-            {isRecording && currentQuestionIndex < test.questions.length - 1 && (
+              {isRecording && currentQuestionIndex < test.questions.length - 1 && (
               <div className="mt-4 text-center">
                 <button
                   onClick={handleNextQuestion}
-                  className="btn btn-secondary btn-lg"
+                    className="btn btn-lg bg-red-500 hover:bg-red-600 text-white border-none"
                 >
                   <FaArrowRight className="h-5 w-5 mr-2" />
                   Next Question
@@ -493,7 +568,7 @@ const SpeakingTest: React.FC<SpeakingTestProps> = ({ test }) => {
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div 
-                    className="bg-primary h-2 rounded-full transition-all duration-300"
+                    className="bg-red-600 h-2 rounded-full transition-all duration-300"
                     style={{ width: `${(answeredQuestions.size / test.questions.length) * 100}%` }}
                   ></div>
                 </div>

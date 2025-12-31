@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import Loader from '@/components/Common/Loader';
 import { getReadingTest } from "@/services/data";
 import AllReading from "@/components/Admin/Reading/AllReading/AllReading";
 
@@ -30,7 +31,7 @@ const page: React.FC = () => {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <span className="loading loading-spinner loading-lg text-primary"></span>
+        <Loader message="Loading reading tests..." />
       </div>
     );
   }
