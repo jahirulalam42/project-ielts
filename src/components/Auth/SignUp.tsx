@@ -72,20 +72,20 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-rose-100">
-      <div className="mx-auto flex min-h-screen max-w-5xl items-center px-4 py-12 sm:px-6 lg:px-12">
-        <div className="grid w-full overflow-hidden rounded-3xl border border-rose-100/70 bg-white/95 shadow-2xl backdrop-blur-md md:grid-cols-[1.05fr,1fr]">
+    <div className="h-screen overflow-hidden bg-gradient-to-br from-rose-50 via-white to-rose-100">
+      <div className="mx-auto flex h-full max-w-5xl items-center px-4 py-4 sm:px-6 lg:px-12">
+        <div className="grid w-full max-h-[95vh] overflow-hidden rounded-3xl border border-rose-100/70 bg-white/95 shadow-2xl backdrop-blur-md md:grid-cols-[1.05fr,1fr]">
           {/* Left Column - Benefits */}
-          <div className="relative hidden bg-[radial-gradient(circle_at_top_left,_#fb7185,_transparent_55%),_radial-gradient(circle_at_bottom_right,_#fda4af,_transparent_50%)] p-10 text-gray-900 md:flex md:flex-col md:justify-between">
-            <div className="space-y-6">
+          <div className="relative hidden bg-[radial-gradient(circle_at_top_left,_#fb7185,_transparent_55%),_radial-gradient(circle_at_bottom_right,_#fda4af,_transparent_50%)] p-8 text-gray-900 md:flex md:flex-col md:justify-between overflow-y-auto max-h-[95vh]">
+            <div className="space-y-4">
               <span className="inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-1 text-sm font-medium tracking-wide text-gray-900">
                 <span className="inline-flex h-2 w-2 rounded-full bg-emerald-400" />
                 IELTS Prep Workspace
               </span>
-              <h2 className="text-3xl font-semibold leading-snug text-gray-900">
+              <h2 className="text-2xl font-semibold leading-snug text-gray-900">
                 Join thousands of candidates achieving their target band scores.
               </h2>
-              <ul className="space-y-4 text-sm leading-relaxed text-gray-700">
+              <ul className="space-y-3 text-sm leading-relaxed text-gray-700">
                 <li className="flex items-start gap-3">
                   <svg
                     className="h-5 w-5 text-rose-500 mt-0.5 flex-shrink-0"
@@ -141,14 +141,14 @@ const SignUp = () => {
               </ul>
             </div>
 
-            <div className="space-y-4">
-              <div className="rounded-2xl bg-white/90 p-5 shadow-lg backdrop-blur">
+            <div className="space-y-3">
+              <div className="rounded-2xl bg-white/90 p-4 shadow-lg backdrop-blur">
                 <p className="text-sm leading-relaxed text-gray-700">
                   "The quick sign-up and personalized study plan helped me go
                   from Band 6 to 7.5 in just 8 weeks. The mock tests were
                   incredibly accurate!"
                 </p>
-                <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-gray-900">
+                <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-gray-900">
                   — Rohan Kumar · Band 7.5
                 </p>
               </div>
@@ -160,28 +160,28 @@ const SignUp = () => {
           </div>
 
           {/* Right Column - Sign Up Form */}
-          <div className="flex flex-col justify-center bg-white px-6 py-10 sm:px-10 md:px-12">
-            <div className="mb-8">
+          <div className="flex flex-col justify-center bg-white px-6 py-6 sm:px-10 md:px-12 overflow-y-auto max-h-[95vh]">
+            <div className="mb-6">
               <div className="flex items-center gap-3 text-sm text-rose-500">
                 <span className="inline-flex h-2 w-2 rounded-full bg-rose-500" />
                 Start your IELTS journey
               </div>
-              <h1 className="mt-4 text-3xl font-semibold text-gray-900">
+              <h1 className="mt-3 text-2xl font-semibold text-gray-900 md:text-3xl">
                 Create your account
               </h1>
-              <p className="mt-3 text-sm leading-relaxed text-gray-500">
+              <p className="mt-2 text-sm leading-relaxed text-gray-500">
                 Join our community and get personalized study recommendations
                 based on your goals.
               </p>
             </div>
 
             {/* Sign Up Method Tabs */}
-            <div className="mb-6">
+            <div className="mb-4">
               <div className="flex border-b border-gray-200">
                 <button
                   type="button"
                   onClick={() => setActiveMethod("oauth")}
-                  className={`flex-1 py-3 text-sm font-medium transition-colors ${
+                  className={`flex-1 py-2 text-sm font-medium transition-colors ${
                     activeMethod === "oauth"
                       ? "border-b-2 border-rose-500 text-rose-600"
                       : "text-gray-500 hover:text-gray-700"
@@ -192,7 +192,7 @@ const SignUp = () => {
                 <button
                   type="button"
                   onClick={() => setActiveMethod("email")}
-                  className={`flex-1 py-3 text-sm font-medium transition-colors ${
+                  className={`flex-1 py-2 text-sm font-medium transition-colors ${
                     activeMethod === "email"
                       ? "border-b-2 border-rose-500 text-rose-600"
                       : "text-gray-500 hover:text-gray-700"
@@ -204,21 +204,21 @@ const SignUp = () => {
             </div>
 
             {error && (
-              <div className="alert alert-error mb-6">
+              <div className="alert alert-error mb-4">
                 <span>{error}</span>
               </div>
             )}
 
             {/* OAuth Section */}
             {activeMethod === "oauth" && (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <div className="text-center">
-                  <p className="text-sm text-gray-600 mb-4">
+                  <p className="text-sm text-gray-600 mb-3">
                     Sign up instantly with your existing account
                   </p>
                 </div>
 
-                <div className="grid gap-3">
+                <div className="grid gap-2">
                   <button
                     type="button"
                     onClick={() => handleOAuthSignIn("google")}
@@ -279,8 +279,8 @@ const SignUp = () => {
 
             {/* Email Sign Up Section */}
             {activeMethod === "email" && (
-              <div className="space-y-5">
-                <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="form-control">
                     <label className="label">
                       <span className="label-text font-medium text-gray-700">
@@ -359,7 +359,7 @@ const SignUp = () => {
             )}
 
             {/* Switch to Sign In */}
-            <div className="mt-8 pt-6 border-t border-gray-100">
+            <div className="mt-6 pt-4 border-t border-gray-100">
               <p className="text-center text-sm text-gray-500">
                 Already have an account?{" "}
                 <Link
