@@ -5,7 +5,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import { parsePhoneNumberFromString, isValidPhoneNumber } from "libphonenumber-js";
+import {
+  parsePhoneNumberFromString,
+  isValidPhoneNumber,
+} from "libphonenumber-js";
 
 import { getOnboardingData, saveOnboardingData } from "@/services/data";
 
@@ -192,18 +195,15 @@ const OnboardingWizard = () => {
         const onboardingRecord = response?.data ?? null;
         const onboardingStatus = onboardingRecord?.status;
 
-        console.log("Onboarding check:", { 
-          hasRecord: !!onboardingRecord, 
+        console.log("Onboarding check:", {
+          hasRecord: !!onboardingRecord,
           status: onboardingStatus,
-          record: onboardingRecord 
+          record: onboardingRecord,
         });
 
         // Only if onboarding is completed, redirect immediately
         // If skipped, user must see onboarding again until they submit
-        if (
-          onboardingRecord &&
-          onboardingStatus === "completed"
-        ) {
+        if (onboardingRecord && onboardingStatus === "completed") {
           localStorage.setItem(storageKey, onboardingStatus);
           router.replace(nextPath);
           return;
@@ -226,12 +226,19 @@ const OnboardingWizard = () => {
     return () => {
       isMounted = false;
     };
-  }, [session?.user?.id, session?.user?.role, status, router, nextPath, storageKey]);
+  }, [
+    session?.user?.id,
+    session?.user?.role,
+    status,
+    router,
+    nextPath,
+    storageKey,
+  ]);
 
   // Calculate progress based on filled fields
   const progressValue = useMemo(() => {
-    const hardestModuleFilled = Array.isArray(form.hardestModule) 
-      ? form.hardestModule.length > 0 
+    const hardestModuleFilled = Array.isArray(form.hardestModule)
+      ? form.hardestModule.length > 0
       : form.hardestModule !== "";
     const fields = [
       form.fullName,
@@ -253,7 +260,9 @@ const OnboardingWizard = () => {
     let isPhoneValid = false;
     if (form.phoneNo) {
       try {
-        const phoneWithPlus = form.phoneNo.startsWith("+") ? form.phoneNo : `+${form.phoneNo}`;
+        const phoneWithPlus = form.phoneNo.startsWith("+")
+          ? form.phoneNo
+          : `+${form.phoneNo}`;
         isPhoneValid = isValidPhoneNumber(phoneWithPlus);
       } catch {
         isPhoneValid = false;
@@ -295,7 +304,6 @@ const OnboardingWizard = () => {
     });
   };
 
-
   const handleSubmit = async () => {
     setSubmitError(null);
 
@@ -324,7 +332,9 @@ const OnboardingWizard = () => {
         if (q.type === "phone") {
           if (!form.phoneNo) return true;
           try {
-            const phoneWithPlus = form.phoneNo.startsWith("+") ? form.phoneNo : `+${form.phoneNo}`;
+            const phoneWithPlus = form.phoneNo.startsWith("+")
+              ? form.phoneNo
+              : `+${form.phoneNo}`;
             return !isValidPhoneNumber(phoneWithPlus);
           } catch {
             return true;
@@ -333,7 +343,9 @@ const OnboardingWizard = () => {
         return !form[q.id];
       });
       if (firstUnanswered) {
-        const element = document.querySelector(`[data-question-id="${firstUnanswered.id}"]`);
+        const element = document.querySelector(
+          `[data-question-id="${firstUnanswered.id}"]`
+        );
         element?.scrollIntoView({ behavior: "smooth", block: "center" });
       }
       return;
@@ -344,9 +356,11 @@ const OnboardingWizard = () => {
     if (form.phoneNo) {
       try {
         // react-phone-input-2 returns value without + prefix, add it for validation
-        const phoneWithPlus = form.phoneNo.startsWith("+") ? form.phoneNo : `+${form.phoneNo}`;
+        const phoneWithPlus = form.phoneNo.startsWith("+")
+          ? form.phoneNo
+          : `+${form.phoneNo}`;
         const phoneNumber = parsePhoneNumberFromString(phoneWithPlus);
-        
+
         if (phoneNumber && isValidPhoneNumber(phoneNumber.number)) {
           // Store in E.164 format (e.g., +1234567890)
           formattedPhoneNo = phoneNumber.format("E.164");
@@ -375,7 +389,10 @@ const OnboardingWizard = () => {
         completedAt: new Date().toISOString(),
       };
 
-      console.log("Saving onboarding data:", { userId: session.user.id, payload });
+      console.log("Saving onboarding data:", {
+        userId: session.user.id,
+        payload,
+      });
       const result = await saveOnboardingData(session.user.id, payload);
       console.log("Onboarding save result:", result);
 
@@ -395,7 +412,6 @@ const OnboardingWizard = () => {
       setIsSubmitting(false);
     }
   };
-
 
   // Don't render wizard if we're checking status or if user is not authenticated
   if (status === "loading" || isCheckingStatus) {
@@ -417,7 +433,8 @@ const OnboardingWizard = () => {
               Welcome! Let's get started
             </h1>
             <p className="mt-1 text-sm text-gray-500">
-              A few quick questions to personalize your experience. Completing this takes under 90 seconds.
+              A few quick questions to personalize your experience. Completing
+              this takes under 90 seconds.
             </p>
           </div>
           <button
@@ -435,7 +452,7 @@ const OnboardingWizard = () => {
                   console.error("Failed to persist onboarding skip", error);
                 }
               }
-              router.push(nextPath);
+              router.push("/");
             }}
             className="text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors"
           >
@@ -467,195 +484,213 @@ const OnboardingWizard = () => {
 
           <div className="space-y-5">
             {questions.map((question, qIdx) => {
-              const isAnswered = question.type === "multi"
-                ? (form[question.id] as string[]).length > 0
-                : question.id === "examDateType"
-                ? form.examDateType !== "" || form.customExamDate !== ""
-                : question.id === "hardestModule"
-                ? Array.isArray(form.hardestModule) ? form.hardestModule.length > 0 : form.hardestModule !== ""
-                : question.type === "text"
-                ? (form[question.id] as string).trim() !== ""
-                : question.type === "phone"
-                ? form.phoneNo !== "" && (() => {
-                    try {
-                      const phoneWithPlus = form.phoneNo.startsWith("+") ? form.phoneNo : `+${form.phoneNo}`;
-                      return isValidPhoneNumber(phoneWithPlus);
-                    } catch {
-                      return false;
-                    }
-                  })()
-                : form[question.id] !== "";
-              
+              const isAnswered =
+                question.type === "multi"
+                  ? (form[question.id] as string[]).length > 0
+                  : question.id === "examDateType"
+                  ? form.examDateType !== "" || form.customExamDate !== ""
+                  : question.id === "hardestModule"
+                  ? Array.isArray(form.hardestModule)
+                    ? form.hardestModule.length > 0
+                    : form.hardestModule !== ""
+                  : question.type === "text"
+                  ? (form[question.id] as string).trim() !== ""
+                  : question.type === "phone"
+                  ? form.phoneNo !== "" &&
+                    (() => {
+                      try {
+                        const phoneWithPlus = form.phoneNo.startsWith("+")
+                          ? form.phoneNo
+                          : `+${form.phoneNo}`;
+                        return isValidPhoneNumber(phoneWithPlus);
+                      } catch {
+                        return false;
+                      }
+                    })()
+                  : form[question.id] !== "";
+
               return (
-              <div 
-                key={question.id} 
-                data-question-id={question.id}
-                className={`border-b border-gray-100 last:border-0 pb-5 last:pb-0 relative ${
-                  question.type === "phone" ? "z-[999]" : "z-0"
-                } ${
-                  !isAnswered ? "opacity-90" : ""
-                }`}
-              >
-                <div className="mb-2">
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className={`flex items-center justify-center w-5 h-5 rounded-full text-white text-xs font-bold flex-shrink-0 ${
-                      isAnswered 
-                        ? "bg-gradient-to-br from-red-500 to-red-600" 
-                        : "bg-gray-400"
-                    }`}>
-                      {qIdx + 1}
+                <div
+                  key={question.id}
+                  data-question-id={question.id}
+                  className={`border-b border-gray-100 last:border-0 pb-5 last:pb-0 relative ${
+                    question.type === "phone" ? "z-[999]" : "z-0"
+                  } ${!isAnswered ? "opacity-90" : ""}`}
+                >
+                  <div className="mb-2">
+                    <div className="flex items-center gap-2 mb-1">
+                      <div
+                        className={`flex items-center justify-center w-5 h-5 rounded-full text-white text-xs font-bold flex-shrink-0 ${
+                          isAnswered
+                            ? "bg-gradient-to-br from-red-500 to-red-600"
+                            : "bg-gray-400"
+                        }`}
+                      >
+                        {qIdx + 1}
+                      </div>
+                      <h3 className="text-sm font-semibold text-gray-900">
+                        {question.title}
+                        <span className="text-red-500 ml-1">*</span>
+                      </h3>
                     </div>
-                    <h3 className="text-sm font-semibold text-gray-900">
-                      {question.title}
-                      <span className="text-red-500 ml-1">*</span>
-                    </h3>
-                  </div>
-                  {question.description && (
-                    <p className="text-xs text-gray-500 ml-7">
-                      {question.description}
-                    </p>
-                  )}
-                  {/* {!isAnswered && (
+                    {question.description && (
+                      <p className="text-xs text-gray-500 ml-7">
+                        {question.description}
+                      </p>
+                    )}
+                    {/* {!isAnswered && (
                     <p className="text-xs text-red-500 ml-7 mt-1">
                       This field is required
                     </p>
                   )} */}
-                </div>
+                  </div>
 
-                <div className="ml-7">
-                  {question.type === "text" && (
-                    <input
-                      type="text"
-                      value={form[question.id] as string}
-                      onChange={(e) => handleSelect(question.id, e.target.value)}
-                      placeholder={question.placeholder}
-                      className="w-full p-2.5 rounded-lg border border-gray-200 focus:border-red-500 focus:ring-1 focus:ring-red-200 transition-all text-sm"
-                    />
-                  )}
-
-                  {question.type === "phone" && (
-                    <div className="phone-input-wrapper w-full relative z-[1000]">
-                      <PhoneInput
-                        country={"us"}
-                        value={form.phoneNo}
-                        onChange={handlePhoneChange}
-                        inputProps={{
-                          required: true,
-                          autoFocus: false,
-                        }}
-                        containerClass="phone-input-container"
-                        inputClass="phone-input-field"
-                        buttonClass="phone-input-button"
-                        dropdownClass="phone-input-dropdown"
-                        searchClass="phone-input-search"
-                        placeholder="Enter your phone number"
-                        enableSearch={true}
-                        disableSearchIcon={true}
-                        countryCodeEditable={true}
-                        specialLabel=""
+                  <div className="ml-7">
+                    {question.type === "text" && (
+                      <input
+                        type="text"
+                        value={form[question.id] as string}
+                        onChange={(e) =>
+                          handleSelect(question.id, e.target.value)
+                        }
+                        placeholder={question.placeholder}
+                        className="w-full p-2.5 rounded-lg border border-gray-200 focus:border-red-500 focus:ring-1 focus:ring-red-200 transition-all text-sm"
                       />
-                    </div>
-                  )}
+                    )}
 
-                  {question.type === "single" && (
-                    <div className="flex flex-wrap gap-2">
-                      {question.options?.map((option) => {
-                        const isSelected = form[question.id] === option;
-                        return (
-                          <button
-                            key={option}
-                            type="button"
-                            onClick={() => handleSelect(question.id, option)}
-                            className={`px-4 py-2 rounded-lg border transition-all duration-200 whitespace-nowrap ${
-                              isSelected
-                                ? "border-red-500 bg-red-50 text-red-700 font-medium"
-                                : "border-gray-200 bg-white text-gray-700 hover:border-red-200 hover:bg-red-50/50"
-                            }`}
-                          >
-                            <span className="text-sm">{option}</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
+                    {question.type === "phone" && (
+                      <div className="phone-input-wrapper w-full relative z-[1000]">
+                        <PhoneInput
+                          country={"us"}
+                          value={form.phoneNo}
+                          onChange={handlePhoneChange}
+                          inputProps={{
+                            required: true,
+                            autoFocus: false,
+                          }}
+                          containerClass="phone-input-container"
+                          inputClass="phone-input-field"
+                          buttonClass="phone-input-button"
+                          dropdownClass="phone-input-dropdown"
+                          searchClass="phone-input-search"
+                          placeholder="Enter your phone number"
+                          enableSearch={true}
+                          disableSearchIcon={true}
+                          countryCodeEditable={true}
+                          specialLabel=""
+                        />
+                      </div>
+                    )}
 
-                  {question.type === "multi" && (
-                    <div className="flex flex-wrap gap-2">
-                      {question.options?.map((option) => {
-                        const isSelected = (form[question.id] as string[]).includes(option);
-                        return (
-                          <button
-                            key={option}
-                            type="button"
-                            onClick={() => toggleMultiSelect(question.id, option)}
-                            className={`px-4 py-2 rounded-lg border transition-all duration-200 whitespace-nowrap flex items-center gap-1.5 ${
-                              isSelected
-                                ? "border-red-500 bg-red-50 text-red-700 font-medium"
-                                : "border-gray-200 bg-white text-gray-700 hover:border-red-200 hover:bg-red-50/50"
-                            }`}
-                          >
-                            <span className="text-sm">{option}</span>
-                            {isSelected && (
-                              <svg
-                                className="w-3.5 h-3.5 text-red-500"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M5 13l4 4L19 7"
-                                />
-                              </svg>
-                            )}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
-
-                  {question.type === "date" && (
-                    <div className="space-y-2">
+                    {question.type === "single" && (
                       <div className="flex flex-wrap gap-2">
-                        {question.quickSelect?.map((item) => {
-                          const isSelected = form.examDateType === item.label;
+                        {question.options?.map((option) => {
+                          const isSelected = form[question.id] === option;
                           return (
                             <button
-                              key={item.id}
+                              key={option}
                               type="button"
-                              onClick={() => handleSelect("examDateType", item.label)}
+                              onClick={() => handleSelect(question.id, option)}
                               className={`px-4 py-2 rounded-lg border transition-all duration-200 whitespace-nowrap ${
                                 isSelected
                                   ? "border-red-500 bg-red-50 text-red-700 font-medium"
                                   : "border-gray-200 bg-white text-gray-700 hover:border-red-200 hover:bg-red-50/50"
                               }`}
                             >
-                              <span className="text-sm">{item.label}</span>
+                              <span className="text-sm">{option}</span>
                             </button>
                           );
                         })}
                       </div>
-                      <div className="relative">
-                        <div className="absolute inset-0 flex items-center">
-                          <div className="w-full border-t border-gray-200"></div>
-                        </div>
-                        <div className="relative flex justify-center text-xs">
-                          <span className="px-2 bg-white text-gray-400">OR</span>
-                        </div>
+                    )}
+
+                    {question.type === "multi" && (
+                      <div className="flex flex-wrap gap-2">
+                        {question.options?.map((option) => {
+                          const isSelected = (
+                            form[question.id] as string[]
+                          ).includes(option);
+                          return (
+                            <button
+                              key={option}
+                              type="button"
+                              onClick={() =>
+                                toggleMultiSelect(question.id, option)
+                              }
+                              className={`px-4 py-2 rounded-lg border transition-all duration-200 whitespace-nowrap flex items-center gap-1.5 ${
+                                isSelected
+                                  ? "border-red-500 bg-red-50 text-red-700 font-medium"
+                                  : "border-gray-200 bg-white text-gray-700 hover:border-red-200 hover:bg-red-50/50"
+                              }`}
+                            >
+                              <span className="text-sm">{option}</span>
+                              {isSelected && (
+                                <svg
+                                  className="w-3.5 h-3.5 text-red-500"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M5 13l4 4L19 7"
+                                  />
+                                </svg>
+                              )}
+                            </button>
+                          );
+                        })}
                       </div>
-                      <input
-                        type="date"
-                        value={form.customExamDate}
-                        onChange={(e) => handleSelect("customExamDate", e.target.value)}
-                        className="w-full p-2.5 rounded-lg border border-gray-200 focus:border-red-500 focus:ring-1 focus:ring-red-200 transition-all text-sm"
-                      />
-                    </div>
-                  )}
+                    )}
+
+                    {question.type === "date" && (
+                      <div className="space-y-2">
+                        <div className="flex flex-wrap gap-2">
+                          {question.quickSelect?.map((item) => {
+                            const isSelected = form.examDateType === item.label;
+                            return (
+                              <button
+                                key={item.id}
+                                type="button"
+                                onClick={() =>
+                                  handleSelect("examDateType", item.label)
+                                }
+                                className={`px-4 py-2 rounded-lg border transition-all duration-200 whitespace-nowrap ${
+                                  isSelected
+                                    ? "border-red-500 bg-red-50 text-red-700 font-medium"
+                                    : "border-gray-200 bg-white text-gray-700 hover:border-red-200 hover:bg-red-50/50"
+                                }`}
+                              >
+                                <span className="text-sm">{item.label}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                        <div className="relative">
+                          <div className="absolute inset-0 flex items-center">
+                            <div className="w-full border-t border-gray-200"></div>
+                          </div>
+                          <div className="relative flex justify-center text-xs">
+                            <span className="px-2 bg-white text-gray-400">
+                              OR
+                            </span>
+                          </div>
+                        </div>
+                        <input
+                          type="date"
+                          value={form.customExamDate}
+                          onChange={(e) =>
+                            handleSelect("customExamDate", e.target.value)
+                          }
+                          className="w-full p-2.5 rounded-lg border border-gray-200 focus:border-red-500 focus:ring-1 focus:ring-red-200 transition-all text-sm"
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            );
+              );
             })}
           </div>
 
@@ -691,4 +726,3 @@ const OnboardingWizard = () => {
 };
 
 export default OnboardingWizard;
-
