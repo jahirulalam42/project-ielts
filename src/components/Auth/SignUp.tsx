@@ -72,119 +72,127 @@ const SignUp = () => {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-gradient-to-br from-rose-50 via-white to-rose-100">
-      <div className="mx-auto flex h-full max-w-5xl items-center px-4 py-4 sm:px-6 lg:px-12">
-        <div className="grid w-full max-h-[95vh] overflow-hidden rounded-3xl border border-rose-100/70 bg-white/95 shadow-2xl backdrop-blur-md md:grid-cols-[1.05fr,1fr]">
-          {/* Left Column - Benefits */}
-          <div className="relative hidden bg-[radial-gradient(circle_at_top_left,_#fb7185,_transparent_55%),_radial-gradient(circle_at_bottom_right,_#fda4af,_transparent_50%)] p-8 text-gray-900 md:flex md:flex-col md:justify-between overflow-y-auto max-h-[95vh]">
-            <div className="space-y-4">
-              <span className="inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-1 text-sm font-medium tracking-wide text-gray-900">
-                <span className="inline-flex h-2 w-2 rounded-full bg-emerald-400" />
-                IELTS Prep Workspace
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12 font-sans text-slate-900 antialiased">
+      <div className="flex w-full max-w-[1100px] flex-col overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-slate-900/5 md:flex-row">
+        {/* LEFT PANEL: Premium Dark Theme */}
+        <div className="relative flex w-full flex-col justify-between overflow-hidden bg-slate-900 px-10 py-12 text-slate-50 md:w-[42%] lg:px-14 lg:py-16">
+          {/* Abstract Background Gradient */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-slate-900 via-slate-800 to-rose-900 opacity-80"></div>
+          <div className="absolute right-[-100px] top-[-100px] h-[400px] w-[400px] rounded-full bg-rose-600/20 blur-[100px]"></div>
+
+          <div className="relative z-10">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-rose-600 text-white shadow-lg shadow-rose-900/40">
+                <span className="font-serif text-xl font-bold">I</span>
+              </div>
+              <span className="text-xl font-medium tracking-wide text-slate-100">
+                IELTS Workspace
               </span>
-              <h2 className="text-2xl font-semibold leading-snug text-gray-900">
-                Join thousands of candidates achieving their target band scores.
+            </div>
+          </div>
+
+          <div className="relative z-10 mt-16 space-y-10">
+            <div>
+              <h2 className="font-serif text-3xl font-semibold leading-tight text-white lg:text-4xl">
+                Your journey to Band 7+ starts here.
               </h2>
-              <ul className="space-y-3 text-sm leading-relaxed text-gray-700">
-                <li className="flex items-start gap-3">
-                  <svg
-                    className="h-5 w-5 text-rose-500 mt-0.5 flex-shrink-0"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                  <span>
-                    Unlimited timed mock tests with detailed analytics
-                  </span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <svg
-                    className="h-5 w-5 text-rose-500 mt-0.5 flex-shrink-0"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                  <span>
-                    AI-powered speaking evaluations and writing corrections
-                  </span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <svg
-                    className="h-5 w-5 text-rose-500 mt-0.5 flex-shrink-0"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                  <span>Personalized study planner tailored to your goals</span>
-                </li>
-              </ul>
+              <p className="mt-4 text-slate-300 lg:text-lg">
+                Join a community of 12,000+ aspirants and access tools designed
+                to fast-track your success.
+              </p>
             </div>
 
-            <div className="space-y-3">
-              <div className="rounded-2xl bg-white/90 p-4 shadow-lg backdrop-blur">
-                <p className="text-sm leading-relaxed text-gray-700">
-                  "The quick sign-up and personalized study plan helped me go
-                  from Band 6 to 7.5 in just 8 weeks. The mock tests were
-                  incredibly accurate!"
-                </p>
-                <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-gray-900">
-                  — Rohan Kumar · Band 7.5
+            <div className="space-y-4">
+              <div className="flex items-start gap-3 text-slate-300">
+                <div className="mt-1 flex h-5 w-5 items-center justify-center rounded-full bg-rose-500/20 text-rose-400">
+                  <svg
+                    className="h-3 w-3"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="3"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </div>
+                <p className="text-sm">
+                  AI-powered writing corrections for faster feedback.
                 </p>
               </div>
-              <div className="flex items-center gap-3 text-xs uppercase tracking-widest text-gray-700">
-                <span className="h-1 w-14 rounded-full bg-gray-800/60" />
-                Trusted by learners in 40+ countries
+              <div className="flex items-start gap-3 text-slate-300">
+                <div className="mt-1 flex h-5 w-5 items-center justify-center rounded-full bg-rose-500/20 text-rose-400">
+                  <svg
+                    className="h-3 w-3"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="3"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </div>
+                <p className="text-sm">
+                  Personalized study plans based on your weak areas.
+                </p>
+              </div>
+              <div className="flex items-start gap-3 text-slate-300">
+                <div className="mt-1 flex h-5 w-5 items-center justify-center rounded-full bg-rose-500/20 text-rose-400">
+                  <svg
+                    className="h-3 w-3"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="3"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </div>
+                <p className="text-sm">
+                  Unlimited mock tests simulating the real exam environment.
+                </p>
               </div>
             </div>
           </div>
 
-          {/* Right Column - Sign Up Form */}
-          <div className="flex flex-col justify-center bg-white px-6 py-6 sm:px-10 md:px-12 overflow-y-auto max-h-[95vh]">
+          <div className="relative z-10 hidden text-xs text-slate-400 md:block">
+            Prepare for the future. Prepare with us.
+          </div>
+        </div>
+
+        {/* RIGHT PANEL: Form */}
+        <div className="flex w-full flex-col justify-center bg-white px-8 py-12 md:w-[58%] lg:px-16 lg:py-16">
+          <div className="mx-auto w-full max-w-md">
             <div className="mb-6">
-              <div className="flex items-center gap-3 text-sm text-rose-500">
-                <span className="inline-flex h-2 w-2 rounded-full bg-rose-500" />
-                Start your IELTS journey
-              </div>
-              <h1 className="mt-3 text-2xl font-semibold text-gray-900 md:text-3xl">
+              <h1 className="text-2xl font-bold tracking-tight text-slate-900 md:text-3xl">
                 Create your account
               </h1>
-              <p className="mt-2 text-sm leading-relaxed text-gray-500">
-                Join our community and get personalized study recommendations
-                based on your goals.
+              <p className="mt-2 text-sm text-slate-500">
+                Get started today for free. No credit card required.
               </p>
             </div>
 
             {/* Sign Up Method Tabs */}
-            <div className="mb-4">
-              <div className="flex border-b border-gray-200">
+            <div className="mb-6">
+              <div className="flex border-b border-slate-200">
                 <button
                   type="button"
                   onClick={() => setActiveMethod("oauth")}
-                  className={`flex-1 py-2 text-sm font-medium transition-colors ${
+                  className={`flex-1 pb-3 text-sm font-medium transition-colors ${
                     activeMethod === "oauth"
-                      ? "border-b-2 border-rose-500 text-rose-600"
-                      : "text-gray-500 hover:text-gray-700"
+                      ? "border-b-2 border-rose-500 text-slate-900"
+                      : "text-slate-500 hover:text-slate-700"
                   }`}
                 >
                   Quick Sign Up
@@ -192,10 +200,10 @@ const SignUp = () => {
                 <button
                   type="button"
                   onClick={() => setActiveMethod("email")}
-                  className={`flex-1 py-2 text-sm font-medium transition-colors ${
+                  className={`flex-1 pb-3 text-sm font-medium transition-colors ${
                     activeMethod === "email"
-                      ? "border-b-2 border-rose-500 text-rose-600"
-                      : "text-gray-500 hover:text-gray-700"
+                      ? "border-b-2 border-rose-500 text-slate-900"
+                      : "text-slate-500 hover:text-slate-700"
                   }`}
                 >
                   With Email
@@ -204,27 +212,40 @@ const SignUp = () => {
             </div>
 
             {error && (
-              <div className="alert alert-error mb-4">
-                <span>{error}</span>
+              <div className="mb-6 flex items-start rounded-lg border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">
+                <svg
+                  className="mr-2 mt-0.5 h-5 w-5 flex-shrink-0 text-rose-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <div>
+                  <span className="font-semibold">Sign up failed</span>
+                  <p className="mt-1">{error}</p>
+                </div>
               </div>
             )}
 
             {/* OAuth Section */}
             {activeMethod === "oauth" && (
-              <div className="space-y-3">
-                <div className="text-center">
-                  <p className="text-sm text-gray-600 mb-3">
-                    Sign up instantly with your existing account
-                  </p>
-                </div>
+              <div className="space-y-4">
+                <p className="text-center text-sm text-slate-500">
+                  Sign up instantly with your existing account
+                </p>
 
-                <div className="grid gap-2">
+                <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
                     onClick={() => handleOAuthSignIn("google")}
-                    className="btn btn-outline border-gray-200 text-gray-700 hover:border-rose-200 hover:bg-rose-50 flex items-center justify-center gap-3 py-3"
+                    className="group relative flex w-full items-center justify-center rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 transition-all hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900 focus:outline-none"
                   >
-                    <svg className="w-5 h-5" viewBox="0 0 24 24">
+                    <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24">
                       <path
                         fill="#4285F4"
                         d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -242,73 +263,64 @@ const SignUp = () => {
                         d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                       />
                     </svg>
-                    <span>Continue with Google</span>
+                    Google
                   </button>
                   <button
                     type="button"
                     onClick={() => handleOAuthSignIn("linkedin")}
-                    className="btn btn-outline border-gray-200 text-gray-700 hover:border-rose-200 hover:bg-rose-50 flex items-center justify-center gap-3 py-3"
+                    className="group relative flex w-full items-center justify-center rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 transition-all hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900 focus:outline-none"
                   >
-                    <svg className="w-5 h-5" fill="#0A66C2" viewBox="0 0 24 24">
+                    <svg
+                      className="mr-2 h-5 w-5"
+                      fill="#0077B5"
+                      viewBox="0 0 24 24"
+                    >
                       <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
                     </svg>
-                    <span>Continue with LinkedIn</span>
+                    LinkedIn
                   </button>
-                </div>
-
-                <div className="text-center">
-                  <p className="text-xs text-gray-500">
-                    By continuing, you agree to our{" "}
-                    <Link
-                      href="/terms"
-                      className="text-rose-500 hover:text-rose-600"
-                    >
-                      Terms
-                    </Link>{" "}
-                    and{" "}
-                    <Link
-                      href="/privacy"
-                      className="text-rose-500 hover:text-rose-600"
-                    >
-                      Privacy Policy
-                    </Link>
-                  </p>
                 </div>
               </div>
             )}
 
             {/* Email Sign Up Section */}
             {activeMethod === "email" && (
-              <div className="space-y-4">
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="form-control">
-                    <label className="label">
-                      <span className="label-text font-medium text-gray-700">
-                        Email
-                      </span>
+              <div className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div className="space-y-1">
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-medium text-slate-700"
+                    >
+                      Email Address
                     </label>
                     <input
+                      id="email"
                       type="email"
                       name="email"
                       value={form.email}
                       onChange={handleChange}
                       required
-                      placeholder="you@example.com"
-                      className="input input-bordered w-full bg-white text-gray-900 focus:border-rose-400 focus:ring focus:ring-rose-100"
+                      placeholder="name@example.com"
+                      className="block w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-900 shadow-sm transition-all placeholder:text-slate-400 focus:border-rose-500 focus:ring-rose-500/20 focus:outline-none"
                       autoComplete="email"
                     />
                   </div>
 
-                  <div className="form-control">
-                    <label className="label">
-                      <span className="label-text font-medium text-gray-700">
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between">
+                      <label
+                        htmlFor="password"
+                        className="block text-sm font-medium text-slate-700"
+                      >
                         Password
+                      </label>
+                      <span className="text-xs text-slate-400">
+                        Min. 8 characters
                       </span>
-                      <span className="text-xs text-gray-400">
-                        Minimum 8 characters
-                      </span>
-                    </label>
+                    </div>
                     <input
+                      id="password"
                       type="password"
                       name="password"
                       value={form.password}
@@ -316,55 +328,72 @@ const SignUp = () => {
                       required
                       minLength={8}
                       placeholder="Create a strong password"
-                      className="input input-bordered w-full bg-white text-gray-900 focus:border-rose-400 focus:ring focus:ring-rose-100"
+                      className="block w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-900 shadow-sm transition-all placeholder:text-slate-400 focus:border-rose-500 focus:ring-rose-500/20 focus:outline-none"
                       autoComplete="new-password"
                     />
                   </div>
 
                   <button
                     type="submit"
-                    className="btn btn-primary w-full border-0 bg-rose-500 text-white shadow-lg shadow-rose-200 transition duration-200 hover:bg-rose-600 disabled:opacity-70 disabled:cursor-not-allowed"
+                    className="flex w-full items-center justify-center rounded-lg border border-transparent bg-slate-900 px-4 py-3 text-base font-medium text-white shadow-xl shadow-slate-900/10 transition-all hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70"
                     disabled={loading}
                   >
                     {loading ? (
-                      <span className="flex items-center gap-2">
-                        <span className="loading loading-spinner loading-sm"></span>
-                        Creating your account…
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <svg
+                          className="h-5 w-5 animate-spin text-slate-300"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        Creating Account...
+                      </div>
                     ) : (
                       "Create Account"
                     )}
                   </button>
                 </form>
 
-                <div className="text-center">
-                  <p className="text-xs text-gray-500">
-                    By creating an account, you agree to our{" "}
-                    <Link
-                      href="/terms"
-                      className="text-rose-500 hover:text-rose-600"
-                    >
-                      Terms
-                    </Link>{" "}
-                    and{" "}
-                    <Link
-                      href="/privacy"
-                      className="text-rose-500 hover:text-rose-600"
-                    >
-                      Privacy Policy
-                    </Link>
-                  </p>
-                </div>
+                <p className="text-center text-xs text-slate-500">
+                  By creating an account, you agree to our{" "}
+                  <Link
+                    href="/terms"
+                    className="font-semibold text-slate-900 hover:text-rose-600"
+                  >
+                    Terms
+                  </Link>{" "}
+                  and{" "}
+                  <Link
+                    href="/privacy"
+                    className="font-semibold text-slate-900 hover:text-rose-600"
+                  >
+                    Privacy Policy
+                  </Link>
+                </p>
               </div>
             )}
 
             {/* Switch to Sign In */}
-            <div className="mt-6 pt-4 border-t border-gray-100">
-              <p className="text-center text-sm text-gray-500">
+            <div className="mt-8 pt-6 border-t border-slate-100">
+              <p className="text-center text-sm text-slate-500">
                 Already have an account?{" "}
                 <Link
                   href="/user/signin"
-                  className="font-medium text-rose-500 hover:text-rose-600"
+                  className="font-semibold text-slate-900 transition-colors hover:text-rose-600"
                 >
                   Sign in
                 </Link>

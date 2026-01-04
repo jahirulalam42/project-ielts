@@ -22,7 +22,7 @@ import {
   FaDesktop,
   FaRedo,
   FaGlobeAmericas,
-  FaUserCheck
+  FaUserCheck,
 } from "react-icons/fa";
 import { TbTargetArrow } from "react-icons/tb";
 import { IoMdTimer } from "react-icons/io";
@@ -94,7 +94,9 @@ export default function IELTSLandingPage(): any {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             {/* Left Content */}
             <div
-              ref={(el) => { sectionsRef.current["hero-left"] = el; }}
+              ref={(el) => {
+                sectionsRef.current["hero-left"] = el;
+              }}
               id="hero-left"
               className={`${fadeInUp("hero-left")}`}
             >
@@ -118,7 +120,13 @@ export default function IELTSLandingPage(): any {
               </h1>
 
               <p className="text-xl md:text-2xl text-gray-600 mb-8 leading-relaxed max-w-xl">
-                Comprehensive practice tests, AI-powered feedback, and expert guidance to help you achieve your target band score. <span className="font-semibold text-green-600">Completely free</span> - no credit card required. Start your journey to IELTS success today.
+                Comprehensive practice tests, AI-powered feedback, and expert
+                guidance to help you achieve your target band score.{" "}
+                <span className="font-semibold text-green-600">
+                  Completely free
+                </span>{" "}
+                - no credit card required. Start your journey to IELTS success
+                today.
               </p>
 
               <div className="flex flex-wrap gap-4 mb-12">
@@ -153,7 +161,9 @@ export default function IELTSLandingPage(): any {
                     className="bg-white/80 backdrop-blur-sm p-4 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100"
                   >
                     <stat.icon className="text-red-600 text-2xl mb-2" />
-                    <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
+                    <div className="text-2xl font-bold text-gray-900">
+                      {stat.value}
+                    </div>
                     <div className="text-sm text-gray-600">{stat.label}</div>
                   </div>
                 ))}
@@ -162,9 +172,13 @@ export default function IELTSLandingPage(): any {
 
             {/* Right Visual */}
             <div
-              ref={(el) => { sectionsRef.current["hero-right"] = el; }}
+              ref={(el) => {
+                sectionsRef.current["hero-right"] = el;
+              }}
               id="hero-right"
-              className={`${scaleIn("hero-right")} flex justify-center lg:justify-end`}
+              className={`${scaleIn(
+                "hero-right"
+              )} flex justify-center lg:justify-end`}
             >
               <div className="relative">
                 {/* Main Card */}
@@ -200,7 +214,9 @@ export default function IELTSLandingPage(): any {
                           <div className="mb-3 transform group-hover:rotate-6 transition-transform duration-300">
                             {item.icon}
                           </div>
-                          <h3 className="text-white font-bold text-lg">{item.label}</h3>
+                          <h3 className="text-white font-bold text-lg">
+                            {item.label}
+                          </h3>
                         </div>
                       </div>
                     ))}
@@ -228,7 +244,9 @@ export default function IELTSLandingPage(): any {
       {/* Features Section */}
       <section
         id="features"
-        ref={(el) => { sectionsRef.current["features"] = el; }}
+        ref={(el) => {
+          sectionsRef.current["features"] = el;
+        }}
         className="py-24 px-4 bg-white"
       >
         <div className="container mx-auto max-w-7xl">
@@ -243,7 +261,12 @@ export default function IELTSLandingPage(): any {
               <span className="text-red-600">Excel in IELTS</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Our comprehensive platform combines cutting-edge technology with proven teaching methods to deliver exceptional results. <span className="font-semibold text-green-600">All features are completely free</span> - no hidden costs, no subscriptions.
+              Our comprehensive platform combines cutting-edge technology with
+              proven teaching methods to deliver exceptional results.{" "}
+              <span className="font-semibold text-green-600">
+                All features are completely free
+              </span>{" "}
+              - no hidden costs, no subscriptions.
             </p>
           </div>
 
@@ -280,21 +303,29 @@ export default function IELTSLandingPage(): any {
             ].map((feature, index) => {
               const IconComponent = feature.icon;
               return (
-              <div
-                key={index}
-                className={`group ${fadeInUp(`feature-${index}`)}`}
-                ref={(el) => { sectionsRef.current[`feature-${index}`] = el; }}
-                id={`feature-${index}`}
-              >
-                <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 h-full transform hover:-translate-y-2">
-                  <div className={`w-16 h-16 ${feature.bgColor} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
-                    <IconComponent className={`text-3xl ${feature.color}`} />
+                <div
+                  key={index}
+                  className={`group ${fadeInUp(`feature-${index}`)}`}
+                  ref={(el) => {
+                    sectionsRef.current[`feature-${index}`] = el;
+                  }}
+                  id={`feature-${index}`}
+                >
+                  <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 h-full transform hover:-translate-y-2">
+                    <div
+                      className={`w-16 h-16 ${feature.bgColor} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}
+                    >
+                      <IconComponent className={`text-3xl ${feature.color}`} />
+                    </div>
+                    <h3 className="text-xl font-bold mb-3 text-gray-900">
+                      {feature.title}
+                    </h3>
+                    <p className="text-gray-600 leading-relaxed">
+                      {feature.desc}
+                    </p>
                   </div>
-                  <h3 className="text-xl font-bold mb-3 text-gray-900">{feature.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">{feature.desc}</p>
                 </div>
-              </div>
-            );
+              );
             })}
           </div>
         </div>
@@ -303,7 +334,9 @@ export default function IELTSLandingPage(): any {
       {/* Who Is This For Section */}
       <section
         id="who-is-this-for"
-        ref={(el) => { sectionsRef.current["who-is-this-for"] = el; }}
+        ref={(el) => {
+          sectionsRef.current["who-is-this-for"] = el;
+        }}
         className="py-24 px-4 bg-gradient-to-b from-white to-gray-50"
       >
         <div className="container mx-auto max-w-7xl">
@@ -316,7 +349,8 @@ export default function IELTSLandingPage(): any {
               Who Is BandGrowth For?
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Whether you're taking IELTS for the first time or aiming to improve your score, we're here to help you succeed.
+              Whether you're taking IELTS for the first time or aiming to
+              improve your score, we're here to help you succeed.
             </p>
           </div>
 
@@ -325,28 +359,32 @@ export default function IELTSLandingPage(): any {
               {
                 icon: FaGraduationCap,
                 title: "First-time IELTS Takers",
-                description: "New to IELTS? Start your journey with confidence. Our platform guides you through every step.",
+                description:
+                  "New to IELTS? Start your journey with confidence. Our platform guides you through every step.",
                 color: "text-blue-600",
                 bgColor: "bg-blue-50",
               },
               {
                 icon: FaRedo,
                 title: "Retakers",
-                description: "Aiming for a higher band score? Focus on your weak areas with targeted practice and detailed feedback.",
+                description:
+                  "Aiming for a higher band score? Focus on your weak areas with targeted practice and detailed feedback.",
                 color: "text-green-600",
                 bgColor: "bg-green-50",
               },
               {
                 icon: FaDesktop,
                 title: "Computer-Based Candidates",
-                description: "Preparing for computer-delivered IELTS? Practice in the exact format you'll face on test day.",
+                description:
+                  "Preparing for computer-delivered IELTS? Practice in the exact format you'll face on test day.",
                 color: "text-purple-600",
                 bgColor: "bg-purple-50",
               },
               {
                 icon: FaGlobeAmericas,
                 title: "Study, Work & Migration",
-                description: "Whether you're pursuing education, career opportunities, or immigration, achieve your target band score.",
+                description:
+                  "Whether you're pursuing education, career opportunities, or immigration, achieve your target band score.",
                 color: "text-orange-600",
                 bgColor: "bg-orange-50",
               },
@@ -356,15 +394,23 @@ export default function IELTSLandingPage(): any {
                 <div
                   key={index}
                   className={`${fadeInUp(`who-for-${index}`)}`}
-                  ref={(el) => { sectionsRef.current[`who-for-${index}`] = el; }}
+                  ref={(el) => {
+                    sectionsRef.current[`who-for-${index}`] = el;
+                  }}
                   id={`who-for-${index}`}
                 >
                   <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 h-full transform hover:-translate-y-2 text-center">
-                    <div className={`w-16 h-16 ${item.bgColor} rounded-2xl flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform duration-300`}>
+                    <div
+                      className={`w-16 h-16 ${item.bgColor} rounded-2xl flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform duration-300`}
+                    >
                       <IconComponent className={`text-3xl ${item.color}`} />
                     </div>
-                    <h3 className="text-lg font-bold mb-3 text-gray-900">{item.title}</h3>
-                    <p className="text-gray-600 leading-relaxed text-sm">{item.description}</p>
+                    <h3 className="text-lg font-bold mb-3 text-gray-900">
+                      {item.title}
+                    </h3>
+                    <p className="text-gray-600 leading-relaxed text-sm">
+                      {item.description}
+                    </p>
                   </div>
                 </div>
               );
@@ -376,7 +422,9 @@ export default function IELTSLandingPage(): any {
       {/* How It Works Section */}
       <section
         id="how-it-works"
-        ref={(el) => { sectionsRef.current["how-it-works"] = el; }}
+        ref={(el) => {
+          sectionsRef.current["how-it-works"] = el;
+        }}
         className="py-24 px-4 bg-gradient-to-b from-gray-50 to-white"
       >
         <div className="container mx-auto max-w-7xl">
@@ -430,49 +478,68 @@ export default function IELTSLandingPage(): any {
             ].map((item, index) => {
               const IconComponent = item.icon;
               return (
-              <div
-                key={index}
-                className={`relative group ${fadeInUp(`step-${index}`)}`}
-                ref={(el) => { sectionsRef.current[`step-${index}`] = el; }}
-                id={`step-${index}`}
-              >
-                {/* Step Number Badge */}
-                <div className="absolute -top-4 -left-4 z-10">
-                  <div className="w-14 h-14 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-full flex items-center justify-center text-xl font-bold shadow-xl group-hover:scale-110 transition-transform duration-300">
-                    {item.step}
-                  </div>
-                </div>
-
-                {/* Main Card */}
-                <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 h-full transform hover:-translate-y-2">
-                  <div className="flex flex-col items-center text-center">
-                    <div className={`w-20 h-20 ${item.bgColor} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
-                      <IconComponent className={`text-3xl ${item.color}`} />
+                <div
+                  key={index}
+                  className={`relative group ${fadeInUp(`step-${index}`)}`}
+                  ref={(el) => {
+                    sectionsRef.current[`step-${index}`] = el;
+                  }}
+                  id={`step-${index}`}
+                >
+                  {/* Step Number Badge */}
+                  <div className="absolute -top-4 -left-4 z-10">
+                    <div className="w-14 h-14 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-full flex items-center justify-center text-xl font-bold shadow-xl group-hover:scale-110 transition-transform duration-300">
+                      {item.step}
                     </div>
-                    <h4 className="text-xl font-bold mb-4 text-gray-900">{item.title}</h4>
-                    <p className="text-gray-600 leading-relaxed">{item.desc}</p>
                   </div>
-                </div>
 
-                {/* Connecting Arrow */}
-                {index < 3 && (
-                  <div className="hidden lg:block absolute top-1/2 -right-4 z-0">
-                    <FaArrowRight className="text-gray-300 text-2xl" />
+                  {/* Main Card */}
+                  <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 h-full transform hover:-translate-y-2">
+                    <div className="flex flex-col items-center text-center">
+                      <div
+                        className={`w-20 h-20 ${item.bgColor} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}
+                      >
+                        <IconComponent className={`text-3xl ${item.color}`} />
+                      </div>
+                      <h4 className="text-xl font-bold mb-4 text-gray-900">
+                        {item.title}
+                      </h4>
+                      <p className="text-gray-600 leading-relaxed">
+                        {item.desc}
+                      </p>
+                    </div>
                   </div>
-                )}
-              </div>
-            );
+
+                  {/* Connecting Arrow */}
+                  {index < 3 && (
+                    <div className="hidden lg:block absolute top-1/2 -right-4 z-0">
+                      <FaArrowRight className="text-gray-300 text-2xl" />
+                    </div>
+                  )}
+                </div>
+              );
             })}
           </div>
 
           {/* CTA Box */}
-          <div className={`text-center ${fadeIn("cta-box")}`} ref={(el) => { sectionsRef.current["cta-box"] = el; }} id="cta-box">
+          <div
+            className={`text-center ${fadeIn("cta-box")}`}
+            ref={(el) => {
+              sectionsRef.current["cta-box"] = el;
+            }}
+            id="cta-box"
+          >
             <div className="bg-gradient-to-r from-red-50 via-orange-50 to-red-50 rounded-3xl p-12 border border-red-100 max-w-5xl mx-auto shadow-xl">
               <h3 className="text-3xl font-bold text-gray-900 mb-4">
                 Ready to Start Your IELTS Journey?
               </h3>
               <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-                Join thousands of successful test-takers who have improved their band scores with our comprehensive practice platform. <span className="font-semibold text-green-600">Everything is free</span> - unlimited practice tests, analytics, and feedback.
+                Join thousands of successful test-takers who have improved their
+                band scores with our comprehensive practice platform.{" "}
+                <span className="font-semibold text-green-600">
+                  Everything is free
+                </span>{" "}
+                - unlimited practice tests, analytics, and feedback.
               </p>
               <div className="flex flex-wrap justify-center gap-4">
                 <Link
@@ -497,7 +564,9 @@ export default function IELTSLandingPage(): any {
       {/* Why BandGrowth Section */}
       <section
         id="why-bandgrowth"
-        ref={(el) => { sectionsRef.current["why-bandgrowth"] = el; }}
+        ref={(el) => {
+          sectionsRef.current["why-bandgrowth"] = el;
+        }}
         className="py-24 px-4 bg-white"
       >
         <div className="container mx-auto max-w-7xl">
@@ -510,7 +579,8 @@ export default function IELTSLandingPage(): any {
               Why Choose BandGrowth?
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              We're not just another practice platform. We're your partner in achieving IELTS success.
+              We're not just another practice platform. We're your partner in
+              achieving IELTS success.
             </p>
           </div>
 
@@ -519,28 +589,32 @@ export default function IELTSLandingPage(): any {
               {
                 icon: FaDesktop,
                 title: "Designed for Computer-Based IELTS",
-                description: "Our platform mirrors the exact computer-delivered IELTS format. Practice in the same interface you'll see on test day.",
+                description:
+                  "Our platform mirrors the exact computer-delivered IELTS format. Practice in the same interface you'll see on test day.",
                 color: "text-blue-600",
                 bgColor: "bg-blue-50",
               },
               {
                 icon: FaChartLine,
                 title: "Focus on Band Improvement",
-                description: "We don't just test you—we help you improve. Get actionable insights and targeted practice to boost your band score.",
+                description:
+                  "We don't just test you—we help you improve. Get actionable insights and targeted practice to boost your band score.",
                 color: "text-green-600",
                 bgColor: "bg-green-50",
               },
               {
                 icon: FaChartBar,
                 title: "Clear Analytics, Not Confusion",
-                description: "Understand your performance with intuitive visual reports. No complex scoring systems—just clear, actionable insights.",
+                description:
+                  "Understand your performance with intuitive visual reports. No complex scoring systems—just clear, actionable insights.",
                 color: "text-purple-600",
                 bgColor: "bg-purple-50",
               },
               {
                 icon: FaClock,
                 title: "Practice Anytime, Anywhere",
-                description: "Access full practice tests, writing samples, and analytics 24/7. Study at your own pace, on any device.",
+                description:
+                  "Access full practice tests, writing samples, and analytics 24/7. Study at your own pace, on any device.",
                 color: "text-orange-600",
                 bgColor: "bg-orange-50",
               },
@@ -550,17 +624,25 @@ export default function IELTSLandingPage(): any {
                 <div
                   key={index}
                   className={`${fadeInUp(`why-${index}`)}`}
-                  ref={(el) => { sectionsRef.current[`why-${index}`] = el; }}
+                  ref={(el) => {
+                    sectionsRef.current[`why-${index}`] = el;
+                  }}
                   id={`why-${index}`}
                 >
                   <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 h-full transform hover:-translate-y-2">
                     <div className="flex items-start gap-4">
-                      <div className={`w-14 h-14 ${item.bgColor} rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300`}>
+                      <div
+                        className={`w-14 h-14 ${item.bgColor} rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300`}
+                      >
                         <IconComponent className={`text-2xl ${item.color}`} />
                       </div>
                       <div>
-                        <h3 className="text-xl font-bold mb-3 text-gray-900">{item.title}</h3>
-                        <p className="text-gray-600 leading-relaxed">{item.description}</p>
+                        <h3 className="text-xl font-bold mb-3 text-gray-900">
+                          {item.title}
+                        </h3>
+                        <p className="text-gray-600 leading-relaxed">
+                          {item.description}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -574,7 +656,9 @@ export default function IELTSLandingPage(): any {
       {/* Writing Samples Section */}
       <section
         id="writing-samples"
-        ref={(el) => { sectionsRef.current["writing-samples"] = el; }}
+        ref={(el) => {
+          sectionsRef.current["writing-samples"] = el;
+        }}
         className="py-24 px-4 bg-white"
       >
         <div className="container mx-auto max-w-7xl">
@@ -587,7 +671,9 @@ export default function IELTSLandingPage(): any {
               Explore Writing Samples
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Study model answers for Task 1 and Task 2 questions. Learn from expertly crafted responses that demonstrate high band score techniques.
+              Study model answers for Task 1 and Task 2 questions. Learn from
+              expertly crafted responses that demonstrate high band score
+              techniques.
             </p>
           </div>
 
@@ -596,16 +682,30 @@ export default function IELTSLandingPage(): any {
               {
                 task: "Task 1",
                 title: "Academic Writing Task 1",
-                description: "View sample answers for charts, graphs, maps, and process diagrams. Learn how to describe data effectively and achieve Band 7+ scores.",
-                questionTypes: ["Line Graph", "Bar Chart", "Pie Chart", "Table", "Map", "Process"],
+                description:
+                  "View sample answers for charts, graphs, maps, and process diagrams. Learn how to describe data effectively and achieve Band 7+ scores.",
+                questionTypes: [
+                  "Line Graph",
+                  "Bar Chart",
+                  "Pie Chart",
+                  "Table",
+                  "Map",
+                  "Process",
+                ],
                 link: "/writing-samples?task=1",
                 bgColor: "bg-blue-50",
               },
               {
                 task: "Task 2",
                 title: "Academic Writing Task 2",
-                description: "Study model essays for opinion, discussion, and problem-solution questions. Understand structure, vocabulary, and argumentation techniques.",
-                questionTypes: ["Agree/Disagree", "Discussion", "Problem/Solution", "Advantages/Disadvantages"],
+                description:
+                  "Study model essays for opinion, discussion, and problem-solution questions. Understand structure, vocabulary, and argumentation techniques.",
+                questionTypes: [
+                  "Agree/Disagree",
+                  "Discussion",
+                  "Problem/Solution",
+                  "Advantages/Disadvantages",
+                ],
                 link: "/writing-samples?task=2",
                 bgColor: "bg-purple-50",
               },
@@ -613,28 +713,40 @@ export default function IELTSLandingPage(): any {
               <div
                 key={index}
                 className={`${fadeInUp(`writing-sample-${index}`)}`}
-                ref={(el) => { sectionsRef.current[`writing-sample-${index}`] = el; }}
+                ref={(el) => {
+                  sectionsRef.current[`writing-sample-${index}`] = el;
+                }}
                 id={`writing-sample-${index}`}
               >
                 <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-gray-100 h-full transform hover:-translate-y-2">
                   <div className="flex items-center gap-4 mb-6">
-                    <div className={`w-16 h-16 ${item.bgColor} rounded-2xl flex items-center justify-center`}>
-                      <FaPencilAlt className={`text-3xl ${index === 0 ? 'text-blue-600' : 'text-purple-600'}`} />
+                    <div
+                      className={`w-16 h-16 ${item.bgColor} rounded-2xl flex items-center justify-center`}
+                    >
+                      <FaPencilAlt
+                        className={`text-3xl ${
+                          index === 0 ? "text-blue-600" : "text-purple-600"
+                        }`}
+                      />
                     </div>
                     <div>
                       <div className="badge badge-primary bg-red-600 border-0 text-white mb-2">
                         {item.task}
                       </div>
-                      <h3 className="text-2xl font-bold text-gray-900">{item.title}</h3>
+                      <h3 className="text-2xl font-bold text-gray-900">
+                        {item.title}
+                      </h3>
                     </div>
                   </div>
-                  
+
                   <p className="text-gray-600 mb-6 leading-relaxed">
                     {item.description}
                   </p>
 
                   <div className="mb-6">
-                    <p className="text-sm font-semibold text-gray-700 mb-3">Question Types:</p>
+                    <p className="text-sm font-semibold text-gray-700 mb-3">
+                      Question Types:
+                    </p>
                     <div className="flex flex-wrap gap-2">
                       {item.questionTypes.map((type, idx) => (
                         <span
@@ -659,7 +771,13 @@ export default function IELTSLandingPage(): any {
             ))}
           </div>
 
-          <div className={`text-center mt-12 ${fadeIn("writing-samples-cta")}`} ref={(el) => { sectionsRef.current["writing-samples-cta"] = el; }} id="writing-samples-cta">
+          <div
+            className={`text-center mt-12 ${fadeIn("writing-samples-cta")}`}
+            ref={(el) => {
+              sectionsRef.current["writing-samples-cta"] = el;
+            }}
+            id="writing-samples-cta"
+          >
             <Link
               href="/writing-samples"
               className="inline-flex items-center gap-2 px-8 py-4 bg-white border-2 border-red-600 text-red-600 font-semibold rounded-xl hover:bg-red-50 transform hover:-translate-y-1 transition-all duration-300 shadow-md hover:shadow-lg"
@@ -674,7 +792,9 @@ export default function IELTSLandingPage(): any {
       {/* Testimonials Section */}
       <section
         id="testimonials"
-        ref={(el) => { sectionsRef.current["testimonials"] = el; }}
+        ref={(el) => {
+          sectionsRef.current["testimonials"] = el;
+        }}
         className="py-24 px-4 bg-gradient-to-b from-gray-50 to-white"
       >
         <div className="container mx-auto max-w-7xl">
@@ -687,7 +807,8 @@ export default function IELTSLandingPage(): any {
               Trusted by Thousands of Students
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Real stories from real students who achieved their dream band scores
+              Real stories from real students who achieved their dream band
+              scores
             </p>
           </div>
 
@@ -721,7 +842,9 @@ export default function IELTSLandingPage(): any {
               <div
                 key={index}
                 className={`${fadeInUp(`testimonial-${index}`)}`}
-                ref={(el) => { sectionsRef.current[`testimonial-${index}`] = el; }}
+                ref={(el) => {
+                  sectionsRef.current[`testimonial-${index}`] = el;
+                }}
                 id={`testimonial-${index}`}
               >
                 <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 h-full transform hover:-translate-y-2">
@@ -738,13 +861,17 @@ export default function IELTSLandingPage(): any {
                       {testimonial.avatar}
                     </div>
                     <div>
-                      <h4 className="font-bold text-lg text-gray-900">{testimonial.name}</h4>
+                      <h4 className="font-bold text-lg text-gray-900">
+                        {testimonial.name}
+                      </h4>
                       <div className="flex items-center gap-2 mb-1">
                         <div className="badge badge-primary bg-red-600 border-0 text-white">
                           Band {testimonial.score}
                         </div>
                       </div>
-                      <p className="text-sm text-gray-500">{testimonial.role} • {testimonial.country}</p>
+                      <p className="text-sm text-gray-500">
+                        {testimonial.role} • {testimonial.country}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -756,7 +883,9 @@ export default function IELTSLandingPage(): any {
 
       {/* Final CTA Section */}
       <section
-        ref={(el) => { sectionsRef.current["final-cta"] = el; }}
+        ref={(el) => {
+          sectionsRef.current["final-cta"] = el;
+        }}
         id="final-cta"
         className="py-24 px-4 bg-gradient-to-r from-red-600 via-red-700 to-red-800 text-white relative overflow-hidden"
       >
@@ -771,7 +900,10 @@ export default function IELTSLandingPage(): any {
             Ready to Achieve Your IELTS Goals?
           </h2>
           <p className="text-xl md:text-2xl mb-10 max-w-3xl mx-auto opacity-95">
-            Join thousands of successful test-takers and start your journey to a higher band score today. <span className="font-bold">100% free</span> - no credit card, no trial period, just free practice.
+            Join thousands of successful test-takers and start your journey to a
+            higher band score today.{" "}
+            <span className="font-bold">100% free</span> - no credit card, no
+            trial period, just free practice.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link
