@@ -96,7 +96,7 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     // In your auth.ts, update the jwt callback
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account }: any) {
       if (user) {
         token.id = user.id;
         token.name = user.name;

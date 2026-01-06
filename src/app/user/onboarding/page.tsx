@@ -1,10 +1,11 @@
-"use client";
-
+import { Suspense } from "react";
 import OnboardingWizard from "@/components/Auth/OnboardingWizard";
+import Loader from "@/components/Common/Loader";
 
-const OnboardingPage = () => {
-  return <OnboardingWizard />;
-};
-
-export default OnboardingPage;
-
+export default function OnboardingPage() {
+  return (
+    <Suspense fallback={<Loader message="Loading onboarding..." />}>
+      <OnboardingWizard />
+    </Suspense>
+  );
+}

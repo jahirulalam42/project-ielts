@@ -59,15 +59,12 @@ export async function GET(request: Request) {
     const userId = session.user.id;
 
     // Get user's account creation date to filter out old notifications
-    const user = await UserModel.findById(userId).lean();
+    const user: any = await UserModel.findById(userId).lean();
     const userCreatedAt = user?.createdAt ? new Date(user.createdAt) : null;
 
     // Build query: only show notifications created after user's account was created
     const query: any = {
-      $or: [
-        { audience: "all" },
-        { audience: "user", targetUserId: userId },
-      ],
+      $or: [{ audience: "all" }, { audience: "user", targetUserId: userId }],
     };
 
     // If user has a creation date, only show notifications created after that
@@ -170,7 +167,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true, data: notification });
   } catch (error: any) {
     console.error("Notifications POST error:", error);
-    
+
     // Handle validation errors with more specific messages
     if (error.name === "ValidationError") {
       const validationErrors = Object.values(error.errors || {}).map(
@@ -179,13 +176,17 @@ export async function POST(request: Request) {
           const field = err.path || "field";
           const message = err.message || "Validation failed";
           // Make the error message more readable
-          return `${field.charAt(0).toUpperCase() + field.slice(1)}: ${message}`;
+          return `${
+            field.charAt(0).toUpperCase() + field.slice(1)
+          }: ${message}`;
         }
       );
       return NextResponse.json(
         {
           success: false,
-          error: validationErrors.join(". ") || "Validation failed. Please check your input.",
+          error:
+            validationErrors.join(". ") ||
+            "Validation failed. Please check your input.",
         },
         { status: 400 }
       );
@@ -200,9 +201,11 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json(
-      { success: false, error: "Failed to create notification. Please try again." },
+      {
+        success: false,
+        error: "Failed to create notification. Please try again.",
+      },
       { status: 500 }
     );
   }
 }
-

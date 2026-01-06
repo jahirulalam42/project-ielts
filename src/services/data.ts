@@ -77,7 +77,7 @@ export async function deleteUser(paramsId: any) {
 
 // Onboarding Functions
 
-export async function getOnboardingData(userId: string) {
+export async function getOnboardingData(userId: any) {
   try {
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/onboarding/${userId}`

@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema<User>(
     password: {
       type: String,
       // Make password optional for OAuth users
-      required: function () {
+      required: function (this: User) {
         return this.authProvider === "credentials";
       },
     },

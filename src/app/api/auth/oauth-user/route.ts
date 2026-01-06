@@ -114,7 +114,7 @@ export const POST = async (request: Request) => {
       },
       { status: isNewUser ? 201 : 200 }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error("OAuth User API Error:", error);
 
     if (error.code === 11000) {
