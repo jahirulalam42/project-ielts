@@ -1,4 +1,5 @@
 import React from "react";
+import FormattedInstructions from "./FormattedInstructions";
 
 const TrueFalse = ({
   instructions,
@@ -11,13 +12,14 @@ const TrueFalse = ({
   console.log("True false question", question);
   return (
     <div>
-      <h5 className="font-medium mb-2">True/False/Not Given</h5>
-      <div className="text-gray-700 text-sm mb-2">{instructions}</div>
+      {/* <h5 className="font-medium mb-2">True/False/Not Given</h5> */}
+      <FormattedInstructions instructions={instructions} />
 
       {question.map((q: any) => {
-        const answerObj = answers?.find(
-          (a: any) => a.questionId === q.question_number
-        );
+        // Handle both object and array formats for answers
+        const answerObj = Array.isArray(answers)
+          ? answers.find((a: any) => a.questionId === q.question_number)
+          : answers?.[`${q.question_number}`];
         const currentValue = answerObj ? answerObj.value : "";
         return (
           <div

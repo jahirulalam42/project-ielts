@@ -20,6 +20,8 @@ export interface ReadingTest extends mongoose.Document {
   type: String;
   duration: Number;
   parts: PartsObject[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const ReadingSchema = new mongoose.Schema<ReadingTest>({
@@ -50,6 +52,8 @@ const ReadingSchema = new mongoose.Schema<ReadingTest>({
       questions: Object,
     },
   ],
+}, {
+  timestamps: true // This adds createdAt and updatedAt fields automatically
 });
 
 export default (mongoose.models.ReadingTest as Model<ReadingTest>) ||

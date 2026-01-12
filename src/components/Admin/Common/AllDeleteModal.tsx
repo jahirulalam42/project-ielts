@@ -1,5 +1,6 @@
 import { deleteListeningTest } from "@/services/data";
 import React, { useState } from "react";
+import Loader from '@/components/Common/Loader';
 import { toast } from "react-toastify";
 
 const AllDeleteModal = ({
@@ -56,7 +57,7 @@ const AllDeleteModal = ({
               {isDeleting ? (
                 <>
                   Deleting...
-                  <span className="loading loading-spinner loading-xs ml-2"></span>
+                  <Loader message="" className="!w-4 !h-4 !border-2 ml-2" />
                 </>
               ) : (
                 "Delete Permanently"

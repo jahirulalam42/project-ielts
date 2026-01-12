@@ -41,13 +41,13 @@ const PartForm = ({
               question.question_number || 0
             );
           });
-        } else if ("multiple_mcq" in group && "instruction" in group) {
+        } else if ("multiple_mcq" in group) {
           group.multiple_mcq?.forEach((question) => {
             question.question_numbers?.forEach((num) => {
               maxQuestionNumber = Math.max(maxQuestionNumber, num || 0);
             });
           });
-        } else if ("box_matching" in group && "instruction" in group) {
+        } else if ("box_matching" in group) {
           group.box_matching?.forEach((question) => {
             question.questions?.forEach((q) => {
               maxQuestionNumber = Math.max(

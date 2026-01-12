@@ -1,4 +1,5 @@
 import React from "react";
+import FormattedInstructions from "./FormattedInstructions";
 
 const SubFillInTheBlanks = ({
   instructions,
@@ -8,10 +9,26 @@ const SubFillInTheBlanks = ({
   handleAnswerChange,
   handleQuestionFocus,
 }: any) => {
+  // Helper function to normalize answers for comparison
+  const normalizeAnswer = (answer: string): string => {
+    return answer
+      .trim() // Remove leading/trailing spaces
+      .replace(/\s+/g, " ") // Replace multiple spaces with single space
+      .toLowerCase(); // Optional: make case insensitive
+  };
+
+  // Check if answer is correct (with space normalization)
+  const isAnswerCorrect = (
+    userAnswer: string,
+    correctAnswer: string
+  ): boolean => {
+    return normalizeAnswer(userAnswer) === normalizeAnswer(correctAnswer);
+  };
+
   return (
     <div>
-      <h5 className="font-medium mb-2">Section Completion</h5>
-      <div className="text-gray-700 text-sm mb-2">{instructions}</div>
+      {/* <h5 className="font-medium mb-2">Section Completion</h5> */}
+      <FormattedInstructions instructions={instructions} />
       <div className="p-4 border border-black rounded-lg mb-2">
         {question.map((section: any, idx: number) => {
           let questionIndex = 0; // Track the correct question mapping
@@ -69,9 +86,11 @@ const SubFillInTheBlanks = ({
                                     e.target.value,
                                     "Fill in the Blanks",
                                     currentQuestion.answer,
-                                    e.target.value === currentQuestion.answer
-                                      ? true
-                                      : false
+                                    // Use the normalized comparison instead of direct comparison
+                                    isAnswerCorrect(
+                                      e.target.value,
+                                      currentQuestion.answer
+                                    )
                                   )
                                 }
                               />

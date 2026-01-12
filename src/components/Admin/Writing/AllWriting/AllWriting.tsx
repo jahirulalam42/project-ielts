@@ -1,6 +1,7 @@
 import { deleteWritingTest, updateWritingTest } from "@/services/data";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import Loader from '@/components/Common/Loader';
 import { ToastContainer, toast } from "react-toastify";
 import AllDeleteModal from "../../Common/AllDeleteModal";
 import EditWriting from "./EditWriting";
@@ -257,8 +258,7 @@ const AllWriting = ({ writingData, setWritingData }: any) => {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <span className="loading loading-spinner loading-lg"></span>
-        <p className="ml-4">Loading writing tests...</p>
+        <Loader message="Loading writing tests..." className="!flex-row gap-4 items-center !p-0" />
       </div>
     );
   }

@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import Loader from '@/components/Common/Loader';
 import { toast } from 'react-toastify';
 
 interface AudioFile {
@@ -87,7 +88,7 @@ const ListeningAudioManagement = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="loading loading-spinner loading-lg"></div>
+        <Loader message="Loading listening audios..." />
       </div>
     );
   }

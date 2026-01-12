@@ -1,22 +1,23 @@
 import React from "react";
+import FormattedInstructions from "./FormattedInstructions";
 
 const McqSingle = ({
   instructions,
   question,
   answers,
-  setAnswers,
   handleAnswerChange,
   handleQuestionFocus,
 }: any) => {
   return (
     <div>
-      <h5 className="font-medium mb-2">Multiple Choice Questions</h5>
-      <div className="text-gray-700 text-sm mb-2">{instructions}</div>
+      {/* <h5 className="font-medium mb-2">Multiple Choice Questions</h5> */}
+      <FormattedInstructions instructions={instructions} />
       <div className="p-4 border border-black rounded-lg mb-2">
         {question.map((q: any, idx: number) => {
-          const answerObj = answers?.find(
-            (a: any) => a.questionId === q.question_number
-          );
+          // Handle both object and array formats for answers
+          const answerObj = Array.isArray(answers)
+            ? answers.find((a: any) => a.questionId === q.question_number)
+            : answers?.[`${q.question_number}`];
           const currentValue = answerObj ? answerObj.value : "";
           return (
             <div key={idx} className="mb-4">
@@ -31,8 +32,8 @@ const McqSingle = ({
                     className="flex items-center space-x-2"
                   >
                     <input
-                      type={q.input_type === "checkbox" ? "checkbox" : "radio"}
-                      name={`mcq-${idx}`}
+                      type="checkbox"
+                      name={`mcq-${q.question_number}`}
                       className="checkbox checkbox-primary"
                       onFocus={() => handleQuestionFocus(q.question_number)}
                       onChange={(e) =>
@@ -44,7 +45,7 @@ const McqSingle = ({
                           option.label === q.answer[0] ? true : false
                         )
                       }
-                      value={currentValue}
+                      checked={currentValue === option.label}
                     />
                     <span>{option.value}</span>
                   </label>

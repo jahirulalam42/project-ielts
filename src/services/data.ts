@@ -75,6 +75,58 @@ export async function deleteUser(paramsId: any) {
   }
 }
 
+// Onboarding Functions
+
+export async function getOnboardingData(userId: any) {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/onboarding/${userId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching onboarding data:", error);
+    throw error;
+  }
+}
+
+export async function saveOnboardingData(userId: string, data: any) {
+  try {
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/onboarding/${userId}`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error saving onboarding data:", error);
+    throw error;
+  }
+}
+
+export async function updateOnboardingData(userId: string, updates: any) {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/onboarding/${userId}`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updates),
+      }
+    );
+
+    if (!response.ok) throw new Error("Failed to update onboarding data");
+
+    return await response.json();
+  } catch (error) {
+    console.error("Update onboarding error:", error);
+    throw error;
+  }
+}
+
 // Reading Questions
 
 export async function getReadingQuestions(paramsId: any) {

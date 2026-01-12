@@ -168,7 +168,7 @@ const QuestionGroupEditor = ({
       );
     }
 
-    // Handle legacy MCQ structure (mcq only - for backward compatibility)
+    // Handle MCQ structure (alternative format)
     if ("mcq" in group) {
       return (
         <MCQGroupForm
@@ -179,7 +179,7 @@ const QuestionGroupEditor = ({
       );
     }
 
-    // Handle legacy Multiple MCQ structure (multiple_mcq only - for backward compatibility)
+    // Handle Multiple MCQ structure (alternative format)
     if ("multiple_mcq" in group && !("instruction" in group)) {
       return (
         <MultipleMCQGroupForm
@@ -189,7 +189,7 @@ const QuestionGroupEditor = ({
       );
     }
 
-    // Handle legacy Box Matching structure (box_matching only - for backward compatibility)
+    // Handle Box Matching structure (alternative format)
     if ("box_matching" in group && !("instruction" in group)) {
       return (
         <BoxMatchingGroupForm
@@ -230,7 +230,7 @@ const QuestionGroupEditor = ({
     if ("map" in group) return "Map Questions";
     if ("fill_in_the_blanks_with_subtitle" in group)
       return "Fill in the Blanks";
-    if ("mcq" in group) return "Multiple Choice Questions (Legacy)";
+    if ("mcq" in group) return "Multiple Choice Questions";
     return "Unknown Question Type";
   };
 

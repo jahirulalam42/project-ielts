@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import Loader from '@/components/Common/Loader';
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { FaTrash, FaPlay, FaDownload, FaInfo } from "react-icons/fa";
@@ -94,7 +95,7 @@ const AudioManagementPage = () => {
     return (
       <div className="container mx-auto p-4">
         <div className="flex justify-center items-center min-h-screen">
-          <span className="loading loading-spinner loading-lg"></span>
+          <Loader message="Loading audios..." />
         </div>
       </div>
     );
@@ -182,7 +183,7 @@ const AudioManagementPage = () => {
                               title="Delete"
                             >
                               {deleting === file.public_id ? (
-                                <span className="loading loading-spinner loading-xs"></span>
+                                <Loader message="" className="!w-4 !h-4 !border-2" />
                               ) : (
                                 <FaTrash />
                               )}

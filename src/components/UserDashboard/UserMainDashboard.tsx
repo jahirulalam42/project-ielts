@@ -19,6 +19,8 @@ import {
   getAllReadingAnswers,
   getAllWritingAnswers,
   getAllSpeakingAnswers,
+  getSingleUser,
+  getOnboardingData,
 } from "@/services/data";
 import HistoryTable from "./HistoryTable";
 
@@ -47,6 +49,8 @@ const Dashboard = () => {
     speaking: any[];
   }>({ listening: [], reading: [], writing: [], speaking: [] });
   const [loading, setLoading] = useState(true);
+  const [userData, setUserData] = useState<any>(null);
+  const [onboardingData, setOnboardingData] = useState<any>(null);
 
   const skills = [
     { id: "listening", name: "Listening", color: "bg-purple-500" },
@@ -79,7 +83,33 @@ const Dashboard = () => {
         setLoading(false);
       }
     };
-    if (data?.user?.id) fetchAllSkills();
+    
+    const fetchUserData = async () => {
+      if (!data?.user?.id) return;
+      try {
+        const result = await getSingleUser(data.user.id);
+        setUserData(result?.data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+    
+    const fetchOnboardingData = async () => {
+      if (!data?.user?.id) return;
+      try {
+        const result = await getOnboardingData(data.user.id);
+        setOnboardingData(result?.data);
+      } catch (error) {
+        console.error("Error fetching onboarding data:", error);
+        setOnboardingData(null);
+      }
+    };
+    
+    if (data?.user?.id) {
+      fetchAllSkills();
+      fetchUserData();
+      fetchOnboardingData();
+    }
   }, [data?.user]);
 
   // For the selected skill, build testHistory for chart/table as before
@@ -215,9 +245,95 @@ const Dashboard = () => {
         ? "text-red-500"
         : "text-gray-500";
 
+  // Generate personalized welcome message
+  const getWelcomeMessage = () => {
+    if (!userData?.username) return "Welcome back!";
+    
+    const username = userData.username;
+    const messages: string[] = [];
+    
+    if (onboardingData?.status === "completed") {
+      if (onboardingData.targetScore) {
+        messages.push(`aiming for ${onboardingData.targetScore}`);
+      }
+      if (onboardingData.purpose) {
+        messages.push(`preparing for ${onboardingData.purpose.toLowerCase()}`);
+      }
+      if (onboardingData.hardestModule && Array.isArray(onboardingData.hardestModule) && onboardingData.hardestModule.length > 0) {
+        const modules = onboardingData.hardestModule.join(" and ");
+        messages.push(`focusing on ${modules}`);
+      }
+    }
+    
+    if (messages.length > 0) {
+      return `Welcome back, ${username}! You're ${messages.join(", ")}.`;
+    }
+    
+    return `Welcome back, ${username}!`;
+  };
+
   return (
     <div className="min-h-screen bg-indigo-50 p-4 md:p-6">
       <div className="max-w-7xl mx-auto">
+        {/* Personalized Welcome Message */}
+        {userData && (
+          <div className="bg-gradient-to-r from-red-600 to-red-800 rounded-2xl shadow-lg p-6 md:p-8 mb-6 text-white">
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <h2 className="text-2xl md:text-3xl font-bold mb-2">
+                  {getWelcomeMessage()}
+                </h2>
+                {onboardingData?.status === "completed" && (
+                  <div className="mt-4 flex flex-wrap gap-3">
+                    {onboardingData.targetScore && (
+                      <div className="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2">
+                        <span className="text-sm opacity-90">Target Score</span>
+                        <div className="text-lg font-semibold">{onboardingData.targetScore}</div>
+                      </div>
+                    )}
+                    {onboardingData.examDate || onboardingData.examDateType || onboardingData.customExamDate ? (
+                      <div className="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2">
+                        <span className="text-sm opacity-90">Exam Date</span>
+                        <div className="text-lg font-semibold">
+                          {onboardingData.customExamDate || onboardingData.examDateType || onboardingData.examDate || "Not set"}
+                        </div>
+                      </div>
+                    ) : null}
+                    {onboardingData.targetCountries && 
+                     Array.isArray(onboardingData.targetCountries) && 
+                     onboardingData.targetCountries.length > 0 && (
+                      <div className="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2">
+                        <span className="text-sm opacity-90">Target Region</span>
+                        <div className="text-lg font-semibold">
+                          {onboardingData.targetCountries.slice(0, 2).join(", ")}
+                          {onboardingData.targetCountries.length > 2 && ` +${onboardingData.targetCountries.length - 2}`}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+              <div className="hidden md:block ml-4">
+                <div className="bg-white/20 backdrop-blur-sm rounded-full p-4">
+                  <svg
+                    className="w-12 h-12"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
           <div>

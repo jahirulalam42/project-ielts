@@ -1,13 +1,21 @@
 "use client";
 import { useSession, signIn, signOut } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function LoginButton() {
   const { data: session } = useSession();
+  const router = useRouter();
+  
+  const handleSignOut = async () => {
+    await signOut({ redirect: false });
+    router.push("/");
+  };
+
   if (session) {
     return (
       <>
-        <button onClick={() => signOut()}>Sign out</button>
+        <button onClick={handleSignOut}>Sign out</button>
       </>
     );
   }

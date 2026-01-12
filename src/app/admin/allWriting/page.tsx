@@ -2,6 +2,7 @@
 import AllWriting from "@/components/Admin/Writing/AllWriting/AllWriting";
 import { getWritingTest } from "@/services/data";
 import React, { useEffect, useState } from "react";
+import Loader from '@/components/Common/Loader';
 
 const page = () => {
   const [writingData, setWritingData]: any = useState();
@@ -29,7 +30,7 @@ const page = () => {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <span className="loading loading-spinner loading-lg text-primary"></span>
+        <Loader message="Loading writing tests..." />
       </div>
     );
   }

@@ -7,6 +7,7 @@ import ListeningTest from '@/components/TestComponent/listeningTest/ListeningTes
 import Link from 'next/link';
 import { getListeningTestById } from '@/services/data';
 import { useEffect, useState } from 'react';
+import Loader from '@/components/Common/Loader';
 
 export default function ListeningTestPage() {
     const params = useParams();
@@ -37,9 +38,7 @@ export default function ListeningTestPage() {
 
     if (isLoading) {
         return (
-            <div className="flex justify-center items-center min-h-[400px]">
-                <span className="loading loading-spinner loading-lg text-primary"></span>
-            </div>
+            <Loader message="Loading listening test..." />
         );
     }
 

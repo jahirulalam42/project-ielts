@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import FormattedInstructions from "./FormattedInstructions";
 
 interface BoxMatchingProps {
   instructions?: any;
@@ -46,8 +47,8 @@ const BoxMatching: React.FC<BoxMatchingProps> = ({
 
   return (
     <div>
-      <h5 className="font-medium mb-2">Box Matching Questions</h5>
-      <div className="text-gray-700 text-sm mb-2">{instructions}</div>
+      {/* <h5 className="font-medium mb-2">Box Matching Questions</h5> */}
+      <FormattedInstructions instructions={instructions} />
       {question.map((q: any, idx: number) => (
         <div key={idx} className="p-4 border border-black rounded-lg mb-4">
           {/* Instructions */}
@@ -77,18 +78,18 @@ const BoxMatching: React.FC<BoxMatchingProps> = ({
             <h6 className="font-semibold mb-2 text-center">
               {q.question_title || "Questions"}
             </h6>
-            <div className="space-y-2">
+            <div className="space-y-3 max-w-2xl mx-auto">
               {q.questions.map((boxQuestion: any) => (
                 <div
                   key={boxQuestion.question_number}
-                  className="flex items-center space-x-2"
+                  className="grid grid-cols-[auto,1fr,auto] items-center gap-x-1"
                 >
-                  <span className="font-medium w-12">
+                  <span className="font-medium w-6 font-semibold text-Left">
                     {boxQuestion.question_number}.
                   </span>
-                  <span className="flex-1">{boxQuestion.topic}</span>
+                  <span className="text-sm">{boxQuestion.topic}</span>
                   <select
-                    className="select select-bordered select-sm w-20"
+                    className="select select-bordered select-sm w-24 justify-self-end"
                     value={selectedAnswers[boxQuestion.question_number] || ""}
                     onChange={(e) =>
                       handleAnswerSelect(
