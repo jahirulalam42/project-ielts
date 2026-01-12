@@ -116,10 +116,10 @@ const SignInForm = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12 font-sans text-slate-900 antialiased">
-      <div className="flex w-full max-w-[1100px] flex-col overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-slate-900/5 md:flex-row">
+    <div className="flex h-screen items-center justify-center bg-slate-50 px-4 py-4 font-sans text-slate-900 antialiased overflow-hidden">
+      <div className="flex w-full max-w-[1100px] flex-col overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-slate-900/5 md:flex-row h-[95vh] max-h-[900px]">
         {/* LEFT PANEL: Premium Dark Theme */}
-        <div className="relative flex w-full flex-col justify-between overflow-hidden bg-slate-900 px-10 py-12 text-slate-50 md:w-[42%] lg:px-14 lg:py-16">
+        <div className="relative flex w-full flex-col justify-between overflow-hidden bg-slate-900 px-8 py-8 text-slate-50 md:w-[42%] lg:px-10 lg:py-10">
           {/* Abstract Background Gradient */}
           <div className="absolute inset-0 bg-gradient-to-tr from-slate-900 via-slate-800 to-rose-900 opacity-80"></div>
           <div className="absolute right-[-100px] top-[-100px] h-[400px] w-[400px] rounded-full bg-rose-600/20 blur-[100px]"></div>
@@ -135,18 +135,18 @@ const SignInForm = () => {
             </div>
           </div>
 
-          <div className="relative z-10 mt-16 space-y-10">
+          <div className="relative z-10 mt-8 space-y-6">
             <div>
-              <h2 className="font-serif text-3xl font-semibold leading-tight text-white lg:text-4xl">
+              <h2 className="font-serif text-2xl font-semibold leading-tight text-white lg:text-3xl">
                 Master the language of opportunity.
               </h2>
-              <p className="mt-4 text-slate-300 lg:text-lg">
+              <p className="mt-3 text-sm text-slate-300 lg:text-base">
                 Adaptive mock tests, AI-powered feedback, and personalized study
                 plans designed to get you to Band 7+.
               </p>
             </div>
 
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-md">
               <div className="mb-4 flex gap-1 text-rose-400">
                 <svg
                   className="h-5 w-5"
@@ -184,13 +184,13 @@ const SignInForm = () => {
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                 </svg>
               </div>
-              <p className="mb-3 text-sm italic text-slate-300">
+              <p className="mb-2 text-xs italic text-slate-300">
                 "The Speaking AI feedback is incredibly accurate. It helped me
                 correct my pronunciation before the big day."
               </p>
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-slate-700"></div>
-                <div className="text-sm">
+              <div className="flex items-center gap-2">
+                <div className="h-8 w-8 rounded-full bg-slate-700"></div>
+                <div className="text-xs">
                   <p className="font-medium text-slate-200">Ahmed Al-Fayed</p>
                   <p className="text-xs text-slate-400">
                     Band 8.5 · General Training
@@ -200,25 +200,25 @@ const SignInForm = () => {
             </div>
           </div>
 
-          <div className="relative z-10 hidden text-xs text-slate-400 md:block">
+          <div className="relative z-10 hidden text-xs text-slate-400 md:block mt-4">
             Trusted by 12,000+ aspirants worldwide.
           </div>
         </div>
 
         {/* RIGHT PANEL: Clean Minimalist Form */}
-        <div className="flex w-full flex-col justify-center bg-white px-8 py-12 md:w-[58%] lg:px-16 lg:py-16">
+        <div className="flex w-full flex-col justify-center bg-white px-6 py-6 md:w-[58%] lg:px-12 lg:py-8 overflow-y-auto custom-scrollbar">
           <div className="mx-auto w-full max-w-md">
-            <div className="mb-8">
-              <h1 className="text-2xl font-bold tracking-tight text-slate-900 md:text-3xl">
+            <div className="mb-6">
+              <h1 className="text-2xl font-bold tracking-tight text-slate-900 md:text-2xl">
                 Welcome back
               </h1>
-              <p className="mt-2 text-sm text-slate-500">
+              <p className="mt-1.5 text-sm text-slate-500">
                 Please enter your details to access your dashboard.
               </p>
             </div>
 
             {error && (
-              <div className="mb-6 flex items-start rounded-lg border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">
+              <div className="mb-4 flex items-start rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800">
                 <svg
                   className="mr-2 mt-0.5 h-5 w-5 flex-shrink-0 text-rose-500"
                   fill="none"
@@ -238,7 +238,7 @@ const SignInForm = () => {
               </div>
             )}
 
-            <form onSubmit={onSubmit} className="space-y-6">
+            <form onSubmit={onSubmit} className="space-y-4">
               <div className="space-y-1">
                 <label
                   htmlFor="email"
@@ -249,7 +249,7 @@ const SignInForm = () => {
                 <input
                   id="email"
                   type="email"
-                  className="block w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-900 shadow-sm transition-all placeholder:text-slate-400 focus:border-rose-500 focus:ring-rose-500/20 focus:outline-none"
+                  className="block w-full rounded-lg border border-slate-300 px-3 py-2.5 text-slate-900 shadow-sm transition-all placeholder:text-slate-400 focus:border-rose-500 focus:ring-rose-500/20 focus:outline-none text-sm"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -268,7 +268,7 @@ const SignInForm = () => {
                   </label>
                   <Link
                     href="/user/forgot-password"
-                    className="text-sm font-medium text-slate-500 hover:text-rose-600 transition-colors"
+                    className="text-xs font-medium text-slate-500 hover:text-rose-600 transition-colors"
                   >
                     Forgot password?
                   </Link>
@@ -276,7 +276,7 @@ const SignInForm = () => {
                 <input
                   id="password"
                   type="password"
-                  className="block w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-900 shadow-sm transition-all placeholder:text-slate-400 focus:border-rose-500 focus:ring-rose-500/20 focus:outline-none"
+                  className="block w-full rounded-lg border border-slate-300 px-3 py-2.5 text-slate-900 shadow-sm transition-all placeholder:text-slate-400 focus:border-rose-500 focus:ring-rose-500/20 focus:outline-none text-sm"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -288,7 +288,7 @@ const SignInForm = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex w-full items-center justify-center rounded-lg border border-transparent bg-slate-900 px-4 py-3 text-base font-medium text-white shadow-xl shadow-slate-900/10 transition-all hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70"
+                className="flex w-full items-center justify-center rounded-lg border border-transparent bg-slate-900 px-4 py-2.5 text-sm font-medium text-white shadow-xl shadow-slate-900/10 transition-all hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70"
               >
                 {loading ? (
                   <div className="flex items-center gap-2">
@@ -321,11 +321,11 @@ const SignInForm = () => {
             </form>
 
             {/* Divider */}
-            <div className="relative my-8">
+            <div className="relative my-5">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-slate-200"></div>
               </div>
-              <div className="relative flex justify-center text-sm">
+              <div className="relative flex justify-center text-xs">
                 <span className="bg-white px-2 text-slate-400">
                   Or continue with
                 </span>
@@ -333,11 +333,11 @@ const SignInForm = () => {
             </div>
 
             {/* Social Providers */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2.5">
               <button
                 type="button"
                 onClick={() => handleOAuthSignIn("google")}
-                className="group relative flex w-full items-center justify-center rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 transition-all hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900 focus:outline-none"
+                className="group relative flex w-full items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 transition-all hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900 focus:outline-none"
               >
                 <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24">
                   <path
@@ -363,7 +363,7 @@ const SignInForm = () => {
               <button
                 type="button"
                 onClick={() => handleOAuthSignIn("linkedin")}
-                className="group relative flex w-full items-center justify-center rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 transition-all hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900 focus:outline-none"
+                className="group relative flex w-full items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 transition-all hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900 focus:outline-none"
               >
                 <svg
                   className="mr-2 h-5 w-5"
@@ -376,7 +376,7 @@ const SignInForm = () => {
               </button>
             </div>
 
-            <p className="mt-8 text-center text-sm text-slate-500">
+            <p className="mt-5 text-center text-xs text-slate-500">
               Don't have an account?{" "}
               <Link
                 href="/user/signup"

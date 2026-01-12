@@ -28,6 +28,7 @@ const Footer = () => {
     {
       title: "Resources",
       links: [
+        { text: "Band Score Calculator", href: "/band-score-calculator" },
         "IELTS Guide",
         "Tips & Strategies",
         "Vocabulary Builder",
@@ -108,16 +109,19 @@ const Footer = () => {
                   {section.title}
                 </h4>
                 <ul className="space-y-3">
-                  {section.links.map((link, idx) => (
-                    <li key={idx}>
-                      <a
-                        href="#"
-                        className="text-gray-600 hover:text-red-600 transition-colors"
-                      >
-                        {link}
-                      </a>
-                    </li>
-                  ))}
+                  {section.links.map((link, idx) => {
+                    const linkObj = typeof link === "string" ? { text: link, href: "#" } : link;
+                    return (
+                      <li key={idx}>
+                        <a
+                          href={linkObj.href}
+                          className="text-gray-600 hover:text-red-600 transition-colors"
+                        >
+                          {linkObj.text}
+                        </a>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             ))}

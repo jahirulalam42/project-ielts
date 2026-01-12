@@ -293,17 +293,18 @@ ul[class*="country-list"],
 }
 
 .phone-input-dropdown::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #fef2f2;
   border-radius: 4px;
 }
 
 .phone-input-dropdown::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
   border-radius: 4px;
+  border: 1px solid #fef2f2;
 }
 
 .phone-input-dropdown::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: linear-gradient(180deg, #dc2626 0%, #b91c1c 100%);
 }
 
 .phone-input-dropdown .country {
@@ -417,9 +418,114 @@ ul[class*="country-list"],
   animation: bounce-slow 3s ease-in-out infinite;
 }
 
-/* Smooth scroll behavior */
+/* Smooth scroll behavior - Main page scrollbar */
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: smooth !important;
+}
+
+body {
+  scroll-behavior: smooth !important;
+}
+
+/* Custom Scrollbar Styling - Red/IELTS Theme for Main Page */
+/* Webkit browsers (Chrome, Safari, Edge) - Main page scrollbar */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 12px !important;
+  height: 12px !important;
+}
+
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track {
+  background: #f1f5f9 !important;
+  border-radius: 6px !important;
+}
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
+  background: #dc2626 !important;
+  background-image: linear-gradient(180deg, #dc2626 0%, #b91c1c 100%) !important;
+  border-radius: 6px !important;
+  border: 2px solid #f1f5f9 !important;
+  transition: background 0.3s ease !important;
+}
+
+html::-webkit-scrollbar-thumb:hover,
+body::-webkit-scrollbar-thumb:hover {
+  background: #b91c1c !important;
+  background-image: linear-gradient(180deg, #b91c1c 0%, #991b1b 100%) !important;
+}
+
+html::-webkit-scrollbar-thumb:active,
+body::-webkit-scrollbar-thumb:active {
+  background: #991b1b !important;
+  background-image: linear-gradient(180deg, #991b1b 0%, #7f1d1d 100%) !important;
+}
+
+/* Global scrollbar styling for all elements */
+::-webkit-scrollbar {
+  width: 10px !important;
+  height: 10px !important;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9 !important;
+  border-radius: 5px !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #dc2626 !important;
+  background-image: linear-gradient(180deg, #dc2626 0%, #b91c1c 100%) !important;
+  border-radius: 5px !important;
+  border: 2px solid #f1f5f9 !important;
+  transition: background 0.3s ease !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b91c1c !important;
+  background-image: linear-gradient(180deg, #b91c1c 0%, #991b1b 100%) !important;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: #991b1b !important;
+  background-image: linear-gradient(180deg, #991b1b 0%, #7f1d1d 100%) !important;
+}
+
+/* Firefox - Main page scrollbar */
+html {
+  scrollbar-width: thin !important;
+  scrollbar-color: #dc2626 #f1f5f9 !important;
+}
+
+body {
+  scrollbar-width: thin !important;
+  scrollbar-color: #dc2626 #f1f5f9 !important;
+}
+
+/* Smooth scrolling for all scrollable elements */
+* {
+  scroll-behavior: smooth !important;
+}
+
+/* Custom scrollbar for specific containers */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #fef2f2;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
+  border-radius: 4px;
+  border: 1px solid #fef2f2;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #dc2626 0%, #b91c1c 100%);
 }
 
 /* No results message */
@@ -428,4 +534,79 @@ html {
   text-align: center !important;
   color: #6b7280 !important;
   font-size: 0.875rem !important;
+}
+
+/* Force Red Scrollbar - Applied Last to Override Everything */
+html {
+  scrollbar-width: thin !important;
+  scrollbar-color: #dc2626 #f1f5f9 !important;
+}
+
+html::-webkit-scrollbar {
+  width: 12px !important;
+  height: 12px !important;
+  -webkit-appearance: none !important;
+}
+
+html::-webkit-scrollbar-track {
+  background: #f1f5f9 !important;
+  border-radius: 6px !important;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+html::-webkit-scrollbar-thumb {
+  background-color: #dc2626 !important;
+  background: #dc2626 !important;
+  background-image: linear-gradient(180deg, #dc2626 0%, #b91c1c 100%) !important;
+  border-radius: 6px !important;
+  border: 2px solid #f1f5f9 !important;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background-color: #b91c1c !important;
+  background: #b91c1c !important;
+  background-image: linear-gradient(180deg, #b91c1c 0%, #991b1b 100%) !important;
+}
+
+html::-webkit-scrollbar-thumb:active {
+  background-color: #991b1b !important;
+  background: #991b1b !important;
+  background-image: linear-gradient(180deg, #991b1b 0%, #7f1d1d 100%) !important;
+}
+
+body {
+  scrollbar-width: thin !important;
+  scrollbar-color: #dc2626 #f1f5f9 !important;
+}
+
+body::-webkit-scrollbar {
+  width: 12px !important;
+  height: 12px !important;
+  -webkit-appearance: none !important;
+}
+
+body::-webkit-scrollbar-track {
+  background: #f1f5f9 !important;
+  border-radius: 6px !important;
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: #dc2626 !important;
+  background: #dc2626 !important;
+  background-image: linear-gradient(180deg, #dc2626 0%, #b91c1c 100%) !important;
+  border-radius: 6px !important;
+  border: 2px solid #f1f5f9 !important;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background-color: #b91c1c !important;
+  background: #b91c1c !important;
+  background-image: linear-gradient(180deg, #b91c1c 0%, #991b1b 100%) !important;
+}
+
+body::-webkit-scrollbar-thumb:active {
+  background-color: #991b1b !important;
+  background: #991b1b !important;
+  background-image: linear-gradient(180deg, #991b1b 0%, #7f1d1d 100%) !important;
 }

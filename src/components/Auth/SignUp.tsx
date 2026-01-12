@@ -72,10 +72,10 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12 font-sans text-slate-900 antialiased">
-      <div className="flex w-full max-w-[1100px] flex-col overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-slate-900/5 md:flex-row">
+    <div className="flex h-screen items-center justify-center bg-slate-50 px-4 py-4 font-sans text-slate-900 antialiased overflow-hidden">
+      <div className="flex w-full max-w-[1100px] flex-col overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-slate-900/5 md:flex-row h-[95vh] max-h-[900px]">
         {/* LEFT PANEL: Premium Dark Theme */}
-        <div className="relative flex w-full flex-col justify-between overflow-hidden bg-slate-900 px-10 py-12 text-slate-50 md:w-[42%] lg:px-14 lg:py-16">
+        <div className="relative flex w-full flex-col justify-between overflow-hidden bg-slate-900 px-8 py-8 text-slate-50 md:w-[42%] lg:px-10 lg:py-10">
           {/* Abstract Background Gradient */}
           <div className="absolute inset-0 bg-gradient-to-tr from-slate-900 via-slate-800 to-rose-900 opacity-80"></div>
           <div className="absolute right-[-100px] top-[-100px] h-[400px] w-[400px] rounded-full bg-rose-600/20 blur-[100px]"></div>
@@ -91,18 +91,18 @@ const SignUp = () => {
             </div>
           </div>
 
-          <div className="relative z-10 mt-16 space-y-10">
+          <div className="relative z-10 mt-8 space-y-6">
             <div>
-              <h2 className="font-serif text-3xl font-semibold leading-tight text-white lg:text-4xl">
+              <h2 className="font-serif text-2xl font-semibold leading-tight text-white lg:text-3xl">
                 Your journey to Band 7+ starts here.
               </h2>
-              <p className="mt-4 text-slate-300 lg:text-lg">
+              <p className="mt-3 text-sm text-slate-300 lg:text-base">
                 Join a community of 12,000+ aspirants and access tools designed
                 to fast-track your success.
               </p>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div className="flex items-start gap-3 text-slate-300">
                 <div className="mt-1 flex h-5 w-5 items-center justify-center rounded-full bg-rose-500/20 text-rose-400">
                   <svg
@@ -166,30 +166,30 @@ const SignUp = () => {
             </div>
           </div>
 
-          <div className="relative z-10 hidden text-xs text-slate-400 md:block">
+          <div className="relative z-10 hidden text-xs text-slate-400 md:block mt-4">
             Prepare for the future. Prepare with us.
           </div>
         </div>
 
         {/* RIGHT PANEL: Form */}
-        <div className="flex w-full flex-col justify-center bg-white px-8 py-12 md:w-[58%] lg:px-16 lg:py-16">
+        <div className="flex w-full flex-col justify-center bg-white px-6 py-6 md:w-[58%] lg:px-12 lg:py-8 overflow-y-auto custom-scrollbar">
           <div className="mx-auto w-full max-w-md">
-            <div className="mb-6">
-              <h1 className="text-2xl font-bold tracking-tight text-slate-900 md:text-3xl">
+            <div className="mb-5">
+              <h1 className="text-2xl font-bold tracking-tight text-slate-900 md:text-2xl">
                 Create your account
               </h1>
-              <p className="mt-2 text-sm text-slate-500">
+              <p className="mt-1.5 text-sm text-slate-500">
                 Get started today for free. No credit card required.
               </p>
             </div>
 
             {/* Sign Up Method Tabs */}
-            <div className="mb-6">
+            <div className="mb-4">
               <div className="flex border-b border-slate-200">
                 <button
                   type="button"
                   onClick={() => setActiveMethod("oauth")}
-                  className={`flex-1 pb-3 text-sm font-medium transition-colors ${
+                  className={`flex-1 pb-2.5 text-xs font-medium transition-colors ${
                     activeMethod === "oauth"
                       ? "border-b-2 border-rose-500 text-slate-900"
                       : "text-slate-500 hover:text-slate-700"
@@ -200,7 +200,7 @@ const SignUp = () => {
                 <button
                   type="button"
                   onClick={() => setActiveMethod("email")}
-                  className={`flex-1 pb-3 text-sm font-medium transition-colors ${
+                  className={`flex-1 pb-2.5 text-xs font-medium transition-colors ${
                     activeMethod === "email"
                       ? "border-b-2 border-rose-500 text-slate-900"
                       : "text-slate-500 hover:text-slate-700"
@@ -212,7 +212,7 @@ const SignUp = () => {
             </div>
 
             {error && (
-              <div className="mb-6 flex items-start rounded-lg border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">
+              <div className="mb-4 flex items-start rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800">
                 <svg
                   className="mr-2 mt-0.5 h-5 w-5 flex-shrink-0 text-rose-500"
                   fill="none"
@@ -234,16 +234,16 @@ const SignUp = () => {
 
             {/* OAuth Section */}
             {activeMethod === "oauth" && (
-              <div className="space-y-4">
-                <p className="text-center text-sm text-slate-500">
+              <div className="space-y-3">
+                <p className="text-center text-xs text-slate-500">
                   Sign up instantly with your existing account
                 </p>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2.5">
                   <button
                     type="button"
                     onClick={() => handleOAuthSignIn("google")}
-                    className="group relative flex w-full items-center justify-center rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 transition-all hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900 focus:outline-none"
+                    className="group relative flex w-full items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 transition-all hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900 focus:outline-none"
                   >
                     <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24">
                       <path
@@ -268,7 +268,7 @@ const SignUp = () => {
                   <button
                     type="button"
                     onClick={() => handleOAuthSignIn("linkedin")}
-                    className="group relative flex w-full items-center justify-center rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 transition-all hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900 focus:outline-none"
+                    className="group relative flex w-full items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 transition-all hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900 focus:outline-none"
                   >
                     <svg
                       className="mr-2 h-5 w-5"
@@ -285,8 +285,8 @@ const SignUp = () => {
 
             {/* Email Sign Up Section */}
             {activeMethod === "email" && (
-              <div className="space-y-6">
-                <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="space-y-1">
                     <label
                       htmlFor="email"
@@ -302,7 +302,7 @@ const SignUp = () => {
                       onChange={handleChange}
                       required
                       placeholder="name@example.com"
-                      className="block w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-900 shadow-sm transition-all placeholder:text-slate-400 focus:border-rose-500 focus:ring-rose-500/20 focus:outline-none"
+                      className="block w-full rounded-lg border border-slate-300 px-3 py-2.5 text-slate-900 shadow-sm transition-all placeholder:text-slate-400 focus:border-rose-500 focus:ring-rose-500/20 focus:outline-none text-sm"
                       autoComplete="email"
                     />
                   </div>
@@ -328,14 +328,14 @@ const SignUp = () => {
                       required
                       minLength={8}
                       placeholder="Create a strong password"
-                      className="block w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-900 shadow-sm transition-all placeholder:text-slate-400 focus:border-rose-500 focus:ring-rose-500/20 focus:outline-none"
+                      className="block w-full rounded-lg border border-slate-300 px-3 py-2.5 text-slate-900 shadow-sm transition-all placeholder:text-slate-400 focus:border-rose-500 focus:ring-rose-500/20 focus:outline-none text-sm"
                       autoComplete="new-password"
                     />
                   </div>
 
                   <button
                     type="submit"
-                    className="flex w-full items-center justify-center rounded-lg border border-transparent bg-slate-900 px-4 py-3 text-base font-medium text-white shadow-xl shadow-slate-900/10 transition-all hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70"
+                    className="flex w-full items-center justify-center rounded-lg border border-transparent bg-slate-900 px-4 py-2.5 text-sm font-medium text-white shadow-xl shadow-slate-900/10 transition-all hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70"
                     disabled={loading}
                   >
                     {loading ? (
@@ -388,8 +388,8 @@ const SignUp = () => {
             )}
 
             {/* Switch to Sign In */}
-            <div className="mt-8 pt-6 border-t border-slate-100">
-              <p className="text-center text-sm text-slate-500">
+            <div className="mt-5 pt-4 border-t border-slate-100">
+              <p className="text-center text-xs text-slate-500">
                 Already have an account?{" "}
                 <Link
                   href="/user/signin"
