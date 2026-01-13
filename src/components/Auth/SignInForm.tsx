@@ -141,8 +141,7 @@ const SignInForm = () => {
                 Master the language of opportunity.
               </h2>
               <p className="mt-3 text-sm text-slate-300 lg:text-base">
-                Adaptive mock tests, AI-powered feedback, and personalized study
-                plans designed to get you to Band 7+.
+              Practice computer-based IELTS with real exam-style tests and track your progress toward a higher band.
               </p>
             </div>
 
@@ -185,8 +184,7 @@ const SignInForm = () => {
                 </svg>
               </div>
               <p className="mb-2 text-xs italic text-slate-300">
-                "The Speaking AI feedback is incredibly accurate. It helped me
-                correct my pronunciation before the big day."
+                "You answered most factual and detail-based questions correctly. You performed well in identifying key information but struggled slightly with inference-based questions."
               </p>
               <div className="flex items-center gap-2">
                 <div className="h-8 w-8 rounded-full bg-slate-700"></div>

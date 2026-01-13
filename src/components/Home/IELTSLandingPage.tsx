@@ -82,7 +82,7 @@ export default function IELTSLandingPage(): any {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-gray-50 to-white text-base-content overflow-x-hidden">
       {/* Hero Section */}
-      <section className="relative pt-20 pb-32 px-4 overflow-hidden">
+      <section className="relative pt-12 pb-12 px-4 overflow-hidden">
         {/* Background decorative elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-20 -left-20 w-96 h-96 bg-red-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
@@ -512,7 +512,7 @@ export default function IELTSLandingPage(): any {
 
                   {/* Connecting Arrow */}
                   {index < 3 && (
-                    <div className="hidden lg:block absolute top-1/2 -right-4 z-0">
+                    <div className="hidden lg:block absolute top-1/2 -right-7 z-0">
                       <FaArrowRight className="text-gray-300 text-2xl" />
                     </div>
                   )}

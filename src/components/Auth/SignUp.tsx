@@ -120,7 +120,7 @@ const SignUp = () => {
                   </svg>
                 </div>
                 <p className="text-sm">
-                  AI-powered writing corrections for faster feedback.
+                Realistic mock tests that simulate the computer-based IELTS exam.
                 </p>
               </div>
               <div className="flex items-start gap-3 text-slate-300">
@@ -140,7 +140,7 @@ const SignUp = () => {
                   </svg>
                 </div>
                 <p className="text-sm">
-                  Personalized study plans based on your weak areas.
+                Performance summaries to understand your strengths and weaknesses.
                 </p>
               </div>
               <div className="flex items-start gap-3 text-slate-300">
@@ -160,7 +160,7 @@ const SignUp = () => {
                   </svg>
                 </div>
                 <p className="text-sm">
-                  Unlimited mock tests simulating the real exam environment.
+                Unlimited practice to improve through consistency
                 </p>
               </div>
             </div>
