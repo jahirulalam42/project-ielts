@@ -46,6 +46,62 @@ export interface WritingSample {
   };
 }
 
+export interface BlogPost {
+  sys: {
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+  };
+  fields: {
+    title: string;
+    slug: string;
+    createdDate: string;
+    author: string;
+    category: string;
+    featuredImage?: {
+      fields: {
+        file: {
+          url: string;
+          details: {
+            image: {
+              width: number;
+              height: number;
+            };
+          };
+        };
+      };
+    };
+    metaTags?: string[];
+    metaDescription?: string;
+    body: {
+      content: Array<{
+        data: {};
+        content: Array<{
+          data: {};
+          marks: Array<{ type: string }>;
+          value: string;
+          nodeType: string;
+        }>;
+        nodeType: string;
+      }>;
+    };
+    image?: {
+      fields: {
+        file: {
+          url: string;
+          details: {
+            image: {
+              width: number;
+              height: number;
+            };
+          };
+        };
+      };
+    };
+    recommendedPostsCategory?: any;
+  };
+}
+
 export const getWritingSamples = async (): Promise<WritingSample[]> => {
   try {
     // First, let's check if we can connect to Contentful
@@ -145,6 +201,35 @@ export const getWritingSampleBySlug = async (slug: string): Promise<WritingSampl
       } as WritingSample;
     }
     
+    return null;
+  }
+};
+
+export const getBlogPosts = async (): Promise<BlogPost[]> => {
+  try {
+    const response = await client.getEntries({
+      content_type: 'blogPage',
+      order: ['-fields.createdDate'],
+    });
+
+    return response.items as unknown as BlogPost[];
+  } catch (error) {
+    console.error('Error fetching blog posts:', error);
+    return [];
+  }
+};
+
+export const getBlogPostBySlug = async (slug: string): Promise<BlogPost | null> => {
+  try {
+    const response = await client.getEntries({
+      content_type: 'blogPage',
+      'fields.slug': slug,
+      limit: 1,
+    });
+
+    return (response.items[0] as unknown as BlogPost) || null;
+  } catch (error) {
+    console.error('Error fetching blog post:', error);
     return null;
   }
 };
