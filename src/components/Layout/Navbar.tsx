@@ -64,7 +64,8 @@ const Navbar: React.FC = () => {
         !pathName.startsWith("/test/writing/") &&
         !pathName.startsWith("/test/listening/") &&
         !pathName.startsWith("/admin") &&
-        !pathName.startsWith("/user/") &&
+        // Show navbar on sign-in page, hide for other /user routes
+        !(pathName.startsWith("/user/") && pathName !== "/user/signin") &&
         !pathName.startsWith("/writing-samples/") && (
           <nav className="bg-gray-200 border-b border-gray-100 shadow-sm">
             <div className="container mx-auto px-4">
