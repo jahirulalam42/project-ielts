@@ -53,10 +53,10 @@ const Dashboard = () => {
   const [onboardingData, setOnboardingData] = useState<any>(null);
 
   const skills = [
-    { id: "listening", name: "Listening", color: "bg-purple-500" },
-    { id: "reading", name: "Reading", color: "bg-blue-500" },
-    { id: "writing", name: "Writing", color: "bg-green-500" },
-    { id: "speaking", name: "Speaking", color: "bg-orange-500" },
+    { id: "listening", name: "Listening", color: "bg-red-500" },
+    { id: "reading", name: "Reading", color: "bg-red-500" },
+    { id: "writing", name: "Writing", color: "bg-red-500" },
+    { id: "speaking", name: "Speaking", color: "bg-red-500" },
   ];
 
   useEffect(() => {
@@ -376,27 +376,21 @@ const Dashboard = () => {
               <div
                 key={skill.id}
                 onClick={() => setSelectedSkill(skill.id as any)}
-                className={`cursor-pointer rounded-xl shadow-md p-5 text-white transition-all duration-300 ${isSelected
-                  ? "ring-4 ring-white ring-opacity-80 transform scale-[1.02]"
-                  : "opacity-70 hover:opacity-100"
-                  } ${skill.id === "listening"
-                    ? "bg-gradient-to-br from-purple-600 to-indigo-700"
-                    : skill.id === "reading"
-                      ? "bg-gradient-to-br from-blue-600 to-cyan-700"
-                      : skill.id === "writing"
-                        ? "bg-gradient-to-br from-green-600 to-emerald-700"
-                        : "bg-gradient-to-br from-orange-600 to-amber-700"
-                  }`}
+                className={`cursor-pointer rounded-xl shadow-lg p-5 transition-all duration-500 ease-out hover:shadow-2xl hover:-translate-y-1 ${
+                  isSelected
+                    ? "ring-4 ring-red-300 ring-opacity-60 transform scale-105 shadow-2xl bg-gradient-to-br from-red-600 via-red-700 to-red-800 text-white"
+                    : "bg-white border-2 border-gray-200 hover:border-red-300 hover:scale-105 text-gray-800"
+                }`}
               >
                 <div className="flex justify-between items-start">
-                  <div>
-                    <div className="text-sm opacity-80">{skill.name}</div>
-                    <div className="text-3xl font-bold mt-1">{highestScore}</div>
-                    <div className="text-sm mt-2">{scoreLabel}</div>
+                  <div className="transform transition-transform duration-300 hover:scale-105">
+                    <div className={`text-sm font-medium ${isSelected ? "opacity-90" : "text-gray-600"}`}>{skill.name}</div>
+                    <div className={`text-3xl font-bold mt-1 transform transition-all duration-300 hover:scale-110 ${isSelected ? "text-white" : "text-gray-900"}`}>{highestScore}</div>
+                    <div className={`text-sm mt-2 ${isSelected ? "opacity-80 text-white" : "text-gray-500"}`}>{scoreLabel}</div>
                   </div>
                   {isSelected && (
-                    <div className="bg-white bg-opacity-20 rounded-full p-1">
-                      <div className="bg-white rounded-full w-2 h-2"></div>
+                    <div className="bg-white bg-opacity-30 rounded-full p-2">
+                      <div className="bg-white rounded-full w-3 h-3"></div>
                     </div>
                   )}
                 </div>
@@ -419,15 +413,11 @@ const Dashboard = () => {
                     {skills.map((s) => (
                       <button
                         key={s.id}
-                        className={`btn btn-sm ${selectedSkill === s.id ? "" : "btn-outline"
-                          } ${s.id === "listening"
-                            ? "btn-primary"
-                            : s.id === "reading"
-                              ? "btn-info"
-                              : s.id === "writing"
-                                ? "btn-success"
-                                : "btn-warning"
-                          }`}
+                        className={`btn btn-sm transition-all duration-300 transform hover:scale-105 hover:shadow-md ${
+                          selectedSkill === s.id
+                            ? "bg-red-600 hover:bg-red-700 text-white border-red-600 shadow-lg"
+                            : "btn-outline border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400"
+                        }`}
                         onClick={() => setSelectedSkill(s.id as any)}
                       >
                         {s.name}
@@ -436,9 +426,9 @@ const Dashboard = () => {
                   </div>
                 </div>
 
-                <div className="mt-4 p-3 bg-indigo-50 rounded-lg">
-                  <h3 className="font-medium text-sm mb-2">Data Info</h3>
-                  <p className="text-xs text-gray-600">
+                <div className="mt-4 p-3 bg-red-50 rounded-lg border border-red-100">
+                  <h3 className="font-medium text-sm mb-2 text-red-800">Data Info</h3>
+                  <p className="text-xs text-red-600">
                     Showing latest 10 tests for {selectedSkill} skill
                   </p>
                 </div>
