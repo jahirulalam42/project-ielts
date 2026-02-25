@@ -1,10 +1,10 @@
 "use client";
-import { FormEvent, useState } from "react";
+import React, { FormEvent, useState } from "react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { postUser } from "@/services/data";
 import { ToastContainer, toast } from "react-toastify";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface SignUpData {
   email: string;
@@ -14,6 +14,9 @@ interface SignUpData {
 
 const SignUp = () => {
   const router = useRouter();
+  const params = useSearchParams();
+  const callbackUrl = params.get("callbackUrl") || "/";
+
   const [form, setForm] = useState<SignUpData>({
     email: "",
     password: "",
@@ -65,134 +68,91 @@ const SignUp = () => {
   const handleOAuthSignIn = (provider: string) => {
     signIn(provider, {
       callbackUrl: `/api/auth/oauth-redirect?callbackUrl=${encodeURIComponent(
-        "/user/onboarding"
+        callbackUrl,
       )}`,
       redirect: true,
     });
   };
 
   return (
-    <div className="flex h-screen items-center justify-center bg-slate-50 px-4 py-4 font-sans text-slate-900 antialiased overflow-hidden">
-      <div className="flex w-full max-w-[1100px] flex-col overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-slate-900/5 md:flex-row h-[95vh] max-h-[900px]">
-        {/* LEFT PANEL: Premium Dark Theme */}
-        <div className="relative flex w-full flex-col justify-between overflow-hidden bg-slate-900 px-8 py-8 text-slate-50 md:w-[42%] lg:px-10 lg:py-10">
-          {/* Abstract Background Gradient */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-slate-900 via-slate-800 to-rose-900 opacity-80"></div>
-          <div className="absolute right-[-100px] top-[-100px] h-[400px] w-[400px] rounded-full bg-rose-600/20 blur-[100px]"></div>
-
-          <div className="relative z-10">
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-rose-600 text-white shadow-lg shadow-rose-900/40">
-                <span className="font-serif text-xl font-bold">I</span>
-              </div>
-              <span className="text-xl font-medium tracking-wide text-slate-100">
-                IELTS Workspace
-              </span>
-            </div>
+    <div className="flex h-screen w-screen items-center justify-center bg-gray-50 font-sans antialiased">
+      <div className="flex w-full h-full overflow-hidden bg-white md:flex-row">
+        {/* LEFT PANEL: Simple Branding */}
+        <div className="relative hidden md:flex w-full md:w-[45%] flex-col items-center justify-center bg-gradient-to-br from-red-700 to-red-800 text-white px-12">
+          {/* Simple curved divider */}
+          <div className="absolute right-0 top-0 h-full w-24 pointer-events-none z-10">
+            <svg
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+              className="h-full w-full"
+            >
+              <path d="M100,0 C50,15 50,85 100,100 L100,0 Z" fill="white" />
+            </svg>
           </div>
 
-          <div className="relative z-10 mt-8 space-y-6">
-            <div>
-              <h2 className="font-serif text-2xl font-semibold leading-tight text-white lg:text-3xl">
-                Your journey to Band 7+ starts here.
-              </h2>
-              <p className="mt-3 text-sm text-slate-300 lg:text-base">
-                Join a community of 12,000+ aspirants and access tools designed
-                to fast-track your success.
-              </p>
-            </div>
-
-            <div className="space-y-3">
-              <div className="flex items-start gap-3 text-slate-300">
-                <div className="mt-1 flex h-5 w-5 items-center justify-center rounded-full bg-rose-500/20 text-rose-400">
-                  <svg
-                    className="h-3 w-3"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="3"
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                </div>
-                <p className="text-sm">
-                Realistic mock tests that simulate the computer-based IELTS exam.
-                </p>
-              </div>
-              <div className="flex items-start gap-3 text-slate-300">
-                <div className="mt-1 flex h-5 w-5 items-center justify-center rounded-full bg-rose-500/20 text-rose-400">
-                  <svg
-                    className="h-3 w-3"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="3"
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                </div>
-                <p className="text-sm">
-                Performance summaries to understand your strengths and weaknesses.
-                </p>
-              </div>
-              <div className="flex items-start gap-3 text-slate-300">
-                <div className="mt-1 flex h-5 w-5 items-center justify-center rounded-full bg-rose-500/20 text-rose-400">
-                  <svg
-                    className="h-3 w-3"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="3"
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                </div>
-                <p className="text-sm">
-                Unlimited practice to improve through consistency
-                </p>
+          {/* Content */}
+          <div className="text-center max-w-md z-0">
+            <div className="mb-8 flex justify-center">
+              <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+                <span className="font-bold text-3xl">I</span>
               </div>
             </div>
-          </div>
 
-          <div className="relative z-10 hidden text-xs text-slate-400 md:block mt-4">
-            Prepare for the future. Prepare with us.
+            <h2 className="text-3xl font-bold mb-4">IELTS Workspace</h2>
+            <p className="text-red-100 text-base leading-relaxed">
+              Your comprehensive platform for IELTS preparation and practice
+            </p>
           </div>
         </div>
 
-        {/* RIGHT PANEL: Form */}
-        <div className="flex w-full flex-col justify-center bg-white px-6 py-6 md:w-[58%] lg:px-12 lg:py-8 overflow-y-auto custom-scrollbar">
+        {/* RIGHT PANEL: Sign Up Form */}
+        <div className="flex w-full md:w-[55%] flex-col justify-center px-8 py-12 md:px-16 lg:px-24 overflow-y-auto">
           <div className="mx-auto w-full max-w-md">
-            <div className="mb-5">
-              <h1 className="text-2xl font-bold tracking-tight text-slate-900 md:text-2xl">
-                Create your account
+            {/* Header */}
+            <div className="mb-8">
+              <h1 className="text-3xl font-bold text-gray-900">
+                Create Account
               </h1>
-              <p className="mt-1.5 text-sm text-slate-500">
-                Get started today for free. No credit card required.
+              <p className="mt-2 text-gray-600">
+                Start your IELTS preparation journey today
               </p>
             </div>
 
+            {/* Error Alert */}
+            {error && (
+              <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4">
+                <div className="flex items-start">
+                  <svg
+                    className="h-5 w-5 text-red-400 mt-0.5 mr-3"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <div className="text-sm text-red-800">
+                    <p className="font-medium">Error</p>
+                    <p className="mt-1">{error}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Sign Up Method Tabs */}
-            <div className="mb-4">
-              <div className="flex border-b border-slate-200">
+            <div className="mb-6">
+              <div className="flex border-b border-gray-200">
                 <button
                   type="button"
                   onClick={() => setActiveMethod("oauth")}
-                  className={`flex-1 pb-2.5 text-xs font-medium transition-colors ${
+                  className={`flex-1 pb-3 text-sm font-medium transition-colors ${
                     activeMethod === "oauth"
-                      ? "border-b-2 border-rose-500 text-slate-900"
-                      : "text-slate-500 hover:text-slate-700"
+                      ? "border-b-2 border-red-700 text-gray-900"
+                      : "text-gray-500 hover:text-gray-700"
                   }`}
                 >
                   Quick Sign Up
@@ -200,10 +160,10 @@ const SignUp = () => {
                 <button
                   type="button"
                   onClick={() => setActiveMethod("email")}
-                  className={`flex-1 pb-2.5 text-xs font-medium transition-colors ${
+                  className={`flex-1 pb-3 text-sm font-medium transition-colors ${
                     activeMethod === "email"
-                      ? "border-b-2 border-rose-500 text-slate-900"
-                      : "text-slate-500 hover:text-slate-700"
+                      ? "border-b-2 border-red-700 text-gray-900"
+                      : "text-gray-500 hover:text-gray-700"
                   }`}
                 >
                   With Email
@@ -211,39 +171,19 @@ const SignUp = () => {
               </div>
             </div>
 
-            {error && (
-              <div className="mb-4 flex items-start rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800">
-                <svg
-                  className="mr-2 mt-0.5 h-5 w-5 flex-shrink-0 text-rose-500"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                <div>
-                  <span className="font-semibold">Sign up failed</span>
-                  <p className="mt-1">{error}</p>
-                </div>
-              </div>
-            )}
-
             {/* OAuth Section */}
             {activeMethod === "oauth" && (
-              <div className="space-y-3">
-                <p className="text-center text-xs text-slate-500">
+              <div className="space-y-6">
+                <p className="text-center text-sm text-gray-500">
                   Sign up instantly with your existing account
                 </p>
 
-                <div className="grid grid-cols-2 gap-2.5">
+                {/* Social Login */}
+                <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
                     onClick={() => handleOAuthSignIn("google")}
-                    className="group relative flex w-full items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 transition-all hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900 focus:outline-none"
+                    className="flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-gray-200"
                   >
                     <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24">
                       <path
@@ -265,10 +205,11 @@ const SignUp = () => {
                     </svg>
                     Google
                   </button>
+
                   <button
                     type="button"
                     onClick={() => handleOAuthSignIn("linkedin")}
-                    className="group relative flex w-full items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 transition-all hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900 focus:outline-none"
+                    className="flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-gray-200"
                   >
                     <svg
                       className="mr-2 h-5 w-5"
@@ -280,125 +221,146 @@ const SignUp = () => {
                     LinkedIn
                   </button>
                 </div>
+
+                <div className="relative my-6">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-300"></div>
+                  </div>
+                  <div className="relative flex justify-center text-sm">
+                    <span className="bg-white px-3 text-gray-500">
+                      Or use email
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveMethod("email")}
+                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-gray-200"
+                >
+                  Continue with Email
+                </button>
               </div>
             )}
 
             {/* Email Sign Up Section */}
             {activeMethod === "email" && (
-              <div className="space-y-4">
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="space-y-1">
+              <form onSubmit={handleSubmit} className="space-y-5">
+                {/* Email */}
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-gray-700 mb-1.5"
+                  >
+                    Email Address
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    name="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    className="block w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 focus:border-red-700 focus:ring-2 focus:ring-red-700 focus:outline-none"
+                    required
+                    placeholder="you@university.edu"
+                    autoComplete="email"
+                  />
+                </div>
+
+                {/* Password */}
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
                     <label
-                      htmlFor="email"
-                      className="block text-sm font-medium text-slate-700"
+                      htmlFor="password"
+                      className="block text-sm font-medium text-gray-700"
                     >
-                      Email Address
+                      Password
                     </label>
-                    <input
-                      id="email"
-                      type="email"
-                      name="email"
-                      value={form.email}
-                      onChange={handleChange}
-                      required
-                      placeholder="name@example.com"
-                      className="block w-full rounded-lg border border-slate-300 px-3 py-2.5 text-slate-900 shadow-sm transition-all placeholder:text-slate-400 focus:border-rose-500 focus:ring-rose-500/20 focus:outline-none text-sm"
-                      autoComplete="email"
-                    />
+                    <span className="text-sm text-gray-500">
+                      Min. 8 characters
+                    </span>
                   </div>
+                  <input
+                    id="password"
+                    type="password"
+                    name="password"
+                    value={form.password}
+                    onChange={handleChange}
+                    className="block w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 focus:border-red-700 focus:ring-2 focus:ring-red-700 focus:outline-none"
+                    required
+                    minLength={8}
+                    placeholder="Create a strong password"
+                    autoComplete="new-password"
+                  />
+                </div>
 
-                  <div className="space-y-1">
-                    <div className="flex items-center justify-between">
-                      <label
-                        htmlFor="password"
-                        className="block text-sm font-medium text-slate-700"
+                {/* Terms */}
+                <div className="text-xs text-gray-600">
+                  <p className="text-center">
+                    By creating an account, you agree to our{" "}
+                    <Link
+                      href="/terms"
+                      className="font-medium text-red-700 hover:text-red-800"
+                    >
+                      Terms
+                    </Link>{" "}
+                    and{" "}
+                    <Link
+                      href="/privacy"
+                      className="font-medium text-red-700 hover:text-red-800"
+                    >
+                      Privacy Policy
+                    </Link>
+                  </p>
+                </div>
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full rounded-lg bg-red-700 px-4 py-3 text-white font-medium hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-700/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  {loading ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <svg
+                        className="h-5 w-5 animate-spin"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
                       >
-                        Password
-                      </label>
-                      <span className="text-xs text-slate-400">
-                        Min. 8 characters
-                      </span>
-                    </div>
-                    <input
-                      id="password"
-                      type="password"
-                      name="password"
-                      value={form.password}
-                      onChange={handleChange}
-                      required
-                      minLength={8}
-                      placeholder="Create a strong password"
-                      className="block w-full rounded-lg border border-slate-300 px-3 py-2.5 text-slate-900 shadow-sm transition-all placeholder:text-slate-400 focus:border-rose-500 focus:ring-rose-500/20 focus:outline-none text-sm"
-                      autoComplete="new-password"
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="flex w-full items-center justify-center rounded-lg border border-transparent bg-slate-900 px-4 py-2.5 text-sm font-medium text-white shadow-xl shadow-slate-900/10 transition-all hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70"
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <div className="flex items-center gap-2">
-                        <svg
-                          className="h-5 w-5 animate-spin text-slate-300"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          ></circle>
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                          ></path>
-                        </svg>
-                        Creating Account...
-                      </div>
-                    ) : (
-                      "Create Account"
-                    )}
-                  </button>
-                </form>
-
-                <p className="text-center text-xs text-slate-500">
-                  By creating an account, you agree to our{" "}
-                  <Link
-                    href="/terms"
-                    className="font-semibold text-slate-900 hover:text-rose-600"
-                  >
-                    Terms
-                  </Link>{" "}
-                  and{" "}
-                  <Link
-                    href="/privacy"
-                    className="font-semibold text-slate-900 hover:text-rose-600"
-                  >
-                    Privacy Policy
-                  </Link>
-                </p>
-              </div>
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      Creating Account...
+                    </span>
+                  ) : (
+                    "Create Account"
+                  )}
+                </button>
+              </form>
             )}
 
-            {/* Switch to Sign In */}
-            <div className="mt-5 pt-4 border-t border-slate-100">
-              <p className="text-center text-xs text-slate-500">
-                Already have an account?{" "}
-                <Link
-                  href="/user/signin"
-                  className="font-semibold text-slate-900 transition-colors hover:text-rose-600"
-                >
-                  Sign in
-                </Link>
-              </p>
-            </div>
+            {/* Sign In Link */}
+            <p className="mt-8 text-center text-sm text-gray-600">
+              Already have an account?{" "}
+              <Link
+                href="/user/signin"
+                className="font-medium text-red-700 hover:text-red-800"
+              >
+                Sign in
+              </Link>
+            </p>
           </div>
         </div>
       </div>

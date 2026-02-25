@@ -17,7 +17,7 @@ const SignInForm = () => {
   const handleOAuthSignIn = (provider: string) => {
     signIn(provider, {
       callbackUrl: `/api/auth/oauth-redirect?callbackUrl=${encodeURIComponent(
-        callbackUrl
+        callbackUrl,
       )}`,
       redirect: true,
     });
@@ -47,7 +47,6 @@ const SignInForm = () => {
       return;
     }
 
-    // Authentication Logic Preserved
     try {
       const userResponse = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/login`,
@@ -55,7 +54,7 @@ const SignInForm = () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password }),
-        }
+        },
       );
 
       const userData = await userResponse.json();
@@ -96,7 +95,7 @@ const SignInForm = () => {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password }),
-          }
+          },
         );
         const userData = await userResponse.json();
         const userRole = userData?.data?.[0]?.role;
@@ -116,157 +115,106 @@ const SignInForm = () => {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center bg-slate-50 px-4 py-4 font-sans text-slate-900 antialiased overflow-hidden">
-      <div className="flex w-full max-w-[1100px] flex-col overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-slate-900/5 md:flex-row h-[95vh] max-h-[900px]">
-        {/* LEFT PANEL: Premium Dark Theme */}
-        <div className="relative flex w-full flex-col justify-between overflow-hidden bg-slate-900 px-8 py-8 text-slate-50 md:w-[42%] lg:px-10 lg:py-10">
-          {/* Abstract Background Gradient */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-slate-900 via-slate-800 to-rose-900 opacity-80"></div>
-          <div className="absolute right-[-100px] top-[-100px] h-[400px] w-[400px] rounded-full bg-rose-600/20 blur-[100px]"></div>
-
-          <div className="relative z-10">
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-rose-600 text-white shadow-lg shadow-rose-900/40">
-                <span className="font-serif text-xl font-bold">I</span>
-              </div>
-              <span className="text-xl font-medium tracking-wide text-slate-100">
-                IELTS Workspace
-              </span>
-            </div>
+    <div className="flex h-screen w-screen items-center justify-center bg-gray-50 font-sans antialiased">
+      <div className="flex w-full h-full overflow-hidden bg-white md:flex-row">
+        {/* LEFT PANEL: Simple Branding */}
+        <div className="relative hidden md:flex w-full md:w-[45%] flex-col items-center justify-center bg-gradient-to-br from-red-700 to-red-800 text-white px-12">
+          {/* Simple curved divider */}
+          <div className="absolute right-0 top-0 h-full w-24 pointer-events-none z-10">
+            <svg
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+              className="h-full w-full"
+            >
+              <path d="M100,0 C50,15 50,85 100,100 L100,0 Z" fill="white" />
+            </svg>
           </div>
 
-          <div className="relative z-10 mt-8 space-y-6">
-            <div>
-              <h2 className="font-serif text-2xl font-semibold leading-tight text-white lg:text-3xl">
-                Master the language of opportunity.
-              </h2>
-              <p className="mt-3 text-sm text-slate-300 lg:text-base">
-              Practice computer-based IELTS with real exam-style tests and track your progress toward a higher band.
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-md">
-              <div className="mb-4 flex gap-1 text-rose-400">
-                <svg
-                  className="h-5 w-5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-                <svg
-                  className="h-5 w-5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-                <svg
-                  className="h-5 w-5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-                <svg
-                  className="h-5 w-5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-                <svg
-                  className="h-5 w-5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-              </div>
-              <p className="mb-2 text-xs italic text-slate-300">
-                "You answered most factual and detail-based questions correctly. You performed well in identifying key information but struggled slightly with inference-based questions."
-              </p>
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-full bg-slate-700"></div>
-                <div className="text-xs">
-                  <p className="font-medium text-slate-200">Ahmed Al-Fayed</p>
-                  <p className="text-xs text-slate-400">
-                    Band 8.5 · General Training
-                  </p>
-                </div>
+          {/* Content */}
+          <div className="text-center max-w-md z-0">
+            <div className="mb-8 flex justify-center">
+              <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+                <span className="font-bold text-3xl">I</span>
               </div>
             </div>
-          </div>
 
-          <div className="relative z-10 hidden text-xs text-slate-400 md:block mt-4">
-            Trusted by 12,000+ aspirants worldwide.
+            <h2 className="text-3xl font-bold mb-4">IELTS Workspace</h2>
+            <p className="text-red-100 text-base leading-relaxed">
+              Your comprehensive platform for IELTS preparation and practice
+            </p>
           </div>
         </div>
 
-        {/* RIGHT PANEL: Clean Minimalist Form */}
-        <div className="flex w-full flex-col justify-center bg-white px-6 py-6 md:w-[58%] lg:px-12 lg:py-8 overflow-y-auto custom-scrollbar">
+        {/* RIGHT PANEL: Sign In Form */}
+        <div className="flex w-full md:w-[55%] flex-col justify-center px-8 py-12 md:px-16 lg:px-24 overflow-y-auto">
           <div className="mx-auto w-full max-w-md">
-            <div className="mb-6">
-              <h1 className="text-2xl font-bold tracking-tight text-slate-900 md:text-2xl">
-                Welcome back
-              </h1>
-              <p className="mt-1.5 text-sm text-slate-500">
-                Please enter your details to access your dashboard.
+            {/* Header */}
+            <div className="mb-8">
+              <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
+              <p className="mt-2 text-gray-600">
+                Sign in to continue your learning journey
               </p>
             </div>
 
+            {/* Error Alert */}
             {error && (
-              <div className="mb-4 flex items-start rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800">
-                <svg
-                  className="mr-2 mt-0.5 h-5 w-5 flex-shrink-0 text-rose-500"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                <div>
-                  <span className="font-semibold">Access Error</span>
-                  <p className="mt-1">{error}</p>
+              <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4">
+                <div className="flex items-start">
+                  <svg
+                    className="h-5 w-5 text-red-400 mt-0.5 mr-3"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <div className="text-sm text-red-800">
+                    <p className="font-medium">Error</p>
+                    <p className="mt-1">{error}</p>
+                  </div>
                 </div>
               </div>
             )}
 
-            <form onSubmit={onSubmit} className="space-y-4">
-              <div className="space-y-1">
+            {/* Form */}
+            <form onSubmit={onSubmit} className="space-y-5">
+              {/* Email */}
+              <div>
                 <label
                   htmlFor="email"
-                  className="block text-sm font-medium text-slate-700"
+                  className="block text-sm font-medium text-gray-700 mb-1.5"
                 >
                   Email Address
                 </label>
                 <input
                   id="email"
                   type="email"
-                  className="block w-full rounded-lg border border-slate-300 px-3 py-2.5 text-slate-900 shadow-sm transition-all placeholder:text-slate-400 focus:border-rose-500 focus:ring-rose-500/20 focus:outline-none text-sm"
+                  className="block w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 focus:border-red-700 focus:ring-2 focus:ring-red-700 focus:outline-none"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  placeholder="name@university.com"
+                  placeholder="you@university.edu"
                   autoComplete="email"
                 />
               </div>
 
-              <div className="space-y-1">
-                <div className="flex items-center justify-between">
+              {/* Password */}
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
                   <label
                     htmlFor="password"
-                    className="block text-sm font-medium text-slate-700"
+                    className="block text-sm font-medium text-gray-700"
                   >
                     Password
                   </label>
                   <Link
                     href="/user/forgot-password"
-                    className="text-xs font-medium text-slate-500 hover:text-rose-600 transition-colors"
+                    className="text-sm font-medium text-red-700 hover:text-red-800"
                   >
                     Forgot password?
                   </Link>
@@ -274,7 +222,7 @@ const SignInForm = () => {
                 <input
                   id="password"
                   type="password"
-                  className="block w-full rounded-lg border border-slate-300 px-3 py-2.5 text-slate-900 shadow-sm transition-all placeholder:text-slate-400 focus:border-rose-500 focus:ring-rose-500/20 focus:outline-none text-sm"
+                  className="block w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 focus:border-red-700 focus:ring-2 focus:ring-red-700 focus:outline-none"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -283,15 +231,16 @@ const SignInForm = () => {
                 />
               </div>
 
+              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={loading}
-                className="flex w-full items-center justify-center rounded-lg border border-transparent bg-slate-900 px-4 py-2.5 text-sm font-medium text-white shadow-xl shadow-slate-900/10 transition-all hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70"
+                className="w-full rounded-lg bg-red-700 px-4 py-3 text-white font-medium hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-700/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {loading ? (
-                  <div className="flex items-center gap-2">
+                  <span className="flex items-center justify-center gap-2">
                     <svg
-                      className="h-5 w-5 animate-spin text-slate-300"
+                      className="h-5 w-5 animate-spin"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -310,8 +259,8 @@ const SignInForm = () => {
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       ></path>
                     </svg>
-                    Authenticating...
-                  </div>
+                    Signing in...
+                  </span>
                 ) : (
                   "Sign In"
                 )}
@@ -319,23 +268,23 @@ const SignInForm = () => {
             </form>
 
             {/* Divider */}
-            <div className="relative my-5">
+            <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-slate-200"></div>
+                <div className="w-full border-t border-gray-300"></div>
               </div>
-              <div className="relative flex justify-center text-xs">
-                <span className="bg-white px-2 text-slate-400">
+              <div className="relative flex justify-center text-sm">
+                <span className="bg-white px-3 text-gray-500">
                   Or continue with
                 </span>
               </div>
             </div>
 
-            {/* Social Providers */}
-            <div className="grid grid-cols-2 gap-2.5">
+            {/* Social Login */}
+            <div className="grid grid-cols-2 gap-3">
               <button
                 type="button"
                 onClick={() => handleOAuthSignIn("google")}
-                className="group relative flex w-full items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 transition-all hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900 focus:outline-none"
+                className="flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-gray-200"
               >
                 <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24">
                   <path
@@ -361,7 +310,7 @@ const SignInForm = () => {
               <button
                 type="button"
                 onClick={() => handleOAuthSignIn("linkedin")}
-                className="group relative flex w-full items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 transition-all hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900 focus:outline-none"
+                className="flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-gray-200"
               >
                 <svg
                   className="mr-2 h-5 w-5"
@@ -374,13 +323,14 @@ const SignInForm = () => {
               </button>
             </div>
 
-            <p className="mt-5 text-center text-xs text-slate-500">
+            {/* Sign Up Link */}
+            <p className="mt-8 text-center text-sm text-gray-600">
               Don't have an account?{" "}
               <Link
                 href="/user/signup"
-                className="font-semibold text-slate-900 transition-colors hover:text-rose-600"
+                className="font-medium text-red-700 hover:text-red-800"
               >
-                Create an account
+                Create account
               </Link>
             </p>
           </div>

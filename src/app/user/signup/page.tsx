@@ -1,12 +1,10 @@
-import SignUp from "@/components/Auth/SignUp";
-import React from "react";
+"use client";
 
-const page = () => {
-  return (
-    <div>
-      <SignUp />
-    </div>
-  );
+import AuthAnimated from "@/components/Auth/AuthAnimated";
+
+const Page = () => {
+  return <AuthAnimated initialMode="signup" />;
 };
 
-export default page;
+export default Page;
+

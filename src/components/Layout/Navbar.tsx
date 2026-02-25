@@ -59,14 +59,20 @@ const Navbar: React.FC = () => {
     fetchSingleUser();
   }, [data]);
 
+  const hideForUserRoute =
+    pathName.startsWith("/user/") &&
+    pathName !== "/user/signin" &&
+    pathName !== "/user/signin/" &&
+    pathName !== "/user/signup" &&
+    pathName !== "/user/signup/";
+
   return (
     <div>
       {!pathName.startsWith("/test/reading/") &&
         !pathName.startsWith("/test/writing/") &&
         !pathName.startsWith("/test/listening/") &&
         !pathName.startsWith("/admin") &&
-        // Show navbar on sign-in page, hide for other /user routes
-        !(pathName.startsWith("/user/") && pathName !== "/user/signin") &&
+        !hideForUserRoute &&
         !pathName.startsWith("/writing-samples/") && (
           <nav className="bg-gray-200 border-b border-gray-100 shadow-sm">
             <div className="container mx-auto px-4">

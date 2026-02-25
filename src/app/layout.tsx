@@ -35,9 +35,6 @@ export default function RootLayout({
             <Navbar />
           </div>
           <div>{children}</div>
-          <div>
-            <Footer />
-          </div>
         </body>
       </SessionWrapper>
     </html>
