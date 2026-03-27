@@ -3,8 +3,8 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import LoginButton from "../Auth/LoginButton";
-import { usePathname } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { usePathname, useRouter } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
 import { Session } from "next-auth";
 import { getSingleUser } from "@/services/data";
 import userImage from "../../../public/images/user.jpg";
@@ -25,6 +25,7 @@ const Navbar: React.FC = () => {
   const pathName = usePathname();
   const { data } = useSession();
   const [userData, setUserData]: any = useState();
+  const router = useRouter();
 
   // Navigation links data
   const navLinks = [
@@ -240,51 +241,91 @@ const Navbar: React.FC = () => {
                   {/* User profile dropdown */}
                   {data ? (
                     <div className="dropdown dropdown-end">
+                      <button
+                        tabIndex={0}
+                        type="button"
+                        className="flex items-center gap-2 rounded-full border border-rose-100 bg-white/90 px-2 py-1 shadow-sm hover:border-rose-300 hover:bg-rose-50/80 hover:shadow-md transition-all duration-200"
+                      >
+                        <div className="relative h-9 w-9 rounded-full overflow-hidden border border-rose-100 bg-rose-50">
+                          <img
+                            alt="User profile"
+                            src={userData?.image || userImage.src}
+                            className="h-full w-full object-cover"
+                          />
+                          <span className="absolute inset-0 rounded-full ring-1 ring-white/40" />
+                        </div>
+                        <div className="hidden md:flex flex-col items-start leading-tight max-w-[120px]">
+                          <span className="text-xs font-semibold text-gray-800 truncate">
+                            {data.user.name}
+                          </span>
+                        </div>
+                        <svg
+                          className="hidden md:block h-3.5 w-3.5 text-gray-500"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M5 7.5L10 12.5L15 7.5"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </button>
                       <div
                         tabIndex={0}
-                        role="button"
-                        className="btn btn-ghost btn-circle avatar transition-all duration-300 hover:scale-110 active:scale-95"
+                        className="dropdown-content mt-3 w-64 rounded-2xl border border-rose-100 bg-white/95 p-3 shadow-[0_18px_45px_rgba(248,113,113,0.18)] backdrop-blur-md z-[100]"
                       >
-                        <div className="w-10 rounded-full bg-gradient-to-br from-red-100 to-red-200 border-2 border-red-300 shadow-md transition-all duration-300 hover:shadow-lg hover:border-red-400 ring-2 ring-transparent hover:ring-red-200">
-                          <img
-                            alt="User Profile"
-                            src={userData?.image || userImage.src}
-                            className="object-cover rounded-full"
-                          />
+                        <div className="flex items-center gap-3 pb-3 border-b border-rose-100/80 mb-3">
+                          <div className="h-9 w-9 rounded-full overflow-hidden border border-rose-100 bg-rose-50">
+                            <img
+                              alt="User profile"
+                              src={userData?.image || userImage.src}
+                              className="h-full w-full object-cover"
+                            />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-sm font-semibold text-gray-900 truncate">
+                              {data.user.name}
+                            </p>
+                            <p className="text-xs text-gray-500 truncate">
+                              {data.user.email}
+                            </p>
+                          </div>
                         </div>
+
+                        <ul className="space-y-1.5 text-sm">
+                          <li>
+                            <Link
+                              href="/userDashboard"
+                              className="flex items-center justify-between rounded-xl px-3 py-2 text-gray-700 hover:bg-rose-50 hover:text-rose-700 transition-colors duration-150"
+                            >
+                              <span>Dashboard</span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              href="/profile"
+                              className="flex items-center justify-between rounded-xl px-3 py-2 text-gray-700 hover:bg-rose-50 hover:text-rose-700 transition-colors duration-150"
+                            >
+                              <span>Profile</span>
+                            </Link>
+                          </li>
+                        </ul>
+
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            await signOut({ redirect: false });
+                            router.push("/");
+                          }}
+                          className="mt-3 w-full rounded-xl px-3 py-2 text-left text-sm text-gray-700 hover:bg-rose-50 hover:text-rose-700 transition-colors duration-150 border-t border-rose-100/80"
+                        >
+                          Sign out
+                        </button>
                       </div>
-                      <ul
-                        tabIndex={0}
-                        className="menu menu-sm dropdown-content mt-3 z-[100] p-2 shadow-xl bg-white/95 backdrop-blur-md rounded-xl w-52 border border-gray-200/50 animate-in fade-in slide-in-from-top-2 duration-300"
-                      >
-                        <li className="menu-title">
-                          <span className="text-gray-700 font-semibold">Hello, {data.user.name}</span>
-                        </li>
-                        <div className="divider my-1"></div>
-                        <li>
-                          <Link 
-                            href="/userDashboard"
-                            className="transition-all duration-300 transform hover:scale-105 hover:translate-x-1 hover:text-red-700"
-                          >
-                            Dashboard
-                          </Link>
-                        </li>
-                        <li>
-                          <Link 
-                            href="/profile"
-                            className="transition-all duration-300 transform hover:scale-105 hover:translate-x-1 hover:text-red-700"
-                          >
-                            Profile
-                          </Link>
-                        </li>
-                        {/* <li>
-                          <Link href="/settings">Settings</Link>
-                        </li> */}
-                        <div className="divider my-1"></div>
-                        <li>
-                          <LoginButton />
-                        </li>
-                      </ul>
                     </div>
                   ) : (
                     <div className="hidden sm:block">

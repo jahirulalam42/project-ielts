@@ -5,6 +5,7 @@ const McqSingle = ({
   instructions,
   question,
   answers,
+  readOnly = false,
   handleAnswerChange,
   handleQuestionFocus,
 }: any) => {
@@ -36,15 +37,17 @@ const McqSingle = ({
                       name={`mcq-${q.question_number}`}
                       className="checkbox checkbox-primary"
                       onFocus={() => handleQuestionFocus(q.question_number)}
-                      onChange={(e) =>
+                      disabled={readOnly}
+                      onChange={() => {
+                        if (readOnly) return;
                         handleAnswerChange(
                           q.question_number,
                           option.label,
                           "MCQ Single",
                           q.answer,
                           option.label === q.answer[0] ? true : false
-                        )
-                      }
+                        );
+                      }}
                       checked={currentValue === option.label}
                     />
                     <span>{option.value}</span>

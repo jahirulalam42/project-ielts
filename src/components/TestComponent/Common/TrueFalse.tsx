@@ -5,6 +5,7 @@ const TrueFalse = ({
   instructions,
   question,
   answers,
+  readOnly = false,
   handleAnswerChange,
   setAnswers,
   handleQuestionFocus,
@@ -35,19 +36,22 @@ const TrueFalse = ({
                 className="border border-black px-2 py-1 rounded-md text-sm"
                 id={q.question_number}
                 onFocus={() => handleQuestionFocus(q.question_number)}
-                onChange={(e) =>
+                disabled={readOnly}
+                {...(readOnly
+                  ? { value: currentValue || "" }
+                  : { defaultValue: currentValue || "" })}
+                onChange={(e) => {
+                  if (readOnly) return;
                   handleAnswerChange(
                     q.question_number,
                     e.target.value,
                     "True False",
                     q.answer,
                     e.target.value === q.answer ? true : false
-                  )
-                }
-                // value={currentValue}
-                defaultValue={""}
+                  );
+                }}
               >
-                {/* <option disabled value=""></option> */}
+                <option value="">-</option>
                 <option value="True">True</option>
                 <option value="False">False</option>
                 <option value="Not Given">Not Given</option>

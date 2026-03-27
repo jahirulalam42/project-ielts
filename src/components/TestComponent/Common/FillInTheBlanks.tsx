@@ -5,6 +5,7 @@ const FillInTheBlanks: React.FC<any> = ({
   instructions,
   question,
   answers,
+  readOnly = false,
   setAnswers,
   handleAnswerChange,
   handleQuestionFocus,
@@ -32,6 +33,10 @@ const FillInTheBlanks: React.FC<any> = ({
 
       <div className="p-4 border border-black rounded-lg mb-2">
         {question.map((q: any) => {
+          const answerObj = Array.isArray(answers)
+            ? answers.find((a: any) => String(a.questionId) === String(q.question_number))
+            : answers?.[`${q.question_number}`];
+          const currentValue = answerObj ? answerObj.value : "";
           return (
             <div key={q.question_number} className="mb-2">
               <p>
@@ -48,15 +53,20 @@ const FillInTheBlanks: React.FC<any> = ({
                     fontSize: "14px", // Font size for better fit
                   }}
                   onFocus={() => handleQuestionFocus(q.question_number)}
-                  onChange={(e) =>
+                  disabled={readOnly}
+                  {...(readOnly
+                    ? { value: currentValue || "" }
+                    : { defaultValue: currentValue || "" })}
+                  onChange={(e) => {
+                    if (readOnly) return;
                     handleAnswerChange(
                       q.question_number,
                       e.target.value,
                       "Fill in the Blanks",
                       q.answer,
                       isAnswerCorrect(e.target.value, q.answer) // Use the normalized comparison
-                    )
-                  }
+                    );
+                  }}
                 />
                 {q.question.split("_________")[1]}
               </p>

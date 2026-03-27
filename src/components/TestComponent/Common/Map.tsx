@@ -19,6 +19,7 @@ interface MapProps {
     labels: string[];
     questions: MapQuestion[];
   };
+  readOnly?: boolean;
   handleAnswerChange: (
     questionId: number,
     value: string,
@@ -32,6 +33,7 @@ interface MapProps {
 
 const Map: React.FC<MapProps> = ({
   question,
+  readOnly = false,
   handleAnswerChange,
   handleQuestionFocus,
   answers = {},
@@ -84,20 +86,22 @@ const Map: React.FC<MapProps> = ({
                       type="radio"
                       name={`${q?.question_number}`}
                       value={label}
+                      disabled={readOnly}
                       checked={
                         answers &&
                         answers[`${q?.question_number}`]?.value === label
                       }
                       onFocus={() => handleQuestionFocus?.(q?.question_number)}
-                      onChange={() =>
+                      onChange={() => {
+                        if (readOnly) return;
                         handleAnswerChange(
                           q?.question_number,
                           label,
                           "Map",
                           q?.answer,
                           label === q?.answer
-                        )
-                      }
+                        );
+                      }}
                       className="form-radio h-5 w-5 accent-black"
                       style={{ accentColor: "black" }}
                     />

@@ -2,7 +2,8 @@
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { getSubmitListeningTest } from "@/services/data";
+import { getListeningTestById, getSubmitListeningTest } from "@/services/data";
+import ListeningReview from "@/components/TestComponent/listeningTest/ListeningReview";
 
 interface AnswerEntry {
   questionId: number | any[];
@@ -30,6 +31,7 @@ const SubmissionPage = () => {
   const { data: session, status } = useSession();
 
   const [submission, setSubmission] = useState<Submission | null>(null);
+  const [listeningTest, setListeningTest] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -64,6 +66,19 @@ const SubmissionPage = () => {
       setLoading(false);
     }
   }, [testId, session?.user?.id, status]);
+
+  useEffect(() => {
+    const fetchTest = async () => {
+      try {
+        if (!testId) return;
+        const res = await getListeningTestById(String(testId));
+        if (res?.success) setListeningTest(res.data);
+      } catch (e) {
+        console.error("Failed to fetch listening test for review", e);
+      }
+    };
+    fetchTest();
+  }, [testId]);
 
   if (loading) return <div className="text-center p-4">Loading...</div>;
   if (error) return <div className="text-center p-4 text-error">{error}</div>;
@@ -181,6 +196,17 @@ const SubmissionPage = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Review Interface (same as listening test UI, but pre-filled + read-only) */}
+      {listeningTest && submission?.answers && (
+        <div className="mt-10">
+          <h2 className="text-xl font-bold mb-4">Review (same interface)</h2>
+          <ListeningReview
+            test={listeningTest}
+            submissionAnswers={submission.answers as any}
+          />
+        </div>
+      )}
     </div>
   );
 };

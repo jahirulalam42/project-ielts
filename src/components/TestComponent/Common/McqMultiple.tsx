@@ -5,6 +5,7 @@ const McqMultiple = ({
   instructions,
   question,
   answers,
+  readOnly = false,
   handleAnswerChange,
   handleQuestionFocus,
 }: any) => {
@@ -24,7 +25,10 @@ const McqMultiple = ({
       const groupKey = q.question_numbers.join("-");
       initialSelections[groupKey] = {};
       q.question_numbers.forEach((num: number) => {
-        const answerValue = answers[`${num}`]?.value || "";
+        const answerObj = Array.isArray(answers)
+          ? answers.find((a: any) => String(a.questionId) === String(num))
+          : answers?.[`${num}`];
+        const answerValue = answerObj?.value || "";
         initialSelections[groupKey][num] = answerValue;
       });
     });
@@ -39,6 +43,7 @@ const McqMultiple = ({
     q: any,
     questionNumber: number
   ) => {
+    if (readOnly) return;
     const currentSelections = selectedOptions[groupKey] || {};
     const selectedCount = Object.values(currentSelections).filter(
       (v) => v !== ""
@@ -108,10 +113,12 @@ const McqMultiple = ({
                     type="checkbox"
                     className="checkbox checkbox-primary"
                     onFocus={() => handleQuestionFocus(q.question_numbers[0])}
+                    disabled={readOnly}
                     checked={Object.values(currentSelections).includes(
                       option.label
                     )}
                     onChange={() => {
+                      if (readOnly) return;
                       // Find available question for this option
                       const availableQuestion = q.question_numbers.find(
                         (num: number) =>

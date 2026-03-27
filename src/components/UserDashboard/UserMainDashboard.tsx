@@ -273,81 +273,162 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-indigo-50 p-4 md:p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Personalized Welcome Message */}
-        {userData && (
-          <div className="bg-gradient-to-r from-red-600 to-red-800 rounded-2xl shadow-lg p-6 md:p-8 mb-6 text-white">
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <h2 className="text-2xl md:text-3xl font-bold mb-2">
-                  {getWelcomeMessage()}
-                </h2>
-                {onboardingData?.status === "completed" && (
-                  <div className="mt-4 flex flex-wrap gap-3">
-                    {onboardingData.targetScore && (
-                      <div className="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2">
-                        <span className="text-sm opacity-90">Target Score</span>
-                        <div className="text-lg font-semibold">{onboardingData.targetScore}</div>
-                      </div>
-                    )}
-                    {onboardingData.examDate || onboardingData.examDateType || onboardingData.customExamDate ? (
-                      <div className="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2">
-                        <span className="text-sm opacity-90">Exam Date</span>
-                        <div className="text-lg font-semibold">
-                          {onboardingData.customExamDate || onboardingData.examDateType || onboardingData.examDate || "Not set"}
-                        </div>
-                      </div>
-                    ) : null}
-                    {onboardingData.targetCountries && 
-                     Array.isArray(onboardingData.targetCountries) && 
-                     onboardingData.targetCountries.length > 0 && (
-                      <div className="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2">
-                        <span className="text-sm opacity-90">Target Region</span>
-                        <div className="text-lg font-semibold">
-                          {onboardingData.targetCountries.slice(0, 2).join(", ")}
-                          {onboardingData.targetCountries.length > 2 && ` +${onboardingData.targetCountries.length - 2}`}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-              <div className="hidden md:block ml-4">
-                <div className="bg-white/20 backdrop-blur-sm rounded-full p-4">
-                  <svg
-                    className="w-12 h-12"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
-                    />
-                  </svg>
-                </div>
-              </div>
+    <div className="relative min-h-screen bg-gradient-to-b from-rose-50 via-white to-rose-50 text-slate-900 overflow-x-hidden">
+      {/* background orbs / glow */}
+      <div className="pointer-events-none absolute inset-0 opacity-70">
+        <div className="absolute -top-40 -right-32 h-80 w-80 rounded-full bg-rose-300/50 blur-3xl" />
+        <div className="absolute top-40 -left-32 h-72 w-72 rounded-full bg-red-300/35 blur-3xl" />
+        <div className="absolute bottom-0 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-orange-200/40 blur-3xl" />
+      </div>
+
+      <div className="relative max-w-7xl mx-auto px-4 md:px-6 lg:px-10 py-6 md:py-10">
+        {/* Hero / Welcome */}
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 mb-8">
+          <div className="flex-1 space-y-3">
+            <p className="inline-flex items-center gap-2 rounded-full border border-rose-200 bg-white/70 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.2em] text-rose-700 shadow-sm">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]" />
+              Live IELTS Progress
+            </p>
+            <h1 className="text-2.5xl md:text-4xl lg:text-5xl font-semibold tracking-tight">
+              <span className="bg-gradient-to-r from-rose-600 via-red-600 to-orange-500 bg-clip-text text-transparent">
+                Turn your IELTS practice into a live,
+              </span>{" "}
+              <span className="bg-gradient-to-r from-slate-900 via-slate-800 to-rose-800 bg-clip-text text-transparent">
+                beautifully visual dashboard.
+              </span>
+            </h1>
+            <p className="max-w-xl text-sm md:text-base text-slate-600">
+              See your Listening, Reading, Writing and Speaking progress in one clean,
+              real‑time view. Built for focused prep, not boring spreadsheets.
+            </p>
+
+            <div className="flex flex-wrap items-center gap-3 pt-1">
+              <button
+                type="button"
+                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-rose-600 via-red-600 to-orange-500 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(225,29,72,0.55)] transition hover:-translate-y-0.5 hover:shadow-[0_16px_40px_rgba(220,38,38,0.75)]"
+              >
+                Start a practice test
+                <span className="text-xs opacity-80">↗</span>
+              </button>
+              <button
+                type="button"
+                className="inline-flex items-center gap-2 rounded-full border border-rose-200 bg-white/80 px-4 py-2.5 text-sm font-semibold text-rose-700 backdrop-blur transition hover:border-rose-400 hover:bg-rose-50"
+              >
+                View full history
+              </button>
+              <p className="text-[11px] text-slate-500">
+                No setup required. Just practice — we track everything.
+              </p>
             </div>
           </div>
-        )}
 
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
-              IELTS Progress Dashboard
-            </h1>
-            <p className="text-gray-600">
-              Track your test scores and improvement over time
-            </p>
+          {/* Right column: always rendered to avoid layout shift; show skeleton until userData is loaded */}
+          <div className="w-full max-w-sm lg:max-w-md">
+            {userData ? (
+              <div className="relative rounded-3xl border border-rose-100 bg-white p-[1px] shadow-[0_18px_40px_rgba(248,113,113,0.25)] backdrop-blur-xl">
+                <div className="rounded-[22px] bg-gradient-to-br from-rose-50 via-white to-amber-50 px-5 py-5">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.18em] text-rose-500">
+                        Welcome back
+                      </p>
+                      <p className="mt-1 text-sm font-semibold text-slate-900">
+                        {getWelcomeMessage()}
+                      </p>
+                      {onboardingData?.status === "completed" && (
+                        <div className="mt-4 flex flex-wrap gap-2.5">
+                          {onboardingData.targetScore && (
+                            <div className="rounded-xl border border-rose-200 bg-rose-50 px-3 py-2">
+                              <span className="block text-[11px] uppercase tracking-[0.16em] text-rose-500">
+                                Target Band
+                              </span>
+                              <span className="text-sm font-semibold text-rose-700">
+                                {onboardingData.targetScore}
+                              </span>
+                            </div>
+                          )}
+                          {onboardingData.examDate ||
+                          onboardingData.examDateType ||
+                          onboardingData.customExamDate ? (
+                            <div className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2">
+                              <span className="block text-[11px] uppercase tracking-[0.16em] text-amber-600">
+                                Exam Date
+                              </span>
+                              <span className="text-sm font-semibold text-amber-700">
+                                {onboardingData.customExamDate ||
+                                  onboardingData.examDateType ||
+                                  onboardingData.examDate ||
+                                  "Not set"}
+                              </span>
+                            </div>
+                          ) : null}
+                          {onboardingData.targetCountries &&
+                            Array.isArray(onboardingData.targetCountries) &&
+                            onboardingData.targetCountries.length > 0 && (
+                              <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-2">
+                                <span className="block text-[11px] uppercase tracking-[0.16em] text-red-500">
+                                  Target Region
+                                </span>
+                                <span className="text-sm font-semibold text-red-700">
+                                  {onboardingData.targetCountries
+                                    .slice(0, 2)
+                                    .join(", ")}
+                                  {onboardingData.targetCountries.length > 2 &&
+                                    ` +${
+                                      onboardingData.targetCountries.length - 2
+                                    }`}
+                                </span>
+                              </div>
+                            )}
+                        </div>
+                      )}
+                    </div>
+                    <div className="shrink-0">
+                      <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-500 via-red-500 to-orange-400 shadow-[0_0_26px_rgba(248,113,113,0.75)]">
+                        <span className="absolute -inset-1 rounded-3xl bg-gradient-to-br from-rose-300/40 via-red-300/30 to-orange-300/40 blur-xl" />
+                        <svg
+                          className="relative h-6 w-6 text-white"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              // Skeleton card to reserve space and avoid layout shift
+              <div className="relative rounded-3xl border border-rose-100 bg-white/80 p-[1px] shadow-[0_12px_30px_rgba(148,27,45,0.15)] backdrop-blur-sm">
+                <div className="rounded-[22px] bg-gradient-to-br from-rose-50/70 via-white to-amber-50/60 px-5 py-5 animate-pulse">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 space-y-3">
+                      <div className="h-3 w-24 rounded-full bg-rose-100" />
+                      <div className="h-4 w-40 rounded-full bg-slate-100" />
+                      <div className="mt-4 flex flex-wrap gap-2.5">
+                        <div className="h-12 w-24 rounded-xl bg-rose-100/70" />
+                        <div className="h-12 w-28 rounded-xl bg-amber-100/70" />
+                      </div>
+                    </div>
+                    <div className="shrink-0">
+                      <div className="h-12 w-12 rounded-2xl bg-rose-200/70" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
         {/* Stats Cards - Highlight selected skill */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 my-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-5 md:gap-6 mb-8">
           {skills.map((skill) => {
             const arr = allSkillData[skill.id as keyof typeof allSkillData] || [];
             
@@ -376,21 +457,41 @@ const Dashboard = () => {
               <div
                 key={skill.id}
                 onClick={() => setSelectedSkill(skill.id as any)}
-                className={`cursor-pointer rounded-xl shadow-lg p-5 transition-all duration-500 ease-out hover:shadow-2xl hover:-translate-y-1 ${
+                className={`group cursor-pointer rounded-2xl border p-4 md:p-5 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(248,113,113,0.25)] ${
                   isSelected
-                    ? "ring-4 ring-red-300 ring-opacity-60 transform scale-105 shadow-2xl bg-gradient-to-br from-red-600 via-red-700 to-red-800 text-white"
-                    : "bg-white border-2 border-gray-200 hover:border-red-300 hover:scale-105 text-gray-800"
+                    ? "border-rose-400 bg-gradient-to-br from-rose-600 via-red-600 to-orange-500 text-white"
+                    : "border-rose-100 bg-white/90 hover:border-rose-300"
                 }`}
               >
-                <div className="flex justify-between items-start">
-                  <div className="transform transition-transform duration-300 hover:scale-105">
-                    <div className={`text-sm font-medium ${isSelected ? "opacity-90" : "text-gray-600"}`}>{skill.name}</div>
-                    <div className={`text-3xl font-bold mt-1 transform transition-all duration-300 hover:scale-110 ${isSelected ? "text-white" : "text-gray-900"}`}>{highestScore}</div>
-                    <div className={`text-sm mt-2 ${isSelected ? "opacity-80 text-white" : "text-gray-500"}`}>{scoreLabel}</div>
+                <div className="flex justify-between items-start gap-3">
+                  <div>
+                    <div
+                      className={`text-xs font-semibold uppercase tracking-[0.16em] ${
+                        isSelected ? "text-rose-50/90" : "text-slate-500"
+                      }`}
+                    >
+                      {skill.name}
+                    </div>
+                    <div
+                      className={`mt-1 text-2xl md:text-3xl font-semibold tracking-tight ${
+                        isSelected ? "text-white" : "text-slate-900"
+                      }`}
+                    >
+                      {highestScore}
+                    </div>
+                    <div
+                      className={`mt-1 text-xs md:text-sm ${
+                        isSelected ? "text-rose-100/90" : "text-slate-500"
+                      }`}
+                    >
+                      {scoreLabel}
+                    </div>
                   </div>
                   {isSelected && (
-                    <div className="bg-white bg-opacity-30 rounded-full p-2">
-                      <div className="bg-white rounded-full w-3 h-3"></div>
+                    <div className="flex items-center gap-2">
+                      {/* <span className="h-7 w-7 rounded-full bg-white/30 ring-2 ring-rose-200 flex items-center justify-center">
+                        <span className="h-2.5 w-2.5 rounded-full bg-white shadow-[0_0_16px_rgba(252,231,243,0.9)]" />
+                      </span> */}
                     </div>
                   )}
                 </div>
@@ -399,71 +500,113 @@ const Dashboard = () => {
           })}
         </div>
 
-        {/* Skill & Range Select */}
-        <div className="flex flex-col md:flex-row gap-6 mb-6">
+        {/* Skill & Range Select + Chart */}
+        <div className="flex flex-col lg:flex-row gap-6 mb-8">
           {/* Filter Panel */}
-          <div className="w-full lg:w-1/4">
-            <div className="card bg-base-100 shadow-md border border-base-200">
-              <div className="card-body p-5">
-                <h2 className="card-title text-lg font-semibold mb-2">Skill</h2>
+          <div className="w-full lg:w-1/3">
+            <div className="h-full rounded-2xl border border-rose-100 bg-white/90 p-5 shadow-[0_18px_40px_rgba(248,113,113,0.18)] backdrop-blur-xl">
+              <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-rose-500 mb-4">
+                Skill focus
+              </h2>
 
-                {/* Skill Selector */}
-                <div className="mb-6">
-                  <div className="grid grid-cols-2 gap-2">
-                    {skills.map((s) => (
+              {/* Skill Selector */}
+              <div className="mb-6">
+                <div className="grid grid-cols-2 gap-2">
+                  {skills.map((s) => {
+                    const active = selectedSkill === s.id;
+                    return (
                       <button
                         key={s.id}
-                        className={`btn btn-sm transition-all duration-300 transform hover:scale-105 hover:shadow-md ${
-                          selectedSkill === s.id
-                            ? "bg-red-600 hover:bg-red-700 text-white border-red-600 shadow-lg"
-                            : "btn-outline border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400"
+                        className={`flex items-center justify-center rounded-xl border px-3 py-2.5 text-xs font-semibold transition-all duration-200 ${
+                          active
+                            ? "border-rose-400 bg-rose-50 text-rose-700 shadow-[0_0_22px_rgba(248,113,113,0.45)]"
+                            : "border-rose-100 bg-white text-slate-700 hover:border-rose-300 hover:bg-rose-50/80"
                         }`}
                         onClick={() => setSelectedSkill(s.id as any)}
                       >
+                        <span className="mr-1.5 h-1.5 w-1.5 rounded-full bg-gradient-to-r from-rose-500 to-orange-400 shadow-[0_0_8px_rgba(248,113,113,0.9)]" />
                         {s.name}
                       </button>
-                    ))}
-                  </div>
+                    );
+                  })}
                 </div>
+              </div>
 
-                <div className="mt-4 p-3 bg-red-50 rounded-lg border border-red-100">
-                  <h3 className="font-medium text-sm mb-2 text-red-800">Data Info</h3>
-                  <p className="text-xs text-red-600">
-                    Showing latest 10 tests for {selectedSkill} skill
-                  </p>
-                </div>
+              <div className="mt-2 rounded-xl border border-rose-100 bg-rose-50/80 px-3 py-3">
+                <h3 className="text-xs font-semibold text-rose-700 mb-1.5">
+                  Data window
+                </h3>
+                <p className="text-[11px] leading-relaxed text-rose-700/80">
+                  Showing the latest{" "}
+                  <span className="font-semibold text-rose-800">
+                    10 tests
+                  </span>{" "}
+                  for your{" "}
+                  <span className="font-semibold text-rose-800">
+                    {selectedSkill}
+                  </span>{" "}
+                  skill. Switch skills to compare trends.
+                </p>
+              </div>
+
+              <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 px-3 py-3">
+                <p className="text-[11px] text-slate-500">
+                  Tip: a smooth upward line usually means your preparation
+                  routine is working. Use sudden drops as a signal to review
+                  those tests.
+                </p>
               </div>
             </div>
           </div>
 
           {/* Main Dashboard Content */}
-          <div className="w-full md:w-3/4 flex flex-col gap-6">
+          <div className="w-full lg:w-2/3 flex flex-col gap-6">
             {/* Chart Card */}
-            <div className="bg-white rounded-xl shadow-md overflow-hidden">
-              <div className="p-5 border-b border-gray-100 flex justify-between items-center">
-                <h3 className="text-lg font-semibold text-gray-800">
-                  Latest 10 Tests
-                </h3>
+            <div className="rounded-2xl border border-rose-100 bg-white shadow-[0_18px_45px_rgba(248,113,113,0.18)] overflow-hidden backdrop-blur-xl">
+              <div className="flex justify-between items-center gap-3 border-b border-rose-100 px-5 py-4">
+                <div>
+                  <h3 className="text-sm font-semibold text-slate-900">
+                    Latest 10 Tests
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Visualizing your{" "}
+                    <span className="font-semibold text-rose-700">
+                      {selectedSkill}
+                    </span>{" "}
+                    progression over time.
+                  </p>
+                </div>
                 <div className="flex items-center gap-2">
-                  <span className={`text-sm ${trendColor}`}>
+                  <span
+                    className={`text-xs font-medium rounded-full px-2.5 py-1 border ${
+                      trend === "up"
+                        ? "border-emerald-300 bg-emerald-50 text-emerald-700"
+                        : trend === "down"
+                        ? "border-red-300 bg-red-50 text-red-700"
+                        : "border-slate-300 bg-slate-50 text-slate-700"
+                    }`}
+                  >
                     {trend === "up"
                       ? "↑ Improving"
                       : trend === "down"
-                        ? "↓ Declining"
-                        : "→ Stable"}
+                      ? "↓ Declining"
+                      : "→ Stable"}
                   </span>
-                  <span className="badge badge-outline">
+                  <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] text-slate-600">
                     {testHistory.length} tests
                   </span>
                 </div>
               </div>
-              <div className="p-6 h-64">
+              <div className="p-5 h-72 md:h-80">
                 {testHistory.length === 0 ? (
-                  <div className="h-full flex flex-col items-center justify-center text-gray-500">
-                    <FaChartLine className="text-4xl mb-4" />
-                    <p>No test data available</p>
-                    <p className="text-sm mt-2">
-                      Take some tests to see your progress
+                  <div className="h-full flex flex-col items-center justify-center text-slate-400">
+                    <FaChartLine className="text-4xl mb-4 text-slate-300" />
+                    <p className="text-sm font-medium text-slate-600">
+                      No test data yet
+                    </p>
+                    <p className="text-xs mt-1 text-slate-500 max-w-xs text-center">
+                      Once you complete some IELTS practice tests, this area
+                      will light up with your progress.
                     </p>
                   </div>
                 ) : (
@@ -475,7 +618,9 @@ const Dashboard = () => {
         </div>
 
         {/* Recent History Table */}
-        <HistoryTable selectedSkill={selectedSkill} testHistory={testHistory} />
+        <div className="mt-4 rounded-2xl border border-rose-100 bg-white/95 p-4 md:p-5 shadow-[0_22px_55px_rgba(248,113,113,0.16)] backdrop-blur-xl">
+          <HistoryTable selectedSkill={selectedSkill} testHistory={testHistory} />
+        </div>
       </div>
     </div>
   );

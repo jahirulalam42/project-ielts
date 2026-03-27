@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Loader from '@/components/Common/Loader';
 import { getSubmitWritingTest, getSingleWritingTest } from "@/services/data";
 import { useSession } from "next-auth/react";
+import WritingReview from "@/components/TestComponent/writingTest/WritingReview";
 
 // Define TypeScript interfaces
 interface Answer {
@@ -198,59 +199,12 @@ const SubmissionPage = () => {
             </div>
           </div>
 
-          {submission?.answers?.map((answer, index) => (
-            <div key={answer.partId} className="mb-8">
-              <div className="divider"></div>
-              <h2 className="text-2xl font-semibold mb-4">Task {index + 1}</h2>
-
-              <div className="bg-base-200 p-6 rounded-lg">
-                <h3 className="text-lg font-medium mb-2">Question:</h3>
-                <div className="prose max-w-none mb-4">
-                  <p className="mb-2">{answer.question}</p>
-                </div>
-
-                {getImageForAnswer(answer, index) && (
-                  <div className="my-4">
-                    <img
-                      src={getImageForAnswer(answer, index)}
-                      alt="Question Image"
-                      className="rounded-lg max-w-full h-auto mx-auto"
-                      onError={(e) => console.error("Image failed to load:", getImageForAnswer(answer, index))}
-                      onLoad={() => console.log("Image loaded successfully:", getImageForAnswer(answer, index))}
-                    />
-                  </div>
-                )}
-                {!getImageForAnswer(answer, index) && (
-                  <div className="my-4 p-2 bg-yellow-100 text-yellow-800 rounded">
-                    Debug: No image found for this answer. 
-                    Submission image: {JSON.stringify(answer.image)} | 
-                    Original test image: {originalTest?.parts?.[index]?.image || 'N/A'}
-                  </div>
-                )}
-
-                <div className="mt-4 bg-neutral text-neutral-content p-4 rounded-lg">
-                  <h4 className="font-bold mb-2">Instructions:</h4>
-                  <ul className="list-disc pl-5">
-                    {answer.instructions.map((instruction, idx) => (
-                      <li key={idx}>{instruction}</li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="mt-6">
-                  <h3 className="text-lg font-medium mb-2">Your Response:</h3>
-                  <div className="p-4 border border-gray-300 rounded-lg bg-white">
-                    <pre className="whitespace-pre-wrap font-sans text-gray-800">
-                      {answer.response}
-                    </pre>
-                  </div>
-                  <div className="mt-2 text-right text-sm text-gray-500">
-                    Word Count: {answer.response.trim().split(/\s+/).filter(word => word.length > 0).length}
-                  </div>
-                </div>
-              </div>
+          {originalTest && submission && (
+            <div className="mt-6">
+              <h2 className="text-xl font-bold mb-4">Review (same interface)</h2>
+              <WritingReview test={originalTest as any} submission={submission as any} />
             </div>
-          ))}
+          )}
         </div>
       </div>
     </div>

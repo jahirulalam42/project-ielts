@@ -5,6 +5,7 @@ const ParagraphMatching = ({
   instructions,
   question,
   answers,
+  readOnly = false,
   setAnswers,
   handleAnswerChange,
   handleQuestionFocus,
@@ -14,6 +15,10 @@ const ParagraphMatching = ({
       {/* <h5 className="font-medium mb-2">Paragraph Matching</h5> */}
       <FormattedInstructions instructions={instructions} />
       {question.map((q: any) => {
+        const answerObj = Array.isArray(answers)
+          ? answers.find((a: any) => String(a.questionId) === String(q.question_number))
+          : answers?.[`${q.question_number}`];
+        const currentValue = answerObj ? answerObj.value : "";
         return (
           <div
             key={q.question_number}
@@ -26,18 +31,22 @@ const ParagraphMatching = ({
             <select
               className="border border-black px-2 py-1 rounded-md text-sm w-32"
               onFocus={() => handleQuestionFocus(q.question_number)}
-              onChange={(e) =>
+              disabled={readOnly}
+              {...(readOnly
+                ? { value: currentValue || "" }
+                : { defaultValue: currentValue || "" })}
+              onChange={(e) => {
+                if (readOnly) return;
                 handleAnswerChange(
                   q.question_number,
                   e.target.value,
                   "Paragraph Matching",
                   q.answer,
                   e.target.value === q.answer ? true : false
-                )
-              }
-              defaultValue={""}
+                );
+              }}
             >
-              <option value="" disabled></option>
+              <option value="">-</option>
               {q.options.map((option: any) => (
                 <option key={option.value} value={option.value}>
                   {option.label}

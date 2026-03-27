@@ -4,9 +4,18 @@ import FormattedInstructions from "./FormattedInstructions";
 const PassFillInTheBlanks = ({
   instructions,
   question,
+  answers,
+  readOnly = false,
   handleAnswerChange,
   handleQuestionFocus,
 }: any) => {
+  const getValue = (blankNumber: number) => {
+    const found = Array.isArray(answers)
+      ? answers.find((a: any) => String(a.questionId) === String(blankNumber))
+      : answers?.[`${blankNumber}`];
+    return found?.value || "";
+  };
+
   // Function to render text with input fields dynamically
   const renderTextWithBlanks = () => {
     const parts = [];
@@ -53,7 +62,12 @@ const PassFillInTheBlanks = ({
             fontSize: "14px",
           }}
           onFocus={() => handleQuestionFocus(blankNumber)}
-          onChange={(e) =>
+          disabled={readOnly}
+          {...(readOnly
+            ? { value: getValue(blankNumber) }
+            : { defaultValue: getValue(blankNumber) })}
+          onChange={(e) => {
+            if (readOnly) return;
             handleAnswerChange(
               blankNumber,
               e.target.value,
@@ -61,8 +75,8 @@ const PassFillInTheBlanks = ({
               correctAnswer,
               e.target.value.toLowerCase().trim() ===
                 correctAnswer.toLowerCase().trim()
-            )
-          }
+            );
+          }}
         />
       );
 

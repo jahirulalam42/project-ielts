@@ -5,6 +5,7 @@ const MatchingHeadings = ({
   instructions,
   question,
   answers,
+  readOnly = false,
   setAnswers,
   handleAnswerChange,
   handleQuestionFocus,
@@ -15,6 +16,10 @@ const MatchingHeadings = ({
       <FormattedInstructions instructions={instructions} />
 
       {question.map((q: any) => {
+        const answerObj = Array.isArray(answers)
+          ? answers.find((a: any) => String(a.questionId) === String(q.question_number))
+          : answers?.[`${q.question_number}`];
+        const currentValue = answerObj ? answerObj.value : "";
         return (
           <div
             key={q.question_number}
@@ -27,18 +32,22 @@ const MatchingHeadings = ({
             <select
               className="border border-black-400 px-2 py-1 rounded-md text-sm w-32"
               onFocus={() => handleQuestionFocus(q.question_number)}
-              onChange={(e) =>
+              disabled={readOnly}
+              {...(readOnly
+                ? { value: currentValue || "" }
+                : { defaultValue: currentValue || "" })}
+              onChange={(e) => {
+                if (readOnly) return;
                 handleAnswerChange(
                   q.question_number,
                   e.target.value,
                   "Matching Headings",
                   q.answer,
                   e.target.value === q.answer ? true : false
-                )
-              }
-              defaultValue={""}
+                );
+              }}
             >
-              <option value="" disabled></option>
+              <option value="">-</option>
               {q.options.map((option: any) => (
                 <option key={option.value} value={option.value}>
                   {option.label}

@@ -12,6 +12,7 @@ const SumFillInTheBlanks = ({
   question,
   answers,
   setAnswers,
+  readOnly = false,
   handleAnswerChange,
   handleQuestionFocus,
 }: any) => {
@@ -36,6 +37,7 @@ const SumFillInTheBlanks = ({
   }, [answers, question]);
 
   const handleDragEnd = (event: DragEndEvent) => {
+    if (readOnly) return;
     const { active, over } = event;
     if (over) {
       const blankIndex = parseInt(String(over.id));
@@ -98,6 +100,7 @@ const SumFillInTheBlanks = ({
                   id={opt.label}
                   label={opt.label}
                   value={opt.value}
+                  disabled={readOnly}
                 />
               ))}
             </div>
@@ -112,19 +115,23 @@ const DraggableOption = ({
   id,
   label,
   value,
+  disabled = false,
 }: {
   id: string;
   label: string;
   value: string;
+  disabled?: boolean;
 }) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({ id });
 
   return (
     <div
       ref={setNodeRef}
-      {...attributes}
-      {...listeners}
-      className="px-3 py-1 border border-black rounded cursor-grab"
+      {...(disabled ? {} : attributes)}
+      {...(disabled ? {} : listeners)}
+      className={`px-3 py-1 border border-black rounded ${
+        disabled ? "opacity-60 cursor-not-allowed" : "cursor-grab"
+      }`}
       style={{
         transform: transform
           ? `translate(${transform.x}px, ${transform.y}px)`

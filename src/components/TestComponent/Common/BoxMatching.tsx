@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FormattedInstructions from "./FormattedInstructions";
 
 interface BoxMatchingProps {
   instructions?: any;
   question: any[];
+  answers?: any;
+  readOnly?: boolean;
   handleAnswerChange: (
     questionId: number,
     value: string,
@@ -17,6 +19,8 @@ interface BoxMatchingProps {
 const BoxMatching: React.FC<BoxMatchingProps> = ({
   instructions,
   question,
+  answers,
+  readOnly = false,
   handleAnswerChange,
   handleQuestionFocus,
 }) => {
@@ -24,11 +28,34 @@ const BoxMatching: React.FC<BoxMatchingProps> = ({
     [key: number]: string;
   }>({});
 
+  useEffect(() => {
+    if (!answers) return;
+    const initial: { [key: number]: string } = {};
+    const findValue = (questionNumber: number) => {
+      if (Array.isArray(answers)) {
+        return (
+          answers.find((a: any) => String(a.questionId) === String(questionNumber))
+            ?.value || ""
+        );
+      }
+      return answers?.[`${questionNumber}`]?.value || "";
+    };
+
+    // Pre-fill selects from saved answers
+    question?.forEach((group: any) => {
+      group?.questions?.forEach((q: any) => {
+        initial[q.question_number] = findValue(q.question_number);
+      });
+    });
+    setSelectedAnswers(initial);
+  }, [answers, question]);
+
   const handleAnswerSelect = (
     questionNumber: number,
     selectedOption: string,
     correctAnswer: string
   ) => {
+    if (readOnly) return;
     const isCorrect = selectedOption === correctAnswer;
 
     setSelectedAnswers((prev) => ({
@@ -64,7 +91,7 @@ const BoxMatching: React.FC<BoxMatchingProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               {q.options.map((option: any) => (
                 <div key={option.label} className="flex items-center space-x-2">
-                  <span className="font-medium w-6 font-semibold">
+                  <span className="font-semibold w-6">
                     {option.label}.
                   </span>
                   <span className="text-sm">{option.value}</span>
@@ -84,13 +111,14 @@ const BoxMatching: React.FC<BoxMatchingProps> = ({
                   key={boxQuestion.question_number}
                   className="grid grid-cols-[auto,1fr,auto] items-center gap-x-1"
                 >
-                  <span className="font-medium w-6 font-semibold text-Left">
+                  <span className="font-semibold w-6 text-Left">
                     {boxQuestion.question_number}.
                   </span>
                   <span className="text-sm">{boxQuestion.topic}</span>
                   <select
                     className="select select-bordered select-sm w-24 justify-self-end"
                     value={selectedAnswers[boxQuestion.question_number] || ""}
+                    disabled={readOnly}
                     onChange={(e) =>
                       handleAnswerSelect(
                         boxQuestion.question_number,

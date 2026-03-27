@@ -5,6 +5,7 @@ const SubFillInTheBlanks = ({
   instructions,
   question,
   answers,
+  readOnly = false,
   setAnswers,
   handleAnswerChange,
   handleQuestionFocus,
@@ -80,19 +81,49 @@ const SubFillInTheBlanks = ({
                                     currentQuestion.question_number
                                   )
                                 }
-                                onChange={(e) =>
+                                disabled={readOnly}
+                                {...(readOnly
+                                  ? {
+                                      value:
+                                        (Array.isArray(answers)
+                                          ? answers.find(
+                                              (a: any) =>
+                                                String(a.questionId) ===
+                                                String(
+                                                  currentQuestion.question_number
+                                                )
+                                            )?.value
+                                          : answers?.[
+                                              `${currentQuestion.question_number}`
+                                            ]?.value) || "",
+                                    }
+                                  : {
+                                      defaultValue:
+                                        (Array.isArray(answers)
+                                          ? answers.find(
+                                              (a: any) =>
+                                                String(a.questionId) ===
+                                                String(
+                                                  currentQuestion.question_number
+                                                )
+                                            )?.value
+                                          : answers?.[
+                                              `${currentQuestion.question_number}`
+                                            ]?.value) || "",
+                                    })}
+                                onChange={(e) => {
+                                  if (readOnly) return;
                                   handleAnswerChange(
                                     currentQuestion.question_number,
                                     e.target.value,
                                     "Fill in the Blanks",
                                     currentQuestion.answer,
-                                    // Use the normalized comparison instead of direct comparison
                                     isAnswerCorrect(
                                       e.target.value,
                                       currentQuestion.answer
                                     )
-                                  )
-                                }
+                                  );
+                                }}
                               />
                               {/* Increment AFTER rendering the input field */}
                               {(() => {

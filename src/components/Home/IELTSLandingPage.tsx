@@ -80,18 +80,18 @@ export default function IELTSLandingPage(): any {
       : "opacity-0 scale-95 transition-all duration-700 ease-out";
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white via-gray-50 to-white text-base-content overflow-x-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-rose-50 via-white to-rose-50 text-base-content overflow-x-hidden">
       {/* Hero Section */}
-      <section className="relative pt-12 pb-12 px-4 overflow-hidden">
+      <section className="relative pt-8 pb-6 px-8 overflow-hidden">
         {/* Background decorative elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 -left-20 w-96 h-96 bg-red-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-          <div className="absolute top-40 -right-20 w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-          <div className="absolute -bottom-20 left-1/2 w-96 h-96 bg-purple-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+          <div className="absolute top-24 -left-24 w-96 h-96 bg-rose-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob" />
+          <div className="absolute -top-24 right-0 w-[26rem] h-[26rem] bg-red-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000" />
+          <div className="absolute bottom-[-8rem] left-1/2 w-[22rem] h-[22rem] bg-orange-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000" />
         </div>
 
         <div className="container mx-auto max-w-7xl relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] gap-12 lg:gap-16 items-center">
             {/* Left Content */}
             <div
               ref={(el) => {
@@ -101,76 +101,79 @@ export default function IELTSLandingPage(): any {
               className={`${fadeInUp("hero-left")}`}
             >
               <div className="flex flex-wrap gap-3 mb-6">
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 rounded-full text-green-700 text-sm font-bold border-2 border-green-200">
-                  <FaCheckCircle className="text-green-600" />
-                  <span>100% Free</span>
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 rounded-full text-emerald-700 text-xs md:text-sm font-semibold border border-emerald-200 shadow-sm">
+                  <FaCheckCircle className="text-emerald-500" />
+                  <span>100% Free, No Card</span>
                 </div>
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 rounded-full text-red-700 text-sm font-medium">
-                  <FaAward className="text-red-600" />
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-rose-50 rounded-full text-rose-700 text-xs md:text-sm font-medium border border-rose-100 shadow-sm">
+                  <FaAward className="text-rose-500" />
                   <span>50,000+ Students</span>
                 </div>
               </div>
 
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight mb-6">
-                <span className="bg-gradient-to-r from-gray-900 via-red-700 to-gray-900 bg-clip-text text-transparent">
-                  Master IELTS with
+              <h1 className="text-4xl md:text-5xl lg:text-[3.4rem] font-extrabold leading-tight tracking-tight mb-5">
+                <span className="bg-gradient-to-r from-rose-600 via-red-600 to-orange-500 bg-clip-text text-transparent">
+                  Turn IELTS practice
                 </span>
                 <br />
-                <span className="text-red-600">Confidence</span>
+                <span className="bg-gradient-to-r from-slate-900 via-slate-800 to-rose-800 bg-clip-text text-transparent">
+                  into visible progress.
+                </span>
               </h1>
 
-              <p className="text-xl md:text-2xl text-gray-600 mb-8 leading-relaxed max-w-xl">
-                Comprehensive practice tests, AI-powered feedback, and expert
-                guidance to help you achieve your target band score.{" "}
-                <span className="font-semibold text-green-600">
-                  Completely free
-                </span>{" "}
-                - no credit card required. Start your journey to IELTS success
-                today.
+              <p className="text-base md:text-lg text-gray-600 mb-7 leading-relaxed max-w-xl">
+                Real exam-style tests for Listening, Reading, Writing, and Speaking,
+                with clear analytics so you always know exactly{" "}
+                <span className="font-semibold text-rose-600">
+                  what to fix next
+                </span>
+                . Built to feel like a modern product, not a boring worksheet.
               </p>
 
-              <div className="flex flex-wrap gap-4 mb-12">
+              <div className="flex flex-wrap gap-3 md:gap-4 mb-9">
                 <Link
                   href="/test/reading"
-                  className="group relative px-8 py-4 bg-gradient-to-r from-red-600 to-red-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+                  className="group relative inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-rose-600 via-red-600 to-orange-500 px-7 md:px-9 py-3.5 md:py-4 text-sm md:text-base font-semibold text-white shadow-[0_14px_35px_rgba(248,113,113,0.6)] hover:shadow-[0_18px_45px_rgba(220,38,38,0.8)] transform hover:-translate-y-0.5 transition-all duration-300 overflow-hidden"
                 >
                   <span className="relative z-10 flex items-center gap-2">
-                    Start Free Practice Test
+                    Start a free practice test
                     <FaArrowRight className="group-hover:translate-x-1 transition-transform duration-300" />
                   </span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-red-700 to-red-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-red-700 via-red-800 to-rose-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </Link>
                 <Link
-                  href="#features"
-                  className="px-8 py-4 bg-white border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:border-red-600 hover:text-red-600 transform hover:-translate-y-1 transition-all duration-300 shadow-md hover:shadow-lg"
+                  href="#how-it-works"
+                  className="inline-flex items-center gap-2 rounded-full bg-white/80 border border-rose-200 px-7 md:px-8 py-3.5 md:py-4 text-sm md:text-base font-semibold text-rose-700 hover:border-rose-400 hover:bg-rose-50/70 hover:text-rose-700 transform hover:-translate-y-0.5 transition-all duration-300 shadow-md hover:shadow-lg"
                 >
-                  Explore Features
+                  See how it works
                 </Link>
               </div>
 
               {/* Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                 {[
-                  { value: "98%", label: "Success Rate", icon: FaTrophy },
+                  { value: "98%", label: "Success rate", icon: FaTrophy },
                   { value: "50K+", label: "Students", icon: FaUsers },
-                  { value: "4.9/5", label: "Rating", icon: FaStar },
+                  { value: "4.9/5", label: "Average rating", icon: FaStar },
                   { value: "24/7", label: "Available", icon: FaClock },
                 ].map((stat, idx) => (
                   <div
                     key={idx}
-                    className="bg-white/80 backdrop-blur-sm p-4 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100"
+                    className="bg-white/90 backdrop-blur-sm p-4 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 border border-rose-100"
                   >
-                    <stat.icon className="text-red-600 text-2xl mb-2" />
-                    <div className="text-2xl font-bold text-gray-900">
+                    <stat.icon className="text-rose-500 text-xl mb-2" />
+                    <div className="text-xl font-bold text-gray-900">
                       {stat.value}
                     </div>
-                    <div className="text-sm text-gray-600">{stat.label}</div>
+                    <div className="text-xs md:text-sm text-gray-600">
+                      {stat.label}
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Right Visual */}
+            {/* Right Visual - product-style preview card */}
             <div
               ref={(el) => {
                 sectionsRef.current["hero-right"] = el;
@@ -180,58 +183,120 @@ export default function IELTSLandingPage(): any {
                 "hero-right"
               )} flex justify-center lg:justify-end`}
             >
-              <div className="relative">
-                {/* Main Card */}
-                <div className="relative bg-gradient-to-br from-red-600 via-red-700 to-red-800 rounded-3xl p-8 shadow-2xl transform hover:scale-105 transition-transform duration-500">
-                  <div className="grid grid-cols-2 gap-6">
-                    {[
-                      {
-                        icon: <FaHeadphones className="text-white text-4xl" />,
-                        label: "Listening",
-                        color: "from-blue-500 to-blue-600",
-                      },
-                      {
-                        icon: <FaBookOpen className="text-white text-4xl" />,
-                        label: "Reading",
-                        color: "from-green-500 to-green-600",
-                      },
-                      {
-                        icon: <FaPencilAlt className="text-white text-4xl" />,
-                        label: "Writing",
-                        color: "from-purple-500 to-purple-600",
-                      },
-                      {
-                        icon: <FaMicrophone className="text-white text-4xl" />,
-                        label: "Speaking",
-                        color: "from-orange-500 to-orange-600",
-                      },
-                    ].map((item, index) => (
-                      <div
-                        key={index}
-                        className="group bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-110 cursor-pointer"
-                      >
-                        <div className="flex flex-col items-center justify-center">
-                          <div className="mb-3 transform group-hover:rotate-6 transition-transform duration-300">
-                            {item.icon}
-                          </div>
-                          <h3 className="text-white font-bold text-lg">
-                            {item.label}
-                          </h3>
-                        </div>
+              <div className="relative w-full max-w-md lg:max-w-lg">
+                <div className="absolute -top-6 -right-6 h-20 w-20 rounded-3xl bg-gradient-to-tr from-rose-200 via-red-200 to-orange-200 blur-xl opacity-70" />
+
+                <div className="relative rounded-3xl border border-rose-100 bg-white shadow-[0_22px_60px_rgba(148,27,45,0.18)] overflow-hidden backdrop-blur-xl">
+                  {/* Fake window header */}
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-rose-100 bg-gradient-to-r from-rose-50 via-white to-amber-50">
+                    <div className="flex items-center gap-1.5">
+                      <span className="h-2.5 w-2.5 rounded-full bg-red-400" />
+                      <span className="h-2.5 w-2.5 rounded-full bg-amber-300" />
+                      <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
+                    </div>
+                    <p className="text-xs font-medium text-rose-700">
+                      BandGrowth • Dashboard preview
+                    </p>
+                    <span className="h-5 w-10 rounded-full bg-rose-100/70 flex items-center justify-end px-1">
+                      <span className="h-3 w-3 rounded-full bg-rose-500" />
+                    </span>
+                  </div>
+
+                  {/* Main content */}
+                  <div className="p-5 md:p-6 space-y-5">
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <p className="text-xs font-semibold text-rose-600 uppercase tracking-[0.16em] mb-1">
+                          Today’s overview
+                        </p>
+                        <p className="text-sm font-semibold text-slate-900">
+                          IELTS progress snapshot
+                        </p>
                       </div>
-                    ))}
+                      <div className="flex items-center gap-2 text-xs text-emerald-600 font-medium bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100">
+                        <FaChartLine className="text-emerald-500" />
+                        <span>+1.0 band vs last week</span>
+                      </div>
+                    </div>
+
+                    {/* Skill chips */}
+                    <div className="grid grid-cols-2 gap-3">
+                      {[
+                        { icon: FaHeadphones, label: "Listening", score: "7.0" },
+                        { icon: FaBookOpen, label: "Reading", score: "7.5" },
+                        { icon: FaPencilAlt, label: "Writing", score: "6.5" },
+                        { icon: FaMicrophone, label: "Speaking", score: "7.0" },
+                      ].map((item, index) => {
+                        const Icon = item.icon;
+                        return (
+                          <div
+                            key={index}
+                            className="flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50/70 px-3 py-2.5 hover:border-rose-200 hover:bg-rose-50/70 transition-all duration-200"
+                          >
+                            <div className="flex items-center gap-2.5">
+                              <span className="flex h-8 w-8 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-500 to-orange-400 text-white shadow-sm text-sm">
+                                <Icon />
+                              </span>
+                              <div>
+                                <p className="text-xs font-semibold text-slate-900">
+                                  {item.label}
+                                </p>
+                                <p className="text-[11px] text-slate-500">
+                                  Mock tests • timed
+                                </p>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-xs font-semibold text-slate-900">
+                                {item.score}
+                              </p>
+                              <p className="text-[10px] text-emerald-600">
+                                +0.5
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Mini chart-style block */}
+                    <div className="mt-1 rounded-2xl border border-rose-100 bg-gradient-to-r from-rose-50 via-white to-amber-50 p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-xs font-semibold text-slate-900">
+                          Last 10 tests
+                        </p>
+                        <span className="rounded-full bg-white/80 border border-rose-100 px-2.5 py-1 text-[10px] font-medium text-rose-700">
+                          Trend: steady improvement
+                        </span>
+                      </div>
+                      <div className="h-20 w-full rounded-xl bg-gradient-to-t from-rose-200/60 via-rose-100/40 to-transparent overflow-hidden flex items-end gap-[3px] px-4 pb-3">
+                        {[40, 55, 52, 60, 65, 70, 72, 74, 78, 80].map(
+                          (h, i) => (
+                            <span
+                              key={i}
+                              className="flex-1 rounded-sm bg-gradient-to-t from-rose-500 to-orange-400 scale-x-75 origin-bottom"
+                              style={{ height: `${h}%` }}
+                            />
+                          )
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
 
                 {/* Floating Badge */}
-                <div className="absolute -top-6 -right-6 bg-white rounded-2xl p-4 shadow-2xl animate-bounce-slow">
+                <div className="absolute -top-6 -right-3 bg-white/95 rounded-2xl px-4 py-3 shadow-xl border border-rose-100 backdrop-blur-md animate-bounce-slow">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                      <FaCheckCircle className="text-green-600 text-2xl" />
+                    <div className="w-10 h-10 bg-emerald-50 rounded-full flex items-center justify-center">
+                      <FaCheckCircle className="text-emerald-600 text-xl" />
                     </div>
                     <div>
-                      <div className="text-xs text-gray-500">Band Score</div>
-                      <div className="text-xl font-bold text-gray-900">8.5</div>
+                      <div className="text-[11px] text-slate-500">
+                        Target band unlocked
+                      </div>
+                      <div className="text-sm font-semibold text-slate-900">
+                        Band 7.5 in 6 weeks
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -276,29 +341,29 @@ export default function IELTSLandingPage(): any {
                 icon: FaCheckCircle,
                 title: "Realistic Mock Tests",
                 desc: "Full-length practice tests that perfectly mirror the actual IELTS exam format and difficulty level. Unlimited access, completely free.",
-                color: "text-blue-600",
-                bgColor: "bg-blue-50",
+                color: "text-rose-600",
+                bgColor: "bg-rose-50",
               },
               {
                 icon: FaChartLine,
                 title: "Advanced Analytics",
                 desc: "Detailed performance insights with visual reports to track your progress and identify improvement areas.",
-                color: "text-green-600",
-                bgColor: "bg-green-50",
+                color: "text-rose-600",
+                bgColor: "bg-rose-50",
               },
               {
                 icon: FaUserFriends,
                 title: "Expert Feedback",
                 desc: "Personalized evaluations from certified IELTS instructors with actionable recommendations.",
-                color: "text-purple-600",
-                bgColor: "bg-purple-50",
+                color: "text-rose-600",
+                bgColor: "bg-rose-50",
               },
               {
                 icon: FaGraduationCap,
                 title: "Comprehensive Learning",
                 desc: "Video lessons, study materials, and practice exercises covering all four test sections.",
-                color: "text-orange-600",
-                bgColor: "bg-orange-50",
+                color: "text-rose-600",
+                bgColor: "bg-rose-50",
               },
             ].map((feature, index) => {
               const IconComponent = feature.icon;
@@ -361,32 +426,32 @@ export default function IELTSLandingPage(): any {
                 title: "First-time IELTS Takers",
                 description:
                   "New to IELTS? Start your journey with confidence. Our platform guides you through every step.",
-                color: "text-blue-600",
-                bgColor: "bg-blue-50",
+                color: "text-rose-600",
+                bgColor: "bg-rose-50",
               },
               {
                 icon: FaRedo,
                 title: "Retakers",
                 description:
                   "Aiming for a higher band score? Focus on your weak areas with targeted practice and detailed feedback.",
-                color: "text-green-600",
-                bgColor: "bg-green-50",
+                color: "text-rose-600",
+                bgColor: "bg-rose-50",
               },
               {
                 icon: FaDesktop,
                 title: "Computer-Based Candidates",
                 description:
                   "Preparing for computer-delivered IELTS? Practice in the exact format you'll face on test day.",
-                color: "text-purple-600",
-                bgColor: "bg-purple-50",
+                color: "text-rose-600",
+                bgColor: "bg-rose-50",
               },
               {
                 icon: FaGlobeAmericas,
                 title: "Study, Work & Migration",
                 description:
                   "Whether you're pursuing education, career opportunities, or immigration, achieve your target band score.",
-                color: "text-orange-600",
-                bgColor: "bg-orange-50",
+                color: "text-rose-600",
+                bgColor: "bg-rose-50",
               },
             ].map((item, index) => {
               const IconComponent = item.icon;
@@ -448,32 +513,32 @@ export default function IELTSLandingPage(): any {
                 icon: TbTargetArrow,
                 title: "Choose Your Module",
                 desc: "Select from Listening, Reading, Writing, or Speaking. Each module is designed to match the real IELTS exam format.",
-                color: "text-blue-600",
-                bgColor: "bg-blue-50",
+                color: "text-rose-600",
+                bgColor: "bg-rose-50",
               },
               {
                 step: "2",
                 icon: IoMdTimer,
                 title: "Take Practice Tests",
                 desc: "Experience the real exam environment with built-in timers, progress tracking, and interactive question types.",
-                color: "text-green-600",
-                bgColor: "bg-green-50",
+                color: "text-rose-600",
+                bgColor: "bg-rose-50",
               },
               {
                 step: "3",
                 icon: FaChartBar,
                 title: "Analyze Performance",
                 desc: "Get detailed feedback, review your answers, and understand your strengths and areas for improvement.",
-                color: "text-purple-600",
-                bgColor: "bg-purple-50",
+                color: "text-rose-600",
+                bgColor: "bg-rose-50",
               },
               {
                 step: "4",
                 icon: GiProgression,
                 title: "Improve & Succeed",
                 desc: "Use insights to focus your study, practice more, and watch your band score improve over time.",
-                color: "text-orange-600",
-                bgColor: "bg-orange-50",
+                color: "text-rose-600",
+                bgColor: "bg-rose-50",
               },
             ].map((item, index) => {
               const IconComponent = item.icon;
@@ -591,32 +656,32 @@ export default function IELTSLandingPage(): any {
                 title: "Designed for Computer-Based IELTS",
                 description:
                   "Our platform mirrors the exact computer-delivered IELTS format. Practice in the same interface you'll see on test day.",
-                color: "text-blue-600",
-                bgColor: "bg-blue-50",
+                color: "text-rose-600",
+                bgColor: "bg-rose-50",
               },
               {
                 icon: FaChartLine,
                 title: "Focus on Band Improvement",
                 description:
                   "We don't just test you—we help you improve. Get actionable insights and targeted practice to boost your band score.",
-                color: "text-green-600",
-                bgColor: "bg-green-50",
+                color: "text-rose-600",
+                bgColor: "bg-rose-50",
               },
               {
                 icon: FaChartBar,
                 title: "Clear Analytics, Not Confusion",
                 description:
                   "Understand your performance with intuitive visual reports. No complex scoring systems—just clear, actionable insights.",
-                color: "text-purple-600",
-                bgColor: "bg-purple-50",
+                color: "text-rose-600",
+                bgColor: "bg-rose-50",
               },
               {
                 icon: FaClock,
                 title: "Practice Anytime, Anywhere",
                 description:
                   "Access full practice tests, writing samples, and analytics 24/7. Study at your own pace, on any device.",
-                color: "text-orange-600",
-                bgColor: "bg-orange-50",
+                color: "text-rose-600",
+                bgColor: "bg-rose-50",
               },
             ].map((item, index) => {
               const IconComponent = item.icon;
