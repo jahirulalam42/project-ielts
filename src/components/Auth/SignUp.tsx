@@ -106,7 +106,7 @@ const SignUp = () => {
         </div>
 
         {/* RIGHT PANEL: Sign Up Form */}
-        <div className="flex w-full md:w-[55%] flex-col justify-center px-8 py-12 md:px-16 lg:px-24 overflow-y-auto">
+        <div className="flex w-full md:w-[55%] flex-col justify-center px-8 py-12 md:px-16 lg:px-24 overflow-hidden">
           <div className="mx-auto w-full max-w-md">
             {/* Header */}
             <div className="mb-8">

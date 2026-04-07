@@ -87,10 +87,34 @@ const SubmissionPage = () => {
   }, [testId]);
 
   // Handle loading and error states
-  if (loading) return <div className="text-center p-4">Loading...</div>;
-  if (error) return <div className="text-center p-4 text-error">{error}</div>;
-  if (!submission)
-    return <div className="text-center p-4">No submission data available</div>;
+  if (loading) {
+    return (
+      <div className="mx-auto max-w-6xl px-4 py-12">
+        <div className="rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-sm">
+          <span className="loading loading-spinner loading-md text-red-600" />
+          <p className="mt-3 text-sm font-medium text-gray-600">Loading submitted answers...</p>
+        </div>
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="mx-auto max-w-6xl px-4 py-12">
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-8 text-center shadow-sm">
+          <p className="text-sm font-semibold text-red-700">{error}</p>
+        </div>
+      </div>
+    );
+  }
+  if (!submission) {
+    return (
+      <div className="mx-auto max-w-6xl px-4 py-12">
+        <div className="rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-sm">
+          <p className="text-sm font-medium text-gray-600">No submission data available.</p>
+        </div>
+      </div>
+    );
+  }
 
   const toggleExpanded = (key: string) => {
     setExpandedRowKey((prev) => (prev === key ? null : key));
@@ -274,35 +298,57 @@ const SubmissionPage = () => {
     return `${correctCount}/${totalCount}`;
   };
 
+  const totalQuestions = submission.answers.length;
+  const correctAnswersCount = submission.answers.filter((a) => a.isCorrect).length;
+  const accuracy = totalQuestions ? Math.round((correctAnswersCount / totalQuestions) * 100) : 0;
+
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Your Submitted Answers</h1>
+    <div className="mx-auto max-w-7xl px-4 py-6 md:py-8">
+      <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-gray-900 md:text-3xl">
+            Submitted Answers
+          </h1>
+          <p className="mt-1 text-sm text-gray-600">
+            Review your response details and check where you can improve.
+          </p>
+        </div>
+        <div className="text-sm text-gray-500">
+          Submitted: {new Date(submission.submittedAt).toLocaleString()}
+        </div>
+      </div>
 
       {/* Total Score Card */}
-      <div className="card bg-base-100 shadow-xl mb-6">
-        <div className="card-body">
-          <h2 className="card-title">
-            Total Score: {submission.totalScore} / 40
-          </h2>
-          <p>
-            Submitted at: {new Date(submission.submittedAt).toLocaleString()}
+      <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Total Score</p>
+          <p className="mt-2 text-2xl font-bold text-gray-900">{submission.totalScore} / 40</p>
+        </div>
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Correct</p>
+          <p className="mt-2 text-2xl font-bold text-emerald-700">
+            {correctAnswersCount} / {totalQuestions}
           </p>
+        </div>
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Accuracy</p>
+          <p className="mt-2 text-2xl font-bold text-gray-900">{accuracy}%</p>
         </div>
       </div>
 
       {/* Answers Table */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm">
         <table className="table w-full">
-          <thead>
+          <thead className="bg-gray-50">
             <tr>
-              <th className="font-bold text-black">Question</th>
-              <th className="font-bold text-black">Your Answer</th>
-              <th className="font-bold text-black">Correct Answer</th>
-              <th className="font-bold text-black">Type</th>
-              <th className="font-bold text-black">Status</th>
+              <th className="font-semibold text-gray-700">Question</th>
+              <th className="font-semibold text-gray-700">Your Answer</th>
+              <th className="font-semibold text-gray-700">Correct Answer</th>
+              <th className="font-semibold text-gray-700">Type</th>
+              <th className="font-semibold text-gray-700">Status</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="[&_tr]:border-b [&_tr:last-child]:border-b-0 [&_tr]:border-gray-100">
             {sortedGroups.map(([groupKey, answers]: any) => {
               // For grouped answers (multiple MCQ)
               if (answers[0].questionGroup) {
@@ -319,32 +365,44 @@ const SubmissionPage = () => {
                 const rowKey = `group:${groupKey}`;
 
                 return (
-                  <>
+                  <React.Fragment key={rowKey}>
                     <tr
                       key={groupKey}
                       onClick={() => toggleExpanded(rowKey)}
-                      className="cursor-pointer"
+                      className="cursor-pointer transition-colors hover:bg-gray-50"
                       aria-expanded={expandedRowKey === rowKey}
                       title="Click to reveal details"
                     >
-                      <td>{answers[0].questionGroup.join(", ")}</td>
-                      <td>{selectedAnswers || "Not answered"}</td>
-                      <td>{correctAnswers}</td>
-                      <td>{answers[0].questionType || " "}</td>
-                      <td className={isGroupCorrect ? "text-success" : "text-warning"}>
-                        {isGroupCorrect ? "✅" : `⚠️ (${partialCorrectness})`}
+                      <td className="font-medium text-gray-900">{answers[0].questionGroup.join(", ")}</td>
+                      <td className="max-w-[260px] truncate text-gray-700">{selectedAnswers || "Not answered"}</td>
+                      <td className="max-w-[260px] truncate text-gray-700">{correctAnswers}</td>
+                      <td className="text-gray-600">{answers[0].questionType || "-"}</td>
+                      <td>
+                        <span
+                          className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${
+                            isGroupCorrect
+                              ? "bg-emerald-50 text-emerald-700"
+                              : "bg-amber-50 text-amber-700"
+                          }`}
+                        >
+                          {isGroupCorrect ? "Correct" : `Partial (${partialCorrectness})`}
+                        </span>
                       </td>
                     </tr>
                     {expandedRowKey === rowKey && (
                       <tr>
                         <td colSpan={5}>
-                          <div className="bg-base-200 rounded-lg p-4 mt-1">
+                          <div className="m-2 rounded-xl border border-gray-200 bg-gray-50 p-4">
                             <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
-                              <div className="font-semibold">
+                              <div className="font-semibold text-gray-900">
                                 Multiple question set ({answers[0].questionGroup.join(", ")})
                               </div>
-                              <div className={isGroupCorrect ? "text-success" : "text-warning"}>
-                                {isGroupCorrect ? "Correct ✅" : `Partial (${partialCorrectness})`}
+                              <div
+                                className={`text-sm font-semibold ${
+                                  isGroupCorrect ? "text-emerald-700" : "text-amber-700"
+                                }`}
+                              >
+                                {isGroupCorrect ? "Correct" : `Partial (${partialCorrectness})`}
                               </div>
                             </div>
 
@@ -352,14 +410,20 @@ const SubmissionPage = () => {
                               {answers.map((answer: Answer, idx: number) => {
                                 const perRowKey = `${rowKey}:q:${answer.questionId ?? idx}`;
                                 return (
-                                  <div key={perRowKey} className="rounded-md border border-gray-300 bg-base-100 p-3">
+                                  <div key={perRowKey} className="rounded-lg border border-gray-200 bg-white p-3">
                                     <div className="flex flex-wrap gap-2 items-center justify-between mb-2">
-                                      <div className="text-sm font-semibold">
+                                      <div className="text-sm font-semibold text-gray-900">
                                         Question {Array.isArray(answer.questionId) ? answer.questionId.join(", ") : answer.questionId}
                                       </div>
-                                      <div className={answer.isCorrect ? "text-success" : "text-error"}>
-                                        {answer.isCorrect ? "✅ Correct" : "❌ Wrong"}
-                                      </div>
+                                      <span
+                                        className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${
+                                          answer.isCorrect
+                                            ? "bg-emerald-50 text-emerald-700"
+                                            : "bg-rose-50 text-rose-700"
+                                        }`}
+                                      >
+                                        {answer.isCorrect ? "Correct" : "Wrong"}
+                                      </span>
                                     </div>
                                     {renderUserAnswerControl(answer, perRowKey)}
                                   </div>
@@ -370,7 +434,7 @@ const SubmissionPage = () => {
                         </td>
                       </tr>
                     )}
-                  </>
+                  </React.Fragment>
                 );
               }
 
@@ -382,29 +446,43 @@ const SubmissionPage = () => {
                     <tr
                       key={`${groupKey}-${index}`}
                       onClick={() => toggleExpanded(rowKey)}
-                      className="cursor-pointer"
+                      className="cursor-pointer transition-colors hover:bg-gray-50"
                       aria-expanded={expandedRowKey === rowKey}
                       title="Click to reveal details"
                     >
-                      <td>{answer.questionId}</td>
-                      <td>{answer.value || "Not answered"}</td>
-                      <td>{answer.answerText as string}</td>
-                      <td>{answer.questionType || " "}</td>
-                      <td className={answer.isCorrect ? "text-success" : "text-error"}>
-                        {answer.isCorrect ? "✅" : "❌"}
+                      <td className="font-medium text-gray-900">{answer.questionId}</td>
+                      <td className="max-w-[260px] truncate text-gray-700">{answer.value || "Not answered"}</td>
+                      <td className="max-w-[260px] truncate text-gray-700">{answer.answerText as string}</td>
+                      <td className="text-gray-600">{answer.questionType || "-"}</td>
+                      <td>
+                        <span
+                          className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${
+                            answer.isCorrect
+                              ? "bg-emerald-50 text-emerald-700"
+                              : "bg-rose-50 text-rose-700"
+                          }`}
+                        >
+                          {answer.isCorrect ? "Correct" : "Wrong"}
+                        </span>
                       </td>
                     </tr>
                     {expandedRowKey === rowKey && (
                       <tr>
                         <td colSpan={5}>
-                          <div className="bg-base-200 rounded-lg p-4 mt-1">
+                          <div className="m-2 rounded-xl border border-gray-200 bg-gray-50 p-4">
                             <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
-                              <div className="font-semibold">
+                              <div className="font-semibold text-gray-900">
                                 Question {answer.questionId} - {answer.questionType || " "}
                               </div>
-                              <div className={answer.isCorrect ? "text-success" : "text-error"}>
-                                {answer.isCorrect ? "Correct ✅" : "Wrong ❌"}
-                              </div>
+                              <span
+                                className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${
+                                  answer.isCorrect
+                                    ? "bg-emerald-50 text-emerald-700"
+                                    : "bg-rose-50 text-rose-700"
+                                }`}
+                              >
+                                {answer.isCorrect ? "Correct" : "Wrong"}
+                              </span>
                             </div>
                             {renderUserAnswerControl(answer, rowKey)}
                           </div>
@@ -421,8 +499,10 @@ const SubmissionPage = () => {
 
       {/* Review Interface (same as test layout, but pre-filled + read-only) */}
       {readingTest && submission?.answers && (
-        <div className="mt-10">
-          <h2 className="text-xl font-bold mb-4">Review (same interface)</h2>
+        <div className="mt-10 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <h2 className="mb-4 text-lg font-semibold text-gray-900 md:text-xl text-center text-red-600">
+            Detailed Review
+          </h2>
           <ReadingReview test={readingTest} submissionAnswers={submission.answers as any} />
         </div>
       )}

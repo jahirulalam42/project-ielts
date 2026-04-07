@@ -73,10 +73,28 @@ const McqMultiple = ({
 
     // Then update parent - use setTimeout to ensure this happens after render
     setTimeout(() => {
+      // Multiple MCQ should be order-insensitive:
+      // selected [A, D] should match correct [D, A].
+      const normalize = (v: any) => String(v ?? "").trim().toUpperCase();
+      const selectedValues = q.question_numbers
+        .map((num: number) => newSelections[num])
+        .filter((v: string) => v && v !== "")
+        .map(normalize);
+      const correctValues = (q.correct_mapping || [])
+        .filter((v: string) => v && v !== "")
+        .map(normalize);
+
+      const selectedSet = new Set(selectedValues);
+      const correctSet = new Set(correctValues);
+      const isGroupCorrect =
+        selectedSet.size === correctSet.size &&
+        [...selectedSet].every((v) => correctSet.has(v));
+
       q.question_numbers.forEach((num: number) => {
         const idx = q.question_numbers.indexOf(num);
         const correctAnswer = q.correct_mapping?.[idx] || "";
-        const isCorrect = newSelections[num] === correctAnswer;
+        const currentValue = normalize(newSelections[num]);
+        const isCorrect = isGroupCorrect || (currentValue !== "" && correctSet.has(currentValue));
 
         handleAnswerChange(
           num,

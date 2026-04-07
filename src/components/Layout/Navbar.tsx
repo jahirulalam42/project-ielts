@@ -107,10 +107,8 @@ const Navbar: React.FC = () => {
                               }`}
                             >
                               <span className="relative z-10">{link.label}</span>
-                              {pathName.startsWith(link.href) ? (
+                              {pathName.startsWith(link.href) && (
                                 <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-red-600 to-red-500 rounded-full"></span>
-                              ) : (
-                                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-red-600 to-red-500 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
                               )}
                             </div>
                             <ul className="absolute left-0 top-full py-2 bg-white/95 backdrop-blur-md rounded-xl shadow-xl border border-gray-200/50 w-56 z-50 mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
@@ -140,10 +138,8 @@ const Navbar: React.FC = () => {
                             }`}
                           >
                             <span className="relative z-10">{link.label}</span>
-                            {pathName.startsWith(link.href) ? (
+                            {pathName.startsWith(link.href) && (
                               <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-red-600 to-red-500 rounded-full animate-in slide-in-from-left duration-300"></span>
-                            ) : (
-                              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-red-600 to-red-500 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
                             )}
                           </Link>
                         )}

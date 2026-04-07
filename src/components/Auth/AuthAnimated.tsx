@@ -206,7 +206,7 @@ const AuthAnimated: React.FC<AuthAnimatedProps> = ({ initialMode = "signin" }) =
 
   return (
     <div className="flex h-[calc(100vh-4rem)] w-full items-center justify-center bg-gray-50 font-sans antialiased overflow-hidden px-4">
-      <div className="relative w-full max-w-6xl min-h-[500px] rounded-3xl bg-white shadow-2xl overflow-hidden">
+      <div className="relative w-full max-w-6xl min-h-[min(680px,calc(100vh-6rem))] rounded-3xl bg-white shadow-2xl overflow-hidden">
         {/* Sliding track */}
         <div
           className="absolute inset-0 flex transition-transform duration-500 ease-out"
@@ -242,7 +242,7 @@ const AuthAnimated: React.FC<AuthAnimatedProps> = ({ initialMode = "signin" }) =
             </div>
 
             {/* Sign in form */}
-            <div className="flex w-full md:w-1/2 flex-col justify-center px-8 py-10 md:px-12 lg:px-16 overflow-y-auto">
+            <div className="flex w-full md:w-1/2 flex-col justify-center px-8 py-10 md:px-12 lg:px-16 overflow-hidden">
               <div className="w-full max-w-md mx-auto">
                 <div className="mb-8">
                   <h1 className="text-3xl font-bold text-gray-900 mb-2">
@@ -350,7 +350,7 @@ const AuthAnimated: React.FC<AuthAnimatedProps> = ({ initialMode = "signin" }) =
           {/* RIGHT HALF (Sign Up view) */}
           <div className="flex w-1/2">
             {/* Sign up form (left in sign-up mode) */}
-            <div className="flex w-full md:w-1/2 flex-col justify-center px-8 py-10 md:px-12 lg:px-16 overflow-y-auto">
+            <div className="flex w-full md:w-1/2 flex-col justify-center px-8 py-10 md:px-12 lg:px-16 overflow-hidden">
               <div className="w-full max-w-md mx-auto">
                 <div className="mb-8">
                   <h1 className="text-3xl font-bold text-gray-900">

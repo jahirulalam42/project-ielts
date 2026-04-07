@@ -130,22 +130,6 @@ nav {
   animation: slideInFromTop 0.5s ease-out;
 }
 
-/* Smooth underline animation */
-nav a[href]::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: linear-gradient(to right, #dc2626, #ef4444);
-  transition: width 0.3s ease;
-}
-
-nav a[href]:hover::after {
-  width: 100%;
-}
-
 /* Phone Input Styling */
 .phone-input-container {
   width: 100% !important;
