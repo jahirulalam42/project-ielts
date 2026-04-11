@@ -43,9 +43,6 @@ const AuthAnimated: React.FC<AuthAnimatedProps> = ({ initialMode = "signin" }) =
   });
   const [signUpError, setSignUpError] = useState<string | null>(null);
   const [signUpLoading, setSignUpLoading] = useState(false);
-  const [activeSignUpMethod, setActiveSignUpMethod] = useState<"oauth" | "email">(
-    "oauth",
-  );
 
   const isSignUp = mode === "signup";
 
@@ -277,7 +274,33 @@ const AuthAnimated: React.FC<AuthAnimatedProps> = ({ initialMode = "signin" }) =
                   </div>
                 )}
 
-                <form onSubmit={handleSignInSubmit} className="space-y-5">
+                <div className="space-y-6">
+                  <div>
+                    <p className="mb-3 text-center text-sm text-gray-500">
+                      Sign in with Google or your email
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => handleOAuthSignIn("google")}
+                      className="flex w-full items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-gray-200"
+                    >
+                      <span className="mr-2 h-5 w-5">G</span>
+                      Continue with Google
+                    </button>
+                  </div>
+
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-gray-300" />
+                    </div>
+                    <div className="relative flex justify-center text-sm">
+                      <span className="bg-white px-3 text-gray-500">
+                        Or sign in with email
+                      </span>
+                    </div>
+                  </div>
+
+                  <form onSubmit={handleSignInSubmit} className="space-y-5">
                   <div>
                     <label
                       htmlFor="signin-email"
@@ -332,6 +355,7 @@ const AuthAnimated: React.FC<AuthAnimatedProps> = ({ initialMode = "signin" }) =
                     {signInLoading ? "Signing in..." : "Sign In"}
                   </button>
                 </form>
+                </div>
 
                 <p className="mt-8 text-center text-sm text-gray-600">
                   Don&apos;t have an account?{" "}
@@ -385,80 +409,32 @@ const AuthAnimated: React.FC<AuthAnimatedProps> = ({ initialMode = "signin" }) =
                   </div>
                 )}
 
-                {/* Method Tabs */}
-                <div className="mb-6">
-                  <div className="flex border-b border-gray-200">
-                    <button
-                      type="button"
-                      onClick={() => setActiveSignUpMethod("oauth")}
-                      className={`flex-1 pb-3 text-sm font-medium transition-colors ${
-                        activeSignUpMethod === "oauth"
-                          ? "border-b-2 border-red-700 text-gray-900"
-                          : "text-gray-500 hover:text-gray-700"
-                      }`}
-                    >
-                      Quick Sign Up
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setActiveSignUpMethod("email")}
-                      className={`flex-1 pb-3 text-sm font-medium transition-colors ${
-                        activeSignUpMethod === "email"
-                          ? "border-b-2 border-red-700 text-gray-900"
-                          : "text-gray-500 hover:text-gray-700"
-                      }`}
-                    >
-                      With Email
-                    </button>
-                  </div>
-                </div>
-
-                {/* OAuth section */}
-                {activeSignUpMethod === "oauth" && (
-                  <div className="space-y-6">
-                    <p className="text-center text-sm text-gray-500">
-                      Sign up instantly with your existing account
+                <div className="space-y-6">
+                  <div>
+                    <p className="mb-3 text-center text-sm text-gray-500">
+                      Sign up with Google or create an account with email
                     </p>
-                    <div className="grid grid-cols-2 gap-3">
-                      <button
-                        type="button"
-                        onClick={() => handleOAuthSignIn("google")}
-                        className="flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-gray-200"
-                      >
-                        <span className="mr-2 h-5 w-5">G</span>
-                        Google
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleOAuthSignIn("linkedin")}
-                        className="flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-gray-200"
-                      >
-                        <span className="mr-2 h-5 w-5">in</span>
-                        LinkedIn
-                      </button>
-                    </div>
-                    <div className="relative my-6">
-                      <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t border-gray-300" />
-                      </div>
-                      <div className="relative flex justify-center text-sm">
-                        <span className="bg-white px-3 text-gray-500">
-                          Or use email
-                        </span>
-                      </div>
-                    </div>
                     <button
                       type="button"
-                      onClick={() => setActiveSignUpMethod("email")}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-gray-200"
+                      onClick={() => handleOAuthSignIn("google")}
+                      className="flex w-full items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-gray-200"
                     >
-                      Continue with Email
+                      <span className="mr-2 h-5 w-5">G</span>
+                      Continue with Google
                     </button>
                   </div>
-                )}
 
-                {/* Email sign-up form */}
-                {activeSignUpMethod === "email" && (
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-gray-300" />
+                    </div>
+                    <div className="relative flex justify-center text-sm">
+                      <span className="bg-white px-3 text-gray-500">
+                        Or sign up with email
+                      </span>
+                    </div>
+                  </div>
+
                   <form onSubmit={handleSignUpSubmit} className="space-y-5">
                     <div>
                       <label
@@ -512,7 +488,7 @@ const AuthAnimated: React.FC<AuthAnimatedProps> = ({ initialMode = "signin" }) =
                       {signUpLoading ? "Creating account..." : "Create Account"}
                     </button>
                   </form>
-                )}
+                </div>
 
                 <p className="mt-8 text-center text-sm text-gray-600">
                   Already have an account?{" "}
