@@ -1,5 +1,5 @@
 "use client";
-import React, { FormEvent, useState } from "react";
+import React, { Suspense, FormEvent, useState } from "react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { postUser } from "@/services/data";
@@ -12,7 +12,8 @@ interface SignUpData {
   role: string;
 }
 
-const SignUp = () => {
+// 1. Rename your existing component to SignUpContent
+const SignUpContent = () => {
   const router = useRouter();
   const params = useSearchParams();
   const callbackUrl = params.get("callbackUrl") || "/";
@@ -76,6 +77,7 @@ const SignUp = () => {
 
   return (
     <div className="flex h-screen w-screen items-center justify-center bg-gray-50 font-sans antialiased">
+      {/* ... Keep all your existing JSX exactly the same ... */}
       <div className="flex w-full h-full overflow-hidden bg-white md:flex-row">
         {/* LEFT PANEL: Simple Branding */}
         <div className="relative hidden md:flex w-full md:w-[45%] flex-col items-center justify-center bg-gradient-to-br from-red-700 to-red-800 text-white px-12">
@@ -205,21 +207,6 @@ const SignUp = () => {
                     </svg>
                     Google
                   </button>
-
-                  {/* <button
-                    type="button"
-                    onClick={() => handleOAuthSignIn("linkedin")}
-                    className="flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-gray-200"
-                  >
-                    <svg
-                      className="mr-2 h-5 w-5"
-                      fill="#0077B5"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                    </svg>
-                    LinkedIn
-                  </button> */}
                 </div>
 
                 <div className="relative my-6">
@@ -369,4 +356,11 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+// 2. Export a wrapper component that wraps the content in Suspense
+export default function SignUp() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SignUpContent />
+    </Suspense>
+  );
+}
